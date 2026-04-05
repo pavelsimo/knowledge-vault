@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "README.md",
+                "file": "wiki/distributed-training.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "README"
+              "title": "distributed-training"
             }
           }
         ]
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "README.md",
+                "file": "wiki/distributed-training.md",
                 "collapseAll": true,
                 "extraContext": true,
                 "sortOrder": "alphabetical",
@@ -104,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for README"
+              "title": "Backlinks for distributed-training"
             }
           },
           {
@@ -113,12 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "README.md",
+                "file": "wiki/distributed-training.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from README"
+              "title": "Outgoing links from distributed-training"
             }
           },
           {
@@ -156,13 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "README.md",
+                "file": "wiki/distributed-training.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of README"
+              "title": "Outline of distributed-training"
             }
           }
         ]
@@ -184,10 +184,33 @@
   },
   "active": "0034efd2b7e3bd1d",
   "lastOpenFiles": [
-    "raw/02-cs109-probability-for-computer-scientists/Stanford CS109.md",
+    "wiki/gpu-cuda.md",
+    "wiki/3d-vision.md",
+    "wiki/attention-transformers.md",
+    "wiki/distributed-training.md",
+    "wiki/robot-learning.md",
+    "wiki/audio-processing.md",
+    "wiki/computer-vision.md",
+    "wiki/convolutional-neural-networks.md",
+    "wiki/transformers-library.md",
+    "wiki/video-understanding.md",
+    "wiki/self-supervised-learning.md",
+    "wiki/recurrent-neural-networks.md",
+    "wiki/generative-models.md",
+    "wiki/semantic-segmentation.md",
+    "wiki/sentence-embeddings.md",
+    "wiki/nlp.md",
+    "wiki/neural-networks.md",
+    "wiki/mlops.md",
+    "wiki/multimodal-models.md",
+    "wiki/INDEX.md",
+    "wiki/optimization.md",
+    "wiki/probability-statistics.md",
+    "wiki/self-supervised-learning.md.tmp.50382.1775427948163",
+    "wiki/hugging-face.md",
+    "wiki/network-visualization.md",
+    "wiki/object-detection.md",
     "raw/03-stanford-cs231n/Stanford CS231N.md",
-    "raw/04-machine-learning-engineering-for-production-mlops/Machine Learning Engineering for Production (MLOps).md",
-    "raw/01-open-source-models-hugging-face/Open Source Models with Hugging Face.md",
     "raw/04-machine-learning-engineering-for-production-mlops/images/Pasted image 20260301211843.png",
     "raw/04-machine-learning-engineering-for-production-mlops/images/Pasted image 20260228184049.png",
     "raw/04-machine-learning-engineering-for-production-mlops/images/Pasted image 20260228162526.png",
@@ -200,18 +223,12 @@
     "raw/04-machine-learning-engineering-for-production-mlops/images/Pasted image 20260228150943.png",
     "raw/04-machine-learning-engineering-for-production-mlops/images",
     "raw/04-machine-learning-engineering-for-production-mlops",
-    "images/Pasted.md",
     "images",
     "raw/02-cs109-probability-for-computer-scientists/images",
-    "README.md",
     "raw/02-cs109-probability-for-computer-scientists",
     "raw/01-open-source-models-hugging-face/images/data",
     "raw/01-open-source-models-hugging-face/images",
     "raw/01-open-source-models-hugging-face/data/sample.wav",
-    "raw/01-open-source-models-hugging-face/data",
-    "raw/01-open-source-models-hugging-face/12-image-captioning.py",
-    "topic-name.md",
-    "Untitled.md",
-    "Welcome.md"
+    "raw/01-open-source-models-hugging-face/data"
   ]
 }
