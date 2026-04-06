@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vision Transformer (ViT) — Knowledge Vault</title>
+  <link rel="icon" href="data:," />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --green: #3fb950;
+      --coral: #f78166;
+      --yellow: #d29922;
+      --purple: #bc8cff;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    nav a:hover { color: var(--accent); }
+    nav .sep { color: var(--border); }
+    nav .title { color: var(--text); font-weight: 600; font-size: 0.875rem; }
+    .tag {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      background: rgba(88,166,255,0.12);
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+    }
+    main {
+      flex: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      width: 100%;
+    }
+    h1 { font-size: 1.8rem; margin-bottom: 0.45rem; }
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.96rem;
+      line-height: 1.6;
+      margin-bottom: 1.8rem;
+      max-width: 820px;
+    }
+    .step-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .step-indicator { font-size: 0.8rem; color: var(--muted); }
+    .progress-bar {
+      height: 3px;
+      background: var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 1.4rem;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.35s ease;
+    }
+    .step-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 0.35rem;
+    }
+    .step-desc {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.65;
+      margin-bottom: 1.4rem;
+      max-width: 820px;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.8fr);
+      gap: 1.25rem;
+      margin-bottom: 1.4rem;
+    }
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+    .viz-area, .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+    }
+    .viz-area { min-height: 420px; }
+    .panel { display: flex; flex-direction: column; gap: 0.95rem; }
+    .side-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .formula-box {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      color: var(--green);
+    }
+    .formula-box .comment { color: var(--muted); }
+    .info-card {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.6;
+    }
+    .link-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+    }
+    .link-chip {
+      text-decoration: none;
+      color: var(--accent);
+      border: 1px solid rgba(88,166,255,0.35);
+      background: rgba(88,166,255,0.08);
+      border-radius: 999px;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.78rem;
+    }
+    .patch-board {
+      display: grid;
+      grid-template-columns: repeat(4, 58px);
+      gap: 6px;
+      justify-content: start;
+    }
+    .patch {
+      width: 58px;
+      height: 58px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      color: #0d1117;
+      font-size: 0.72rem;
+      font-weight: 700;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+      padding: 0.35rem;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+    }
+    .patch:hover,
+    .patch.selected {
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(88,166,255,0.22), inset 0 0 0 1px rgba(255,255,255,0.08);
+    }
+    .viz-row {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .mini-panel {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.8rem;
+      flex: 1;
+      min-width: 220px;
+    }
+    .mini-title {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 0.55rem;
+    }
+    .token-strip {
+      display: flex;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+    }
+    .token {
+      padding: 0.45rem 0.65rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 0.73rem;
+      font-family: ui-monospace, monospace;
+      background: rgba(255,255,255,0.03);
+    }
+    .token.cls { color: var(--yellow); border-color: rgba(210,153,34,0.4); }
+    .token.patch-token { color: var(--accent); border-color: rgba(88,166,255,0.35); }
+    .token.selected { border-color: var(--green); color: var(--green); }
+    .heatmap-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 58px);
+      gap: 6px;
+      justify-content: start;
+    }
+    .heatmap-cell {
+      width: 58px;
+      height: 58px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-family: ui-monospace, monospace;
+      color: var(--text);
+    }
+    .table-like {
+      display: grid;
+      gap: 0.5rem;
+      margin-top: 0.8rem;
+    }
+    .table-row {
+      display: grid;
+      grid-template-columns: 110px 1fr 90px;
+      gap: 0.7rem;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .bar-track {
+      height: 12px;
+      background: #0d1117;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .bar-fill { height: 100%; border-radius: 999px; }
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .btn {
+      padding: 0.55rem 1.2rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+    .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #0d1117;
+      font-weight: 600;
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: #79c0ff;
+      border-color: #79c0ff;
+      color: #0d1117;
+    }
+    .kbd {
+      font-size: 0.7rem;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.1rem 0.35rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+      Home
+    </a>
+    <span class="sep">›</span>
+    <span class="title">Vision Transformer (ViT)</span>
+    <div style="margin-left:auto"><span class="tag">Vision</span></div>
+  </nav>
+
+  <main>
+    <h1>Vision Transformer (ViT)</h1>
+    <p class="subtitle">ViT turns an image into a sequence of patch tokens, adds positional information, and runs the same self-attention machinery used in language models. The critical shift is that the model sees the whole image as a set of interacting regions from the very first layer.</p>
+
+    <div class="step-header">
+      <span class="step-indicator" id="stepCounter">Step 1 of 5</span>
+      <div style="display:flex;gap:0.5rem;align-items:center">
+        <span class="kbd">←</span><span class="kbd">→</span>
+        <span style="font-size:0.75rem;color:var(--muted)">navigate</span>
+      </div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+    <div class="step-title" id="stepTitle"></div>
+    <div class="step-desc" id="stepDesc"></div>
+
+    <div class="layout">
+      <div class="viz-area" id="vizArea"></div>
+      <div class="panel">
+        <div>
+          <div class="side-label">Formula</div>
+          <div class="formula-box" id="formulaBox"></div>
+        </div>
+        <div class="info-card" id="noteBox"></div>
+        <div>
+          <div class="side-label">Paper Links</div>
+          <div class="link-list">
+            <a class="link-chip" href="https://arxiv.org/pdf/2010.11929" target="_blank" rel="noreferrer">ViT</a>
+            <a class="link-chip" href="https://arxiv.org/pdf/2103.13413" target="_blank" rel="noreferrer">DPT</a>
+            <a class="link-chip" href="https://hal.science/hal-04376640v2/file/CVPR_2023_dinov2%20%284%29.pdf" target="_blank" rel="noreferrer">DINOv2</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" id="prevBtn" onclick="changeStep(-1)">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+        Prev
+      </button>
+      <button class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">
+        Next
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+  </main>
+
+  <script>
+    const patchColors = [
+      "#c9d1d9", "#9ecbff", "#7cc1ff", "#6d7ff0",
+      "#d3d9a5", "#f7d26a", "#f7a84a", "#a9b54d",
+      "#d6b3ff", "#ffb38c", "#ff8f70", "#9a8cff",
+      "#8ecfb6", "#6cb0a6", "#5f9ea0", "#4f7d8a"
+    ];
+    let currentStep = 0;
+    let selectedPatch = 5;
+
+    const STEPS = [
+      {
+        title: "ViT Starts by Splitting the Image into Patches",
+        desc: "Instead of a convolutional filter sliding over the image, ViT cuts the image into fixed-size non-overlapping patches. Each patch becomes the unit of processing, just like a token in a sentence.",
+        formula: `<span class="comment">// Patchify image</span><br>image H×W×C → N patches of size P×P×C<br>N = (H / P) · (W / P)<br><br><span class="comment">// Example</span><br>224×224 image with 16×16 patches → 196 tokens`,
+        note: `The patch size is a hard architectural choice. Larger patches reduce sequence length and cost, but each token throws away more local detail.`,
+        render: renderPatchify
+      },
+      {
+        title: "Each Patch Is Flattened and Linearly Projected",
+        desc: "A patch is not fed to attention in pixel space. It is flattened and passed through a learned linear projection into an embedding dimension D, which turns the patch into a dense token vector.",
+        formula: `<span class="comment">// Patch embedding</span><br>x<sub>patch</sub> ∈ R<sup>P²C</sup><br>z<sub>patch</sub> = W<sub>embed</sub> x<sub>patch</sub> + b<br>z<sub>patch</sub> ∈ R<sup>D</sup>`,
+        note: `This projection plays a role similar to a convolutional stem, but it happens once per patch rather than repeatedly with shared sliding kernels.`,
+        render: renderPatchEmbedding
+      },
+      {
+        title: "A CLS Token and Positional Embeddings Make the Sequence Usable",
+        desc: "Self-attention alone is permutation-invariant, so ViT adds positional information to every patch token. A learned CLS token is prepended to the sequence and becomes the summary vector for image classification.",
+        formula: `<span class="comment">// Token sequence</span><br>z₀ = [CLS]<br>Z = [z₀, z₁, ..., z<sub>N</sub>] + E<sub>pos</sub><br><br><span class="comment">// Then feed into standard transformer encoder blocks</span>`,
+        note: `Without positional embeddings, the model would know what patch content exists but not where it came from. The CLS token gives the model one slot whose job is to gather global evidence.`,
+        render: renderTokenSequence
+      },
+      {
+        title: "Self-Attention Builds Relationships Between Image Regions",
+        desc: "Click a patch. The selected query patch attends over all other patches, producing a soft map of which regions matter to it. This is the core reason ViTs can model long-range image structure from the first layer.",
+        formula: `<span class="comment">// ViT attention</span><br>Attention(Q,K,V) = softmax(QKᵀ / √d) · V<br><br><span class="comment">// Same operation as language transformers, but tokens are image patches</span>`,
+        note: `Patch-to-patch attention is often object-centric: semantically related regions learn to reinforce each other even though the model never used explicit convolutional locality priors.`,
+        render: renderAttentionMap
+      },
+      {
+        title: "The CLS Token Becomes a Global Summary, and ViT Backbones Generalize",
+        desc: "After several transformer layers, the CLS token aggregates information from the patch sequence and feeds the classifier head. The same backbone pattern later powered dense prediction systems like DPT and self-supervised encoders like DINOv2.",
+        formula: `<span class="comment">// Classification head</span><br>y = Linear(h<sub>CLS</sub>)<br><br><span class="comment">// Downstream reuse</span><br>same patch encoder → classification, depth, segmentation, retrieval`,
+        note: `ViT was the architectural bridge. Follow-up papers showed that once you have a strong patch-token backbone, many other vision tasks can reuse it with surprisingly small changes.`,
+        render: renderClsAggregation
+      }
+    ];
+
+    function patchLabel(index) {
+      return `P${index}`;
+    }
+
+    function renderPatchBoard(interactive = true) {
+      return `
+        <div class="patch-board">
+          ${patchColors.map((color, index) => `
+            <button class="patch ${selectedPatch === index ? "selected" : ""}" data-patch="${index}" style="background:${color};${interactive ? "" : "cursor:default;"}">
+              ${patchLabel(index)}
+            </button>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function patchVector(index) {
+      const row = Math.floor(index / 4);
+      const col = index % 4;
+      return [
+        (row + 1) * 0.6,
+        (col + 1) * 0.5,
+        ((row + col) % 3) * 0.4 + 0.3,
+        index % 2 ? 0.9 : 0.2
+      ].map(value => value.toFixed(1));
+    }
+
+    function attentionWeights(index) {
+      const row = Math.floor(index / 4);
+      const col = index % 4;
+      const weights = patchColors.map((_, target) => {
+        const tr = Math.floor(target / 4);
+        const tc = target % 4;
+        const distance = Math.abs(row - tr) + Math.abs(col - tc);
+        const centerBonus = (tr === 1 || tr === 2) && (tc === 1 || tc === 2) ? 0.22 : 0;
+        const selfBonus = target === index ? 0.25 : 0;
+        return Math.max(0.08, 1.15 - distance * 0.24 + centerBonus + selfBonus);
+      });
+      const sum = weights.reduce((a, b) => a + b, 0);
+      return weights.map(value => value / sum);
+    }
+
+    function renderPatchify() {
+      document.getElementById("vizArea").innerHTML = `
+        <div class="viz-row">
+          <div class="mini-panel">
+            <div class="mini-title">Image as 4×4 Patches</div>
+            ${renderPatchBoard(false)}
+          </div>
+          <div class="mini-panel">
+            <div class="mini-title">Why This Matters</div>
+            <div class="info-card">
+              The transformer will never see raw pixels one by one. Its basic unit is the patch token, so sequence length is the number of patches, not the number of pixels.
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderPatchEmbedding() {
+      const vector = patchVector(selectedPatch);
+      document.getElementById("vizArea").innerHTML = `
+        <div class="viz-row">
+          <div class="mini-panel" style="max-width:260px">
+            <div class="mini-title">Selected Patch</div>
+            ${renderPatchBoard(true)}
+          </div>
+          <div class="mini-panel">
+            <div class="mini-title">Projected Token</div>
+            <div class="info-card">
+              ${patchLabel(selectedPatch)} → [${vector.join(", ")}]
+              <br><br>
+              This dense vector is what enters the transformer, not the raw patch pixels.
+            </div>
+            <div class="token-strip" style="margin-top:0.8rem">
+              <div class="token patch-token selected">${patchLabel(selectedPatch)}</div>
+              <div class="token patch-token">D = 768</div>
+            </div>
+          </div>
+        </div>
+      `;
+      bindPatchClicks();
+    }
+
+    function renderTokenSequence() {
+      document.getElementById("vizArea").innerHTML = `
+        <div class="mini-panel">
+          <div class="mini-title">Token Sequence Entering the Encoder</div>
+          <div class="token-strip">
+            <div class="token cls">[CLS]</div>
+            ${patchColors.map((_, index) => `<div class="token patch-token ${selectedPatch === index ? "selected" : ""}">${patchLabel(index)} + pos</div>`).join("")}
+          </div>
+        </div>
+        <div class="viz-row" style="margin-top:1rem">
+          <div class="mini-panel" style="max-width:260px">
+            <div class="mini-title">Patch Layout</div>
+            ${renderPatchBoard(true)}
+          </div>
+          <div class="mini-panel">
+            <div class="mini-title">Positional Encoding Role</div>
+            <div class="info-card">
+              ${patchLabel(selectedPatch)} has content embedding + a location embedding. Two identical visual patches at different coordinates become distinct tokens because their positional vectors differ.
+            </div>
+          </div>
+        </div>
+      `;
+      bindPatchClicks();
+    }
+
+    function renderAttentionMap() {
+      const weights = attentionWeights(selectedPatch);
+      document.getElementById("vizArea").innerHTML = `
+        <div class="viz-row">
+          <div class="mini-panel" style="max-width:260px">
+            <div class="mini-title">Click a Query Patch</div>
+            ${renderPatchBoard(true)}
+          </div>
+          <div class="mini-panel">
+            <div class="mini-title">Attention Weights from ${patchLabel(selectedPatch)}</div>
+            <div class="heatmap-grid">
+              ${weights.map((weight, index) => {
+                const alpha = 0.12 + weight * 1.2;
+                const bg = `rgba(88,166,255,${alpha})`;
+                const color = weight > 0.16 ? "#0d1117" : "var(--text)";
+                return `<div class="heatmap-cell" style="background:${bg};color:${color}">${weight.toFixed(2)}</div>`;
+              }).join("")}
+            </div>
+          </div>
+        </div>
+      `;
+      bindPatchClicks();
+    }
+
+    function renderClsAggregation() {
+      const logits = [
+        { label: "animal", value: 0.84, color: "#58a6ff" },
+        { label: "vehicle", value: 0.21, color: "#f78166" },
+        { label: "background", value: 0.34, color: "#3fb950" }
+      ];
+      document.getElementById("vizArea").innerHTML = `
+        <div class="mini-panel">
+          <div class="mini-title">[CLS] Aggregates Global Evidence</div>
+          <div class="token-strip">
+            <div class="token cls">[CLS]</div>
+            ${patchColors.map((_, index) => `<div class="token patch-token ${selectedPatch === index ? "selected" : ""}">${patchLabel(index)}</div>`).join("")}
+          </div>
+          <div class="table-like">
+            ${logits.map(logit => `
+              <div class="table-row">
+                <div>${logit.label}</div>
+                <div class="bar-track"><div class="bar-fill" style="width:${logit.value * 100}%;background:${logit.color}"></div></div>
+                <div>${logit.value.toFixed(2)}</div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+        <div class="info-card" style="margin-top:1rem">
+          ViT classification uses the CLS token, but the patch-token backbone extends further. DPT reused the encoder for dense prediction, and DINO-style training turned ViTs into strong generic visual feature extractors.
+        </div>
+      `;
+    }
+
+    function bindPatchClicks() {
+      document.querySelectorAll("[data-patch]").forEach(button => {
+        button.addEventListener("click", () => {
+          selectedPatch = Number(button.dataset.patch);
+          STEPS[currentStep].render();
+        });
+      });
+    }
+
+    function renderStep() {
+      const step = STEPS[currentStep];
+      document.getElementById("stepCounter").textContent = `Step ${currentStep + 1} of ${STEPS.length}`;
+      document.getElementById("progressFill").style.width = `${((currentStep + 1) / STEPS.length) * 100}%`;
+      document.getElementById("stepTitle").textContent = step.title;
+      document.getElementById("stepDesc").textContent = step.desc;
+      document.getElementById("formulaBox").innerHTML = step.formula;
+      document.getElementById("noteBox").textContent = step.note;
+      step.render();
+      document.getElementById("prevBtn").disabled = currentStep === 0;
+      document.getElementById("nextBtn").disabled = currentStep === STEPS.length - 1;
+    }
+
+    function changeStep(delta) {
+      const next = currentStep + delta;
+      if (next < 0 || next >= STEPS.length) return;
+      currentStep = next;
+      renderStep();
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight") changeStep(1);
+      if (event.key === "ArrowLeft") changeStep(-1);
+    });
+
+    renderStep();
+  </script>
+</body>
+</html>

@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generative Models — Knowledge Vault</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117; --surface: #161b22; --border: #30363d;
+      --text: #e6edf3; --muted: #8b949e; --accent: #d29922;
+      --blue: #58a6ff; --coral: #f78166; --green: #3fb950; --purple: #bc8cff;
+    }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+    nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.85rem 1.5rem; display: flex; align-items: center; gap: 1rem; }
+    nav a { color: var(--muted); text-decoration: none; font-size: 0.875rem; display: flex; align-items: center; gap: 0.4rem; }
+    nav a:hover { color: var(--accent); }
+    nav .sep { color: var(--border); }
+    nav .title { color: var(--text); font-weight: 600; font-size: 0.875rem; }
+    .tag { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); background: rgba(210,153,34,0.12); padding: 0.2rem 0.55rem; border-radius: 999px; }
+
+    main { flex: 1; max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem; width: 100%; }
+    h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.55; }
+
+    /* Model tabs */
+    .model-tabs { display: flex; gap: 6px; margin-bottom: 1.5rem; }
+    .model-tab { padding: 0.5rem 1.1rem; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+    .model-tab:hover { border-color: var(--accent); color: var(--accent); }
+    .model-tab.active { color: #0d1117; font-weight: 600; }
+
+    .step-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+    .step-indicator { font-size: 0.8rem; color: var(--muted); }
+    .progress-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 1.25rem; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 999px; transition: width 0.4s ease; }
+
+    .step-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.4rem; }
+    .step-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; max-width: 680px; }
+
+    /* Architecture diagram */
+    .arch-diagram { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.25rem; }
+
+    /* Block styles */
+    .flow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .block { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 10px 14px; border-radius: 10px; border: 1px solid; text-align: center; min-width: 80px; transition: all 0.3s; }
+    .block .icon { font-size: 1.3rem; }
+    .block .lbl { font-size: 0.72rem; font-weight: 600; line-height: 1.3; }
+    .arrow { color: var(--muted); font-size: 16px; flex-shrink: 0; }
+    .block-group { display: flex; flex-direction: column; gap: 8px; }
+
+    .formula-box { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem 1.1rem; font-family: monospace; font-size: 0.8rem; line-height: 1.75; margin-bottom: 1.25rem; }
+    .formula-box .comment { color: var(--muted); }
+
+    .compare-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 1.25rem; }
+    @media (max-width: 640px) { .compare-row { grid-template-columns: 1fr; } }
+    .compare-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; }
+    .compare-card h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; }
+    .compare-card p { font-size: 0.78rem; color: var(--muted); line-height: 1.45; }
+    .compare-card .stat { display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+    .stat-label { color: var(--muted); }
+
+    .controls { display: flex; align-items: center; gap: 1rem; }
+    .btn { padding: 0.55rem 1.25rem; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 0.875rem; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 0.4rem; }
+    .btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+    .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-primary { font-weight: 600; color: #0d1117; }
+    .kbd { font-size: 0.7rem; color: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 0.1rem 0.35rem; font-family: monospace; }
+
+    .noise-steps { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .noise-block { width: 44px; height: 44px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff; font-weight: 600; flex-shrink: 0; }
+    .timeline-label { font-size: 9px; color: var(--muted); text-align: center; margin-top: 3px; }
+
+    .highlight-block { animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.6; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    Home
+  </a>
+  <span class="sep">›</span>
+  <span class="title">Generative Models</span>
+  <div style="margin-left:auto"><span class="tag">Generative Models</span></div>
+</nav>
+
+<main>
+  <h1>VAE vs GAN vs Diffusion</h1>
+  <p class="subtitle">Three paradigms for learning to generate data. Compare their architectures, training objectives, and generation processes.</p>
+
+  <div class="model-tabs" id="modelTabs">
+    <div class="model-tab active" onclick="selectModel(0)" id="tab-0">🧬 VAE</div>
+    <div class="model-tab" onclick="selectModel(1)" id="tab-1">⚔️ GAN</div>
+    <div class="model-tab" onclick="selectModel(2)" id="tab-2">🌫️ Diffusion</div>
+  </div>
+
+  <div class="step-header">
+    <span class="step-indicator" id="stepCounter">Step 1 of 4</span>
+    <div style="display:flex;gap:0.5rem;align-items:center">
+      <span class="kbd">←</span><span class="kbd">→</span>
+      <span style="font-size:0.75rem;color:var(--muted)">navigate steps</span>
+    </div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+  <div class="step-title" id="stepTitle"></div>
+  <div class="step-desc" id="stepDesc"></div>
+
+  <div class="arch-diagram" id="archDiagram"></div>
+  <div class="formula-box" id="formulaBox"></div>
+
+  <div class="controls">
+    <button class="btn" id="prevBtn" disabled onclick="changeStep(-1)">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+      Prev
+    </button>
+    <button class="btn btn-primary" id="nextBtn" onclick="changeStep(1)" style="background:var(--accent);border-color:var(--accent)">
+      Next
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+
+  <div style="margin-top:2.5rem">
+    <div style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.75rem">Quick Comparison</div>
+    <div class="compare-row" id="compareRow"></div>
+  </div>
+</main>
+
+<script>
+const MODELS = [
+  {
+    id: "vae",
+    name: "VAE",
+    icon: "🧬",
+    color: "#bc8cff",
+    tagline: "Variational Autoencoder",
+    steps: [
+      {
+        title: "Architecture Overview",
+        desc: "A VAE has two networks: an Encoder that compresses input x into a latent distribution q(z|x), and a Decoder that reconstructs x from sampled latent z. Training is supervised by the input itself.",
+        formula: `<span class="comment">// VAE: probabilistic autoencoder</span><br>Encoder: x → μ, σ² &nbsp;<span class="comment">// not a point, a distribution!</span><br>Reparameterize: z = μ + σ·ε, ε~N(0,1)<br>Decoder: z → x̂<br><br>Loss = Reconstruction + KL divergence`,
+        render: renderVAEArch
+      },
+      {
+        title: "Forward Pass (Training)",
+        desc: "During training: encode x to distribution (μ, σ²), sample z using the reparameterization trick (so gradients flow), decode z back to x̂, compute loss.",
+        formula: `<span class="comment">// Training objective: ELBO</span><br>ELBO = E[log p(x|z)] - KL(q(z|x) || p(z))<br><br><span class="comment">// Reconstruction: decoder should recover x</span><br><span class="comment">// KL: keep q(z|x) close to N(0,1)</span><br><br>Loss = -ELBO &nbsp;<span class="comment">// minimize</span>`,
+        render: renderVAEForward
+      },
+      {
+        title: "Generation (Inference)",
+        desc: "At generation time, forget the encoder entirely. Sample z directly from the standard Gaussian prior p(z) = N(0,I), then pass it through the decoder to get a new sample.",
+        formula: `<span class="comment">// Generation (no encoder needed)</span><br>z ~ N(0, I) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// sample from prior</span><br>x_new = Decoder(z) &nbsp;<span class="comment">// decode → new image</span><br><br><span class="comment">// Interpolation: blend two z's</span><br>z_blend = α·z₁ + (1-α)·z₂<br>x_blend = Decoder(z_blend)`,
+        render: renderVAEGen
+      },
+      {
+        title: "Latent Space Structure",
+        desc: "The KL term forces the latent space to be smooth and continuous — nearby points in z-space decode to similar images. This enables meaningful interpolation and controlled generation.",
+        formula: `<span class="comment">// Latent space properties</span><br>Continuous: z + ε → similar image<br>Organized: KL ensures z ~ N(0,I)<br><br><span class="comment">// Applications:</span><br>- Face → face interpolation<br>- Style transfer<br>- Molecule design`,
+        render: renderVAELatent
+      }
+    ]
+  },
+  {
+    id: "gan",
+    name: "GAN",
+    icon: "⚔️",
+    color: "#f78166",
+    tagline: "Generative Adversarial Network",
+    steps: [
+      {
+        title: "Architecture Overview",
+        desc: 'A GAN is a two-player game: the Generator creates fake images from noise, the Discriminator tries to tell real from fake. They train together in opposition — like a forger vs. a detective.',
+        formula: `<span class="comment">// Minimax game objective</span><br>min_G max_D V(D,G) =<br>&nbsp;&nbsp;E[log D(x)] + E[log(1-D(G(z)))]<br><br><span class="comment">// D wants: D(real)→1, D(fake)→0</span><br><span class="comment">// G wants: D(G(z))→1 (fool D)</span>`,
+        render: renderGANArch
+      },
+      {
+        title: "Training Step",
+        desc: "Training alternates: (1) update D to better classify real vs fake, (2) update G to better fool D. At equilibrium, G produces images indistinguishable from real data.",
+        formula: `<span class="comment">// Step 1: Train Discriminator</span><br>Loss_D = -[log D(x) + log(1-D(G(z)))]<br><br><span class="comment">// Step 2: Train Generator</span><br>Loss_G = -log D(G(z))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// maximize D's mistake</span>`,
+        render: renderGANTrain
+      },
+      {
+        title: "Generation (Inference)",
+        desc: "At inference, the Discriminator is discarded. Feed any random noise vector z through the trained Generator to produce a new sample — a single fast forward pass.",
+        formula: `<span class="comment">// Generation (fast, one pass)</span><br>z ~ N(0, I) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// random noise</span><br>x_fake = G(z) &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// fake sample</span><br><br><span class="comment">// No iterative process needed</span><br><span class="comment">// Speed: O(1) forward pass</span>`,
+        render: renderGANGen
+      },
+      {
+        title: "Challenges & Timeline",
+        desc: "GANs dominated 2016–2021 but suffer from mode collapse (generates limited variety), training instability (oscillation, non-convergence), and lack of a stable loss metric. Diffusion models have largely superseded them.",
+        formula: `<span class="comment">// Common GAN problems</span><br>Mode collapse: G ignores z diversity<br>Vanishing gradients: D too good<br>No stable loss to monitor<br><br><span class="comment">// Key works: GAN → DCGAN → StyleGAN</span><br><span class="comment">// Status 2025: mostly replaced</span>`,
+        render: renderGANTimeline
+      }
+    ]
+  },
+  {
+    id: "diff",
+    name: "Diffusion",
+    icon: "🌫️",
+    color: "#58a6ff",
+    tagline: "Denoising Diffusion Models",
+    steps: [
+      {
+        title: "Architecture Overview",
+        desc: "Diffusion models learn to reverse a gradual noising process. The forward process adds Gaussian noise step-by-step; the reverse process (a neural network) learns to remove it.",
+        formula: `<span class="comment">// Forward process: add noise</span><br>q(xₜ|xₜ₋₁) = N(xₜ; √αₜ·xₜ₋₁, (1-αₜ)I)<br><br><span class="comment">// Reverse process: remove noise (neural net)</span><br>p_θ(xₜ₋₁|xₜ) = N(xₜ₋₁; μ_θ(xₜ,t), Σ_θ)`,
+        render: renderDiffArch
+      },
+      {
+        title: "Forward Process (Training)",
+        desc: "To train, gradually corrupt a real image with Gaussian noise over T steps until it becomes pure noise. The network learns to predict the noise added at each step.",
+        formula: `<span class="comment">// Shortcut: add noise in one step</span><br>xₜ = √ᾱₜ·x₀ + √(1-ᾱₜ)·ε, ε~N(0,I)<br><br><span class="comment">// Training loss: predict the noise ε</span><br>L = E[||ε - ε_θ(xₜ, t)||²]<br><br><span class="comment">// Simple MSE — very stable training!</span>`,
+        render: renderDiffForward
+      },
+      {
+        title: "Reverse Process (Generation)",
+        desc: "Start from pure Gaussian noise x_T, then iteratively apply the denoising network to remove a little noise at each step. After T steps, arrive at a clean sample.",
+        formula: `<span class="comment">// Generation: start from noise</span><br>xₜ ~ N(0, I) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// start: pure noise</span><br>for t = T → 1:<br>&nbsp;&nbsp;ε̂ = ε_θ(xₜ, t) &nbsp;<span class="comment">// predict noise</span><br>&nbsp;&nbsp;xₜ₋₁ = denoise(xₜ, ε̂, t)<br>x₀ = final sample &nbsp;<span class="comment">// clean image</span>`,
+        render: renderDiffGen
+      },
+      {
+        title: "Latent Diffusion (Stable Diffusion)",
+        desc: "Running diffusion in pixel space is expensive. LDMs first compress images to a low-dimensional latent space using a VAE, then run diffusion there. This is the architecture behind Stable Diffusion and FLUX.",
+        formula: `<span class="comment">// Latent Diffusion (LDM)</span><br>Encode: x → z = Encoder(x)<br>Diffusion in latent: z → z̃<br>Decode: z̃ → x̂ = Decoder(z̃)<br><br><span class="comment">// ~4-8× cheaper than pixel diffusion</span><br><span class="comment">// Powers: SD, FLUX, Sora (video)</span>`,
+        render: renderDiffLatent
+      }
+    ]
+  }
+];
+
+let currentModel = 0;
+let currentStep = 0;
+
+function block(icon, label, color, highlight) {
+  return `<div class="block ${highlight ? 'highlight-block' : ''}" style="border-color:${color}40;background:${color}12">
+    <div class="icon">${icon}</div>
+    <div class="lbl" style="color:${color}">${label}</div>
+  </div>`;
+}
+function arr() { return `<div class="arrow">→</div>`; }
+
+function renderVAEArch() {
+  return `
+    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem">Architecture (Training)</div>
+    <div class="flow" style="justify-content:center">
+      ${block("🖼️", "Input x", "#bc8cff", false)}
+      ${arr()}
+      ${block("📉", "Encoder", "#bc8cff", false)}
+      ${arr()}
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:center">
+        ${block("μ", "Mean", "#d29922", false)}
+        ${block("σ²", "Variance", "#d29922", false)}
+      </div>
+      ${arr()}
+      ${block("🎲", "Sample z\n(reparam.)", "#3fb950", false)}
+      ${arr()}
+      ${block("📈", "Decoder", "#bc8cff", false)}
+      ${arr()}
+      ${block("🖼️", "Output x̂", "#bc8cff", false)}
+    </div>
+  `;
+}
+
+function renderVAEForward() {
+  return `
+    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem">Forward Pass + Loss Computation</div>
+    <div class="flow" style="justify-content:center">
+      ${block("🖼️", "x", "#bc8cff", false)}
+      ${arr()}
+      ${block("📉", "Encoder\nq(z|x)", "#bc8cff", true)}
+      ${arr()}
+      ${block("🎲", "z ~ q(z|x)", "#3fb950", true)}
+      ${arr()}
+      ${block("📈", "Decoder\np(x|z)", "#bc8cff", true)}
+      ${arr()}
+      ${block("🖼️", "x̂", "#bc8cff", false)}
+      ${arr()}
+      ${block("📊", "Loss\nELBO", "#f78166", true)}
+    </div>
+    <div style="display:flex;gap:1.5rem;margin-top:1rem;font-size:0.78rem;flex-wrap:wrap">
+      <div><span style="color:#3fb950">●</span> <span style="color:var(--muted)">Recon. loss: ||x - x̂||²</span></div>
+      <div><span style="color:#f78166">●</span> <span style="color:var(--muted)">KL loss: keep z ~ N(0,I)</span></div>
+    </div>
+  `;
+}
+
+function renderVAEGen() {
+  return `
+    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem">Generation (Inference) — Encoder not needed</div>
+    <div class="flow" style="justify-content:center">
+      ${block("🌐", "Prior\np(z)=N(0,I)", "#3fb950", true)}
+      ${arr()}
+      ${block("🎲", "Sample z", "#3fb950", true)}
+      ${arr()}
+      ${block("📈", "Decoder\np(x|z)", "#bc8cff", true)}
+      ${arr()}
+      ${block("🖼️", "New Sample\nx_new", "#bc8cff", false)}
+    </div>
+    <div style="margin-top:1rem;font-size:0.78rem;color:var(--muted)">Interpolation: blend two z vectors → smooth transition between generated images</div>
+  `;
+}
+
+function renderVAELatent() {
+  return `
+    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem">Continuous, Organized Latent Space</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap">
+      <div style="position:relative;width:160px;height:120px;background:#0d1117;border:1px solid var(--border);border-radius:8px;overflow:hidden">
+        ${[
+          {x:30,y:40,label:"cat",c:"#bc8cff"},
+          {x:70,y:45,label:"",c:"#bc8cff"},
+          {x:50,y:65,label:"",c:"#d29922"},
+          {x:110,y:50,label:"dog",c:"#3fb950"},
+          {x:130,y:70,label:"",c:"#3fb950"},
+          {x:90,y:80,label:"car",c:"#58a6ff"},
+        ].map(p => `
+          <div style="position:absolute;left:${p.x}px;top:${p.y}px;width:10px;height:10px;border-radius:50%;background:${p.c};transform:translate(-50%,-50%);opacity:0.85"></div>
+          ${p.label ? `<div style="position:absolute;left:${p.x+7}px;top:${p.y-8}px;font-size:9px;color:${p.c}">${p.label}</div>` : ''}
+        `).join("")}
+        <div style="position:absolute;bottom:4px;right:4px;font-size:9px;color:var(--muted)">z-space</div>
+      </div>
+      <div style="font-size:0.8rem;color:var(--muted);max-width:200px;line-height:1.5">
+        <div style="color:var(--text);font-weight:600;margin-bottom:6px">Smooth topology</div>
+        Nearby latents → similar outputs<br>
+        KL term enforces N(0,I) shape<br>
+        Enables meaningful interpolation
+      </div>
+    </div>
+  `;
+}
+
+function renderGANArch() {
+  return `
+    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem">Two-Player Adversarial Game</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+      <div>
+        <div style="font-size:0.72rem;color:#f78166;font-weight:600;margin-bottom:8px;text-transform:uppercase">Generator</div>
+        <div class="flow">
+          ${block("🎲", "Noise z\nN(0,I)", "#d29922", false)}
+          ${arr()}
+          ${block("🎨", "Generator\nG(z)", "#f78166", false)}
+          ${arr()}
+          ${block("🖼️", "Fake\nImage", "#f78166", false)}
+        </div>
+      </div>
+      <div>
+        <div style="font-size:0.72rem;color:#3fb950;font-weight:600;margin-bottom:8px;text-transform:uppercase">Discriminator</div>
+        <div class="flow">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            ${block("🖼️", "Real\nImage", "#3fb950", false)}
+            ${block("🖼️", "Fake\nImage", "#f78166", false)}
+          </div>
+          ${arr()}
+          ${block("🕵️", "Discriminator\nD(x)", "#3fb950", false)}
+          ${arr()}
+          ${block("📊", "Real / Fake\n[0,1]", "#3fb950", false)}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderGANTrain() {
+  return `
+    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem">Alternating Training Steps</div>
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <div>
+        <div style="font-size:0.72rem;color:#3fb950;font-weight:600;margin-bottom:8px">Step 1: Train Discriminator (D)</div>
+        <div class="flow">
+          ${block("🖼️", "Real", "#3fb950", false)}
+          ${arr()}
+          ${block("🕵️", "D", "#3fb950", true)}
+          ${arr()}
+          ${block("✅", "→ 1.0", "#3fb950", false)}
+        </div>
+        <div class="flow" style="margin-top:6px">
+          ${block("🖼️", "Fake", "#f78166", false)}
+          ${arr()}
+          ${block("🕵️", "D", "#3fb950", true)}
+          ${arr()}
+          ${block("❌", "→ 0.0", "#f78166", false)}
+        </div>
+      </div>
+      <div>
+        <div style="font-size:0.72rem;color:#f78166;font-weight:600;margin-bottom:8px">Step 2: Train Generator (G) — fool D</div>
+        <div class="flow">
+          ${block("🎲", "z", "#d29922", false)}
+          ${arr()}
+          ${block("🎨", "G", "#f78166", true)}
+          ${arr()}
+          ${block("🖼️", "Fake", "#f78166", false)}
+          ${arr()}
+          ${block("🕵️", "D", "#3fb950", false)}
+          ${arr()}
+          ${block("🎯", "→ 1.0\n(fool!)", "#f78166", false)}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderGANGen() {
+  return `
+    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem">Generation — Single Fast Forward Pass</div>
+    <div class="flow" style="justify-content:center">
+      ${block("🎲", "z ~ N(0,I)\nrandom noise", "#d29922", true)}
+      ${arr()}
+      ${block("🎨", "Trained\nGenerator G", "#f78166", false)}
+      ${arr()}
+      ${block("🖼️", "New Image\nx = G(z)", "#f78166", false)}
+    </div>
+    <div style="margin-top:1rem;background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:12px;font-size:0.8rem">
+      <div style="color:var(--text);font-weight:600;margin-bottom:4px">Discriminator is discarded at inference</div>
+      <div style="color:var(--muted)">One forward pass → instant generation. Much faster than diffusion (which requires many steps).</div>
+    </div>
+  `;
+}
+
+function renderGANTimeline() {
+  const milestones = [
+    {year:"2014", name:"GAN", desc:"First adversarial game (Goodfellow)", c:"#f78166"},
+    {year:"2015", name:"DCGAN", desc:"First stable convolutional GAN", c:"#f78166"},
+    {year:"2019", name:"StyleGAN", desc:"High-res face synthesis", c:"#f78166"},
+    {year:"2021", name:"Diffusion", desc:"GANs superseded for image gen", c:"#58a6ff"},
+  ];
+  return `
+    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem">GAN Timeline & Status</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:1rem">
+      ${milestones.map(m => `
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="font-size:0.72rem;font-family:monospace;color:var(--muted);width:32px">${m.year}</div>
+          <div style="width:8px;height:8px;border-radius:50%;background:${m.c};flex-shrink:0"></div>
+          <div style="font-size:0.82rem;font-weight:600;color:${m.c};width:70px">${m.name}</div>
+          <div style="font-size:0.78rem;color:var(--muted)">${m.desc}</div>
+        </div>
+      `).join("")}
+    </div>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap">
+      ${[
+        {label:"Quality", val:"⭐⭐⭐⭐", c:"#3fb950"},
+        {label:"Diversity", val:"⭐⭐", c:"#f78166"},
+        {label:"Speed", val:"⭐⭐⭐⭐⭐", c:"#3fb950"},
+        {label:"Stability", val:"⭐⭐", c:"#f78166"},
+      ].map(s => `
+        <div style="background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:8px 12px;text-align:center">
+          <div style="font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">${s.label}</div>
+          <div style="font-size:0.9rem">${s.val}</div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function renderDiffArch() {
+  const steps = ["x₀\n(clean)", "x₁", "x₂", "…", "xₜ\n(noise)"];
+  const opacities = [0.2, 0.35, 0.5, 0.65, 0.9];
+  return `
+    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem">Two Processes</div>
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <div>
+        <div style="font-size:0.72rem;color:#d29922;font-weight:600;margin-bottom:8px;text-transform:uppercase">Forward Process (add noise)</div>
+        <div class="noise-steps">
+          ${steps.map((s, i) => `
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+              <div class="noise-block" style="background:rgba(88,166,255,${opacities[i]});font-size:9px">${s.replace('\n','<br>')}</div>
+            </div>
+            ${i < steps.length - 1 ? `<div style="color:var(--muted);font-size:14px;padding-bottom:8px">→</div>` : ''}
+          `).join("")}
+        </div>
+      </div>
+      <div>
+        <div style="font-size:0.72rem;color:#58a6ff;font-weight:600;margin-bottom:8px;text-transform:uppercase">Reverse Process — Neural Network (remove noise)</div>
+        <div class="noise-steps">
+          ${[...steps].reverse().map((s, i) => `
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+              <div class="noise-block" style="background:rgba(88,166,255,${[0.9,0.65,0.5,0.35,0.2][i]});font-size:9px">${s.replace('\n','<br>')}</div>
+            </div>
+            ${i < steps.length - 1 ? `<div style="color:var(--muted);font-size:14px;padding-bottom:8px">→</div>` : ''}
+          `).join("")}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderDiffForward() {
+  return `
+    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem">Training: Learn to Predict Added Noise</div>
+    <div class="flow" style="justify-content:center;flex-wrap:wrap">
+      ${block("🖼️", "Clean x₀", "#58a6ff", false)}
+      ${arr()}
+      ${block("➕", "Add\nNoise ε", "#d29922", true)}
+      ${arr()}
+      ${block("🌫️", "Noisy xₜ", "#58a6ff", false)}
+      ${arr()}
+      ${block("🧠", "U-Net/DiT\nε_θ(xₜ,t)", "#58a6ff", true)}
+      ${arr()}
+      ${block("📊", "Predict ε̂\n||ε-ε̂||²", "#3fb950", false)}
+    </div>
+    <div style="margin-top:1rem;font-size:0.8rem;color:var(--muted)">
+      ✅ Stable MSE loss — training is much more reliable than GANs
+    </div>
+  `;
+}
+
+function renderDiffGen() {
+  const noiseSteps = 6;
+  return `
+    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem">Generation: Iterative Denoising (T → 0)</div>
+    <div class="flow" style="justify-content:center;flex-wrap:wrap">
+      ${block("🎲", "xₜ~N(0,I)\npure noise", "#d29922", true)}
+      ${arr()}
+      ${block("🧠", "Denoise\n(step T)", "#58a6ff", true)}
+      ${arr()}
+      ${block("🌫️", "xₜ₋₁", "#58a6ff", false)}
+      ${arr()}
+      <div style="font-size:var(--muted);color:var(--muted)">…×T steps…</div>
+      ${arr()}
+      ${block("🖼️", "x₀\nclean image", "#3fb950", false)}
+    </div>
+    <div style="margin-top:1rem;background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:12px;font-size:0.8rem">
+      <div style="color:var(--text);font-weight:600;margin-bottom:4px">Trade-off: quality vs speed</div>
+      <div style="color:var(--muted)">DDPM: 1000 steps · DDIM: 50 steps · Rectified Flow / consistency: 1-4 steps</div>
+    </div>
+  `;
+}
+
+function renderDiffLatent() {
+  return `
+    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem">Latent Diffusion (Stable Diffusion / FLUX)</div>
+    <div class="flow" style="justify-content:center;flex-wrap:wrap">
+      ${block("🖼️", "Image\n(H×W×3)", "#d29922", false)}
+      ${arr()}
+      ${block("📉", "VAE\nEncoder", "#bc8cff", false)}
+      ${arr()}
+      ${block("🗜️", "Latent z\n(H/8×W/8)", "#bc8cff", true)}
+      ${arr()}
+      ${block("🌫️", "Diffuse\nin latent", "#58a6ff", true)}
+      ${arr()}
+      ${block("🗜️", "Denoised\nlatent z̃", "#bc8cff", true)}
+      ${arr()}
+      ${block("📈", "VAE\nDecoder", "#bc8cff", false)}
+      ${arr()}
+      ${block("🖼️", "Output\nImage", "#3fb950", false)}
+    </div>
+    <div style="display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap">
+      ${[
+        {name:"Stable Diffusion 3", type:"U-Net → DiT"},
+        {name:"FLUX", type:"Transformer (DiT)"},
+        {name:"Sora", type:"Video DiT"},
+      ].map(m => `
+        <div style="background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:0.78rem">
+          <div style="color:var(--text);font-weight:600">${m.name}</div>
+          <div style="color:var(--muted)">${m.type}</div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+const COMPARE = [
+  { name: "VAE", color: "#bc8cff", icon: "🧬", density: "Explicit (ELBO)", speed: "Fast", quality: "Medium", stability: "Very stable", status: "Active" },
+  { name: "GAN", color: "#f78166", icon: "⚔️", density: "Implicit", speed: "Very fast", quality: "High", stability: "Unstable", status: "Mostly replaced" },
+  { name: "Diffusion", color: "#58a6ff", icon: "🌫️", density: "Implicit (score)", speed: "Slow*", quality: "State of art", stability: "Very stable", status: "Dominant (2025)" },
+];
+
+function renderCompare() {
+  document.getElementById("compareRow").innerHTML = COMPARE.map(m => `
+    <div class="compare-card" style="border-top:3px solid ${m.color}">
+      <h4 style="color:${m.color}">${m.icon} ${m.name}</h4>
+      <div class="stat"><span class="stat-label">Density</span><span>${m.density}</span></div>
+      <div class="stat"><span class="stat-label">Speed</span><span>${m.speed}</span></div>
+      <div class="stat"><span class="stat-label">Quality</span><span>${m.quality}</span></div>
+      <div class="stat"><span class="stat-label">Training</span><span>${m.stability}</span></div>
+      <div class="stat"><span class="stat-label">Status</span><span style="color:${m.color}">${m.status}</span></div>
+    </div>
+  `).join("");
+}
+
+function updateUI() {
+  const model = MODELS[currentModel];
+  const step = model.steps[currentStep];
+
+  document.getElementById("stepCounter").textContent = `Step ${currentStep + 1} of ${model.steps.length}`;
+  document.getElementById("progressFill").style.cssText = `width:${((currentStep+1)/model.steps.length)*100}%;background:${model.color}`;
+  document.getElementById("stepTitle").textContent = step.title;
+  document.getElementById("stepTitle").style.color = model.color;
+  document.getElementById("stepDesc").textContent = step.desc;
+  document.getElementById("formulaBox").innerHTML = step.formula;
+  document.getElementById("formulaBox").style.color = model.color;
+  document.getElementById("archDiagram").innerHTML = step.render();
+  document.getElementById("prevBtn").disabled = currentStep === 0;
+  document.getElementById("nextBtn").disabled = currentStep === model.steps.length - 1;
+  document.getElementById("nextBtn").style.background = model.color;
+  document.getElementById("nextBtn").style.borderColor = model.color;
+}
+
+function selectModel(i) {
+  currentModel = i;
+  currentStep = 0;
+  MODELS.forEach((m, idx) => {
+    const tab = document.getElementById(`tab-${idx}`);
+    tab.classList.toggle("active", idx === i);
+    tab.style.background = idx === i ? MODELS[i].color : "";
+    tab.style.borderColor = idx === i ? MODELS[i].color : "";
+    tab.style.color = idx === i ? "#0d1117" : "";
+  });
+  updateUI();
+}
+
+function changeStep(delta) {
+  const model = MODELS[currentModel];
+  const next = currentStep + delta;
+  if (next < 0 || next >= model.steps.length) return;
+  currentStep = next;
+  updateUI();
+}
+
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowRight") changeStep(1);
+  if (e.key === "ArrowLeft") changeStep(-1);
+});
+
+renderCompare();
+selectModel(0);
+</script>
+</body>
+</html>

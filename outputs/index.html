@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Knowledge Vault — Interactive Visualizations</title>
+  <link rel="icon" href="data:," />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --coral: #f78166;
+      --green: #3fb950;
+      --yellow: #d29922;
+      --purple: #bc8cff;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    header h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    header span {
+      font-size: 0.8rem;
+      color: var(--muted);
+      background: var(--border);
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 4rem 2rem 2.5rem;
+    }
+
+    .hero h2 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.25rem;
+      max-width: 1100px;
+      margin: 2rem auto 4rem;
+      padding: 0 2rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--card-accent, var(--accent));
+    }
+
+    .card:hover {
+      border-color: var(--card-accent, var(--accent));
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+
+    .card-icon {
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .card-tag {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--card-accent, var(--accent));
+      background: color-mix(in srgb, var(--card-accent, var(--accent)) 12%, transparent);
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      width: fit-content;
+    }
+
+    .card h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .card p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.55;
+      flex: 1;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      color: var(--card-accent, var(--accent));
+      font-weight: 500;
+      margin-top: 0.25rem;
+    }
+
+    .card-footer svg {
+      transition: transform 0.2s;
+    }
+
+    .card:hover .card-footer svg {
+      transform: translateX(4px);
+    }
+
+    .section-label {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: -0.5rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Knowledge Vault</h1>
+  <span>Interactive Visualizations</span>
+</header>
+
+<div class="hero">
+  <h2>Explore AI Concepts Visually</h2>
+  <p>Step-by-step animated walkthroughs of key ideas from the wiki. Use ← → arrow keys to navigate each visualization.</p>
+</div>
+
+<p class="section-label">Fundamentals</p>
+<div class="grid">
+
+  <a class="card" href="backpropagation.html" style="--card-accent: #58a6ff">
+    <div class="card-icon">⚡</div>
+    <div class="card-tag">Neural Networks</div>
+    <h3>Backpropagation</h3>
+    <p>Walk through a forward pass, compute the loss, then watch gradients flow back through each layer via the chain rule.</p>
+    <div class="card-footer">
+      Explore
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+  <a class="card" href="attention-mechanisms.html" style="--card-accent: #bc8cff">
+    <div class="card-icon">🔍</div>
+    <div class="card-tag">Transformers</div>
+    <h3>Attention Mechanisms</h3>
+    <p>From scaled dot-product attention to multi-head attention and KV caching — animated QKV computation and weight heatmaps.</p>
+    <div class="card-footer">
+      Explore
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+  <a class="card" href="optimization-algorithms.html" style="--card-accent: #3fb950">
+    <div class="card-icon">📉</div>
+    <div class="card-tag">Optimization</div>
+    <h3>Optimization Algorithms</h3>
+    <p>Watch SGD, Momentum, RMSProp, and Adam navigate a 2D loss landscape — see how each update rule shapes the path.</p>
+    <div class="card-footer">
+      Explore
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+  <a class="card" href="tokenization-embeddings.html" style="--card-accent: #79c0ff">
+    <div class="card-icon">🔤</div>
+    <div class="card-tag">NLP</div>
+    <h3>Tokenization and Embeddings</h3>
+    <p>Raw text → subword tokens → token IDs → embedding vectors → logits. A full walkthrough of how language enters and leaves a model.</p>
+    <div class="card-footer">
+      Explore
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+  <a class="card" href="rnn-lstm-gru.html" style="--card-accent: #f78166">
+    <div class="card-icon">🔁</div>
+    <div class="card-tag">Sequence Models</div>
+    <h3>RNN vs LSTM vs GRU</h3>
+    <p>Follow hidden-state flow through time, see vanishing gradients collapse, then compare how LSTM and GRU gating preserve memory.</p>
+    <div class="card-footer">
+      Explore
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+</div>
+
+<p class="section-label">Architectures</p>
+<div class="grid">
+
+  <a class="card" href="yolo.html" style="--card-accent: #f78166">
+    <div class="card-icon">📦</div>
+    <div class="card-tag">Object Detection</div>
+    <h3>How YOLO Works</h3>
+    <p>Image → grid cells → bounding box predictions → NMS → final detections. Step through each stage of the YOLO pipeline.</p>
+    <div class="card-footer">
+      Explore
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+  <a class="card" href="generative-models.html" style="--card-accent: #d29922">
+    <div class="card-icon">🎨</div>
+    <div class="card-tag">Generative Models</div>
+    <h3>VAE vs GAN vs Diffusion</h3>
+    <p>Compare the three dominant generative paradigms side-by-side — architecture diagrams and animated forward/generation passes.</p>
+    <div class="card-footer">
+      Explore
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+  <a class="card" href="rag-architectures.html" style="--card-accent: #79c0ff">
+    <div class="card-icon">🔗</div>
+    <div class="card-tag">RAG</div>
+    <h3>RAG Architectures</h3>
+    <p>Click through 8 RAG patterns — from naive vector search to agentic multi-source orchestration with animated flow diagrams.</p>
+    <div class="card-footer">
+      Explore
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+  <a class="card" href="u-net-segmentation.html" style="--card-accent: #3fb950">
+    <div class="card-icon">🧬</div>
+    <div class="card-tag">Segmentation</div>
+    <h3>U-Net and Segmentation Flow</h3>
+    <p>Why dense prediction is hard, how U-Net’s encoder-decoder works, and what skip connections actually preserve.</p>
+    <div class="card-footer">
+      Explore
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+</div>
+
+<p class="section-label">Retrieval & Systems</p>
+<div class="grid">
+
+  <a class="card" href="sentence-embeddings.html" style="--card-accent: #3fb950">
+    <div class="card-icon">🧭</div>
+    <div class="card-tag">Retrieval</div>
+    <h3>Sentence Embeddings</h3>
+    <p>Semantic search as geometry: click a query, inspect nearest neighbors, and see why cosine similarity beats exact keyword matching.</p>
+    <div class="card-footer">
+      Explore
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+  <a class="card" href="distributed-training.html" style="--card-accent: #d29922">
+    <div class="card-icon">🖧</div>
+    <div class="card-tag">Systems</div>
+    <h3>Distributed Training</h3>
+    <p>Data parallelism, ZeRO/FSDP, pipeline schedules, tensor parallelism, and context parallelism in one practical visual guide.</p>
+    <div class="card-footer">
+      Explore
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+  <a class="card" href="gpu-vram-math.html" style="--card-accent: #79c0ff">
+    <div class="card-icon">🧮</div>
+    <div class="card-tag">GPU Systems</div>
+    <h3>GPU VRAM Math</h3>
+    <p>Choose model size, precision, context, and concurrency, then estimate whether an LLM likely fits in available VRAM.</p>
+    <div class="card-footer">
+      Explore
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+</div>
+
+<p class="section-label">Deep Dives</p>
+<div class="grid">
+
+  <a class="card" href="attention-types.html" style="--card-accent: #bc8cff">
+    <div class="card-icon">🧩</div>
+    <div class="card-tag">Transformers</div>
+    <h3>Attention Types</h3>
+    <p>Soft vs hard, self vs cross, single-head vs multi-head — each type visualized with token-to-token attention arrows.</p>
+    <div class="card-footer">
+      Explore
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+  <a class="card" href="kv-caching.html" style="--card-accent: #58a6ff">
+    <div class="card-icon">🗄️</div>
+    <div class="card-tag">Transformers</div>
+    <h3>KV Caching</h3>
+    <p>Why recomputing K and V every step wastes O(n²) compute — and how caching delivers a ~5× speedup with a memory tradeoff.</p>
+    <div class="card-footer">
+      Explore
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+  <a class="card" href="quantization.html" style="--card-accent: #3fb950">
+    <div class="card-icon">🗜️</div>
+    <div class="card-tag">Efficiency</div>
+    <h3>Quantization</h3>
+    <p>Float32 → int8 → int4: symmetric, asymmetric, and block quantization on an interactive number line, plus real benchmark data.</p>
+    <div class="card-footer">
+      Explore
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+  <a class="card" href="cnn-convolutions.html" style="--card-accent: #f78166">
+    <div class="card-icon">🔲</div>
+    <div class="card-tag">CNNs</div>
+    <h3>Convolution Types</h3>
+    <p>Standard, 1×1, depthwise, depthwise separable, dilated, and transpose — each animated as a filter sliding over the input grid.</p>
+    <div class="card-footer">
+      Explore
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+  <a class="card" href="transformer-architectures.html" style="--card-accent: #d29922">
+    <div class="card-icon">🏗️</div>
+    <div class="card-tag">Transformers</div>
+    <h3>Transformer Architectures</h3>
+    <p>The transformer block anatomy, modern tweaks (RMSNorm, SwiGLU), and encoder-only vs decoder-only vs encoder-decoder with attention mask patterns.</p>
+    <div class="card-footer">
+      Explore
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+  <a class="card" href="vit.html" style="--card-accent: #79c0ff">
+    <div class="card-icon">👁️</div>
+    <div class="card-tag">Vision</div>
+    <h3>Vision Transformer (ViT)</h3>
+    <p>Images as sequences of patches — patch extraction, positional encoding, self-attention over image regions, and attention map visualizations.</p>
+    <div class="card-footer">
+      Explore
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+
+</div>
+
+<footer>
+  Built from the <a href="../wiki/INDEX.md">Knowledge Vault wiki</a> · Use ← → to navigate each visualization
+</footer>
+
+</body>
+</html>

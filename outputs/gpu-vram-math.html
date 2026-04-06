@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GPU VRAM Math for LLMs — Knowledge Vault</title>
+  <link rel="icon" href="data:," />
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root {
+      --bg:#0d1117; --surface:#161b22; --border:#30363d; --text:#e6edf3; --muted:#8b949e;
+      --accent:#79c0ff; --green:#3fb950; --coral:#f78166; --yellow:#d29922; --purple:#bc8cff;
+    }
+    body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif; min-height:100vh; display:flex; flex-direction:column; }
+    nav { background:var(--surface); border-bottom:1px solid var(--border); padding:0.85rem 1.5rem; display:flex; align-items:center; gap:1rem; }
+    nav a { color:var(--muted); text-decoration:none; font-size:0.875rem; display:flex; align-items:center; gap:0.4rem; }
+    nav a:hover { color:var(--accent); }
+    nav .sep { color:var(--border); }
+    nav .title { color:var(--text); font-weight:600; font-size:0.875rem; }
+    .tag { font-size:0.7rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--accent); background:rgba(121,192,255,0.12); padding:0.2rem 0.55rem; border-radius:999px; }
+    main { flex:1; max-width:1120px; margin:0 auto; padding:2rem 1.5rem; width:100%; }
+    h1 { font-size:1.8rem; margin-bottom:0.45rem; }
+    .subtitle { color:var(--muted); font-size:0.96rem; line-height:1.6; margin-bottom:1.1rem; max-width:820px; }
+    .toolbar { display:flex; flex-wrap:wrap; gap:0.65rem; margin-bottom:1rem; align-items:center; }
+    .group { display:flex; flex-wrap:wrap; gap:0.45rem; align-items:center; }
+    .group-label { color:var(--muted); font-size:0.74rem; text-transform:uppercase; letter-spacing:0.08em; margin-right:0.15rem; }
+    .chip-btn { border:1px solid var(--border); background:var(--surface); color:var(--text); border-radius:999px; padding:0.38rem 0.7rem; font-size:0.8rem; cursor:pointer; }
+    .chip-btn.active, .chip-btn:hover { border-color:var(--accent); color:var(--accent); }
+    .layout { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(320px,0.8fr); gap:1.25rem; }
+    @media (max-width:860px) { .layout { grid-template-columns:1fr; } }
+    .viz-area,.panel { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1rem; }
+    .viz-area { min-height:420px; }
+    .panel { display:flex; flex-direction:column; gap:0.95rem; }
+    .side-label { font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:0.5rem; }
+    .formula-box,.info-card,.card { background:#0d1117; border:1px solid var(--border); border-radius:10px; padding:0.9rem 1rem; }
+    .formula-box { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:0.82rem; line-height:1.7; color:var(--green); }
+    .formula-box .comment { color:var(--muted); }
+    .info-card,.card { color:var(--muted); font-size:0.84rem; line-height:1.6; }
+    .metric-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:0.8rem; }
+    .metric { background:#0d1117; border:1px solid var(--border); border-radius:10px; padding:0.85rem; }
+    .metric .label { display:block; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:0.35rem; }
+    .metric strong { font-size:1.15rem; }
+    .stack { display:grid; gap:0.6rem; margin-top:1rem; }
+    .stack-row { display:grid; grid-template-columns:110px 1fr 60px; gap:0.7rem; align-items:center; font-size:0.8rem; color:var(--muted); }
+    .track { height:14px; background:#0d1117; border-radius:999px; overflow:hidden; border:1px solid var(--border); }
+    .fill { height:100%; border-radius:999px; }
+    .fit-badge { display:inline-block; border-radius:999px; padding:0.3rem 0.6rem; font-size:0.78rem; font-weight:600; }
+    .gpu-grid { display:grid; gap:0.5rem; }
+    .gpu-row { display:grid; grid-template-columns:70px 1fr 70px; gap:0.7rem; align-items:center; font-size:0.8rem; color:var(--muted); }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Home</a>
+    <span class="sep">›</span>
+    <span class="title">GPU VRAM Math for LLMs</span>
+    <div style="margin-left:auto"><span class="tag">GPU Systems</span></div>
+  </nav>
+  <main>
+    <h1>GPU VRAM Math for LLMs</h1>
+    <p class="subtitle">A quick estimator for whether a model likely fits in GPU memory. Weight precision gives the base cost, but KV cache, batching, and framework overhead are the taxes that usually surprise people.</p>
+    <div class="toolbar" id="toolbar"></div>
+    <div class="layout">
+      <div class="viz-area" id="vizArea"></div>
+      <div class="panel">
+        <div><div class="side-label">Rule of Thumb</div><div class="formula-box">VRAM ≈ parameters(B) × (bits/8) + overhead + KV cache<br><br><span class="comment">// rough planning tool, not a runtime guarantee</span></div></div>
+        <div class="info-card" id="noteBox"></div>
+        <div class="card"><div class="side-label">Caveat</div><div>GGUF and other quantized runtimes are runtime-specific. “Fits in 6 GB” can be true in one stack and false in another if dequantization or extra buffers are involved.</div></div>
+      </div>
+    </div>
+  </main>
+  <script>
+    const PARAM_OPTIONS = [7, 13, 34, 70];
+    const PRECISION = {
+      fp16: { label:"FP16/BF16", bits:16, color:"#79c0ff" },
+      int8: { label:"INT8", bits:8, color:"#3fb950" },
+      q4: { label:"4-bit", bits:4, color:"#d29922" }
+    };
+    const CONTEXT = {
+      "4k": { label:"4K", cache:1.5 },
+      "32k": { label:"32K", cache:6.0 },
+      "128k": { label:"128K", cache:16.0 }
+    };
+    const CONCURRENCY = { 1: 1, 4: 1.6, 8: 2.3 };
+    const GPUS = [8, 12, 16, 24, 48, 80];
+    let params = 13;
+    let precision = "q4";
+    let context = "32k";
+    let concurrency = 1;
+    function renderToolbar() {
+      document.getElementById("toolbar").innerHTML = `
+        <div class="group"><span class="group-label">Model</span>${PARAM_OPTIONS.map(v => `<button class="chip-btn ${params===v?'active':''}" data-kind="params" data-value="${v}">${v}B</button>`).join("")}</div>
+        <div class="group"><span class="group-label">Precision</span>${Object.entries(PRECISION).map(([key,val]) => `<button class="chip-btn ${precision===key?'active':''}" data-kind="precision" data-value="${key}">${val.label}</button>`).join("")}</div>
+        <div class="group"><span class="group-label">Context</span>${Object.entries(CONTEXT).map(([key,val]) => `<button class="chip-btn ${context===key?'active':''}" data-kind="context" data-value="${key}">${val.label}</button>`).join("")}</div>
+        <div class="group"><span class="group-label">Concurrency</span>${Object.keys(CONCURRENCY).map(v => `<button class="chip-btn ${String(concurrency)===v?'active':''}" data-kind="concurrency" data-value="${v}">${v}×</button>`).join("")}</div>`;
+      document.querySelectorAll("[data-kind]").forEach(btn => btn.addEventListener("click", () => {
+        const kind = btn.dataset.kind;
+        const value = btn.dataset.value;
+        if (kind === "params") params = Number(value);
+        if (kind === "precision") precision = value;
+        if (kind === "context") context = value;
+        if (kind === "concurrency") concurrency = Number(value);
+        renderToolbar();
+        render();
+      }));
+    }
+    function render() {
+      const bits = PRECISION[precision].bits;
+      const weightGb = params * (bits / 8);
+      const overheadGb = weightGb * 0.2;
+      const kvGb = CONTEXT[context].cache * (params / 13) * CONCURRENCY[concurrency];
+      const total = weightGb + overheadGb + kvGb;
+      const fit = GPUS.find(v => total <= v) || null;
+      document.getElementById("noteBox").innerHTML = `This estimate includes weights, a 20% generic overhead tax, and a rough KV-cache multiplier that grows with context and concurrency. For training, the real number is far higher because optimizer states and activations dominate.`;
+      document.getElementById("vizArea").innerHTML = `
+        <div class="metric-grid">
+          <div class="metric"><span class="label">Weights</span><strong>${weightGb.toFixed(1)} GB</strong></div>
+          <div class="metric"><span class="label">Overhead</span><strong>${overheadGb.toFixed(1)} GB</strong></div>
+          <div class="metric"><span class="label">KV Cache</span><strong>${kvGb.toFixed(1)} GB</strong></div>
+          <div class="metric"><span class="label">Estimated Total</span><strong>${total.toFixed(1)} GB</strong></div>
+        </div>
+        <div class="card" style="margin-top:1rem">
+          <div class="side-label">Memory Breakdown</div>
+          <div class="stack">
+            <div class="stack-row"><span>weights</span><div class="track"><div class="fill" style="width:${(weightGb/total)*100}%;background:${PRECISION[precision].color}"></div></div><span>${weightGb.toFixed(1)}</span></div>
+            <div class="stack-row"><span>overhead</span><div class="track"><div class="fill" style="width:${(overheadGb/total)*100}%;background:var(--purple)"></div></div><span>${overheadGb.toFixed(1)}</span></div>
+            <div class="stack-row"><span>KV cache</span><div class="track"><div class="fill" style="width:${(kvGb/total)*100}%;background:var(--coral)"></div></div><span>${kvGb.toFixed(1)}</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:1rem">
+          <div class="side-label">What Likely Fits</div>
+          <div style="margin-bottom:0.8rem">${fit ? `<span class="fit-badge" style="background:rgba(63,185,80,0.14);color:var(--green);border:1px solid rgba(63,185,80,0.35)">Likely first fit: ${fit} GB GPU</span>` : `<span class="fit-badge" style="background:rgba(247,129,102,0.14);color:var(--coral);border:1px solid rgba(247,129,102,0.35)">Needs more than 80 GB in this estimate</span>`}</div>
+          <div class="gpu-grid">
+            ${GPUS.map(v => `
+              <div class="gpu-row"><span>${v} GB</span><div class="track"><div class="fill" style="width:${Math.min((total/v)*100,100)}%;background:${total<=v ? 'var(--green)' : 'var(--coral)'}"></div></div><span>${total<=v ? 'fit' : 'tight'}</span></div>`).join("")}
+          </div>
+        </div>`;
+    }
+    renderToolbar();
+    render();
+  </script>
+</body>
+</html>

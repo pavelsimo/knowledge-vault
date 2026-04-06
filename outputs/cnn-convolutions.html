@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Convolution Types — Knowledge Vault</title>
+  <link rel="icon" href="data:," />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #f78166;
+      --blue: #79c0ff;
+      --green: #3fb950;
+      --yellow: #d29922;
+      --purple: #bc8cff;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    nav a:hover { color: var(--accent); }
+    nav .sep { color: var(--border); }
+    nav .title { color: var(--text); font-weight: 600; font-size: 0.875rem; }
+    .tag {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      background: rgba(247,129,102,0.12);
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+    }
+    main {
+      flex: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      width: 100%;
+    }
+    h1 { font-size: 1.8rem; margin-bottom: 0.45rem; }
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.96rem;
+      line-height: 1.6;
+      margin-bottom: 1.8rem;
+      max-width: 820px;
+    }
+    .step-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .step-indicator { font-size: 0.8rem; color: var(--muted); }
+    .progress-bar {
+      height: 3px;
+      background: var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 1.4rem;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.35s ease;
+    }
+    .step-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 0.35rem;
+    }
+    .step-desc {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.65;
+      margin-bottom: 1.4rem;
+      max-width: 820px;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.75fr);
+      gap: 1.25rem;
+      margin-bottom: 1.4rem;
+    }
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+    .viz-area, .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+    }
+    .viz-area { min-height: 420px; }
+    .panel { display: flex; flex-direction: column; gap: 0.95rem; }
+    .side-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .formula-box {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      color: var(--green);
+    }
+    .formula-box .comment { color: var(--muted); }
+    .info-card {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.6;
+    }
+    .link-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+    }
+    .link-chip {
+      text-decoration: none;
+      color: var(--blue);
+      border: 1px solid rgba(121,192,255,0.35);
+      background: rgba(121,192,255,0.08);
+      border-radius: 999px;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.78rem;
+    }
+    .viz-stack { display: grid; gap: 1rem; }
+    .viz-row {
+      display: flex;
+      gap: 0.9rem;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .mini-panel {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.8rem;
+      flex: 1;
+      min-width: 190px;
+    }
+    .mini-title {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 0.55rem;
+    }
+    .grid {
+      display: grid;
+      gap: 4px;
+      justify-content: start;
+    }
+    .cell {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.68rem;
+      color: var(--text);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.03);
+      font-family: ui-monospace, monospace;
+    }
+    .cell.window { border-color: rgba(247,129,102,0.65); background: rgba(247,129,102,0.18); }
+    .cell.active { border-color: rgba(121,192,255,0.75); background: rgba(121,192,255,0.2); }
+    .cell.output { border-color: rgba(63,185,80,0.6); background: rgba(63,185,80,0.16); }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .arrow {
+      font-size: 1.2rem;
+      color: var(--muted);
+      align-self: center;
+      padding-top: 1.6rem;
+    }
+    .table-like {
+      display: grid;
+      gap: 0.5rem;
+      margin-top: 0.7rem;
+    }
+    .table-row {
+      display: grid;
+      grid-template-columns: 110px 1fr 120px;
+      gap: 0.7rem;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .bar-track {
+      height: 12px;
+      background: #0d1117;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .bar-fill { height: 100%; border-radius: 999px; }
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .btn {
+      padding: 0.55rem 1.2rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+    .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #0d1117;
+      font-weight: 600;
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: #ff9f8c;
+      border-color: #ff9f8c;
+      color: #0d1117;
+    }
+    .kbd {
+      font-size: 0.7rem;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.1rem 0.35rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+      Home
+    </a>
+    <span class="sep">›</span>
+    <span class="title">Convolution Types</span>
+    <div style="margin-left:auto"><span class="tag">CNNs</span></div>
+  </nav>
+
+  <main>
+    <h1>Convolution Types</h1>
+    <p class="subtitle">Convolution is really a family of operators. Standard kernels mix space and channels together, while 1×1, depthwise, separable, dilated, and transposed variants each trade parameters, receptive field, or output resolution differently.</p>
+
+    <div class="step-header">
+      <span class="step-indicator" id="stepCounter">Step 1 of 6</span>
+      <div style="display:flex;gap:0.5rem;align-items:center">
+        <span class="kbd">←</span><span class="kbd">→</span>
+        <span style="font-size:0.75rem;color:var(--muted)">navigate</span>
+      </div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+    <div class="step-title" id="stepTitle"></div>
+    <div class="step-desc" id="stepDesc"></div>
+
+    <div class="layout">
+      <div class="viz-area" id="vizArea"></div>
+      <div class="panel">
+        <div>
+          <div class="side-label">Formula</div>
+          <div class="formula-box" id="formulaBox"></div>
+        </div>
+        <div class="info-card" id="noteBox"></div>
+        <div>
+          <div class="side-label">Paper Trail</div>
+          <div class="link-list">
+            <a class="link-chip" href="https://proceedings.neurips.cc/paper_files/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf" target="_blank" rel="noreferrer">AlexNet</a>
+            <a class="link-chip" href="https://arxiv.org/pdf/1409.1556" target="_blank" rel="noreferrer">VGG</a>
+            <a class="link-chip" href="https://arxiv.org/pdf/1512.03385" target="_blank" rel="noreferrer">ResNet</a>
+            <a class="link-chip" href="https://arxiv.org/pdf/1610.02357" target="_blank" rel="noreferrer">Xception</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" id="prevBtn" onclick="changeStep(-1)">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+        Prev
+      </button>
+      <button class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">
+        Next
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+  </main>
+
+  <script>
+    const slidePositions = [[0,0], [0,1], [1,1], [2,1]];
+    let currentStep = 0;
+    let frame = 0;
+
+    const STEPS = [
+      {
+        title: "Standard 3×3 Convolution",
+        desc: "A standard convolution uses one kernel per output channel. Each kernel spans all input channels and a local spatial window, so it mixes both spatial structure and channels in a single operation.",
+        formula: `<span class="comment">// Standard conv</span><br>Params = C<sub>in</sub> · C<sub>out</sub> · K²<br>Output[h,w,o] = Σ<sub>c,i,j</sub> W[o,c,i,j] · X[c,h+i,w+j]`,
+        note: `This is the operator behind AlexNet, VGG, and the early ResNet stem blocks. It is expressive, but parameter-heavy because every output channel owns a full C_in × K × K kernel bank.`,
+        render: renderStandardConv
+      },
+      {
+        title: "1×1 Convolution Mixes Channels Without Looking Wider",
+        desc: "A 1×1 convolution does not expand the receptive field in space. It looks at one spatial position at a time, but mixes the channels there. That makes it ideal for bottlenecks, projections, and cheap channel recombination.",
+        formula: `<span class="comment">// Pointwise conv</span><br>Params = C<sub>in</sub> · C<sub>out</sub><br>Output[h,w,o] = Σ<sub>c</sub> W[o,c] · X[c,h,w]`,
+        note: `The receptive field stays 1×1, but the channel dimension can change radically. ResNet bottlenecks and separable convolutions rely on this operator constantly.`,
+        render: renderPointwiseConv
+      },
+      {
+        title: "Depthwise Convolution Gives Each Channel Its Own Spatial Filter",
+        desc: "Depthwise convolution removes cross-channel mixing from the spatial kernel. Each input channel gets its own K×K filter, so the operator is much cheaper but cannot combine information across channels by itself.",
+        formula: `<span class="comment">// Depthwise conv</span><br>Params = C<sub>in</sub> · K²<br>Output[h,w,c] = Σ<sub>i,j</sub> W[c,i,j] · X[c,h+i,w+j]`,
+        note: `This is why depthwise alone is incomplete: it preserves channel count and learns per-channel spatial patterns, but it needs a later pointwise stage to mix those channels into richer features.`,
+        render: renderDepthwiseConv
+      },
+      {
+        title: "Depthwise Separable = Depthwise Spatial Filtering + 1×1 Mixing",
+        desc: "A depthwise separable layer splits the work into two operators: first a depthwise spatial pass, then a 1×1 pointwise mix across channels. This preserves much of the representational benefit of a full conv while cutting parameters heavily.",
+        formula: `<span class="comment">// Depthwise separable conv</span><br>Params = C<sub>in</sub> · K² + C<sub>in</sub> · C<sub>out</sub><br><br><span class="comment">// Compared with standard</span><br>C<sub>in</sub> · C<sub>out</sub> · K²`,
+        note: `Xception and MobileNet popularized this factorization. The savings get dramatic when K is large or when channel counts are high.`,
+        render: renderSeparableConv
+      },
+      {
+        title: "Dilated Convolution Expands Receptive Field Without More Weights",
+        desc: "Dilated kernels insert gaps between sampled spatial positions. That lets a small kernel cover a much wider region while keeping parameter count fixed, which is useful for segmentation and dense prediction where resolution matters.",
+        formula: `<span class="comment">// Dilated conv</span><br>effective kernel = K + (K - 1)(d - 1)<br><br><span class="comment">// Example</span><br>3×3 with dilation 2 → effective 5×5 coverage`,
+        note: `The cost is sparse sampling: a dilated kernel sees farther, but it does not observe every intermediate pixel. In practice, architectures often mix dilations across layers to cover scale more smoothly.`,
+        render: renderDilatedConv
+      },
+      {
+        title: "Transposed Convolution Learns Upsampling",
+        desc: "Transposed convolution is the learned inverse-like spatial expansion used in decoders. Instead of collapsing a window into one output cell, it lets one input cell write into a larger output neighborhood, which increases resolution.",
+        formula: `<span class="comment">// Transposed conv intuition</span><br>Input cell spreads into a larger output patch<br>Stride > 1 increases spatial size<br><br><span class="comment">// Typical use</span><br>segmentation decoders, autoencoders, GAN generators`,
+        note: `This operator powers learned upsampling, but if the overlap pattern is uneven it can create checkerboard artifacts. Many modern decoders combine resize + conv to make that behavior more predictable.`,
+        render: renderTransposedConv
+      }
+    ];
+
+    function buildGrid(rows, cols, activeCells = [], windowCells = [], outputCells = []) {
+      const activeSet = new Set(activeCells.map(([r, c]) => `${r},${c}`));
+      const windowSet = new Set(windowCells.map(([r, c]) => `${r},${c}`));
+      const outputSet = new Set(outputCells.map(([r, c]) => `${r},${c}`));
+      let html = `<div class="grid" style="grid-template-columns:repeat(${cols}, 32px)">`;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const key = `${r},${c}`;
+          const classes = ["cell"];
+          if (windowSet.has(key)) classes.push("window");
+          if (activeSet.has(key)) classes.push("active");
+          if (outputSet.has(key)) classes.push("output");
+          html += `<div class="${classes.join(" ")}">${r},${c}</div>`;
+        }
+      }
+      html += `</div>`;
+      return html;
+    }
+
+    function renderStandardConv() {
+      const [r, c] = slidePositions[frame % slidePositions.length];
+      const windowCells = [];
+      for (let dr = 0; dr < 3; dr++) {
+        for (let dc = 0; dc < 3; dc++) windowCells.push([r + dr, c + dc]);
+      }
+      document.getElementById("vizArea").innerHTML = `
+        <div class="viz-stack">
+          <div class="legend">
+            <div class="legend-item"><span class="swatch" style="background:var(--accent)"></span>current 3×3 filter window</div>
+            <div class="legend-item"><span class="swatch" style="background:var(--green)"></span>active output position</div>
+          </div>
+          <div class="viz-row">
+            <div class="mini-panel">
+              <div class="mini-title">Input Feature Map</div>
+              ${buildGrid(5, 5, [], windowCells)}
+            </div>
+            <div class="arrow">→</div>
+            <div class="mini-panel">
+              <div class="mini-title">Output Feature Map</div>
+              ${buildGrid(3, 3, [], [], [[r, c]])}
+            </div>
+          </div>
+          <div class="table-like">
+            <div class="table-row"><div>Params</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:linear-gradient(90deg,var(--coral),var(--yellow))"></div></div><div>64×128×3²</div></div>
+            <div class="table-row"><div>Receptive Field</div><div class="bar-track"><div class="bar-fill" style="width:45%;background:linear-gradient(90deg,var(--blue),var(--purple))"></div></div><div>local 3×3</div></div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderPointwiseConv() {
+      const [r, c] = slidePositions[frame % slidePositions.length];
+      document.getElementById("vizArea").innerHTML = `
+        <div class="viz-stack">
+          <div class="viz-row">
+            ${["R", "G", "B"].map((name, index) => `
+              <div class="mini-panel">
+                <div class="mini-title">Channel ${name}</div>
+                ${buildGrid(4, 4, [[r, c]])}
+              </div>
+            `).join("")}
+          </div>
+          <div class="viz-row">
+            <div class="mini-panel" style="max-width:240px">
+              <div class="mini-title">Same Pixel, New Mix</div>
+              <div class="info-card" style="padding:0.8rem">
+                X[r,c] = [0.8, 0.3, 0.6]<br>
+                W = [0.5, -0.2, 0.9]<br>
+                y = 0.88
+              </div>
+            </div>
+            <div class="arrow">→</div>
+            <div class="mini-panel">
+              <div class="mini-title">Output Channel</div>
+              ${buildGrid(4, 4, [], [], [[r, c]])}
+            </div>
+          </div>
+          <div class="table-like">
+            <div class="table-row"><div>Spatial View</div><div class="bar-track"><div class="bar-fill" style="width:15%;background:linear-gradient(90deg,var(--accent),var(--yellow))"></div></div><div>1×1 only</div></div>
+            <div class="table-row"><div>Channel Mixing</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:linear-gradient(90deg,var(--blue),var(--purple))"></div></div><div>strong</div></div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderDepthwiseConv() {
+      const [r, c] = slidePositions[frame % slidePositions.length];
+      const windowCells = [];
+      for (let dr = 0; dr < 3; dr++) {
+        for (let dc = 0; dc < 3; dc++) windowCells.push([r + dr, c + dc]);
+      }
+      document.getElementById("vizArea").innerHTML = `
+        <div class="viz-stack">
+          <div class="viz-row">
+            ${["C0", "C1", "C2"].map(name => `
+              <div class="mini-panel">
+                <div class="mini-title">${name} gets its own 3×3 filter</div>
+                ${buildGrid(5, 5, [], windowCells)}
+              </div>
+            `).join("")}
+          </div>
+          <div class="viz-row">
+            ${["Out 0", "Out 1", "Out 2"].map(name => `
+              <div class="mini-panel">
+                <div class="mini-title">${name}</div>
+                ${buildGrid(3, 3, [], [], [[r, c]])}
+              </div>
+            `).join("")}
+          </div>
+          <div class="table-like">
+            <div class="table-row"><div>Params</div><div class="bar-track"><div class="bar-fill" style="width:18%;background:linear-gradient(90deg,var(--green),var(--blue))"></div></div><div>64×3² only</div></div>
+            <div class="table-row"><div>Channel Mixing</div><div class="bar-track"><div class="bar-fill" style="width:10%;background:linear-gradient(90deg,var(--coral),var(--yellow))"></div></div><div>none</div></div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSeparableConv() {
+      const [r, c] = slidePositions[frame % slidePositions.length];
+      const windowCells = [];
+      for (let dr = 0; dr < 3; dr++) {
+        for (let dc = 0; dc < 3; dc++) windowCells.push([r + dr, c + dc]);
+      }
+      document.getElementById("vizArea").innerHTML = `
+        <div class="viz-stack">
+          <div class="viz-row">
+            <div class="mini-panel">
+              <div class="mini-title">Stage 1: Depthwise</div>
+              <div class="viz-row">
+                ${["C0", "C1", "C2"].map(name => `
+                  <div>
+                    <div style="font-size:0.72rem;color:var(--muted);margin-bottom:0.45rem">${name}</div>
+                    ${buildGrid(5, 5, [], windowCells)}
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+            <div class="arrow">→</div>
+            <div class="mini-panel">
+              <div class="mini-title">Stage 2: Pointwise 1×1 Mix</div>
+              ${buildGrid(3, 3, [], [], [[r, c]])}
+              <div class="info-card" style="margin-top:0.8rem">spatial filtering first, channel mixing second</div>
+            </div>
+          </div>
+          <div class="table-like">
+            <div class="table-row"><div>Standard</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:linear-gradient(90deg,var(--coral),var(--yellow))"></div></div><div>73,728 params</div></div>
+            <div class="table-row"><div>Separable</div><div class="bar-track"><div class="bar-fill" style="width:20%;background:linear-gradient(90deg,var(--green),var(--blue))"></div></div><div>8,768 params</div></div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderDilatedConv() {
+      const centers = [[1,1], [1,2], [2,2], [3,2]];
+      const [cr, cc] = centers[frame % centers.length];
+      const windowCells = [];
+      for (const dr of [-1, 0, 1]) {
+        for (const dc of [-1, 0, 1]) windowCells.push([cr + dr * 2, cc + dc * 2]);
+      }
+      document.getElementById("vizArea").innerHTML = `
+        <div class="viz-stack">
+          <div class="legend">
+            <div class="legend-item"><span class="swatch" style="background:var(--accent)"></span>sampled positions with dilation = 2</div>
+          </div>
+          <div class="viz-row">
+            <div class="mini-panel">
+              <div class="mini-title">7×7 Input, Sparse 3×3 Sampling</div>
+              ${buildGrid(7, 7, [], windowCells)}
+            </div>
+            <div class="arrow">→</div>
+            <div class="mini-panel">
+              <div class="mini-title">Output Position</div>
+              ${buildGrid(5, 5, [], [], [[cr - 1, cc - 1]])}
+            </div>
+          </div>
+          <div class="info-card">
+            Same parameter count as a normal 3×3 kernel, but it covers a 5×5 effective field. That is the main attraction of dilations.
+          </div>
+        </div>
+      `;
+    }
+
+    function renderTransposedConv() {
+      const points = [[0,0], [0,1], [1,1], [2,1]];
+      const [r, c] = points[frame % points.length];
+      const outputCells = [];
+      for (let dr = 0; dr < 3; dr++) {
+        for (let dc = 0; dc < 3; dc++) {
+          const rr = r + dr;
+          const cc = c + dc;
+          if (rr < 5 && cc < 5) outputCells.push([rr, cc]);
+        }
+      }
+      document.getElementById("vizArea").innerHTML = `
+        <div class="viz-stack">
+          <div class="viz-row">
+            <div class="mini-panel">
+              <div class="mini-title">Low-Resolution Input</div>
+              ${buildGrid(3, 3, [[r, c]])}
+            </div>
+            <div class="arrow">→</div>
+            <div class="mini-panel">
+              <div class="mini-title">Larger Output Canvas</div>
+              ${buildGrid(5, 5, [], [], outputCells)}
+            </div>
+          </div>
+          <div class="table-like">
+            <div class="table-row"><div>Goal</div><div class="bar-track"><div class="bar-fill" style="width:90%;background:linear-gradient(90deg,var(--blue),var(--purple))"></div></div><div>upsample</div></div>
+            <div class="table-row"><div>Risk</div><div class="bar-track"><div class="bar-fill" style="width:55%;background:linear-gradient(90deg,var(--coral),var(--yellow))"></div></div><div>checkerboard overlap</div></div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderStep() {
+      const step = STEPS[currentStep];
+      document.getElementById("stepCounter").textContent = `Step ${currentStep + 1} of ${STEPS.length}`;
+      document.getElementById("progressFill").style.width = `${((currentStep + 1) / STEPS.length) * 100}%`;
+      document.getElementById("stepTitle").textContent = step.title;
+      document.getElementById("stepDesc").textContent = step.desc;
+      document.getElementById("formulaBox").innerHTML = step.formula;
+      document.getElementById("noteBox").textContent = step.note;
+      step.render();
+      document.getElementById("prevBtn").disabled = currentStep === 0;
+      document.getElementById("nextBtn").disabled = currentStep === STEPS.length - 1;
+    }
+
+    function changeStep(delta) {
+      const next = currentStep + delta;
+      if (next < 0 || next >= STEPS.length) return;
+      currentStep = next;
+      renderStep();
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight") changeStep(1);
+      if (event.key === "ArrowLeft") changeStep(-1);
+    });
+
+    setInterval(() => {
+      frame = (frame + 1) % slidePositions.length;
+      renderStep();
+    }, 1000);
+
+    renderStep();
+  </script>
+</body>
+</html>

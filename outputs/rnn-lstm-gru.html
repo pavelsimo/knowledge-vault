@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RNN vs LSTM vs GRU — Knowledge Vault</title>
+  <link rel="icon" href="data:," />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#0d1117; --surface:#161b22; --border:#30363d; --text:#e6edf3; --muted:#8b949e;
+      --accent:#f78166; --blue:#79c0ff; --green:#3fb950; --yellow:#d29922; --purple:#bc8cff;
+    }
+    body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif; min-height:100vh; display:flex; flex-direction:column; }
+    nav { background:var(--surface); border-bottom:1px solid var(--border); padding:0.85rem 1.5rem; display:flex; align-items:center; gap:1rem; }
+    nav a { color:var(--muted); text-decoration:none; font-size:0.875rem; display:flex; align-items:center; gap:0.4rem; }
+    nav a:hover { color:var(--accent); }
+    nav .sep { color:var(--border); }
+    nav .title { color:var(--text); font-weight:600; font-size:0.875rem; }
+    .tag { font-size:0.7rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--accent); background:rgba(247,129,102,0.12); padding:0.2rem 0.55rem; border-radius:999px; }
+    main { flex:1; max-width:1080px; margin:0 auto; padding:2rem 1.5rem; width:100%; }
+    h1 { font-size:1.8rem; margin-bottom:0.45rem; }
+    .subtitle { color:var(--muted); font-size:0.96rem; line-height:1.6; margin-bottom:1.8rem; max-width:780px; }
+    .step-header { display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:1rem; }
+    .step-indicator { font-size:0.8rem; color:var(--muted); }
+    .progress-bar { height:3px; background:var(--border); border-radius:999px; overflow:hidden; margin-bottom:1.4rem; }
+    .progress-fill { height:100%; width:0%; background:var(--accent); transition:width .35s ease; }
+    .step-title { font-size:1.15rem; font-weight:600; color:var(--accent); margin-bottom:0.35rem; }
+    .step-desc { color:var(--muted); font-size:0.92rem; line-height:1.65; margin-bottom:1.4rem; max-width:780px; }
+    .layout { display:grid; grid-template-columns:minmax(0,1.45fr) minmax(300px,0.8fr); gap:1.25rem; margin-bottom:1.4rem; }
+    @media (max-width:800px) { .layout { grid-template-columns:1fr; } }
+    .viz-area,.panel { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1rem; }
+    .viz-area { min-height:380px; }
+    .panel { display:flex; flex-direction:column; gap:0.95rem; }
+    .side-label { font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:0.5rem; }
+    .formula-box,.info-card,.card { background:#0d1117; border:1px solid var(--border); border-radius:10px; padding:0.9rem 1rem; }
+    .formula-box { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:0.82rem; line-height:1.7; color:var(--green); }
+    .formula-box .comment { color:var(--muted); }
+    .info-card,.card { color:var(--muted); font-size:0.84rem; line-height:1.6; }
+    .link-list { display:flex; flex-wrap:wrap; gap:0.55rem; }
+    .link-chip { text-decoration:none; color:var(--blue); border:1px solid rgba(121,192,255,0.35); background:rgba(121,192,255,0.08); border-radius:999px; padding:0.35rem 0.65rem; font-size:0.78rem; }
+    .timeline { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:0.7rem; }
+    .cell { background:#0d1117; border:1px solid var(--border); border-radius:12px; padding:0.75rem; min-height:100px; }
+    .cell h3 { font-size:0.85rem; margin-bottom:0.45rem; }
+    .token { font-size:0.72rem; color:var(--muted); margin-bottom:0.5rem; }
+    .state-bar { height:10px; background:rgba(255,255,255,0.05); border-radius:999px; overflow:hidden; border:1px solid rgba(255,255,255,0.03); margin-bottom:0.45rem; }
+    .state-fill { height:100%; border-radius:999px; }
+    .small { font-size:0.72rem; color:var(--muted); }
+    .gate-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:0.8rem; }
+    .gate-card { background:#0d1117; border:1px solid var(--border); border-radius:10px; padding:0.8rem; }
+    .gate-card h3 { font-size:0.84rem; margin-bottom:0.45rem; }
+    .gate-value { font-family:ui-monospace,monospace; font-size:1rem; margin-bottom:0.25rem; }
+    .compare-grid { display:grid; gap:0.55rem; }
+    .compare-row { display:grid; grid-template-columns:110px 1fr 130px; gap:0.7rem; align-items:center; font-size:0.8rem; color:var(--muted); }
+    .bar-track { height:12px; background:#0d1117; border-radius:999px; overflow:hidden; border:1px solid var(--border); }
+    .bar-fill { height:100%; border-radius:999px; }
+    .controls { display:flex; align-items:center; gap:1rem; }
+    .btn { padding:0.55rem 1.2rem; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--text); font-size:0.875rem; cursor:pointer; transition:all .15s; display:flex; align-items:center; gap:0.4rem; }
+    .btn:hover:not(:disabled) { border-color:var(--accent); color:var(--accent); }
+    .btn:disabled { opacity:0.35; cursor:not-allowed; }
+    .btn-primary { background:var(--accent); border-color:var(--accent); color:#0d1117; font-weight:600; }
+    .btn-primary:hover:not(:disabled) { background:#ff9f8c; border-color:#ff9f8c; color:#0d1117; }
+    .kbd { font-size:0.7rem; color:var(--muted); border:1px solid var(--border); border-radius:4px; padding:0.1rem 0.35rem; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Home</a>
+    <span class="sep">›</span>
+    <span class="title">RNN vs LSTM vs GRU</span>
+    <div style="margin-left:auto"><span class="tag">Sequence Models</span></div>
+  </nav>
+  <main>
+    <h1>RNN vs LSTM vs GRU</h1>
+    <p class="subtitle">Three recurrent sequence models, one core problem: how do you carry information through time without the signal collapsing? This walkthrough follows hidden-state flow, vanishing gradients, and how gating changes what survives.</p>
+    <div class="step-header">
+      <span class="step-indicator" id="stepCounter">Step 1 of 6</span>
+      <div style="display:flex;gap:0.5rem;align-items:center"><span class="kbd">←</span><span class="kbd">→</span><span style="font-size:0.75rem;color:var(--muted)">navigate</span></div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="step-title" id="stepTitle"></div>
+    <div class="step-desc" id="stepDesc"></div>
+    <div class="layout">
+      <div class="viz-area" id="vizArea"></div>
+      <div class="panel">
+        <div>
+          <div class="side-label">Formula</div>
+          <div class="formula-box" id="formulaBox"></div>
+        </div>
+        <div class="info-card" id="noteBox"></div>
+        <div>
+          <div class="side-label">Paper Links</div>
+          <div class="link-list">
+            <a class="link-chip" href="https://crl.ucsd.edu/~elman/Papers/fsit.pdf" target="_blank" rel="noreferrer">Elman RNN</a>
+            <a class="link-chip" href="https://www.bioinf.jku.at/publications/older/2604.pdf" target="_blank" rel="noreferrer">LSTM</a>
+            <a class="link-chip" href="https://arxiv.org/pdf/1406.1078" target="_blank" rel="noreferrer">GRU</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="controls">
+      <button class="btn" id="prevBtn" onclick="changeStep(-1)"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Prev</button>
+      <button class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">Next<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+    </div>
+  </main>
+  <script>
+    const TOKENS = ["The","movie","was","surprisingly","good"];
+    const RNN_STATE = [0.18,0.32,0.44,0.38,0.74];
+    const VANISH = [1.00,0.54,0.28,0.14,0.07];
+    const LSTM_C = [0.10,0.22,0.48,0.52,0.84];
+    const GRU_H = [0.12,0.28,0.42,0.49,0.76];
+    const STEPS = [
+      {
+        title:"Vanilla RNN — One Hidden State Flows Through Time",
+        desc:"A vanilla RNN reuses the same transition at every time step. The hidden state is the entire memory: whatever survives in hₜ is all the model has when it reaches the next token.",
+        formula:`<span class="comment">// Elman RNN</span><br>hₜ = tanh(W<sub>hh</sub> hₜ₋₁ + W<sub>xh</sub> xₜ)<br>yₜ = W<sub>hy</sub> hₜ<br><br><span class="comment">// same weights at every step</span>`,
+        note:"The appeal is simplicity: one state vector, one recurrent update. The weakness is that all long-term information must survive repeated multiplication and tanh squashing.",
+        render:() => {
+          document.getElementById("vizArea").innerHTML = `<div class="timeline">${TOKENS.map((token, i) => `
+            <div class="cell">
+              <div class="token">t=${i+1}</div>
+              <h3 style="color:var(--blue)">${token}</h3>
+              <div class="small">hidden state h${i+1}</div>
+              <div class="state-bar"><div class="state-fill" style="width:${RNN_STATE[i]*100}%;background:var(--blue)"></div></div>
+              <div class="small">${Math.round(RNN_STATE[i]*100)}% retained context</div>
+            </div>`).join("")}</div>`;
+        }
+      },
+      {
+        title:"Why Vanilla RNNs Forget — Vanishing Gradients",
+        desc:"During backpropagation through time, the gradient is multiplied by the same recurrent dynamics over and over. If those factors are slightly below 1, the signal shrinks exponentially and older steps stop learning.",
+        formula:`<span class="comment">// Backprop through time</span><br>∂L/∂hₜ₋ₖ ≈ Π J<sub>t-i</sub> · ∂L/∂hₜ<br><br><span class="comment">// repeated Jacobian products</span><br>|J| &lt; 1 → gradients vanish<br>|J| &gt; 1 → gradients explode`,
+        note:"This is why classic RNNs usually remember only about 10 to 20 steps in practice unless the task is very simple or the training setup is heavily engineered.",
+        render:() => {
+          document.getElementById("vizArea").innerHTML = `<div class="timeline">${TOKENS.map((token, i) => `
+            <div class="cell">
+              <div class="token">back to t=${i+1}</div>
+              <h3 style="color:var(--coral)">${token}</h3>
+              <div class="small">gradient magnitude</div>
+              <div class="state-bar"><div class="state-fill" style="width:${VANISH[i]*100}%;background:var(--coral)"></div></div>
+              <div class="small">${VANISH[i].toFixed(2)}</div>
+            </div>`).join("")}</div>`;
+        }
+      },
+      {
+        title:"LSTM Adds a Cell State Highway",
+        desc:"LSTM splits memory into a hidden state hₜ and a cell state cₜ. The cell state is the long-term highway, and gates decide what to forget, what to write, and what to expose.",
+        formula:`<span class="comment">// LSTM update</span><br>cₜ = fₜ ⊙ cₜ₋₁ + iₜ ⊙ g̃ₜ<br>hₜ = oₜ ⊙ tanh(cₜ)<br><br><span class="comment">// gates are sigmoid values in [0,1]</span>`,
+        note:"If the forget gate stays near 1 and the input gate stays near 0, information can persist almost unchanged through many time steps. That is the core trick.",
+        render:() => {
+          const gates = [
+            ["Forget fₜ", 0.92, "var(--yellow)"],
+            ["Input iₜ", 0.28, "var(--green)"],
+            ["Candidate g̃ₜ", 0.74, "var(--blue)"],
+            ["Output oₜ", 0.81, "var(--purple)"]
+          ];
+          document.getElementById("vizArea").innerHTML = `
+            <div class="gate-grid">
+              ${gates.map(([name, value, color]) => `
+                <div class="gate-card">
+                  <h3>${name}</h3>
+                  <div class="gate-value" style="color:${color}">${Number(value).toFixed(2)}</div>
+                  <div class="state-bar"><div class="state-fill" style="width:${Number(value)*100}%;background:${color}"></div></div>
+                </div>`).join("")}
+            </div>
+            <div class="card" style="margin-top:1rem">
+              <div class="side-label">Cell State Over Time</div>
+              <div class="timeline">${TOKENS.map((token, i) => `
+                <div class="cell">
+                  <div class="token">${token}</div>
+                  <div class="small">cell state c${i+1}</div>
+                  <div class="state-bar"><div class="state-fill" style="width:${LSTM_C[i]*100}%;background:var(--green)"></div></div>
+                  <div class="small">${Math.round(LSTM_C[i]*100)}%</div>
+                </div>`).join("")}</div>
+            </div>`;
+        }
+      },
+      {
+        title:"GRU Keeps the Idea but Removes the Separate Cell State",
+        desc:"A GRU is a simplified gated recurrent unit. It merges hidden and long-term memory into one state and uses update and reset gates instead of the full LSTM gate set.",
+        formula:`<span class="comment">// GRU</span><br>zₜ = σ(W<sub>z</sub>[hₜ₋₁, xₜ])<br>rₜ = σ(W<sub>r</sub>[hₜ₋₁, xₜ])<br>h̃ₜ = tanh(W[rₜ ⊙ hₜ₋₁, xₜ])<br>hₜ = (1-zₜ) ⊙ hₜ₋₁ + zₜ ⊙ h̃ₜ`,
+        note:"GRUs usually train faster and use fewer parameters than LSTMs. You lose some explicit control, but in many tasks the simpler design works well enough.",
+        render:() => {
+          document.getElementById("vizArea").innerHTML = `
+            <div class="gate-grid">
+              <div class="gate-card"><h3>Update Gate zₜ</h3><div class="gate-value" style="color:var(--yellow)">0.67</div><div class="state-bar"><div class="state-fill" style="width:67%;background:var(--yellow)"></div></div></div>
+              <div class="gate-card"><h3>Reset Gate rₜ</h3><div class="gate-value" style="color:var(--purple)">0.31</div><div class="state-bar"><div class="state-fill" style="width:31%;background:var(--purple)"></div></div></div>
+            </div>
+            <div class="timeline" style="margin-top:1rem">${TOKENS.map((token, i) => `
+              <div class="cell">
+                <div class="token">${token}</div>
+                <div class="small">hidden state h${i+1}</div>
+                <div class="state-bar"><div class="state-fill" style="width:${GRU_H[i]*100}%;background:var(--blue)"></div></div>
+                <div class="small">${Math.round(GRU_H[i]*100)}%</div>
+              </div>`).join("")}</div>`;
+        }
+      },
+      {
+        title:"Sequence Modes Explain the Jobs RNNs Were Built For",
+        desc:"RNNs are not one model shape. They can map one input to many outputs, many inputs to one output, or asynchronous sequence-to-sequence. That flexibility made them dominant before transformers.",
+        formula:`<span class="comment">// Common sequence modes</span><br>one → many : image captioning<br>many → one : sentiment classification<br>many → many : tagging / translation<br><br><span class="comment">// seq2seq bottleneck</span><br>encoder final state c → decoder`,
+        note:"The classic seq2seq bottleneck is exactly what attention was invented to solve: one final hidden state had to summarize an entire sentence for the decoder.",
+        render:() => {
+          document.getElementById("vizArea").innerHTML = `
+            <div class="gate-grid">
+              <div class="gate-card"><h3>One → Many</h3><div class="small">image → caption</div></div>
+              <div class="gate-card"><h3>Many → One</h3><div class="small">sentence → sentiment</div></div>
+              <div class="gate-card"><h3>Many → Many</h3><div class="small">English → French</div></div>
+            </div>
+            <div class="card" style="margin-top:1rem">Encoder hidden states carry context forward one step at a time. Without attention, the decoder must rely on a compressed final state instead of re-reading the full source sequence.</div>`;
+        }
+      },
+      {
+        title:"Comparison — What Each Recurrent Model Buys You",
+        desc:"Vanilla RNNs are simple but fragile. LSTMs improve long-range memory with explicit gating. GRUs simplify the gate design. All remain sequential, which is why transformers eventually took over large-scale NLP.",
+        formula:`<span class="comment">// Tradeoff summary</span><br>RNN: simplest, weakest memory<br>LSTM: strongest memory control, more parameters<br>GRU: lighter than LSTM, still gated<br><br><span class="comment">// all remain sequential over time</span>`,
+        note:"Modern recurrent descendants like Mamba and RWKV revisit the same core question under new engineering assumptions: can we keep linear-time sequence processing without losing the expressive power transformers gained?",
+        render:() => {
+          const rows = [
+            ["Long memory", 0.18, 0.88, 0.72],
+            ["Simplicity", 0.92, 0.42, 0.66],
+            ["Parameter efficiency", 0.92, 0.48, 0.74],
+            ["Parallelism", 0.10, 0.10, 0.10]
+          ];
+          document.getElementById("vizArea").innerHTML = `<div class="compare-grid">${rows.map(([label, rnn, lstm, gru]) => `
+            <div class="compare-row"><span>${label}</span><div class="bar-track"><div class="bar-fill" style="width:${rnn*100}%;background:var(--coral)"></div></div><span>RNN ${Math.round(rnn*100)}</span></div>
+            <div class="compare-row"><span></span><div class="bar-track"><div class="bar-fill" style="width:${lstm*100}%;background:var(--green)"></div></div><span>LSTM ${Math.round(lstm*100)}</span></div>
+            <div class="compare-row"><span></span><div class="bar-track"><div class="bar-fill" style="width:${gru*100}%;background:var(--blue)"></div></div><span>GRU ${Math.round(gru*100)}</span></div>
+          `).join("")}</div>`;
+        }
+      }
+    ];
+    let currentStep = 0;
+    function renderStep() {
+      const step = STEPS[currentStep];
+      document.getElementById("stepCounter").textContent = `Step ${currentStep+1} of ${STEPS.length}`;
+      document.getElementById("progressFill").style.width = `${((currentStep+1)/STEPS.length)*100}%`;
+      document.getElementById("stepTitle").textContent = step.title;
+      document.getElementById("stepDesc").textContent = step.desc;
+      document.getElementById("formulaBox").innerHTML = step.formula;
+      document.getElementById("noteBox").textContent = step.note;
+      step.render();
+      document.getElementById("prevBtn").disabled = currentStep === 0;
+      document.getElementById("nextBtn").disabled = currentStep === STEPS.length - 1;
+    }
+    function changeStep(delta) {
+      const next = currentStep + delta;
+      if (next < 0 || next >= STEPS.length) return;
+      currentStep = next;
+      renderStep();
+    }
+    document.addEventListener("keydown", e => {
+      if (e.key === "ArrowRight") changeStep(1);
+      if (e.key === "ArrowLeft") changeStep(-1);
+    });
+    renderStep();
+  </script>
+</body>
+</html>

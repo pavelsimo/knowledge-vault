@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KV Caching — Knowledge Vault</title>
+  <link rel="icon" href="data:," />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #7ee787;
+      --blue: #79c0ff;
+      --coral: #f78166;
+      --yellow: #d29922;
+      --purple: #bc8cff;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    nav a:hover { color: var(--accent); }
+    nav .sep { color: var(--border); }
+    nav .title { color: var(--text); font-weight: 600; font-size: 0.875rem; }
+    .tag {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      background: rgba(126,231,135,0.12);
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+    }
+    main {
+      flex: 1;
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      width: 100%;
+    }
+    h1 { font-size: 1.8rem; margin-bottom: 0.45rem; }
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.96rem;
+      line-height: 1.6;
+      margin-bottom: 1.8rem;
+      max-width: 760px;
+    }
+    .step-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .step-indicator { font-size: 0.8rem; color: var(--muted); }
+    .progress-bar {
+      height: 3px;
+      background: var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 1.4rem;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      transition: width 0.35s ease;
+    }
+    .step-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 0.35rem;
+    }
+    .step-desc {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.65;
+      margin-bottom: 1.4rem;
+      max-width: 760px;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.85fr);
+      gap: 1.25rem;
+      margin-bottom: 1.4rem;
+    }
+    @media (max-width: 760px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+    .viz-area, .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+    }
+    .viz-area { min-height: 350px; }
+    .panel { display: flex; flex-direction: column; gap: 0.95rem; }
+    .side-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .formula-box {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      color: var(--accent);
+    }
+    .formula-box .comment { color: var(--muted); }
+    .info-card {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+    }
+    .info-card p {
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.6;
+    }
+    .link-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+    }
+    .link-chip {
+      text-decoration: none;
+      color: var(--blue);
+      border: 1px solid rgba(121,192,255,0.35);
+      background: rgba(121,192,255,0.08);
+      border-radius: 999px;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.78rem;
+    }
+    .link-chip:hover { border-color: var(--blue); }
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .btn {
+      padding: 0.55rem 1.2rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+    .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #0d1117;
+      font-weight: 600;
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: #a6f3ae;
+      border-color: #a6f3ae;
+      color: #0d1117;
+    }
+    .kbd {
+      font-size: 0.7rem;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.1rem 0.35rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    .token-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    .token {
+      min-width: 64px;
+      padding: 0.55rem 0.75rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      text-align: center;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.83rem;
+      background: #0d1117;
+      position: relative;
+    }
+    .token.prompt { border-color: rgba(121,192,255,0.4); color: var(--blue); }
+    .token.active { border-color: rgba(247,129,102,0.7); color: var(--coral); box-shadow: 0 0 0 1px rgba(247,129,102,0.22) inset; }
+    .token.generated { border-color: rgba(126,231,135,0.45); color: var(--accent); }
+    .token.small { min-width: 54px; padding: 0.45rem 0.6rem; font-size: 0.75rem; }
+    .arrow-line {
+      width: 28px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--border), var(--accent));
+      position: relative;
+      border-radius: 999px;
+    }
+    .arrow-line::after {
+      content: "";
+      position: absolute;
+      right: -1px;
+      top: -3px;
+      border-left: 7px solid var(--accent);
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+    }
+    .qkv-strip {
+      display: grid;
+      grid-template-columns: 80px 1fr 1fr;
+      gap: 0.75rem;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    .vector-box {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem;
+      min-height: 78px;
+    }
+    .vector-title {
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 0.45rem;
+    }
+    .cache-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+      gap: 0.55rem;
+      margin-top: 0.75rem;
+    }
+    .cache-cell {
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #0d1117;
+      padding: 0.55rem 0.4rem;
+      text-align: center;
+      font-size: 0.74rem;
+      color: var(--muted);
+    }
+    .cache-cell strong { display: block; font-size: 0.8rem; color: var(--text); margin-bottom: 0.2rem; }
+    .table-like {
+      display: grid;
+      gap: 0.45rem;
+      margin-top: 0.8rem;
+    }
+    .table-row {
+      display: grid;
+      grid-template-columns: 90px 1fr 1fr;
+      gap: 0.8rem;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .bar-track {
+      height: 12px;
+      background: #0d1117;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+    }
+    .metric {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.7rem 0.85rem;
+      border-radius: 10px;
+      background: #0d1117;
+      border: 1px solid var(--border);
+      font-size: 0.82rem;
+    }
+    .metric strong { color: var(--text); }
+    .metric span { color: var(--muted); }
+    .ttft-panel {
+      display: grid;
+      gap: 0.8rem;
+      margin-top: 0.85rem;
+    }
+    .phase-bar {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.8rem;
+    }
+    .phase-bar-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.55rem;
+      font-size: 0.82rem;
+    }
+    .phase-track {
+      height: 18px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .phase-fill {
+      height: 100%;
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+      Home
+    </a>
+    <span class="sep">›</span>
+    <span class="title">KV Caching</span>
+    <div style="margin-left:auto"><span class="tag">Transformers</span></div>
+  </nav>
+
+  <main>
+    <h1>KV Caching</h1>
+    <p class="subtitle">Autoregressive decoding only needs the newest query, but every layer still needs all previous keys and values. KV caching stores those old K/V tensors once, removing the repeated projection work that would otherwise grow quadratically through generation.</p>
+
+    <div class="step-header">
+      <span class="step-indicator" id="stepCounter">Step 1 of 6</span>
+      <div style="display:flex;gap:0.5rem;align-items:center">
+        <span class="kbd">←</span><span class="kbd">→</span>
+        <span style="font-size:0.75rem;color:var(--muted)">navigate</span>
+      </div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+    <div class="step-title" id="stepTitle"></div>
+    <div class="step-desc" id="stepDesc"></div>
+
+    <div class="layout">
+      <div class="viz-area" id="vizArea"></div>
+      <div class="panel">
+        <div>
+          <div class="side-label" id="sideLabel">Formula</div>
+          <div class="formula-box" id="formulaBox"></div>
+        </div>
+        <div class="info-card" id="noteBox"></div>
+        <div>
+          <div class="side-label">Paper / Source Links</div>
+          <div class="link-list">
+            <a class="link-chip" href="https://arxiv.org/pdf/1706.03762" target="_blank" rel="noreferrer">Attention Is All You Need</a>
+            <a class="link-chip" href="https://x.com/_avichawla/status/2034902650534187503" target="_blank" rel="noreferrer">KV Caching Walkthrough</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" id="prevBtn" onclick="changeStep(-1)">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+        Prev
+      </button>
+      <button class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">
+        Next
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+  </main>
+
+  <script>
+    const promptTokens = ["The", "sky", "over", "Berlin", "looks", "clear"];
+    const generatedTokens = ["today", ".", "It", "feels", "warm", "."];
+    const decodeSteps = generatedTokens.map((_, i) => i + 1);
+    const noCacheWork = decodeSteps.map(step => promptTokens.length + step);
+    const cacheWork = decodeSteps.map(() => 1);
+    const cumulativeNoCache = noCacheWork.reduce((acc, value) => {
+      const prev = acc.length ? acc[acc.length - 1] : 0;
+      acc.push(prev + value);
+      return acc;
+    }, []);
+    const cumulativeCache = cacheWork.reduce((acc, value) => {
+      const prev = acc.length ? acc[acc.length - 1] : 0;
+      acc.push(prev + value);
+      return acc;
+    }, []);
+
+    const STEPS = [
+      {
+        title: "Autoregressive Decoding Only Uses the Last Token",
+        desc: "A decoder processes the whole prompt, but to choose the next token it only samples from the logits of the newest position. That is why the inference loop keeps appending one token at a time instead of regenerating a full sequence.",
+        formula: `<span class="comment">// Decode loop</span><br>h₀...hₜ = Transformer(x₀...xₜ)<br>logits = W<sub>vocab</sub> · hₜ<br>xₜ₊₁ ~ sample(logits)<br><br><span class="comment">// Only the last hidden state matters for next-token prediction</span>`,
+        note: `<p>The hidden states for earlier tokens are byproducts. They were necessary to compute the last token once, but they do not need to be re-emitted as outputs on every generation step.</p>`,
+        render: renderDecodeLoop
+      },
+      {
+        title: "Inside Attention, the New Query Reads All Old Keys and Values",
+        desc: "For the newest token, each layer forms one new query vector Q[t]. That query scores against every previous key, then mixes the matching values. The old K/V tensors are still needed, but they have not changed.",
+        formula: `<span class="comment">// Last-row attention during decoding</span><br>scores[t] = Q[t] · K[0:t]ᵀ / √d<br>weights[t] = softmax(scores[t])<br>output[t] = weights[t] · V[0:t]<br><br><span class="comment">// Need: one fresh Q, all prior K and V</span>`,
+        note: `<p>KV caching does not remove attention itself. The model still attends over the full prefix. What it removes is the repeated projection of already-seen tokens into K and V at every decode step.</p>`,
+        render: renderAttentionRow
+      },
+      {
+        title: "Without a Cache, K and V Get Recomputed Again and Again",
+        desc: "If the model recomputes K and V for the full sequence at every generation step, decode cost grows as 1 + 2 + 3 + ... over the generated tokens. That is redundant because token 17 always produces the same K/V tensors as long as the prefix is unchanged.",
+        formula: `<span class="comment">// Naive decode</span><br>for step = 1..T:<br>&nbsp;&nbsp;recompute K,V for all prompt + generated tokens<br><br>Per-step K/V projections ≈ O(n)<br>Total extra projection work over generation ≈ O(n²)`,
+        note: `<p>The chart uses a six-token prompt and six generated tokens. Even in this tiny example, naive decode performs 51 token-level K/V projections versus 6 with caching.</p>`,
+        render: renderNoCacheWork
+      },
+      {
+        title: "With a KV Cache, Each Step Appends One New Entry",
+        desc: "The fix is simple: compute K and V once for each token, store them per layer, and append just the newest token's K/V on every decode step. The next query then reads from memory instead of redoing old projections.",
+        formula: `<span class="comment">// Cached decode</span><br>prefill(prompt) → cache K,V for every prompt token<br>for each new token:<br>&nbsp;&nbsp;compute Q,K,V for newest token only<br>&nbsp;&nbsp;append K,V to cache<br>&nbsp;&nbsp;attend Q against cached K,V`,
+        note: `<p>This is why serving stacks treat the cache as first-class runtime state. The model weights are static; the cache is the per-request memory that grows with context length.</p>`,
+        render: renderCacheAppend
+      },
+      {
+        title: "Prefill Creates Time-to-First-Token, Decode Streams Quickly",
+        desc: "The initial prompt must still be processed in one full prefill pass to build the cache. That is the expensive stage users feel as time-to-first-token. Once the cache is warm, the model switches to cheap single-token decode steps.",
+        formula: `<span class="comment">// Two inference phases</span><br>prefill: prompt length = N → build cache for N tokens<br>decode: 1 token per step → read cache + append 1 entry<br><br>TTFT is dominated by prefill cost`,
+        note: `<p>Long prompts increase latency before the first output token even if the rest of the response streams fast. Prompt caching and speculative decoding attack TTFT for exactly this reason.</p>`,
+        render: renderPrefillDecode
+      },
+      {
+        title: "The Tradeoff Is Compute Saved vs Memory Spent",
+        desc: "KV caching commonly yields around a 5× real-world decode speedup, but every request now carries a growing memory footprint. Longer contexts and more concurrent users make the cache, not the model weights, the bottleneck.",
+        formula: `<span class="comment">// Memory tradeoff</span><br>KV cache size ∝ layers × context × KV heads × head_dim × 2<br><br><span class="comment">// Common mitigation</span><br>MQA / GQA: share K,V across multiple query heads<br>Paged attention: manage cache in blocks`,
+        note: `<p>Grouped-query attention (GQA) and multi-query attention (MQA) are memory optimizations layered on top of KV caching. They keep the cache idea but reduce how many distinct K/V head sets must be stored.</p>`,
+        render: renderMemoryTradeoff
+      }
+    ];
+
+    let currentStep = 0;
+
+    function tokenHtml(token, kind = "prompt") {
+      return `<div class="token ${kind}">${token}</div>`;
+    }
+
+    function renderDecodeLoop() {
+      const viz = document.getElementById("vizArea");
+      viz.innerHTML = `
+        <div style="display:flex;flex-direction:column;justify-content:center;height:100%">
+          <div class="token-row">
+            ${promptTokens.slice(0, -1).map(token => tokenHtml(token)).join("")}
+            ${tokenHtml(promptTokens[promptTokens.length - 1], "active")}
+            <div class="arrow-line"></div>
+            ${tokenHtml("today", "generated")}
+          </div>
+          <div class="metric">
+            <strong>Last hidden state drives next token</strong>
+            <span>sample from logits(h<sub>t</sub>)</span>
+          </div>
+          <div style="margin-top:1rem" class="info-card">
+            <p>During generation, the sequence keeps growing on the right. The model re-enters the transformer for every appended token, which is why removing redundant work inside each layer matters so much.</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAttentionRow() {
+      const viz = document.getElementById("vizArea");
+      viz.innerHTML = `
+        <div style="display:flex;flex-direction:column;gap:0.95rem">
+          <div class="token-row">
+            ${promptTokens.map(token => tokenHtml(token, "prompt")).join("")}
+            ${generatedTokens.slice(0, 2).map(token => tokenHtml(token, "generated")).join("")}
+            ${tokenHtml("new", "active")}
+          </div>
+          <div class="qkv-strip">
+            <div class="vector-box">
+              <div class="vector-title">Newest Q</div>
+              <div style="font-family:ui-monospace,monospace;color:var(--coral)">[0.6, 1.1, -0.2]</div>
+            </div>
+            <div class="vector-box">
+              <div class="vector-title">All Keys K[0:t]</div>
+              <div style="display:flex;flex-wrap:wrap;gap:0.4rem">
+                ${["K0","K1","K2","K3","K4","K5","K6","K7","K8"].map(item => `<div class="token small prompt">${item}</div>`).join("")}
+              </div>
+            </div>
+            <div class="vector-box">
+              <div class="vector-title">All Values V[0:t]</div>
+              <div style="display:flex;flex-wrap:wrap;gap:0.4rem">
+                ${["V0","V1","V2","V3","V4","V5","V6","V7","V8"].map(item => `<div class="token small generated">${item}</div>`).join("")}
+              </div>
+            </div>
+          </div>
+          <div class="metric">
+            <strong>Need one fresh Q, not fresh old K/V</strong>
+            <span>the old tensors are identical to the previous step</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderNoCacheWork() {
+      const maxValue = cumulativeNoCache[cumulativeNoCache.length - 1];
+      const viz = document.getElementById("vizArea");
+      viz.innerHTML = `
+        <div class="table-like">
+          ${decodeSteps.map((step, index) => `
+            <div class="table-row">
+              <div>Decode ${step}</div>
+              <div class="bar-track">
+                <div class="bar-fill" style="width:${(cumulativeNoCache[index] / maxValue) * 100}%;background:linear-gradient(90deg,var(--coral),#ffb86c)"></div>
+              </div>
+              <div>${cumulativeNoCache[index]} total K/V token projections</div>
+            </div>
+          `).join("")}
+        </div>
+        <div style="margin-top:1rem" class="metric">
+          <strong>Naive cumulative work</strong>
+          <span>51 projections for 6 decode steps</span>
+        </div>
+      `;
+    }
+
+    function renderCacheAppend() {
+      const viz = document.getElementById("vizArea");
+      viz.innerHTML = `
+        <div>
+          <div class="token-row">
+            ${promptTokens.map(token => tokenHtml(token, "prompt")).join("")}
+          </div>
+          <div class="cache-grid">
+            ${promptTokens.map((token, index) => `
+              <div class="cache-cell">
+                <strong>${token}</strong>
+                K${index} / V${index}
+              </div>
+            `).join("")}
+            <div class="cache-cell" style="border-color:rgba(126,231,135,0.4);color:var(--accent)">
+              <strong>new</strong>
+              append K6 / V6
+            </div>
+          </div>
+          <div class="table-like" style="margin-top:1rem">
+            ${decodeSteps.map((step, index) => `
+              <div class="table-row">
+                <div>Decode ${step}</div>
+                <div class="bar-track">
+                  <div class="bar-fill" style="width:${(cumulativeCache[index] / cumulativeCache[cumulativeCache.length - 1]) * 100}%;background:linear-gradient(90deg,var(--accent),var(--blue))"></div>
+                </div>
+                <div>${cumulativeCache[index]} total new K/V projections</div>
+              </div>
+            `).join("")}
+          </div>
+          <div style="margin-top:1rem" class="metric">
+            <strong>Cached cumulative work</strong>
+            <span>6 projections for the same 6 decode steps</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderPrefillDecode() {
+      const viz = document.getElementById("vizArea");
+      viz.innerHTML = `
+        <div class="ttft-panel">
+          <div class="phase-bar">
+            <div class="phase-bar-top">
+              <strong>Prefill</strong>
+              <span>long prompt, build the cache once</span>
+            </div>
+            <div class="phase-track">
+              <div class="phase-fill" style="width:100%;background:linear-gradient(90deg,var(--yellow),var(--coral))"></div>
+            </div>
+          </div>
+          <div class="phase-bar">
+            <div class="phase-bar-top">
+              <strong>Decode token 1</strong>
+              <span>read cache + append 1 K/V entry</span>
+            </div>
+            <div class="phase-track">
+              <div class="phase-fill" style="width:22%;background:linear-gradient(90deg,var(--accent),var(--blue))"></div>
+            </div>
+          </div>
+          <div class="phase-bar">
+            <div class="phase-bar-top">
+              <strong>Decode token 2+</strong>
+              <span>same cheap cached pattern repeats</span>
+            </div>
+            <div class="phase-track">
+              <div class="phase-fill" style="width:18%;background:linear-gradient(90deg,var(--accent),var(--blue))"></div>
+            </div>
+          </div>
+          <div class="metric">
+            <strong>Why the first token feels slow</strong>
+            <span>TTFT is the prompt prefill, not the stream phase</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderMemoryTradeoff() {
+      const viz = document.getElementById("vizArea");
+      viz.innerHTML = `
+        <div class="table-like">
+          <div class="table-row">
+            <div>Standard MHA</div>
+            <div class="bar-track"><div class="bar-fill" style="width:100%;background:linear-gradient(90deg,var(--purple),var(--coral))"></div></div>
+            <div>1.00× KV memory</div>
+          </div>
+          <div class="table-row">
+            <div>GQA</div>
+            <div class="bar-track"><div class="bar-fill" style="width:35%;background:linear-gradient(90deg,var(--blue),var(--accent))"></div></div>
+            <div>~0.35× with shared KV groups</div>
+          </div>
+          <div class="table-row">
+            <div>MQA</div>
+            <div class="bar-track"><div class="bar-fill" style="width:16%;background:linear-gradient(90deg,var(--accent),#b3f6c3)"></div></div>
+            <div>~0.16× with one KV head set</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0.8rem;margin-top:1rem">
+          <div class="metric"><strong>Throughput</strong><span>~5× faster decode in practice</span></div>
+          <div class="metric"><strong>Constraint</strong><span>GPU memory per request rises with context</span></div>
+        </div>
+      `;
+    }
+
+    function renderStep() {
+      const step = STEPS[currentStep];
+      document.getElementById("stepCounter").textContent = `Step ${currentStep + 1} of ${STEPS.length}`;
+      document.getElementById("progressFill").style.width = `${((currentStep + 1) / STEPS.length) * 100}%`;
+      document.getElementById("stepTitle").textContent = step.title;
+      document.getElementById("stepDesc").textContent = step.desc;
+      document.getElementById("formulaBox").innerHTML = step.formula;
+      document.getElementById("noteBox").innerHTML = step.note;
+      step.render();
+      document.getElementById("prevBtn").disabled = currentStep === 0;
+      document.getElementById("nextBtn").disabled = currentStep === STEPS.length - 1;
+    }
+
+    function changeStep(delta) {
+      const next = currentStep + delta;
+      if (next < 0 || next >= STEPS.length) return;
+      currentStep = next;
+      renderStep();
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight") changeStep(1);
+      if (event.key === "ArrowLeft") changeStep(-1);
+    });
+
+    renderStep();
+  </script>
+</body>
+</html>

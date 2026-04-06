@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attention Mechanisms — Knowledge Vault</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117; --surface: #161b22; --border: #30363d;
+      --text: #e6edf3; --muted: #8b949e; --accent: #bc8cff;
+      --blue: #58a6ff; --coral: #f78166; --green: #3fb950; --yellow: #d29922;
+    }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+    nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.85rem 1.5rem; display: flex; align-items: center; gap: 1rem; }
+    nav a { color: var(--muted); text-decoration: none; font-size: 0.875rem; display: flex; align-items: center; gap: 0.4rem; }
+    nav a:hover { color: var(--accent); }
+    nav .sep { color: var(--border); }
+    nav .title { color: var(--text); font-weight: 600; font-size: 0.875rem; }
+    .tag { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); background: rgba(188,140,255,0.12); padding: 0.2rem 0.55rem; border-radius: 999px; }
+
+    main { flex: 1; max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; width: 100%; }
+    h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.55; }
+
+    .step-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .step-indicator { font-size: 0.8rem; color: var(--muted); }
+    .progress-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 1.5rem; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.4s ease; }
+
+    .step-title { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--accent); }
+    .step-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; max-width: 680px; }
+
+    .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem; }
+    @media (max-width: 640px) { .layout { grid-template-columns: 1fr; } }
+
+    .viz-area { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; min-height: 280px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .formula-box { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem 1.1rem; font-family: monospace; font-size: 0.82rem; color: var(--green); line-height: 1.75; }
+    .formula-box .comment { color: var(--muted); }
+
+    .heatmap-wrap { display: flex; flex-direction: column; gap: 4px; }
+    .heatmap-row { display: flex; gap: 4px; }
+    .heatmap-cell { width: 52px; height: 40px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-family: monospace; font-weight: 600; transition: all 0.4s; }
+    .heatmap-label { color: var(--muted); font-size: 11px; display: flex; align-items: center; justify-content: center; width: 52px; font-family: monospace; }
+
+    .token-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .token { padding: 0.4rem 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); font-size: 0.875rem; font-family: monospace; transition: all 0.3s; }
+    .token.q { border-color: var(--coral); color: var(--coral); }
+    .token.k { border-color: var(--blue); color: var(--blue); }
+    .token.v { border-color: var(--green); color: var(--green); }
+    .token.out { border-color: var(--accent); color: var(--accent); }
+
+    .matrix-row { display: flex; gap: 3px; }
+    .matrix-cell { width: 46px; height: 34px; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-family: monospace; }
+
+    .kv-cache-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+    .kv-token { padding: 6px 10px; border-radius: 6px; font-size: 12px; font-family: monospace; border: 1px solid; }
+
+    .controls { display: flex; align-items: center; gap: 1rem; }
+    .btn { padding: 0.55rem 1.25rem; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 0.875rem; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 0.4rem; }
+    .btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+    .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: #0d1117; font-weight: 600; }
+    .btn-primary:hover:not(:disabled) { background: #d0aaff; border-color: #d0aaff; color: #0d1117; }
+    .kbd { font-size: 0.7rem; color: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 0.1rem 0.35rem; font-family: monospace; }
+
+    .side-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 0.6rem; }
+
+    .comparison-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    .comparison-table th { text-align: left; color: var(--muted); font-weight: 600; padding: 0.4rem 0.6rem; border-bottom: 1px solid var(--border); }
+    .comparison-table td { padding: 0.4rem 0.6rem; border-bottom: 1px solid var(--border); color: var(--text); }
+    .comparison-table tr:last-child td { border-bottom: none; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    Home
+  </a>
+  <span class="sep">›</span>
+  <span class="title">Attention Mechanisms</span>
+  <div style="margin-left:auto"><span class="tag">Transformers</span></div>
+</nav>
+
+<main>
+  <h1>Attention Mechanisms</h1>
+  <p class="subtitle">From a simple dot-product to multi-head attention and KV caching — the building blocks of every modern language model and vision transformer.</p>
+
+  <div class="step-header">
+    <span class="step-indicator" id="stepCounter">Step 1 of 7</span>
+    <div style="display:flex;gap:0.5rem;align-items:center">
+      <span class="kbd">←</span><span class="kbd">→</span>
+      <span style="font-size:0.75rem;color:var(--muted)">navigate</span>
+    </div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+  <div class="step-title" id="stepTitle"></div>
+  <div class="step-desc" id="stepDesc"></div>
+
+  <div class="layout">
+    <div class="viz-area" id="vizArea"></div>
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+      <div>
+        <div class="side-label" id="sideLabel">Formula</div>
+        <div class="formula-box" id="formulaBox"></div>
+      </div>
+      <div id="extraPanel"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn" id="prevBtn" disabled onclick="changeStep(-1)">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+      Prev
+    </button>
+    <button class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">
+      Next
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+</main>
+
+<script>
+const tokens = ["I", "love", "AI"];
+const colors = { "I": "#f78166", "love": "#58a6ff", "AI": "#3fb950" };
+
+// Attention weights from the wiki numeric walkthrough
+const attnWeights = [
+  [0.070, 0.707, 0.223],
+  [0.333, 0.333, 0.333],
+  [0.168, 0.533, 0.299]
+];
+
+// Scores before softmax
+const rawScores = [
+  [1, 5, 3],
+  [3, 3, 3],
+  [2, 4, 3]
+];
+
+function weightToColor(w) {
+  // Interpolate from dark to purple
+  const r = Math.round(22 + w * (188 - 22));
+  const g = Math.round(27 + w * (140 - 27));
+  const b = Math.round(34 + w * (255 - 34));
+  return `rgb(${r},${g},${b})`;
+}
+
+function weightToTextColor(w) {
+  return w > 0.5 ? "#0d1117" : "#e6edf3";
+}
+
+const STEPS = [
+  {
+    title: "The Q, K, V Abstraction",
+    desc: 'Attention is a soft information retrieval system. Query (Q) = "what am I looking for". Keys (K) = "index labels". Values (V) = "actual content". Each token creates all three.',
+    formula: `<span class="comment">// Attention as retrieval:</span><br>Q = query: "what I need"<br>K = keys: "what each token offers"<br>V = values: "actual content"<br><br>Attention(Q,K,V) = softmax(QKᵀ/√d)·V`,
+    renderViz: renderQKVAbstraction,
+    extra: renderComparisonTable
+  },
+  {
+    title: "Step 1 — Input Embeddings",
+    desc: 'Each token in the sequence "I love AI" gets an embedding vector. These are the raw inputs X that will be projected into Q, K, V spaces.',
+    formula: `<span class="comment">// Token embeddings (d_emb = 4)</span><br>X = | 1  0  1  0 |  ← "I"<br>&nbsp;&nbsp;&nbsp;&nbsp;| 0  1  0  1 |  ← "love"<br>&nbsp;&nbsp;&nbsp;&nbsp;| 1  1  0  0 |  ← "AI"<br><br><span class="comment">// Shape: N×D = 3×4</span>`,
+    renderViz: renderEmbeddings
+  },
+  {
+    title: "Step 2 — Project to Q, K, V",
+    desc: "Three learned weight matrices (W_Q, W_K, W_V) project the embeddings into query, key, and value spaces. This gives each token its role in the attention computation.",
+    formula: `<span class="comment">// Linear projections</span><br>Q = X · W_Q &nbsp;<span class="comment">// shape: N×d_k</span><br>K = X · W_K &nbsp;<span class="comment">// shape: N×d_k</span><br>V = X · W_V &nbsp;<span class="comment">// shape: N×d_v</span><br><br>Q = | 2 0 1 |  K = | 0 1 1 |<br>&nbsp;&nbsp;&nbsp;&nbsp;| 0 2 1 |  &nbsp;&nbsp;&nbsp;&nbsp;| 2 1 1 |<br>&nbsp;&nbsp;&nbsp;&nbsp;| 1 1 1 |  &nbsp;&nbsp;&nbsp;&nbsp;| 1 1 1 |`,
+    renderViz: renderQKV
+  },
+  {
+    title: "Step 3 — Attention Scores (Q·Kᵀ / √d)",
+    desc: 'Compute the dot product of each query against every key, then scale by √d to prevent saturation. High score = "this query matches this key well".',
+    formula: `<span class="comment">// Scores = Q · Kᵀ / √d_k</span><br>√d_k = √3 ≈ 1.732<br><br>Scores:<br>| 0.58  2.89  1.73 |  ← "I"<br>| 1.73  1.73  1.73 |  ← "love"<br>| 1.15  2.31  1.73 |  ← "AI"<br><br><span class="comment">// "I" scores 2.89 toward "love"</span>`,
+    renderViz: renderScores
+  },
+  {
+    title: "Step 4 — Softmax → Attention Weights",
+    desc: 'Softmax converts raw scores into probabilities that sum to 1 per row. "I" pays 70.7% attention to "love" — the model has learned this relationship.',
+    formula: `<span class="comment">// Row-wise softmax</span><br>Weights:<br>| 0.070  0.707  0.223 |  ← "I"<br>| 0.333  0.333  0.333 |  ← "love"<br>| 0.168  0.533  0.299 |  ← "AI"<br><br><span class="comment">// Each row sums to 1.0 ✓</span>`,
+    renderViz: renderHeatmap
+  },
+  {
+    title: "Step 5 — Weighted Sum of Values → Output",
+    desc: "The output for each token is a weighted blend of all value vectors. 'I' is now heavily influenced by 'love' — giving each token global context.",
+    formula: `<span class="comment">// Output = Weights · V</span><br>Y = | 1.000  1.637  0.070 |  ← "I"<br>&nbsp;&nbsp;&nbsp;&nbsp;| 1.000  1.000  0.333 |  ← "love"<br>&nbsp;&nbsp;&nbsp;&nbsp;| 1.000  1.365  0.168 |  ← "AI"<br><br><span class="comment">// Each token is context-aware</span>`,
+    renderViz: renderOutput
+  },
+  {
+    title: "Multi-Head Attention & KV Cache",
+    desc: "Multi-head attention runs H attention heads in parallel, each learning different relationships. KV caching stores computed K and V vectors to avoid recomputation at each generation step.",
+    formula: `<span class="comment">// Multi-head attention</span><br>MultiHead = Concat(h₁,...,hH)·Wₒ<br>hᵢ = Attention(Q·Wᵢᵠ, K·Wᵢᴷ, V·Wᵢᵛ)<br><br><span class="comment">// KV Cache: store K,V per token</span><br>Token t+1: only compute Q[t+1]<br>Retrieve K[0..t], V[0..t] from cache<br>~5× speedup vs recomputing`,
+    renderViz: renderMultiHead,
+    extra: renderKVCache
+  }
+];
+
+let currentStep = 0;
+
+function renderQKVAbstraction() {
+  const viz = document.getElementById("vizArea");
+  viz.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:14px;align-items:center;width:100%">
+      <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Information Retrieval Analogy</div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        ${[
+          {key:"Q", label:"Query", desc:"What am I looking for?", color:"var(--coral)"},
+          {key:"K", label:"Keys", desc:"Index for each item", color:"var(--blue)"},
+          {key:"V", label:"Values", desc:"Actual content stored", color:"var(--green)"}
+        ].map(x => `
+          <div style="background:#0d1117;border:1px solid ${x.color}30;border-radius:10px;padding:12px 14px;text-align:center;min-width:90px">
+            <div style="font-size:1.4rem;font-weight:700;color:${x.color};margin-bottom:4px">${x.key}</div>
+            <div style="font-size:11px;font-weight:600;color:${x.color}">${x.label}</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:4px;line-height:1.4">${x.desc}</div>
+          </div>
+        `).join("")}
+      </div>
+      <div style="font-size:12px;font-family:monospace;color:var(--accent);background:#0d1117;padding:8px 14px;border-radius:8px;border:1px solid var(--border)">
+        Attention(Q,K,V) = softmax(QKᵀ/√d)·V
+      </div>
+      <div style="font-size:11px;color:var(--muted);text-align:center;max-width:240px;line-height:1.5">
+        Q·Kᵀ measures similarity → softmax → probability weights → weighted sum of V
+      </div>
+    </div>
+  `;
+}
+
+function renderComparisonTable() {
+  document.getElementById("extraPanel").innerHTML = `
+    <div class="side-label">Sequence Models Compared</div>
+    <table class="comparison-table">
+      <thead><tr><th>Method</th><th>Compute</th><th>Parallel?</th></tr></thead>
+      <tbody>
+        <tr><td>RNN</td><td style="color:var(--coral)">O(N)</td><td style="color:var(--coral)">✗ No</td></tr>
+        <tr><td>CNN</td><td style="color:var(--yellow)">O(N)</td><td style="color:var(--green)">✓ Yes</td></tr>
+        <tr><td style="color:var(--accent)">Self-Attention</td><td style="color:var(--yellow)">O(N²)</td><td style="color:var(--green)">✓ Yes</td></tr>
+      </tbody>
+    </table>
+  `;
+}
+
+function renderEmbeddings() {
+  const viz = document.getElementById("vizArea");
+  const rows = [
+    ["1","0","1","0"],
+    ["0","1","0","1"],
+    ["1","1","0","0"],
+  ];
+  viz.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:12px;align-items:center;width:100%">
+      <div class="side-label">Input Embeddings X (3×4)</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        ${tokens.map((tok, i) => `
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="token" style="border-color:${colors[tok]};color:${colors[tok]};min-width:52px;text-align:center">"${tok}"</div>
+            <div style="display:flex;gap:4px">
+              ${rows[i].map(v => `
+                <div style="width:36px;height:30px;background:#0d1117;border:1px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:12px;font-family:monospace;color:var(--text)">${v}</div>
+              `).join("")}
+            </div>
+          </div>
+        `).join("")}
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-top:6px">Each row = embedding for one token (d_emb = 4)</div>
+    </div>
+  `;
+}
+
+function renderQKV() {
+  const viz = document.getElementById("vizArea");
+  viz.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:10px;align-items:center;width:100%">
+      <div class="side-label">Q, K, V Matrices (3×3)</div>
+      <div style="display:flex;gap:16px;justify-content:center">
+        ${[
+          {label:"Q", color:"var(--coral)", rows:[[2,0,1],[0,2,1],[1,1,1]]},
+          {label:"K", color:"var(--blue)", rows:[[0,1,1],[2,1,1],[1,1,1]]},
+          {label:"V", color:"var(--green)", rows:[[1,0,1],[1,2,0],[1,1,0]]},
+        ].map(m => `
+          <div style="display:flex;flex-direction:column;gap:5px;align-items:center">
+            <div style="font-size:13px;font-weight:700;color:${m.color};font-family:monospace">${m.label}</div>
+            ${m.rows.map((row, ri) => `
+              <div style="display:flex;gap:3px">
+                ${row.map(v => `
+                  <div style="width:28px;height:24px;background:${m.color}18;border:1px solid ${m.color}40;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:11px;font-family:monospace;color:${m.color}">${v}</div>
+                `).join("")}
+              </div>
+            `).join("")}
+            <div style="font-size:9px;color:var(--muted)">× W_${m.label}</div>
+          </div>
+        `).join("")}
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-top:4px;text-align:center">Same input X → 3 different linear projections</div>
+    </div>
+  `;
+}
+
+function renderScores() {
+  const viz = document.getElementById("vizArea");
+  viz.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:10px;align-items:center;width:100%">
+      <div class="side-label">Attention Scores (Q·Kᵀ / √3)</div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <div style="display:flex;gap:4px;margin-left:52px">
+          ${tokens.map(t => `<div style="width:52px;text-align:center;font-size:11px;color:${colors[t]};font-family:monospace">"${t}"</div>`).join("")}
+        </div>
+        ${tokens.map((tok, i) => `
+          <div style="display:flex;align-items:center;gap:4px">
+            <div class="token" style="border-color:${colors[tok]};color:${colors[tok]};width:52px;text-align:center;font-size:12px">"${tok}"</div>
+            ${rawScores[i].map((s, j) => {
+              const scaled = (s / Math.sqrt(3)).toFixed(2);
+              const intensity = s / 5;
+              return `<div style="width:52px;height:38px;background:rgba(188,140,255,${intensity * 0.5});border:1px solid rgba(188,140,255,${intensity * 0.4});border-radius:5px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;font-family:monospace">
+                <span style="color:var(--text);font-size:11px;font-weight:600">${scaled}</span>
+              </div>`;
+            }).join("")}
+          </div>
+        `).join("")}
+      </div>
+      <div style="font-size:10px;color:var(--muted)">Brighter = higher score (more attention)</div>
+    </div>
+  `;
+}
+
+function renderHeatmap() {
+  const viz = document.getElementById("vizArea");
+  viz.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:10px;align-items:center;width:100%">
+      <div class="side-label">Attention Weights (after softmax)</div>
+      <div class="heatmap-wrap">
+        <div class="heatmap-row">
+          <div style="width:52px"></div>
+          ${tokens.map(t => `<div class="heatmap-label" style="color:${colors[t]}">"${t}"</div>`).join("")}
+        </div>
+        ${tokens.map((tok, i) => `
+          <div class="heatmap-row">
+            <div class="heatmap-label" style="color:${colors[tok]}">"${tok}"</div>
+            ${attnWeights[i].map((w, j) => `
+              <div class="heatmap-cell" style="background:${weightToColor(w)};color:${weightToTextColor(w)}">${w.toFixed(3)}</div>
+            `).join("")}
+          </div>
+        `).join("")}
+      </div>
+      <div style="font-size:10px;color:var(--muted);">"I" → "love": <span style="color:var(--accent);font-weight:700">70.7%</span> attention weight</div>
+    </div>
+  `;
+}
+
+function renderOutput() {
+  const viz = document.getElementById("vizArea");
+  const outputs = [
+    [1.000, 1.637, 0.070],
+    [1.000, 1.000, 0.333],
+    [1.000, 1.365, 0.168],
+  ];
+  viz.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:10px;align-items:center;width:100%">
+      <div class="side-label">Output = Weights × V (context-aware)</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        ${tokens.map((tok, i) => `
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="token out" style="min-width:52px;text-align:center">"${tok}"</div>
+            <div style="display:flex;gap:4px">
+              ${outputs[i].map(v => `
+                <div style="width:46px;height:30px;background:rgba(188,140,255,0.12);border:1px solid rgba(188,140,255,0.3);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-family:monospace;color:var(--accent)">${v.toFixed(3)}</div>
+              `).join("")}
+            </div>
+          </div>
+        `).join("")}
+      </div>
+      <div style="font-size:10px;color:var(--muted);text-align:center;max-width:260px;line-height:1.4">Each token now encodes context from all others. "I" is shaped by "love".</div>
+    </div>
+  `;
+}
+
+function renderMultiHead() {
+  const viz = document.getElementById("vizArea");
+  const heads = ["Head 1", "Head 2", "Head 3", "Head 4"];
+  viz.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:12px;align-items:center;width:100%">
+      <div class="side-label">Multi-Head Attention (H=4 heads)</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+        ${heads.map((h, i) => `
+          <div style="background:#0d1117;border:1px solid rgba(188,140,255,0.3);border-radius:8px;padding:10px 12px;text-align:center;min-width:72px">
+            <div style="font-size:10px;color:var(--muted);margin-bottom:5px">${h}</div>
+            <div style="display:flex;flex-direction:column;gap:2px">
+              <div style="height:6px;border-radius:3px;background:rgba(247,129,102,0.5)"></div>
+              <div style="height:6px;border-radius:3px;background:rgba(88,166,255,0.5)"></div>
+              <div style="height:6px;border-radius:3px;background:rgba(63,185,80,0.5)"></div>
+            </div>
+            <div style="font-size:9px;color:var(--accent);margin-top:5px">Q,K,V</div>
+          </div>
+        `).join("")}
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <div style="width:40px;height:1px;background:var(--border)"></div>
+        <div style="font-size:10px;color:var(--muted)">Concat + Wₒ</div>
+        <div style="width:40px;height:1px;background:var(--border)"></div>
+      </div>
+      <div style="background:rgba(188,140,255,0.12);border:1px solid rgba(188,140,255,0.35);border-radius:8px;padding:8px 20px;font-size:12px;color:var(--accent);font-family:monospace">
+        Output (N × d_model)
+      </div>
+    </div>
+  `;
+}
+
+function renderKVCache() {
+  document.getElementById("extraPanel").innerHTML = `
+    <div class="side-label">KV Cache in Action</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:8px">Generating token by token:</div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      ${[
+        {token: '"I"', cached: [], new: true},
+        {token: '"love"', cached: ['"I"'], new: true},
+        {token: '"AI"', cached: ['"I"', '"love"'], new: true},
+        {token: '"!"', cached: ['"I"', '"love"', '"AI"'], new: true},
+      ].map(step => `
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          <div style="font-size:10px;color:var(--muted);width:30px">t=${["1","2","3","4"][['"I"','"love"','"AI"','"!"'].indexOf(step.token)]}:</div>
+          ${step.cached.map(t => `<div class="kv-token" style="border-color:var(--blue);color:var(--blue)">${t} K,V</div>`).join("")}
+          <div class="kv-token" style="border-color:var(--coral);color:var(--coral)">${step.token} new</div>
+        </div>
+      `).join("")}
+    </div>
+    <div style="font-size:10px;color:var(--green);margin-top:8px">✓ Only compute K,V once per token → ~5× speedup</div>
+  `;
+}
+
+function updateUI() {
+  const step = STEPS[currentStep];
+  document.getElementById("stepCounter").textContent = `Step ${currentStep + 1} of ${STEPS.length}`;
+  document.getElementById("progressFill").style.width = `${((currentStep + 1) / STEPS.length) * 100}%`;
+  document.getElementById("stepTitle").textContent = step.title;
+  document.getElementById("stepDesc").textContent = step.desc;
+  document.getElementById("formulaBox").innerHTML = step.formula;
+  document.getElementById("prevBtn").disabled = currentStep === 0;
+  document.getElementById("nextBtn").disabled = currentStep === STEPS.length - 1;
+  document.getElementById("sideLabel").textContent = "Formula";
+  document.getElementById("extraPanel").innerHTML = "";
+
+  step.renderViz();
+  if (step.extra) step.extra();
+}
+
+function changeStep(delta) {
+  const next = currentStep + delta;
+  if (next < 0 || next >= STEPS.length) return;
+  currentStep = next;
+  updateUI();
+}
+
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowRight") changeStep(1);
+  if (e.key === "ArrowLeft") changeStep(-1);
+});
+
+updateUI();
+</script>
+</body>
+</html>

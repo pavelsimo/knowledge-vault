@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How YOLO Works — Knowledge Vault</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117; --surface: #161b22; --border: #30363d;
+      --text: #e6edf3; --muted: #8b949e; --accent: #f78166;
+      --blue: #58a6ff; --green: #3fb950; --yellow: #d29922; --purple: #bc8cff;
+    }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+    nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.85rem 1.5rem; display: flex; align-items: center; gap: 1rem; }
+    nav a { color: var(--muted); text-decoration: none; font-size: 0.875rem; display: flex; align-items: center; gap: 0.4rem; }
+    nav a:hover { color: var(--accent); }
+    nav .sep { color: var(--border); }
+    nav .title { color: var(--text); font-weight: 600; font-size: 0.875rem; }
+    .tag { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); background: rgba(247,129,102,0.12); padding: 0.2rem 0.55rem; border-radius: 999px; }
+
+    main { flex: 1; max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; width: 100%; }
+    h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.55; }
+
+    .step-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .step-indicator { font-size: 0.8rem; color: var(--muted); }
+    .progress-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 1.5rem; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.4s ease; }
+
+    .step-title { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--accent); }
+    .step-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; max-width: 680px; }
+
+    .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem; }
+    @media (max-width: 640px) { .layout { grid-template-columns: 1fr; } }
+
+    .viz-area { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; display: flex; align-items: center; justify-content: center; min-height: 280px; }
+    .info-area { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; }
+
+    .formula-box { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem 1.1rem; font-family: monospace; font-size: 0.82rem; color: var(--green); line-height: 1.75; }
+    .formula-box .comment { color: var(--muted); }
+
+    .info-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 0.2rem; }
+    .info-value { font-size: 0.875rem; color: var(--text); }
+
+    .controls { display: flex; align-items: center; gap: 1rem; }
+    .btn { padding: 0.55rem 1.25rem; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 0.875rem; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 0.4rem; }
+    .btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+    .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: #0d1117; font-weight: 600; }
+    .btn-primary:hover:not(:disabled) { background: #ff9982; border-color: #ff9982; color: #0d1117; }
+    .kbd { font-size: 0.7rem; color: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 0.1rem 0.35rem; font-family: monospace; }
+
+    .version-row { display: flex; gap: 0.75rem; margin-bottom: 1rem; }
+    .version-badge { font-size: 0.72rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 6px; border: 1px solid var(--border); color: var(--muted); }
+    .version-badge.active { border-color: var(--accent); color: var(--accent); background: rgba(247,129,102,0.1); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    Home
+  </a>
+  <span class="sep">›</span>
+  <span class="title">How YOLO Works</span>
+  <div style="margin-left:auto"><span class="tag">Object Detection</span></div>
+</nav>
+
+<main>
+  <h1>How YOLO Works</h1>
+  <p class="subtitle">"You Only Look Once" — a single forward pass predicts all bounding boxes and class probabilities simultaneously, making real-time detection possible.</p>
+
+  <div class="step-header">
+    <span class="step-indicator" id="stepCounter">Step 1 of 7</span>
+    <div style="display:flex;gap:0.5rem;align-items:center">
+      <span class="kbd">←</span><span class="kbd">→</span>
+      <span style="font-size:0.75rem;color:var(--muted)">navigate</span>
+    </div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+  <div class="step-title" id="stepTitle"></div>
+  <div class="step-desc" id="stepDesc"></div>
+
+  <div class="layout">
+    <div class="viz-area">
+      <canvas id="mainCanvas" width="320" height="240" style="border-radius:8px;max-width:100%"></canvas>
+    </div>
+    <div class="info-area">
+      <div>
+        <div class="info-label">Architecture</div>
+        <div class="version-row" id="versionRow">
+          <span class="version-badge active">YOLOv1</span>
+          <span class="version-badge">YOLOv5</span>
+          <span class="version-badge">YOLOv8</span>
+        </div>
+      </div>
+      <div class="formula-box" id="formulaBox"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn" id="prevBtn" disabled onclick="changeStep(-1)">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+      Prev
+    </button>
+    <button class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">
+      Next
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+</main>
+
+<script>
+const canvas = document.getElementById("mainCanvas");
+const ctx = canvas.getContext("2d");
+
+const W = canvas.width, H = canvas.height;
+const GRID = 7; // S×S grid
+const CW = W / GRID, CH = H / GRID;
+
+// Simulated objects in the image
+const objects = [
+  { cx: 0.25, cy: 0.35, w: 0.28, h: 0.45, label: "cat", color: "#58a6ff", conf: 0.92 },
+  { cx: 0.72, cy: 0.55, w: 0.35, h: 0.55, label: "dog", color: "#3fb950", conf: 0.87 },
+];
+
+const STEPS = [
+  {
+    title: "Step 0 — Input Image",
+    desc: "YOLO takes a full image as input. Unlike two-stage detectors (R-CNN), there's no region proposal step — the image goes directly into a CNN backbone.",
+    formula: `<span class="comment">// Input: single image</span><br>Image: 640×640×3 &nbsp;<span class="comment">// typical YOLOv8</span><br>Backbone: CSPDarknet53<br>One forward pass → all detections`,
+    draw: drawImage
+  },
+  {
+    title: "Step 1 — Divide into S×S Grid",
+    desc: "YOLO divides the image into an S×S grid (7×7 in YOLOv1). Each cell is responsible for detecting objects whose center falls within that cell.",
+    formula: `<span class="comment">// Grid division (YOLOv1)</span><br>S = 7 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// 7×7 = 49 cells</span><br>Each cell responsible for<br>objects whose center falls in it`,
+    draw: drawGrid
+  },
+  {
+    title: "Step 2 — Bounding Box Predictions",
+    desc: "Each cell predicts B bounding boxes. Each box has 5 values: (x, y, w, h) relative to the cell, plus an objectness confidence score.",
+    formula: `<span class="comment">// Each cell predicts B boxes:</span><br>box = (x, y, w, h, conf)<br>x, y: center offset from cell<br>w, h: fraction of full image<br>conf = P(object) × IoU(pred, gt)`,
+    draw: drawBoxPredictions
+  },
+  {
+    title: "Step 3 — Class Probabilities",
+    desc: "Each cell also predicts C class probabilities — one per class (e.g., dog, cat, car). Final class-specific confidence = box confidence × class probability.",
+    formula: `<span class="comment">// Class prediction per cell:</span><br>P(class_i | object) → C values<br>Final score:<br>conf × P(class | obj) = P(class) × IoU`,
+    draw: drawClassPred
+  },
+  {
+    title: "Step 4 — Raw Predictions (All Boxes)",
+    desc: "Combining B boxes per cell and S×S cells gives S²×B total candidate boxes — many of them overlapping and with low confidence. We need to filter them.",
+    formula: `<span class="comment">// Total raw predictions:</span><br>YOLOv1: 7×7×2 = 98 boxes<br>YOLOv5: 3 anchors × 3 scales<br>YOLOv8: anchor-free, 8400 points`,
+    draw: drawAllBoxes
+  },
+  {
+    title: "Step 5 — Non-Maximum Suppression (NMS)",
+    desc: "NMS removes duplicate detections: keep the box with the highest confidence, discard any box that overlaps it by more than IoU threshold (e.g., 0.5).",
+    formula: `<span class="comment">// NMS algorithm:</span><br>1. Sort boxes by confidence ↓<br>2. Keep highest-conf box<br>3. Remove overlapping boxes (IoU > 0.5)<br>4. Repeat for remaining boxes`,
+    draw: drawNMS
+  },
+  {
+    title: "Step 6 — Final Detections",
+    desc: "After NMS, we get clean, non-overlapping detections. Each has a class label, bounding box, and confidence score — ready for downstream use.",
+    formula: `<span class="comment">// Final output per detection:</span><br>{ label: "cat", conf: 0.92,<br>&nbsp;&nbsp;bbox: [x, y, w, h] }<br>{ label: "dog", conf: 0.87,<br>&nbsp;&nbsp;bbox: [x, y, w, h] }`,
+    draw: drawFinal
+  }
+];
+
+let currentStep = 0;
+let animFrame = null;
+
+function drawBackground() {
+  // Dark gradient "image" background
+  const grad = ctx.createLinearGradient(0, 0, W, H);
+  grad.addColorStop(0, "#1c2128");
+  grad.addColorStop(1, "#161b22");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  // Simulated scene shapes
+  ctx.fillStyle = "#21262d";
+  ctx.fillRect(0, H * 0.65, W, H * 0.35); // ground
+  ctx.fillStyle = "#1c2128";
+  ctx.beginPath();
+  ctx.arc(W * 0.5, H * 0.3, 80, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function drawImage() {
+  drawBackground();
+  // Just show the raw image
+  ctx.fillStyle = "rgba(88,166,255,0.08)";
+  ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = "#58a6ff";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(2, 2, W-4, H-4);
+
+  ctx.fillStyle = "#8b949e";
+  ctx.font = "14px system-ui";
+  ctx.textAlign = "center";
+  ctx.fillText("Input Image (640×640)", W/2, H/2 - 8);
+  ctx.font = "11px system-ui";
+  ctx.fillText("Full image → CNN backbone", W/2, H/2 + 12);
+}
+
+function drawGrid() {
+  drawBackground();
+  ctx.strokeStyle = "#58a6ff";
+  ctx.lineWidth = 0.75;
+  ctx.globalAlpha = 0.35;
+  for (let i = 1; i < GRID; i++) {
+    ctx.beginPath(); ctx.moveTo(i * CW, 0); ctx.lineTo(i * CW, H); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, i * CH); ctx.lineTo(W, i * CH); ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+
+  // Highlight cells that contain object centers
+  for (const obj of objects) {
+    const col = Math.floor(obj.cx * GRID);
+    const row = Math.floor(obj.cy * GRID);
+    ctx.fillStyle = obj.color + "28";
+    ctx.fillRect(col * CW, row * CH, CW, CH);
+    ctx.strokeStyle = obj.color;
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(col * CW, row * CH, CW, CH);
+
+    // Center dot
+    ctx.beginPath();
+    ctx.arc(obj.cx * W, obj.cy * H, 4, 0, Math.PI * 2);
+    ctx.fillStyle = obj.color;
+    ctx.fill();
+  }
+}
+
+function drawBoxPredictions() {
+  drawBackground();
+  // Faint grid
+  ctx.strokeStyle = "#30363d";
+  ctx.lineWidth = 0.5;
+  ctx.globalAlpha = 0.4;
+  for (let i = 1; i < GRID; i++) {
+    ctx.beginPath(); ctx.moveTo(i * CW, 0); ctx.lineTo(i * CW, H); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, i * CH); ctx.lineTo(W, i * CH); ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+
+  // Draw predicted boxes around objects (slightly off for realism)
+  const preds = [
+    { cx: objects[0].cx, cy: objects[0].cy, w: objects[0].w * 1.15, h: objects[0].h * 1.1, color: objects[0].color },
+    { cx: objects[0].cx * 0.98, cy: objects[0].cy * 1.03, w: objects[0].w * 0.9, h: objects[0].h * 0.95, color: objects[0].color + "80" },
+    { cx: objects[1].cx, cy: objects[1].cy, w: objects[1].w * 1.1, h: objects[1].h * 1.05, color: objects[1].color },
+    { cx: objects[1].cx * 1.02, cy: objects[1].cy * 0.97, w: objects[1].w * 0.92, h: objects[1].h * 1.0, color: objects[1].color + "80" },
+  ];
+
+  for (const p of preds) {
+    const x = (p.cx - p.w / 2) * W, y = (p.cy - p.h / 2) * H;
+    const bw = p.w * W, bh = p.h * H;
+    ctx.strokeStyle = p.color;
+    ctx.lineWidth = p.color.length > 7 ? 1 : 2;
+    ctx.setLineDash(p.color.length > 7 ? [4, 3] : []);
+    ctx.strokeRect(x, y, bw, bh);
+    ctx.setLineDash([]);
+  }
+
+  // x,y labels
+  for (const obj of objects) {
+    ctx.beginPath();
+    ctx.arc(obj.cx * W, obj.cy * H, 4, 0, Math.PI * 2);
+    ctx.fillStyle = obj.color;
+    ctx.fill();
+    ctx.fillStyle = obj.color;
+    ctx.font = "bold 11px monospace";
+    ctx.fillText("(x,y)", obj.cx * W + 7, obj.cy * H - 5);
+  }
+}
+
+function drawClassPred() {
+  drawBackground();
+  // Draw ground-truth-like boxes
+  for (const obj of objects) {
+    const x = (obj.cx - obj.w / 2) * W, y = (obj.cy - obj.h / 2) * H;
+    ctx.strokeStyle = obj.color;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x, y, obj.w * W, obj.h * H);
+
+    // Class label chip
+    ctx.fillStyle = obj.color;
+    ctx.fillRect(x, y - 20, obj.label.length * 8 + 20, 18);
+    ctx.fillStyle = "#0d1117";
+    ctx.font = "bold 10px system-ui";
+    ctx.textAlign = "left";
+    ctx.fillText(`${obj.label}`, x + 5, y - 7);
+
+    // Confidence bar
+    const barW = 60;
+    ctx.fillStyle = "#30363d";
+    ctx.fillRect(x, y + obj.h * H + 5, barW, 6);
+    ctx.fillStyle = obj.color;
+    ctx.fillRect(x, y + obj.h * H + 5, barW * obj.conf, 6);
+    ctx.fillStyle = "#8b949e";
+    ctx.font = "9px monospace";
+    ctx.fillText(`${Math.round(obj.conf * 100)}%`, x + barW + 4, y + obj.h * H + 12);
+  }
+  ctx.textAlign = "center";
+}
+
+function drawAllBoxes() {
+  drawBackground();
+  // Draw many overlapping predicted boxes to show raw output
+  const rawBoxes = [];
+  for (const obj of objects) {
+    for (let i = 0; i < 5; i++) {
+      rawBoxes.push({
+        cx: obj.cx + (Math.random() - 0.5) * 0.12,
+        cy: obj.cy + (Math.random() - 0.5) * 0.1,
+        w: obj.w + (Math.random() - 0.5) * 0.12,
+        h: obj.h + (Math.random() - 0.5) * 0.1,
+        color: obj.color,
+        conf: 0.3 + Math.random() * 0.65
+      });
+    }
+  }
+  // Low-confidence random boxes
+  for (let i = 0; i < 10; i++) {
+    rawBoxes.push({ cx: Math.random(), cy: Math.random(), w: 0.1 + Math.random() * 0.25, h: 0.1 + Math.random() * 0.25, color: "#8b949e", conf: Math.random() * 0.25 });
+  }
+
+  for (const b of rawBoxes) {
+    const x = (b.cx - b.w / 2) * W, y = (b.cy - b.h / 2) * H;
+    ctx.strokeStyle = b.color + "60";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x, y, b.w * W, b.h * H);
+  }
+
+  ctx.fillStyle = "#f78166";
+  ctx.font = "bold 11px system-ui";
+  ctx.textAlign = "center";
+  ctx.fillText(`${rawBoxes.length} raw predictions`, W/2, H - 10);
+  ctx.textAlign = "left";
+}
+
+function drawNMS() {
+  drawBackground();
+  // Show boxes being suppressed
+  const keep = objects.map(o => ({...o}));
+  const suppressed = objects.map(o => ({
+    cx: o.cx + 0.04, cy: o.cy + 0.03, w: o.w * 0.9, h: o.h * 0.92, color: o.color + "40"
+  }));
+
+  for (const b of suppressed) {
+    const x = (b.cx - b.w / 2) * W, y = (b.cy - b.h / 2) * H;
+    ctx.strokeStyle = b.color;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.strokeRect(x, y, b.w * W, b.h * H);
+    // X mark
+    ctx.strokeStyle = "#f78166" + "80";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(b.cx * W - 8, b.cy * H - 8);
+    ctx.lineTo(b.cx * W + 8, b.cy * H + 8);
+    ctx.moveTo(b.cx * W + 8, b.cy * H - 8);
+    ctx.lineTo(b.cx * W - 8, b.cy * H + 8);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  for (const obj of keep) {
+    const x = (obj.cx - obj.w / 2) * W, y = (obj.cy - obj.h / 2) * H;
+    ctx.strokeStyle = obj.color;
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(x, y, obj.w * W, obj.h * H);
+    // Checkmark
+    ctx.strokeStyle = "#3fb950";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(obj.cx * W - 8, obj.cy * H);
+    ctx.lineTo(obj.cx * W - 2, obj.cy * H + 6);
+    ctx.lineTo(obj.cx * W + 8, obj.cy * H - 6);
+    ctx.stroke();
+  }
+
+  ctx.fillStyle = "#3fb950";
+  ctx.font = "bold 10px system-ui";
+  ctx.textAlign = "center";
+  ctx.fillText("✓ kept  ✗ suppressed (IoU > 0.5)", W/2, H - 10);
+  ctx.textAlign = "left";
+}
+
+function drawFinal() {
+  drawBackground();
+  for (const obj of objects) {
+    const x = (obj.cx - obj.w / 2) * W, y = (obj.cy - obj.h / 2) * H;
+    const bw = obj.w * W, bh = obj.h * H;
+    ctx.strokeStyle = obj.color;
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(x, y, bw, bh);
+
+    // Label chip
+    const labelW = obj.label.length * 8 + 50;
+    ctx.fillStyle = obj.color;
+    ctx.beginPath();
+    ctx.roundRect(x, y - 22, labelW, 20, 4);
+    ctx.fill();
+    ctx.fillStyle = "#0d1117";
+    ctx.font = "bold 10px system-ui";
+    ctx.textAlign = "left";
+    ctx.fillText(`${obj.label} ${Math.round(obj.conf * 100)}%`, x + 6, y - 7);
+  }
+
+  ctx.fillStyle = "#3fb950";
+  ctx.font = "bold 11px system-ui";
+  ctx.textAlign = "center";
+  ctx.fillText(`${objects.length} clean detections`, W/2, H - 10);
+  ctx.textAlign = "left";
+}
+
+function updateUI() {
+  const step = STEPS[currentStep];
+  document.getElementById("stepCounter").textContent = `Step ${currentStep + 1} of ${STEPS.length}`;
+  document.getElementById("progressFill").style.width = `${((currentStep + 1) / STEPS.length) * 100}%`;
+  document.getElementById("stepTitle").textContent = step.title;
+  document.getElementById("stepDesc").textContent = step.desc;
+  document.getElementById("formulaBox").innerHTML = step.formula;
+  document.getElementById("prevBtn").disabled = currentStep === 0;
+  document.getElementById("nextBtn").disabled = currentStep === STEPS.length - 1;
+
+  // Version badges
+  const badges = document.querySelectorAll(".version-badge");
+  const activeMap = [0, 0, 0, 0, 1, 2, 2];
+  badges.forEach((b, i) => b.classList.toggle("active", i === (activeMap[currentStep] ?? 0)));
+
+  ctx.clearRect(0, 0, W, H);
+  step.draw();
+}
+
+function changeStep(delta) {
+  const next = currentStep + delta;
+  if (next < 0 || next >= STEPS.length) return;
+  currentStep = next;
+  updateUI();
+}
+
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowRight") changeStep(1);
+  if (e.key === "ArrowLeft") changeStep(-1);
+});
+
+updateUI();
+</script>
+</body>
+</html>

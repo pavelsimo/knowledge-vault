@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Optimization Algorithms — Knowledge Vault</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117; --surface: #161b22; --border: #30363d;
+      --text: #e6edf3; --muted: #8b949e; --accent: #3fb950;
+      --blue: #58a6ff; --coral: #f78166; --yellow: #d29922; --purple: #bc8cff;
+    }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+    nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.85rem 1.5rem; display: flex; align-items: center; gap: 1rem; }
+    nav a { color: var(--muted); text-decoration: none; font-size: 0.875rem; display: flex; align-items: center; gap: 0.4rem; }
+    nav a:hover { color: var(--accent); }
+    nav .sep { color: var(--border); }
+    nav .title { color: var(--text); font-weight: 600; font-size: 0.875rem; }
+    .tag { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); background: rgba(63,185,80,0.12); padding: 0.2rem 0.55rem; border-radius: 999px; }
+
+    main { flex: 1; max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; width: 100%; }
+    h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.55; }
+
+    .step-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .step-indicator { font-size: 0.8rem; color: var(--muted); }
+    .progress-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 1.5rem; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.4s ease; }
+
+    .step-title { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--accent); }
+    .step-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; max-width: 680px; }
+
+    .layout { display: grid; grid-template-columns: 3fr 2fr; gap: 1.25rem; margin-bottom: 1.5rem; }
+    @media (max-width: 640px) { .layout { grid-template-columns: 1fr; } }
+
+    .viz-area { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 0.5rem; min-height: 320px; display: flex; align-items: center; justify-content: center; }
+    .side-panel { display: flex; flex-direction: column; gap: 1rem; }
+    .formula-box { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem 1.1rem; font-family: monospace; font-size: 0.8rem; color: var(--accent); line-height: 1.75; }
+    .formula-box .comment { color: var(--muted); }
+    .formula-box .hl { color: var(--yellow); }
+
+    .legend { display: flex; flex-direction: column; gap: 6px; }
+    .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; cursor: pointer; padding: 5px 8px; border-radius: 6px; border: 1px solid transparent; transition: all 0.15s; }
+    .legend-item:hover { background: var(--surface); border-color: var(--border); }
+    .legend-item.active { border-color: var(--border); background: #0d1117; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+    .legend-name { font-weight: 600; flex: 1; }
+    .legend-tag { font-size: 0.68rem; color: var(--muted); }
+
+    .controls { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    .btn { padding: 0.55rem 1.25rem; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 0.875rem; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 0.4rem; }
+    .btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+    .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: #0d1117; font-weight: 600; }
+    .btn-primary:hover:not(:disabled) { background: #56d364; border-color: #56d364; color: #0d1117; }
+    .kbd { font-size: 0.7rem; color: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 0.1rem 0.35rem; font-family: monospace; }
+
+    .side-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 0.5rem; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    Home
+  </a>
+  <span class="sep">›</span>
+  <span class="title">Optimization Algorithms</span>
+  <div style="margin-left:auto"><span class="tag">Optimization</span></div>
+</nav>
+
+<main>
+  <h1>Optimization Algorithms</h1>
+  <p class="subtitle">How SGD, Momentum, RMSProp, and Adam navigate a loss landscape to find the minimum — each with a different strategy for using gradient information.</p>
+
+  <div class="step-header">
+    <span class="step-indicator" id="stepCounter">Step 1 of 5</span>
+    <div style="display:flex;gap:0.5rem;align-items:center">
+      <span class="kbd">←</span><span class="kbd">→</span>
+      <span style="font-size:0.75rem;color:var(--muted)">navigate</span>
+    </div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+  <div class="step-title" id="stepTitle"></div>
+  <div class="step-desc" id="stepDesc"></div>
+
+  <div class="layout">
+    <div class="viz-area">
+      <canvas id="lossCanvas" width="480" height="340" style="max-width:100%"></canvas>
+    </div>
+    <div class="side-panel">
+      <div>
+        <div class="side-label">Optimizers</div>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div>
+        <div class="side-label">Update Rule</div>
+        <div class="formula-box" id="formulaBox"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn" id="prevBtn" disabled onclick="changeStep(-1)">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+      Prev
+    </button>
+    <button class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">
+      Next
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+    <button class="btn" onclick="replayStep()">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+      Replay
+    </button>
+  </div>
+</main>
+
+<script>
+const canvas = document.getElementById("lossCanvas");
+const ctx = canvas.getContext("2d");
+const W = canvas.width, H = canvas.height;
+
+// Rosenbrock-like loss landscape
+function loss(x, y) {
+  const a = x - 1, b = y - 1;
+  return 0.35 * (100 * a * a + b * b) + 0.5 * Math.sin(x * 6) * Math.sin(y * 4) * 1.5;
+}
+
+function grad(x, y) {
+  const eps = 0.001;
+  return [
+    (loss(x + eps, y) - loss(x - eps, y)) / (2 * eps),
+    (loss(x, y + eps) - loss(x, y - eps)) / (2 * eps)
+  ];
+}
+
+// Canvas coords
+const X_MIN = -2, X_MAX = 3, Y_MIN = -1.5, Y_MAX = 3;
+function toCanvas(x, y) {
+  return [
+    (x - X_MIN) / (X_MAX - X_MIN) * W,
+    H - (y - Y_MIN) / (Y_MAX - Y_MIN) * H
+  ];
+}
+
+const OPTS = [
+  { id: "sgd", name: "SGD", color: "#f78166", tag: "vanilla" },
+  { id: "mom", name: "Momentum", color: "#58a6ff", tag: "ρ=0.9" },
+  { id: "rms", name: "RMSProp", color: "#d29922", tag: "adaptive" },
+  { id: "adam", name: "Adam", color: "#3fb950", tag: "β₁=0.9, β₂=0.999" },
+];
+
+const FORMULAS = {
+  all: `<span class="comment">// Gradient descent family</span><br>w ← w - η · ∇L(w)<br><span class="comment">// Each optimizer modifies ∇L</span>`,
+  sgd: `<span class="comment">// SGD (vanilla)</span><br>w ← w - <span class="hl">η</span> · ∇L(w)<br><br><span class="comment">// η = learning rate (e.g. 0.01)</span><br><span class="comment">// Noisy, zigzags on ravines</span>`,
+  mom: `<span class="comment">// SGD + Momentum (ρ=0.9)</span><br>v ← <span class="hl">ρ</span>v + ∇L(w)<br>w ← w - η·v<br><br><span class="comment">// v = velocity (running mean)</span><br><span class="comment">// Builds speed in flat regions</span>`,
+  rms: `<span class="comment">// RMSProp</span><br>s ← <span class="hl">β</span>s + (1-β)·∇L²<br>w ← w - η · ∇L / (√s + ε)<br><br><span class="comment">// Per-parameter LR scaling</span><br><span class="comment">// Slows big gradients</span>`,
+  adam: `<span class="comment">// Adam = Momentum + RMSProp</span><br>m ← β₁m + (1-β₁)·∇L<br>v ← β₂v + (1-β₂)·∇L²<br>m̂ = m/(1-β₁ᵗ) &nbsp;<span class="comment">// bias fix</span><br>w ← w - η · m̂ / (√v̂ + ε)<br><br><span class="comment">// 🏆 Most widely used</span>`,
+};
+
+let currentStep = 0;
+let animRunning = false;
+let animId = null;
+let paths = {};
+let animProgress = 0;
+
+const STEPS = [
+  { title: "The Loss Landscape", desc: "A loss function defines a surface in parameter space. Training = finding the lowest point. Contour lines show equal loss — closer = steeper gradient. The star marks the global minimum.", active: [], formula: FORMULAS.all },
+  { title: "SGD — Plain Gradient Descent", desc: "SGD subtracts a fraction of the gradient at each step. It zigzags along ravines (steep in one direction, shallow in another) and is sensitive to the learning rate.", active: ["sgd"], formula: FORMULAS.sgd },
+  { title: "Momentum — Build Velocity", desc: "Momentum accumulates a velocity vector (running mean of past gradients). It accelerates along flat, consistent directions and dampens oscillations in steep dimensions.", active: ["sgd","mom"], formula: FORMULAS.mom },
+  { title: "RMSProp — Adaptive Learning Rate", desc: "RMSProp divides the gradient by the root of its running squared average. Large, noisy gradients get dampened; small gradients get amplified. Better on non-stationary landscapes.", active: ["sgd","mom","rms"], formula: FORMULAS.rms },
+  { title: "Adam — Best of Both Worlds", desc: "Adam combines Momentum (tracks direction) with RMSProp (adapts per-parameter LR). Bias correction ensures correct early-step estimates. Default optimizer for transformers and most deep nets.", active: ["sgd","mom","rms","adam"], formula: FORMULAS.adam },
+];
+
+// Pre-compute optimizer paths
+function computePaths() {
+  const start = [-1.5, 2.5];
+  const N = 60;
+  const lr = 0.035;
+
+  // SGD
+  {
+    let [x, y] = start;
+    const path = [[x, y]];
+    for (let i = 0; i < N; i++) {
+      const [gx, gy] = grad(x, y);
+      x -= lr * gx;
+      y -= lr * gy;
+      path.push([x, y]);
+    }
+    paths.sgd = path;
+  }
+
+  // Momentum
+  {
+    let [x, y] = start;
+    let vx = 0, vy = 0;
+    const rho = 0.85;
+    const path = [[x, y]];
+    for (let i = 0; i < N; i++) {
+      const [gx, gy] = grad(x, y);
+      vx = rho * vx + gx;
+      vy = rho * vy + gy;
+      x -= lr * vx;
+      y -= lr * vy;
+      path.push([x, y]);
+    }
+    paths.mom = path;
+  }
+
+  // RMSProp
+  {
+    let [x, y] = start;
+    let sx = 0.01, sy = 0.01;
+    const beta = 0.9, eps = 1e-7;
+    const path = [[x, y]];
+    for (let i = 0; i < N; i++) {
+      const [gx, gy] = grad(x, y);
+      sx = beta * sx + (1 - beta) * gx * gx;
+      sy = beta * sy + (1 - beta) * gy * gy;
+      x -= lr * 1.5 * gx / (Math.sqrt(sx) + eps);
+      y -= lr * 1.5 * gy / (Math.sqrt(sy) + eps);
+      path.push([x, y]);
+    }
+    paths.rms = path;
+  }
+
+  // Adam
+  {
+    let [x, y] = start;
+    let mx = 0, my = 0, vx = 0.01, vy = 0.01;
+    const b1 = 0.9, b2 = 0.999, eps = 1e-8;
+    const path = [[x, y]];
+    for (let i = 0; i < N; i++) {
+      const t = i + 1;
+      const [gx, gy] = grad(x, y);
+      mx = b1 * mx + (1 - b1) * gx;
+      my = b1 * my + (1 - b1) * gy;
+      vx = b2 * vx + (1 - b2) * gx * gx;
+      vy = b2 * vy + (1 - b2) * gy * gy;
+      const mhx = mx / (1 - Math.pow(b1, t));
+      const mhy = my / (1 - Math.pow(b1, t));
+      const vhx = vx / (1 - Math.pow(b2, t));
+      const vhy = vy / (1 - Math.pow(b2, t));
+      x -= lr * 1.5 * mhx / (Math.sqrt(vhx) + eps);
+      y -= lr * 1.5 * mhy / (Math.sqrt(vhy) + eps);
+      path.push([x, y]);
+    }
+    paths.adam = path;
+  }
+}
+
+function drawContours() {
+  // Draw contour lines
+  const resolution = 3;
+  for (let px = 0; px < W; px += resolution) {
+    for (let py = 0; py < H; py += resolution) {
+      const wx = X_MIN + (px / W) * (X_MAX - X_MIN);
+      const wy = Y_MIN + (1 - py / H) * (Y_MAX - Y_MIN);
+      const l = loss(wx, wy);
+      const t = Math.min(1, l / 15);
+      const r = Math.round(22 + t * (80 - 22));
+      const g = Math.round(27 + t * (20 - 27));
+      const b = Math.round(34 + t * (10 - 34));
+      ctx.fillStyle = `rgb(${r},${g},${b})`;
+      ctx.fillRect(px, py, resolution, resolution);
+    }
+  }
+
+  // Draw contour lines overlay
+  const levels = [0.5, 1.5, 3, 5, 8, 12];
+  ctx.lineWidth = 0.5;
+  for (const level of levels) {
+    ctx.beginPath();
+    let drawing = false;
+    for (let px = 0; px < W; px += 2) {
+      const wx = X_MIN + (px / W) * (X_MAX - X_MIN);
+      for (let py = 0; py < H; py += 2) {
+        const wy = Y_MIN + (1 - py / H) * (Y_MAX - Y_MIN);
+        const l = loss(wx, wy);
+        if (Math.abs(l - level) < 0.18) {
+          ctx.strokeStyle = `rgba(255,255,255,0.08)`;
+          ctx.fillStyle = `rgba(255,255,255,0.08)`;
+          ctx.fillRect(px, py, 1.5, 1.5);
+        }
+      }
+    }
+  }
+
+  // Draw minimum star
+  const [mx, my] = toCanvas(1, 1);
+  ctx.fillStyle = "#fff";
+  ctx.font = "16px serif";
+  ctx.textAlign = "center";
+  ctx.fillText("★", mx, my + 6);
+  ctx.fillStyle = "rgba(255,255,255,0.5)";
+  ctx.font = "9px system-ui";
+  ctx.fillText("minimum", mx, my + 20);
+  ctx.textAlign = "left";
+}
+
+function drawPath(id, fraction) {
+  const path = paths[id];
+  const opt = OPTS.find(o => o.id === id);
+  const n = Math.floor(fraction * (path.length - 1));
+  if (n < 1) return;
+
+  ctx.beginPath();
+  const [x0, y0] = toCanvas(...path[0]);
+  ctx.moveTo(x0, y0);
+  for (let i = 1; i <= n; i++) {
+    const [cx, cy] = toCanvas(...path[i]);
+    ctx.lineTo(cx, cy);
+  }
+  ctx.strokeStyle = opt.color;
+  ctx.lineWidth = 2;
+  ctx.globalAlpha = 0.85;
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+
+  // Draw current position dot
+  const [ex, ey] = toCanvas(...path[n]);
+  ctx.beginPath();
+  ctx.arc(ex, ey, 5, 0, Math.PI * 2);
+  ctx.fillStyle = opt.color;
+  ctx.fill();
+  ctx.strokeStyle = "#fff";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+}
+
+let lastTime = null;
+const ANIM_DURATION = 2500; // ms per path
+
+function animate(ts) {
+  if (!lastTime) lastTime = ts;
+  const dt = ts - lastTime;
+  lastTime = ts;
+  animProgress = Math.min(1, animProgress + dt / ANIM_DURATION);
+
+  const step = STEPS[currentStep];
+  ctx.clearRect(0, 0, W, H);
+  drawContours();
+  for (const id of step.active) {
+    drawPath(id, animProgress);
+  }
+
+  if (animProgress < 1) {
+    animId = requestAnimationFrame(animate);
+  } else {
+    animRunning = false;
+  }
+}
+
+function startAnimation() {
+  if (animId) cancelAnimationFrame(animId);
+  animProgress = 0;
+  lastTime = null;
+  animRunning = true;
+  animId = requestAnimationFrame(animate);
+}
+
+function replayStep() {
+  startAnimation();
+}
+
+function updateUI() {
+  const step = STEPS[currentStep];
+  document.getElementById("stepCounter").textContent = `Step ${currentStep + 1} of ${STEPS.length}`;
+  document.getElementById("progressFill").style.width = `${((currentStep + 1) / STEPS.length) * 100}%`;
+  document.getElementById("stepTitle").textContent = step.title;
+  document.getElementById("stepDesc").textContent = step.desc;
+  document.getElementById("formulaBox").innerHTML = step.formula;
+  document.getElementById("prevBtn").disabled = currentStep === 0;
+  document.getElementById("nextBtn").disabled = currentStep === STEPS.length - 1;
+
+  // Legend
+  const legendEl = document.getElementById("legend");
+  legendEl.innerHTML = OPTS.map(o => `
+    <div class="legend-item ${step.active.includes(o.id) ? 'active' : ''}" style="opacity:${step.active.includes(o.id) ? 1 : 0.35}">
+      <div class="legend-dot" style="background:${o.color}"></div>
+      <span class="legend-name" style="color:${step.active.includes(o.id) ? o.color : 'var(--muted)'}">${o.name}</span>
+      <span class="legend-tag">${o.tag}</span>
+    </div>
+  `).join("");
+
+  startAnimation();
+}
+
+function changeStep(delta) {
+  const next = currentStep + delta;
+  if (next < 0 || next >= STEPS.length) return;
+  currentStep = next;
+  updateUI();
+}
+
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowRight") changeStep(1);
+  if (e.key === "ArrowLeft") changeStep(-1);
+});
+
+computePaths();
+updateUI();
+</script>
+</body>
+</html>

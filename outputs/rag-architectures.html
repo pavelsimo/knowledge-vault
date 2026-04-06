@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RAG Architectures — Knowledge Vault</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117; --surface: #161b22; --border: #30363d;
+      --text: #e6edf3; --muted: #8b949e; --accent: #79c0ff;
+      --blue: #58a6ff; --coral: #f78166; --green: #3fb950; --yellow: #d29922; --purple: #bc8cff;
+    }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+    nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.85rem 1.5rem; display: flex; align-items: center; gap: 1rem; }
+    nav a { color: var(--muted); text-decoration: none; font-size: 0.875rem; display: flex; align-items: center; gap: 0.4rem; }
+    nav a:hover { color: var(--accent); }
+    nav .sep { color: var(--border); }
+    nav .title { color: var(--text); font-weight: 600; font-size: 0.875rem; }
+    .tag { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); background: rgba(121,192,255,0.12); padding: 0.2rem 0.55rem; border-radius: 999px; }
+
+    main { flex: 1; max-width: 1060px; margin: 0 auto; padding: 2rem 1.5rem; width: 100%; }
+    h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.55; }
+
+    /* Architecture cards grid */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+    .arch-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; cursor: pointer; transition: all 0.15s; position: relative; }
+    .arch-card:hover { border-color: var(--accent); }
+    .arch-card.active { border-color: var(--accent); background: rgba(121,192,255,0.06); }
+    .arch-card .num { font-size: 0.7rem; font-weight: 700; color: var(--muted); margin-bottom: 4px; }
+    .arch-card h3 { font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; }
+    .arch-card p { font-size: 0.78rem; color: var(--muted); line-height: 1.45; }
+    .arch-card .use-badge { margin-top: 8px; font-size: 0.68rem; padding: 2px 7px; border-radius: 999px; border: 1px solid; width: fit-content; }
+    .complexity-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; border-radius: 0 0 10px 10px; }
+
+    /* Flow diagram */
+    .flow-panel { background: var(--surface); border: 1px solid var(--accent); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; animation: fadeIn 0.25s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .flow-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+    .flow-title { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+    .flow-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.55; max-width: 640px; margin-bottom: 1.25rem; }
+
+    /* Pipeline flow */
+    .pipeline { display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
+    .pipe-node { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); background: #0d1117; min-width: 80px; text-align: center; animation: nodeIn 0.35s ease both; }
+    @keyframes nodeIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+    .pipe-node .node-icon { font-size: 1.2rem; }
+    .pipe-node .node-label { font-size: 0.7rem; font-weight: 600; line-height: 1.3; }
+    .pipe-arrow { color: var(--muted); font-size: 14px; padding: 0 4px; flex-shrink: 0; }
+    .pipe-branch { display: flex; flex-direction: column; gap: 8px; }
+    .pipe-branch-inner { display: flex; align-items: center; gap: 0; }
+
+    .use-case-box { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem 1rem; margin-top: 1rem; font-size: 0.82rem; }
+    .use-case-box strong { color: var(--accent); }
+
+    .controls { display: flex; align-items: center; gap: 1rem; }
+    .btn { padding: 0.55rem 1.25rem; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 0.875rem; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 0.4rem; }
+    .btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+    .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: #0d1117; font-weight: 600; }
+    .kbd { font-size: 0.7rem; color: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 0.1rem 0.35rem; font-family: monospace; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    Home
+  </a>
+  <span class="sep">›</span>
+  <span class="title">RAG Architectures</span>
+  <div style="margin-left:auto"><span class="tag">RAG</span></div>
+</nav>
+
+<main>
+  <h1>RAG Architectures</h1>
+  <p class="subtitle">8 patterns for augmenting LLMs with retrieval — from simple vector search to agentic multi-source orchestration. Click any card to see the flow diagram.</p>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+    <div style="font-size:0.8rem;color:var(--muted)">Click a card to explore · <span class="kbd">←</span><span class="kbd" style="margin-left:4px">→</span> navigate</div>
+    <div style="display:flex;align-items:center;gap:12px;font-size:0.75rem;color:var(--muted)">
+      <span>Complexity:</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:30px;height:3px;background:var(--green);display:inline-block;border-radius:2px"></span>Low</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:30px;height:3px;background:var(--yellow);display:inline-block;border-radius:2px"></span>Medium</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:30px;height:3px;background:var(--coral);display:inline-block;border-radius:2px"></span>High</span>
+    </div>
+  </div>
+
+  <div class="cards-grid" id="cardsGrid"></div>
+  <div id="flowPanel"></div>
+
+  <div class="controls">
+    <button class="btn" id="prevBtn" disabled onclick="changeArch(-1)">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+      Prev
+    </button>
+    <button class="btn btn-primary" id="nextBtn" onclick="changeArch(1)">
+      Next
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+</main>
+
+<script>
+const ARCHS = [
+  {
+    num: "01",
+    name: "Naive RAG",
+    short: "Vector similarity retrieval",
+    desc: "Embed the query, find the most similar documents in a vector DB, inject them into the prompt. The baseline approach — fast and simple, great for fact-based queries.",
+    use: "Simple fact lookup",
+    complexity: "low",
+    color: "#3fb950",
+    pipeline: [
+      { icon: "❓", label: "User Query" },
+      { icon: "🔢", label: "Embedding" },
+      { icon: "🗃️", label: "Vector DB" },
+      { icon: "📋", label: "Prompt Template" },
+      { icon: "🤖", label: "LLM" },
+      { icon: "💬", label: "Output" }
+    ]
+  },
+  {
+    num: "02",
+    name: "Multimodal RAG",
+    short: "Cross-modal retrieval",
+    desc: "Handles text, images, and audio by embedding and retrieving across modalities. A text query can pull image context using models like CLIP.",
+    use: "Images + text context",
+    complexity: "medium",
+    color: "#58a6ff",
+    pipeline: [
+      { icon: "❓", label: "User Query" },
+      { icon: "🔢", label: "Embedding" },
+      { icon: "🗄️", label: "Multi-modal DB\n(text + images + audio)" },
+      { icon: "📋", label: "Prompt Template" },
+      { icon: "🤖", label: "LLM" },
+      { icon: "💬", label: "Output" }
+    ]
+  },
+  {
+    num: "03",
+    name: "HyDE",
+    short: "Hypothetical Document Embeddings",
+    desc: 'Bridges the vocabulary gap: generate a hypothetical answer to the query first, then embed that hypothetical document to retrieve real matching documents. "Imagine the answer, then find it."',
+    use: "Short query, long docs",
+    complexity: "medium",
+    color: "#bc8cff",
+    pipeline: [
+      { icon: "❓", label: "User Query" },
+      { icon: "✍️", label: "Generate Hypothetical Answer" },
+      { icon: "🔢", label: "Embed Hypothesis" },
+      { icon: "🗃️", label: "Vector DB" },
+      { icon: "📋", label: "Prompt Template" },
+      { icon: "🤖", label: "LLM" },
+      { icon: "💬", label: "Output" }
+    ]
+  },
+  {
+    num: "04",
+    name: "Corrective RAG",
+    short: "Validate against trusted sources",
+    desc: "Retrieved content is verified against trusted external sources (e.g., web search). Stale or inaccurate context gets corrected before being passed to the LLM.",
+    use: "Freshness-critical data",
+    complexity: "medium",
+    color: "#d29922",
+    pipeline: [
+      { icon: "❓", label: "User Query" },
+      { icon: "🔢", label: "Embedding" },
+      { icon: "🔍", label: "Analyzer" },
+      { icon: "🌐", label: "Web Search\n(verification)" },
+      { icon: "📋", label: "Prompt Template" },
+      { icon: "🤖", label: "LLM" },
+      { icon: "💬", label: "Output" }
+    ]
+  },
+  {
+    num: "05",
+    name: "Graph RAG",
+    short: "Knowledge graph retrieval",
+    desc: "Converts retrieved content into a knowledge graph of entities and relationships. Provides structured relational context alongside raw text, enabling multi-hop reasoning.",
+    use: "Multi-hop reasoning",
+    complexity: "high",
+    color: "#f78166",
+    pipeline: [
+      { icon: "❓", label: "User Query" },
+      { icon: "🕸️", label: "Graph\nGenerator" },
+      { icon: "📊", label: "Graph DB" },
+      { icon: "🗃️", label: "Vector DB" },
+      { icon: "📋", label: "Prompt Template" },
+      { icon: "🤖", label: "LLM" },
+      { icon: "💬", label: "Output" }
+    ]
+  },
+  {
+    num: "06",
+    name: "Hybrid RAG",
+    short: "Dense + graph retrieval",
+    desc: "Combines vector retrieval (unstructured text) with graph retrieval (structured relations). Produces richer answers by leveraging both signal types simultaneously.",
+    use: "Structured + unstructured data",
+    complexity: "high",
+    color: "#f78166",
+    pipeline: [
+      { icon: "❓", label: "User Query" },
+      { icon: "🔢", label: "Embedding" },
+      { icon: "🗃️", label: "Vector DB\n(context 1)" },
+      { icon: "🕸️", label: "Graph DB\n(context 2)" },
+      { icon: "📋", label: "Merge + Prompt" },
+      { icon: "🤖", label: "LLM" },
+      { icon: "💬", label: "Output" }
+    ]
+  },
+  {
+    num: "07",
+    name: "Adaptive RAG",
+    short: "Route by query complexity",
+    desc: "Analyzes the query to decide: simple queries go straight to retrieval, complex queries first go through a multi-step reasoning chain. Reduces unnecessary compute.",
+    use: "Mixed simple + complex queries",
+    complexity: "high",
+    color: "#f78166",
+    pipeline: [
+      { icon: "❓", label: "User Query" },
+      { icon: "🧩", label: "Query Analyzer" },
+      { icon: "⚡", label: "Direct Retrieval\n(simple)" },
+      { icon: "🧠", label: "Reasoning Chain\n(complex)" },
+      { icon: "🗃️", label: "Vector DB" },
+      { icon: "🤖", label: "LLM" },
+      { icon: "💬", label: "Output" }
+    ]
+  },
+  {
+    num: "08",
+    name: "Agentic RAG",
+    short: "Multi-agent orchestration",
+    desc: "AI agents with planning (ReAct/CoT), short-term and long-term memory orchestrate retrieval across multiple sources. The agent decides what to retrieve, when, and from where — and can iterate.",
+    use: "Multi-tool / multi-source workflows",
+    complexity: "high",
+    color: "#f78166",
+    pipeline: [
+      { icon: "❓", label: "Query" },
+      { icon: "🤖", label: "Agent\n(ReAct/CoT)" },
+      { icon: "🔧", label: "Agent 1\n(search)" },
+      { icon: "🔧", label: "Agent 2\n(compute)" },
+      { icon: "🗄️", label: "MCP / Web\n/ Cloud" },
+      { icon: "🧠", label: "Memory\n(ST + LT)" },
+      { icon: "💬", label: "Output" }
+    ]
+  }
+];
+
+let currentIdx = 0;
+
+function complexityColor(c) {
+  return c === "low" ? "#3fb950" : c === "medium" ? "#d29922" : "#f78166";
+}
+
+function renderCards() {
+  const grid = document.getElementById("cardsGrid");
+  grid.innerHTML = ARCHS.map((a, i) => `
+    <div class="arch-card ${i === currentIdx ? 'active' : ''}" onclick="selectArch(${i})" style="border-top-color: ${i === currentIdx ? a.color : 'transparent'}">
+      <div class="num">${a.num}</div>
+      <h3 style="color:${i === currentIdx ? a.color : 'var(--text)'}">${a.name}</h3>
+      <p>${a.short}</p>
+      <div class="use-badge" style="color:${complexityColor(a.complexity)};border-color:${complexityColor(a.complexity)}40;background:${complexityColor(a.complexity)}10">
+        ${a.use}
+      </div>
+      <div class="complexity-bar" style="background:${complexityColor(a.complexity)}"></div>
+    </div>
+  `).join("");
+}
+
+function renderFlow() {
+  const a = ARCHS[currentIdx];
+  const panel = document.getElementById("flowPanel");
+
+  const nodesHtml = a.pipeline.map((node, i) => `
+    <div class="pipe-node" style="border-color:${a.color}30;animation-delay:${i * 60}ms">
+      <div class="node-icon">${node.icon}</div>
+      <div class="node-label" style="color:${a.color}">${node.label.replace(/\n/g, '<br>')}</div>
+    </div>
+    ${i < a.pipeline.length - 1 ? `<div class="pipe-arrow">→</div>` : ''}
+  `).join("");
+
+  panel.innerHTML = `
+    <div class="flow-panel">
+      <div class="flow-header">
+        <div>
+          <div style="font-size:0.72rem;color:var(--muted);margin-bottom:4px">${a.num} / 08</div>
+          <div class="flow-title">${a.name}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:0.7rem;color:${complexityColor(a.complexity)};font-weight:600;text-transform:uppercase">Complexity</div>
+          <div style="font-size:0.82rem;color:${complexityColor(a.complexity)}">${a.complexity}</div>
+        </div>
+      </div>
+      <div class="flow-desc">${a.desc}</div>
+      <div class="pipeline" style="flex-wrap:wrap;gap:4px 0">
+        ${nodesHtml}
+      </div>
+      <div class="use-case-box">
+        <strong>Best for:</strong> ${a.use}
+      </div>
+    </div>
+  `;
+}
+
+function selectArch(i) {
+  currentIdx = i;
+  renderCards();
+  renderFlow();
+  updateButtons();
+}
+
+function changeArch(delta) {
+  selectArch(Math.max(0, Math.min(ARCHS.length - 1, currentIdx + delta)));
+}
+
+function updateButtons() {
+  document.getElementById("prevBtn").disabled = currentIdx === 0;
+  document.getElementById("nextBtn").disabled = currentIdx === ARCHS.length - 1;
+}
+
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowRight") changeArch(1);
+  if (e.key === "ArrowLeft") changeArch(-1);
+});
+
+selectArch(0);
+</script>
+</body>
+</html>

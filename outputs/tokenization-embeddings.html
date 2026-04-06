@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tokenization and Embeddings — Knowledge Vault</title>
+  <link rel="icon" href="data:," />
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root {
+      --bg:#0d1117; --surface:#161b22; --border:#30363d; --text:#e6edf3; --muted:#8b949e;
+      --accent:#58a6ff; --blue:#79c0ff; --green:#3fb950; --coral:#f78166; --yellow:#d29922; --purple:#bc8cff;
+    }
+    body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif; min-height:100vh; display:flex; flex-direction:column; }
+    nav { background:var(--surface); border-bottom:1px solid var(--border); padding:0.85rem 1.5rem; display:flex; align-items:center; gap:1rem; }
+    nav a { color:var(--muted); text-decoration:none; font-size:0.875rem; display:flex; align-items:center; gap:0.4rem; }
+    nav a:hover { color:var(--accent); }
+    nav .sep { color:var(--border); }
+    nav .title { color:var(--text); font-weight:600; font-size:0.875rem; }
+    .tag { font-size:0.7rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--accent); background:rgba(88,166,255,0.12); padding:0.2rem 0.55rem; border-radius:999px; }
+    main { flex:1; max-width:1080px; margin:0 auto; padding:2rem 1.5rem; width:100%; }
+    h1 { font-size:1.8rem; margin-bottom:0.45rem; }
+    .subtitle { color:var(--muted); font-size:0.96rem; line-height:1.6; margin-bottom:1.8rem; max-width:760px; }
+    .step-header { display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:1rem; }
+    .step-indicator { font-size:0.8rem; color:var(--muted); }
+    .progress-bar { height:3px; background:var(--border); border-radius:999px; overflow:hidden; margin-bottom:1.4rem; }
+    .progress-fill { height:100%; width:0%; background:var(--accent); transition:width .35s ease; }
+    .step-title { font-size:1.15rem; font-weight:600; color:var(--accent); margin-bottom:0.35rem; }
+    .step-desc { color:var(--muted); font-size:0.92rem; line-height:1.65; margin-bottom:1.4rem; max-width:780px; }
+    .layout { display:grid; grid-template-columns:minmax(0,1.45fr) minmax(300px,0.8fr); gap:1.25rem; margin-bottom:1.4rem; }
+    @media (max-width:800px) { .layout { grid-template-columns:1fr; } }
+    .viz-area,.panel { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1rem; }
+    .viz-area { min-height:380px; }
+    .panel { display:flex; flex-direction:column; gap:0.95rem; }
+    .side-label { font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:0.5rem; }
+    .formula-box,.info-card,.card { background:#0d1117; border:1px solid var(--border); border-radius:10px; padding:0.9rem 1rem; }
+    .formula-box { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:0.82rem; line-height:1.7; color:var(--green); }
+    .formula-box .comment { color:var(--muted); }
+    .info-card,.card { color:var(--muted); font-size:0.84rem; line-height:1.6; }
+    .row { display:flex; flex-wrap:wrap; gap:0.7rem; }
+    .chip { background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:10px; padding:0.6rem 0.75rem; min-width:88px; text-align:center; }
+    .chip strong { display:block; font-size:0.82rem; margin-bottom:0.2rem; }
+    .chip span { font-size:0.68rem; color:var(--muted); }
+    .arrow { color:var(--muted); align-self:center; font-size:1.1rem; padding:0.1rem 0.2rem; }
+    .table { display:grid; gap:0.45rem; }
+    .table-row { display:grid; grid-template-columns:90px 70px 1fr; gap:0.7rem; align-items:center; font-size:0.8rem; color:var(--muted); }
+    .embed-bars { display:grid; gap:0.3rem; }
+    .embed-bar { height:10px; border-radius:999px; background:rgba(255,255,255,0.05); overflow:hidden; border:1px solid rgba(255,255,255,0.03); }
+    .embed-fill { height:100%; border-radius:999px; }
+    .score-row { display:grid; grid-template-columns:110px 1fr 60px; gap:0.7rem; align-items:center; font-size:0.8rem; color:var(--muted); }
+    .score-track { height:12px; background:#0d1117; border-radius:999px; overflow:hidden; border:1px solid var(--border); }
+    .score-fill { height:100%; border-radius:999px; }
+    .controls { display:flex; align-items:center; gap:1rem; }
+    .btn { padding:0.55rem 1.2rem; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--text); font-size:0.875rem; cursor:pointer; transition:all .15s; display:flex; align-items:center; gap:0.4rem; }
+    .btn:hover:not(:disabled) { border-color:var(--accent); color:var(--accent); }
+    .btn:disabled { opacity:0.35; cursor:not-allowed; }
+    .btn-primary { background:var(--accent); border-color:var(--accent); color:#0d1117; font-weight:600; }
+    .btn-primary:hover:not(:disabled) { background:#79c0ff; border-color:#79c0ff; color:#0d1117; }
+    .kbd { font-size:0.7rem; color:var(--muted); border:1px solid var(--border); border-radius:4px; padding:0.1rem 0.35rem; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Home</a>
+    <span class="sep">›</span>
+    <span class="title">Tokenization and Embeddings</span>
+    <div style="margin-left:auto"><span class="tag">NLP</span></div>
+  </nav>
+  <main>
+    <h1>Tokenization and Embeddings</h1>
+    <p class="subtitle">Before a language model can reason, it has to turn text into model-specific token IDs, then into vectors. This page follows the full pipeline from raw string to logits and back to text.</p>
+    <div class="step-header">
+      <span class="step-indicator" id="stepCounter">Step 1 of 6</span>
+      <div style="display:flex;gap:0.5rem;align-items:center"><span class="kbd">←</span><span class="kbd">→</span><span style="font-size:0.75rem;color:var(--muted)">navigate</span></div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="step-title" id="stepTitle"></div>
+    <div class="step-desc" id="stepDesc"></div>
+    <div class="layout">
+      <div class="viz-area" id="vizArea"></div>
+      <div class="panel">
+        <div><div class="side-label">Formula</div><div class="formula-box" id="formulaBox"></div></div>
+        <div class="info-card" id="noteBox"></div>
+        <div><div class="side-label">Why It Matters</div><div class="card">Tokenizers are model-specific. The same raw sentence can break into different IDs depending on the vocabulary, which is why swapping tokenizers across unrelated model families is unsafe.</div></div>
+      </div>
+    </div>
+    <div class="controls">
+      <button class="btn" id="prevBtn" onclick="changeStep(-1)"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Prev</button>
+      <button class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">Next<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+    </div>
+  </main>
+  <script>
+    const TEXT = "Transformers love tokenization";
+    const TOKENS = ["Transform","##ers","love","token","##ization"];
+    const IDS = [3928, 1137, 2291, 1472, 9138];
+    const EMBEDS = [
+      [0.8,0.2,0.6,0.1],
+      [0.3,0.5,0.2,0.7],
+      [0.1,0.8,0.2,0.6],
+      [0.7,0.4,0.5,0.3],
+      [0.2,0.6,0.7,0.4]
+    ];
+    const POS = [
+      [0.1,0.0,0.1,0.0],
+      [0.0,0.1,0.0,0.1],
+      [0.1,0.1,0.0,0.0],
+      [0.0,0.0,0.1,0.1],
+      [0.1,0.0,0.0,0.1]
+    ];
+    const NEXT = [["models",0.41],["pipelines",0.24],["text",0.17],["embeddings",0.11],["chips",0.07]];
+    const STEPS = [
+      {
+        title:"Raw Text Starts as Characters, Not Meaning",
+        desc:"The model cannot read strings directly. It sees neither words nor syntax until the tokenizer turns the raw bytes or characters into discrete vocabulary items.",
+        formula:`<span class="comment">// Input to the tokenizer</span><br>text = "Transformers love tokenization"<br><br><span class="comment">// Tokenizer runs on CPU</span>`,
+        note:"Tokenization is the first lossy modeling choice. The vocabulary decides which chunks are atomic and which must be built from subword pieces.",
+        render:() => {
+          document.getElementById("vizArea").innerHTML = `<div class="card"><div class="side-label">Raw String</div><div style="font-size:1.05rem;color:var(--text)">${TEXT}</div></div>`;
+        }
+      },
+      {
+        title:"Tokenization Splits Text Into Model Vocabulary Pieces",
+        desc:"Modern tokenizers usually use subword units, not whole words. That is why uncommon words can be decomposed into smaller pieces while frequent words often stay intact.",
+        formula:`<span class="comment">// Example subword split</span><br>"Transformers" → ["Transform","##ers"]<br>"tokenization" → ["token","##ization"]`,
+        note:"Subword tokenization is a tradeoff: smaller vocabularies are easier to train and reuse, but longer token sequences increase model compute.",
+        render:() => {
+          document.getElementById("vizArea").innerHTML = `<div class="row">${TOKENS.map((token, i) => `<div class="chip"><strong style="color:${i%2? 'var(--purple)' : 'var(--blue)'}">${token}</strong><span>token ${i}</span></div>`).join(`<div class="arrow">→</div>`)}</div>`;
+        }
+      },
+      {
+        title:"Each Token Maps to a Numeric ID",
+        desc:"After tokenization, each token is looked up in the model vocabulary and replaced by an integer ID. The model still does not 'understand' the token; it just has an index now.",
+        formula:`<span class="comment">// Vocabulary lookup</span><br>token → integer id<br><br><span class="comment">// Example</span><br>"love" → 2291`,
+        note:"These IDs are not semantic by themselves. Nearby IDs do not imply nearby meanings. Semantics arrive only after the embedding lookup.",
+        render:() => {
+          document.getElementById("vizArea").innerHTML = `<div class="table">${TOKENS.map((token, i) => `
+            <div class="table-row"><strong style="color:var(--text)">${token}</strong><span style="color:var(--blue)">→</span><span>${IDS[i]}</span></div>`).join("")}</div>`;
+        }
+      },
+      {
+        title:"Embedding Lookup Turns IDs Into Dense Vectors",
+        desc:"The embedding matrix is a learned table. Each token ID indexes one row, producing a dense vector that can participate in matrix operations and attention.",
+        formula:`<span class="comment">// Embedding lookup</span><br>zᵢ = E[token_idᵢ]<br><br><span class="comment">// all-MiniLM-L6-v2 outputs 384 dims per sentence embedding</span>`,
+        note:"This is the first point where the model has a continuous representation instead of a discrete symbol. Geometry becomes possible here.",
+        render:() => {
+          document.getElementById("vizArea").innerHTML = `<div class="table">${TOKENS.map((token, i) => `
+            <div class="table-row">
+              <strong style="color:var(--text)">${token}</strong>
+              <span>#${IDS[i]}</span>
+              <div class="embed-bars">${EMBEDS[i].map((v, j) => `<div class="embed-bar"><div class="embed-fill" style="width:${v*100}%;background:${["var(--blue)","var(--green)","var(--purple)","var(--yellow)"][j]}"></div></div>`).join("")}</div>
+            </div>`).join("")}</div>`;
+        }
+      },
+      {
+        title:"Position Is Added So Order Is Not Lost",
+        desc:"Embeddings alone do not tell the model where a token occurred. Positional information is added so that the sequence 'dog bites man' differs from 'man bites dog'.",
+        formula:`<span class="comment">// Positional encoding</span><br>xᵢ = token_embedᵢ + pos_embedᵢ<br><br><span class="comment">// order enters before attention</span>`,
+        note:"This is the bridge from a bag of token vectors to an actual ordered sequence the transformer can process.",
+        render:() => {
+          document.getElementById("vizArea").innerHTML = `<div class="row">${TOKENS.map((token, i) => `
+            <div class="chip" style="min-width:140px;text-align:left">
+              <strong style="color:var(--text)">${token}</strong>
+              <span>embed + pos ${i}</span>
+            </div>`).join("")}</div>
+            <div class="card" style="margin-top:1rem">The position vector added to <strong>${TOKENS[0]}</strong> is not the same as the one added to <strong>${TOKENS[4]}</strong>, even if the token content were identical.</div>`;
+        }
+      },
+      {
+        title:"The Model Produces Logits, Then Decodes Back to Text",
+        desc:"After the transformer processes the sequence, the final hidden state is projected into vocabulary space. Those logits become probabilities, and the model picks the next token.",
+        formula:`<span class="comment">// Output head</span><br>logits = W<sub>vocab</sub> · hₜ<br>p(next token) = softmax(logits)<br><br><span class="comment">// decoding picks one token id, then detokenizes</span>`,
+        note:"The pipeline is symmetric at the ends: text becomes IDs on the way in, then IDs become text again on the way out. Everything in the middle is vector math.",
+        render:() => {
+          document.getElementById("vizArea").innerHTML = `<div class="card"><div class="side-label">Next-Token Candidates</div>${NEXT.map(([token, p]) => `
+            <div class="score-row"><span>${token}</span><div class="score-track"><div class="score-fill" style="width:${p*100}%;background:var(--accent)"></div></div><span>${Math.round(p*100)}%</span></div>`).join("")}</div>`;
+        }
+      }
+    ];
+    let currentStep = 0;
+    function renderStep() {
+      const step = STEPS[currentStep];
+      document.getElementById("stepCounter").textContent = `Step ${currentStep+1} of ${STEPS.length}`;
+      document.getElementById("progressFill").style.width = `${((currentStep+1)/STEPS.length)*100}%`;
+      document.getElementById("stepTitle").textContent = step.title;
+      document.getElementById("stepDesc").textContent = step.desc;
+      document.getElementById("formulaBox").innerHTML = step.formula;
+      document.getElementById("noteBox").textContent = step.note;
+      step.render();
+      document.getElementById("prevBtn").disabled = currentStep === 0;
+      document.getElementById("nextBtn").disabled = currentStep === STEPS.length - 1;
+    }
+    function changeStep(delta) {
+      const next = currentStep + delta;
+      if (next < 0 || next >= STEPS.length) return;
+      currentStep = next;
+      renderStep();
+    }
+    document.addEventListener("keydown", e => {
+      if (e.key === "ArrowRight") changeStep(1);
+      if (e.key === "ArrowLeft") changeStep(-1);
+    });
+    renderStep();
+  </script>
+</body>
+</html>

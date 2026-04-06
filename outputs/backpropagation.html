@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Backpropagation — Knowledge Vault</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117; --surface: #161b22; --border: #30363d;
+      --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff;
+      --coral: #f78166; --green: #3fb950; --yellow: #d29922; --purple: #bc8cff;
+    }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+    nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.85rem 1.5rem; display: flex; align-items: center; gap: 1rem; }
+    nav a { color: var(--muted); text-decoration: none; font-size: 0.875rem; display: flex; align-items: center; gap: 0.4rem; }
+    nav a:hover { color: var(--accent); }
+    nav .sep { color: var(--border); }
+    nav .title { color: var(--text); font-weight: 600; font-size: 0.875rem; }
+    .tag { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); background: rgba(88,166,255,0.1); padding: 0.2rem 0.55rem; border-radius: 999px; }
+
+    main { flex: 1; max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; width: 100%; }
+    h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.55; }
+
+    .step-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .step-indicator { font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .progress-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 1.5rem; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.4s ease; }
+
+    .step-title { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--accent); }
+    .step-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; max-width: 680px; }
+
+    .viz-area { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; min-height: 340px; display: flex; align-items: center; justify-content: center; }
+    svg text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+
+    .controls { display: flex; align-items: center; gap: 1rem; }
+    .btn { padding: 0.55rem 1.25rem; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 0.875rem; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 0.4rem; }
+    .btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+    .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: #0d1117; font-weight: 600; }
+    .btn-primary:hover:not(:disabled) { background: #79c0ff; border-color: #79c0ff; color: #0d1117; }
+    .kbd { font-size: 0.7rem; color: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 0.1rem 0.35rem; font-family: monospace; }
+
+    .formula-box { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem 1.2rem; font-family: monospace; font-size: 0.85rem; color: var(--green); line-height: 1.7; margin-bottom: 1rem; }
+    .formula-box .comment { color: var(--muted); }
+
+    .legend { display: flex; gap: 1.25rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+    .legend-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; color: var(--muted); }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    Home
+  </a>
+  <span class="sep">›</span>
+  <span class="title">Backpropagation</span>
+  <div style="margin-left:auto"><span class="tag">Neural Networks</span></div>
+</nav>
+
+<main>
+  <h1>Backpropagation</h1>
+  <p class="subtitle">How neural networks learn: a forward pass computes predictions, a backward pass propagates gradients through every layer using the chain rule.</p>
+
+  <div class="step-header">
+    <span class="step-indicator" id="stepCounter">Step 1 of 6</span>
+    <div style="display:flex;gap:0.5rem;align-items:center">
+      <span class="kbd">←</span><span class="kbd">→</span>
+      <span style="font-size:0.75rem;color:var(--muted)">navigate</span>
+    </div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:16.67%"></div></div>
+
+  <div class="step-title" id="stepTitle">The Network Architecture</div>
+  <div class="step-desc" id="stepDesc">A neural network stacks layers of linear transformations followed by non-linear activations. Each layer transforms the signal, enabling the network to learn complex patterns.</div>
+
+  <div class="legend" id="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#58a6ff"></div>Input neurons</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#bc8cff"></div>Hidden neurons</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f78166"></div>Output neurons</div>
+  </div>
+
+  <div class="viz-area">
+    <svg id="networkSvg" width="100%" viewBox="0 0 760 300" xmlns="http://www.w3.org/2000/svg"></svg>
+  </div>
+
+  <div class="formula-box" id="formulaBox">
+    <span class="comment">// Forward pass: each layer computes</span><br>
+    z = W · x + b &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// linear transform</span><br>
+    a = σ(z) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// activation (ReLU, sigmoid, ...)</span>
+  </div>
+
+  <div class="controls">
+    <button class="btn" id="prevBtn" disabled onclick="changeStep(-1)">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+      Prev
+    </button>
+    <button class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">
+      Next
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+</main>
+
+<script>
+const STEPS = [
+  {
+    title: "The Network Architecture",
+    desc: "A neural network stacks layers of linear transformations followed by non-linear activations. Each layer transforms the signal, enabling the network to learn complex patterns.",
+    formula: `<span class="comment">// Each neuron computes:</span><br>z = W · x + b &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// linear combination</span><br>a = σ(z) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// non-linearity (ReLU: max(0,z))</span>`,
+    legend: [
+      {color:"#58a6ff", label:"Input neurons (x)"},
+      {color:"#bc8cff", label:"Hidden neurons"},
+      {color:"#f78166", label:"Output neuron (ŷ)"}
+    ],
+    highlight: "none"
+  },
+  {
+    title: "Step 1 — Forward Pass: Input → Hidden Layer",
+    desc: "Each input value is multiplied by its weight, all products are summed (plus bias), and the result passes through ReLU. This transforms raw input into hidden representations.",
+    formula: `<span class="comment">// Input → Hidden (layer 1)</span><br>z₁ = W₁ · x + b₁ &nbsp;&nbsp;&nbsp;<span class="comment">// e.g. z₁ = [2.1, -0.3, 1.8]</span><br>a₁ = ReLU(z₁) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// a₁ = [2.1,  0.0, 1.8]</span>`,
+    highlight: "in-h1"
+  },
+  {
+    title: "Step 2 — Forward Pass: Hidden → Output",
+    desc: "The hidden activations are combined by the output layer. A sigmoid activation squashes the result to [0,1], giving us a probability prediction ŷ.",
+    formula: `<span class="comment">// Hidden → Output (layer 2)</span><br>z₂ = W₂ · a₁ + b₂ &nbsp;&nbsp;<span class="comment">// e.g. z₂ = 1.4</span><br>ŷ = σ(z₂) = 0.80 &nbsp;&nbsp;&nbsp;<span class="comment">// sigmoid → probability</span>`,
+    highlight: "h1-out"
+  },
+  {
+    title: "Step 3 — Compute the Loss",
+    desc: "We compare the prediction ŷ to the true label y using cross-entropy loss. A perfect prediction gives loss ≈ 0; a wrong confident prediction gives high loss.",
+    formula: `<span class="comment">// Cross-entropy loss (y=1, ŷ=0.80)</span><br>L = -[y·log(ŷ) + (1-y)·log(1-ŷ)]<br>L = -log(0.80) ≈ <span style="color:var(--coral)">0.223</span> &nbsp;<span class="comment">// penalty</span>`,
+    highlight: "loss"
+  },
+  {
+    title: "Step 4 — Backward Pass: Output Gradient",
+    desc: "Backpropagation starts at the loss and computes ∂L/∂ŷ, then propagates backwards. The output layer gradient ∂L/∂z₂ = ŷ - y is the error signal.",
+    formula: `<span class="comment">// Gradient at output layer</span><br>∂L/∂ŷ = -y/ŷ + (1-y)/(1-ŷ)<br>∂L/∂z₂ = ŷ - y = 0.80 - 1 = <span style="color:var(--coral)">-0.20</span>`,
+    highlight: "grad-out"
+  },
+  {
+    title: "Step 5 — Chain Rule: Propagate Back Through Layers",
+    desc: "The chain rule multiplies local gradients at each gate to flow the error backwards. Each weight receives its gradient ∂L/∂W, and we update: W ← W - η·∂L/∂W.",
+    formula: `<span class="comment">// Chain rule: gradient flows backward</span><br>∂L/∂W₂ = ∂L/∂z₂ · a₁ &nbsp;&nbsp;&nbsp;<span class="comment">// output weights</span><br>∂L/∂a₁ = W₂ᵀ · ∂L/∂z₂ &nbsp;<span class="comment">// hidden gradient</span><br>∂L/∂W₁ = ∂L/∂a₁ · xᵀ &nbsp;&nbsp;<span class="comment">// input weights</span><br><br><span class="comment">// Weight update (learning rate η=0.01)</span><br>W ← W - η · ∂L/∂W`,
+    highlight: "grad-all"
+  }
+];
+
+let currentStep = 0;
+const totalSteps = STEPS.length;
+
+// Network layout
+const layers = [
+  { x: 110, neurons: [{y:80},{y:150},{y:220}], color: "#58a6ff", label: "Input" },
+  { x: 310, neurons: [{y:80},{y:150},{y:220}], color: "#bc8cff", label: "Hidden" },
+  { x: 510, neurons: [{y:80},{y:150},{y:220}], color: "#bc8cff", label: "Hidden 2" },
+  { x: 660, neurons: [{y:150}], color: "#f78166", label: "Output" }
+];
+
+const svg = document.getElementById("networkSvg");
+
+function makeSvgEl(tag, attrs) {
+  const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+  return el;
+}
+
+function renderNetwork() {
+  svg.innerHTML = "";
+
+  const step = STEPS[currentStep];
+
+  // Glow filter
+  const defs = makeSvgEl("defs", {});
+  const filter = makeSvgEl("filter", {id:"glow", x:"-30%", y:"-30%", width:"160%", height:"160%"});
+  const blur = makeSvgEl("feGaussianBlur", {stdDeviation:"3", result:"blur"});
+  const merge = makeSvgEl("feMerge", {});
+  const mn1 = makeSvgEl("feMergeNode", {in:"blur"});
+  const mn2 = makeSvgEl("feMergeNode", {in:"SourceGraphic"});
+  merge.appendChild(mn1); merge.appendChild(mn2);
+  filter.appendChild(blur); filter.appendChild(merge);
+  defs.appendChild(filter);
+  svg.appendChild(defs);
+
+  function edgeHighlighted(li) {
+    const h = step.highlight;
+    if (h === "in-h1" && li === 0) return true;
+    if (h === "h1-out" && li >= 1) return true;
+    if (h === "grad-out" && li >= 1) return true;
+    if (h === "grad-all") return true;
+    return false;
+  }
+
+  // Draw edges
+  for (let li = 0; li < layers.length - 1; li++) {
+    const from = layers[li];
+    const to = layers[li + 1];
+    const highlighted = edgeHighlighted(li);
+    const isBackward = (step.highlight === "grad-out" || step.highlight === "grad-all");
+
+    for (const fn of from.neurons) {
+      for (const tn of to.neurons) {
+        const line = makeSvgEl("line", {
+          x1: from.x + 22, y1: fn.y,
+          x2: to.x - 22, y2: tn.y,
+          stroke: highlighted ? (isBackward ? "#f78166" : "#58a6ff") : "#30363d",
+          "stroke-width": highlighted ? "2" : "1",
+          opacity: highlighted ? "0.85" : "0.4"
+        });
+        if (highlighted) line.setAttribute("filter", "url(#glow)");
+        svg.appendChild(line);
+
+        // Animate a dot along the edge when highlighted
+        if (highlighted && currentStep >= 1) {
+          const circle = makeSvgEl("circle", { r: "4", fill: isBackward ? "#f78166" : "#3fb950", opacity: "0.9" });
+          const anim = makeSvgEl("animateMotion", {
+            dur: "1.2s", repeatCount: "indefinite",
+            path: `M${from.x + 22},${fn.y} L${to.x - 22},${tn.y}`,
+            keyTimes: isBackward ? "0;1" : "0;1",
+            keyPoints: isBackward ? "1;0" : "0;1"
+          });
+          circle.appendChild(anim);
+          svg.appendChild(circle);
+        }
+      }
+    }
+  }
+
+  // Draw neurons
+  for (const layer of layers) {
+    for (const n of layer.neurons) {
+      const circle = makeSvgEl("circle", {
+        cx: layer.x, cy: n.y, r: "22",
+        fill: "#161b22", stroke: layer.color,
+        "stroke-width": "2"
+      });
+
+      // Loss highlight
+      if (step.highlight === "loss" && layer.label === "Output") {
+        circle.setAttribute("stroke", "#f78166");
+        circle.setAttribute("stroke-width", "3");
+        circle.setAttribute("filter", "url(#glow)");
+      }
+      if ((step.highlight === "grad-out" || step.highlight === "grad-all") && layer.label === "Output") {
+        circle.setAttribute("stroke", "#f78166");
+        circle.setAttribute("filter", "url(#glow)");
+      }
+
+      svg.appendChild(circle);
+
+      // Activation value labels
+      const labels = {
+        "Input": ["x₁","x₂","x₃"],
+        "Hidden": ["a₁","a₂","a₃"],
+        "Hidden 2": ["h₁","h₂","h₃"],
+        "Output": ["ŷ"]
+      };
+      const idx = layer.neurons.indexOf(n);
+      const lbl = makeSvgEl("text", {
+        x: layer.x, y: n.y + 5,
+        fill: layer.color, "font-size": "13", "text-anchor": "middle",
+        "font-weight": "600"
+      });
+      lbl.textContent = labels[layer.label][idx];
+      svg.appendChild(lbl);
+    }
+
+    // Layer label
+    const lbl = makeSvgEl("text", {
+      x: layer.x,
+      y: Math.max(...layer.neurons.map(n=>n.y)) + 42,
+      fill: "#8b949e", "font-size": "11", "text-anchor": "middle"
+    });
+    lbl.textContent = layer.label;
+    svg.appendChild(lbl);
+  }
+
+  // Loss node
+  if (currentStep >= 3) {
+    const lx = 760, ly = 150;
+    const line = makeSvgEl("line", { x1: 660+22, y1: 150, x2: lx-28, y2: ly, stroke: "#f78166", "stroke-width": "2", "stroke-dasharray": "6,3" });
+    svg.appendChild(line);
+    const lossCircle = makeSvgEl("circle", { cx: lx, cy: ly, r: "22", fill: "#161b22", stroke: "#f78166", "stroke-width": "2.5", filter: "url(#glow)" });
+    svg.appendChild(lossCircle);
+    const lossText = makeSvgEl("text", { x: lx, y: ly+5, fill: "#f78166", "font-size": "12", "text-anchor": "middle", "font-weight": "700" });
+    lossText.textContent = "L";
+    svg.appendChild(lossText);
+    const lossLabel = makeSvgEl("text", { x: lx, y: ly + 42, fill: "#8b949e", "font-size": "11", "text-anchor": "middle" });
+    lossLabel.textContent = "Loss";
+    svg.appendChild(lossLabel);
+  }
+
+  // Gradient labels on backward pass
+  if (step.highlight === "grad-all") {
+    const grads = [
+      { x: 580, y: 110, text: "∂L/∂W₂" },
+      { x: 380, y: 110, text: "∂L/∂W₁" },
+    ];
+    for (const g of grads) {
+      const t = makeSvgEl("text", { x: g.x, y: g.y, fill: "#f78166", "font-size": "11", "text-anchor": "middle", "font-weight": "600" });
+      t.textContent = g.text;
+      svg.appendChild(t);
+    }
+  }
+}
+
+function updateUI() {
+  const step = STEPS[currentStep];
+  document.getElementById("stepCounter").textContent = `Step ${currentStep + 1} of ${totalSteps}`;
+  document.getElementById("progressFill").style.width = `${((currentStep + 1) / totalSteps) * 100}%`;
+  document.getElementById("stepTitle").textContent = step.title;
+  document.getElementById("stepDesc").textContent = step.desc;
+  document.getElementById("formulaBox").innerHTML = step.formula;
+  document.getElementById("prevBtn").disabled = currentStep === 0;
+  document.getElementById("nextBtn").disabled = currentStep === totalSteps - 1;
+
+  if (step.legend) {
+    document.getElementById("legend").innerHTML = step.legend.map(l =>
+      `<div class="legend-item"><div class="legend-dot" style="background:${l.color}"></div>${l.label}</div>`
+    ).join("");
+  }
+
+  renderNetwork();
+}
+
+function changeStep(delta) {
+  const next = currentStep + delta;
+  if (next < 0 || next >= totalSteps) return;
+  currentStep = next;
+  updateUI();
+}
+
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowRight") changeStep(1);
+  if (e.key === "ArrowLeft") changeStep(-1);
+});
+
+updateUI();
+</script>
+</body>
+</html>

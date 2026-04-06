@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attention Types — Knowledge Vault</title>
+  <link rel="icon" href="data:," />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #bc8cff;
+      --blue: #58a6ff;
+      --coral: #f78166;
+      --green: #3fb950;
+      --yellow: #d29922;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    nav a:hover { color: var(--accent); }
+    nav .title { color: var(--text); font-weight: 600; font-size: 0.875rem; }
+    .tag {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      background: rgba(188,140,255,0.12);
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+    }
+    main {
+      flex: 1;
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      width: 100%;
+    }
+    h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+      line-height: 1.55;
+      max-width: 760px;
+    }
+    .step-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .step-indicator { font-size: 0.8rem; color: var(--muted); }
+    .progress-bar {
+      height: 3px;
+      background: var(--border);
+      border-radius: 999px;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+    .step-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      color: var(--accent);
+    }
+    .step-desc {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      max-width: 720px;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.85fr);
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    @media (max-width: 760px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+    .viz-area {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.1rem;
+      min-height: 340px;
+    }
+    .side {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .formula-box {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem 1.1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.8rem;
+      color: var(--green);
+      line-height: 1.75;
+    }
+    .formula-box .c { color: var(--muted); }
+    .side-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .card {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.85rem 0.95rem;
+    }
+    .prop-row {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 0.75rem;
+      font-size: 0.8rem;
+      padding: 0.42rem 0;
+      border-bottom: 1px solid var(--border);
+      align-items: center;
+    }
+    .prop-row:last-child { border-bottom: none; }
+    .prop-label { color: var(--muted); }
+    .chip {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      border: 1px solid;
+      display: inline-block;
+    }
+    .viz-grid { display: grid; gap: 1rem; }
+    .token-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+    .token {
+      padding: 0.55rem 0.75rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      min-width: 76px;
+      text-align: center;
+    }
+    .token strong {
+      display: block;
+      font-size: 0.82rem;
+      margin-bottom: 0.15rem;
+    }
+    .token span {
+      font-size: 0.68rem;
+      color: var(--muted);
+    }
+    .route-list {
+      display: grid;
+      gap: 0.55rem;
+    }
+    .route-row {
+      display: grid;
+      grid-template-columns: 80px 1fr 48px;
+      gap: 0.6rem;
+      align-items: center;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    .route-track {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+    .route-fill {
+      height: 100%;
+      border-radius: 999px;
+    }
+    .weighted-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 0.7rem;
+    }
+    .weighted-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.8rem;
+      font-size: 0.78rem;
+    }
+    .weighted-card strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-size: 0.82rem;
+    }
+    .matrix-wrap {
+      display: grid;
+      gap: 0.8rem;
+    }
+    .matrix {
+      display: grid;
+      gap: 5px;
+      justify-content: start;
+    }
+    .matrix-cell {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      font-family: ui-monospace, monospace;
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      font-size: 0.76rem;
+      color: var(--muted);
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .family-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.8rem;
+    }
+    .family-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.85rem;
+    }
+    .family-card h3 {
+      font-size: 0.86rem;
+      margin-bottom: 0.4rem;
+    }
+    .family-card p {
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.55;
+    }
+    .head-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.8rem;
+    }
+    .head-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.8rem;
+    }
+    .head-card h3 {
+      font-size: 0.84rem;
+      margin-bottom: 0.45rem;
+    }
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .btn {
+      padding: 0.55rem 1.25rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+    .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #0d1117;
+      font-weight: 600;
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: #d0aaff;
+      border-color: #d0aaff;
+      color: #0d1117;
+    }
+    .kbd {
+      font-size: 0.7rem;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.1rem 0.35rem;
+      font-family: ui-monospace, monospace;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Home</a>
+    <span style="color:var(--border)">›</span>
+    <span class="title">Attention Types</span>
+    <div style="margin-left:auto"><span class="tag">Transformers</span></div>
+  </nav>
+
+  <main>
+    <h1>Attention Types</h1>
+    <p class="subtitle">Five attention variants, organized by the two questions that matter most: where do the query, keys, and values come from, and does the model mix all positions softly or commit to a single route?</p>
+
+    <div class="step-header">
+      <span class="step-indicator" id="stepCounter">Step 1 of 6</span>
+      <div style="display:flex;gap:.5rem;align-items:center">
+        <span class="kbd">←</span><span class="kbd">→</span>
+        <span style="font-size:.75rem;color:var(--muted)">navigate</span>
+      </div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+    <div class="step-title" id="stepTitle"></div>
+    <div class="step-desc" id="stepDesc"></div>
+
+    <div class="layout">
+      <div class="viz-area" id="vizArea"></div>
+      <div class="side">
+        <div>
+          <div class="side-label">Formula</div>
+          <div class="formula-box" id="formulaBox"></div>
+        </div>
+        <div id="propsPanel"></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" id="prevBtn" disabled onclick="changeStep(-1)"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>Prev</button>
+      <button class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">Next<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+    </div>
+  </main>
+
+  <script>
+    const TOKENS = [
+      { label: "The", color: "#f78166" },
+      { label: "cat", color: "#58a6ff" },
+      { label: "sat", color: "#3fb950" },
+      { label: "mat", color: "#d29922" }
+    ];
+
+    const ENC_TOKENS = [
+      { label: "we", color: "#bc8cff" },
+      { label: "see", color: "#79c0ff" },
+      { label: "sky", color: "#3fb950" }
+    ];
+
+    const SOFT_W = [0.12, 0.60, 0.18, 0.10];
+    const SELF_W = [
+      [0.46, 0.20, 0.22, 0.12],
+      [0.08, 0.55, 0.25, 0.12],
+      [0.18, 0.22, 0.40, 0.20],
+      [0.10, 0.20, 0.28, 0.42]
+    ];
+    const CROSS_W = [0.15, 0.70, 0.15];
+    const HEADS = [
+      { name: "Head 1", focus: "local syntax", values: [0.55, 0.30, 0.10, 0.05], color: "#f78166" },
+      { name: "Head 2", focus: "self-anchor", values: [0.08, 0.62, 0.20, 0.10], color: "#58a6ff" },
+      { name: "Head 3", focus: "verb relation", values: [0.10, 0.18, 0.57, 0.15], color: "#3fb950" },
+      { name: "Head 4", focus: "object context", values: [0.06, 0.24, 0.22, 0.48], color: "#d29922" }
+    ];
+
+    const STEPS = [
+      {
+        title: "The Attention Family Tree",
+        desc: "All modern variants share the same attention core. What changes is the routing policy: soft vs hard selection, same-sequence vs cross-sequence lookup, and one head vs many heads in parallel.",
+        formula: `<span class="c">// Shared core</span><br>Attn(Q,K,V) = softmax(QKᵀ / √d) · V<br><br><span class="c">// Design axes</span><br>1. Soft mix vs discrete selection<br>2. Same-sequence vs different-sequence memory<br>3. One head vs many heads`,
+        props: [
+          { label: "Routing", val: "soft or hard", color: "#bc8cff" },
+          { label: "Source", val: "self or cross", color: "#58a6ff" },
+          { label: "Heads", val: "single or multi", color: "#3fb950" }
+        ],
+        render: renderOverview
+      },
+      {
+        title: "Soft Attention — Every Position Contributes",
+        desc: "Soft attention is the standard mechanism used in real transformers. The query distributes fractional weight across all positions, and the output is the weighted sum of their value vectors.",
+        formula: `<span class="c">// Standard differentiable attention</span><br>scores = QKᵀ / √d<br>weights = softmax(scores)<br>output = Σ wᵢ · vᵢ<br><br><span class="c">// all weights are non-negative and sum to 1</span>`,
+        props: [
+          { label: "Differentiable", val: "yes", color: "#3fb950" },
+          { label: "Uses", val: "all positions", color: "#bc8cff" },
+          { label: "Training", val: "standard backprop", color: "#3fb950" }
+        ],
+        render: renderSoft
+      },
+      {
+        title: "Hard Attention — One Position Wins",
+        desc: "Hard attention replaces the soft probability mix with an argmax decision. The model chooses one position and ignores the rest. That makes routing discrete, but breaks ordinary backpropagation.",
+        formula: `<span class="c">// Discrete routing</span><br>scores = QKᵀ / √d<br>idx = argmax(scores)<br>output = V[idx]<br><br><span class="c">// argmax has no useful gradient almost everywhere</span>`,
+        props: [
+          { label: "Differentiable", val: "no", color: "#f78166" },
+          { label: "Uses", val: "exactly one", color: "#f78166" },
+          { label: "Training", val: "REINFORCE / relaxations", color: "#d29922" }
+        ],
+        render: renderHard
+      },
+      {
+        title: "Self-Attention — Q, K, and V Come From the Same Sequence",
+        desc: "Self-attention is what gives transformers global context. Every token can read the rest of the sequence, so long-range dependencies become direct instead of having to pass through many recurrent or convolutional steps.",
+        formula: `<span class="c">// Same input X creates everything</span><br>Q = XW<sub>Q</sub><br>K = XW<sub>K</sub><br>V = XW<sub>V</sub><br><br><span class="c">// one sequence attends to itself</span>`,
+        props: [
+          { label: "Memory", val: "same sequence", color: "#bc8cff" },
+          { label: "Context", val: "global", color: "#3fb950" },
+          { label: "Used in", val: "BERT, GPT, ViT", color: "#58a6ff" }
+        ],
+        render: renderSelf
+      },
+      {
+        title: "Cross-Attention — Queries Read a Different Sequence",
+        desc: "Cross-attention changes only one thing: the query sequence is different from the memory sequence. Decoder states ask questions; encoder states provide the keys and values. That is how encoder-decoder transformers bridge inputs to outputs.",
+        formula: `<span class="c">// Decoder asks, encoder answers</span><br>Q = X<sub>decoder</sub>W<sub>Q</sub><br>K = X<sub>encoder</sub>W<sub>K</sub><br>V = X<sub>encoder</sub>W<sub>V</sub><br><br><span class="c">// different source for Q vs K/V</span>`,
+        props: [
+          { label: "Q source", val: "decoder", color: "#f78166" },
+          { label: "K/V source", val: "encoder", color: "#3fb950" },
+          { label: "Used in", val: "T5, BART, DETR", color: "#58a6ff" }
+        ],
+        render: renderCross
+      },
+      {
+        title: "Multi-Head Attention — Several Routing Patterns at Once",
+        desc: "Multi-head attention runs several attention operations in parallel, each with its own projections. Different heads can specialize: some stay local, some self-anchor, some chase entities, and some bind long-range relations.",
+        formula: `MultiHead(Q,K,V) = Concat(h₁,…,hH) · Wₒ<br><br>hᵢ = Attn(QWᵢᵠ, KWᵢᴷ, VWᵢᵛ)<br><br><span class="c">// same block, multiple learned routing subspaces</span>`,
+        props: [
+          { label: "Heads", val: "H parallel routes", color: "#bc8cff" },
+          { label: "Benefit", val: "different relations", color: "#3fb950" },
+          { label: "Used in", val: "all modern transformers", color: "#58a6ff" }
+        ],
+        render: renderMultiHead
+      }
+    ];
+
+    let currentStep = 0;
+
+    function tokenStrip(tokens, highlightIndex = -1) {
+      return `
+        <div class="token-strip">
+          ${tokens.map((token, index) => `
+            <div class="token" style="border-color:${highlightIndex === index ? token.color : "var(--border)"};background:${highlightIndex === index ? `${token.color}18` : "rgba(255,255,255,0.03)"}">
+              <strong style="color:${token.color}">${token.label}</strong>
+              <span>${highlightIndex === index ? "focus" : "context"}</span>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function routeList(tokens, weights) {
+      return `
+        <div class="route-list">
+          ${tokens.map((token, index) => `
+            <div class="route-row">
+              <span style="color:${token.color}">${token.label}</span>
+              <div class="route-track"><div class="route-fill" style="width:${weights[index] * 100}%;background:${token.color}"></div></div>
+              <span>${Math.round(weights[index] * 100)}%</span>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function matrix(weights, colors, rows, cols, activeRow = -1) {
+      return `
+        <div class="matrix" style="grid-template-columns:repeat(${cols}, 42px)">
+          ${weights.flat().map((value, index) => {
+            const row = Math.floor(index / cols);
+            const color = colors[row % colors.length];
+            const alpha = row === activeRow ? 0.16 + value * 0.78 : 0.1 + value * 0.5;
+            const bg = `${color}${Math.round(alpha * 255).toString(16).padStart(2, "0")}`;
+            const textColor = value > 0.45 ? "#0d1117" : "var(--text)";
+            return `<div class="matrix-cell" style="background:${bg};color:${textColor}">${value.toFixed(2)}</div>`;
+          }).join("")}
+        </div>
+      `;
+    }
+
+    function renderOverview() {
+      document.getElementById("vizArea").innerHTML = `
+        <div class="viz-grid">
+          <div class="family-grid">
+            <div class="family-card">
+              <h3>Soft vs Hard</h3>
+              <p>Do you blend information from all positions, or pick one route and ignore the rest?</p>
+            </div>
+            <div class="family-card">
+              <h3>Self vs Cross</h3>
+              <p>Does the query read its own sequence, or a different memory built somewhere else?</p>
+            </div>
+            <div class="family-card">
+              <h3>Single vs Multi-Head</h3>
+              <p>Does one routing map handle everything, or several specialized maps share the job?</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="side-label">Unifying Question</div>
+            <div style="color:var(--muted);font-size:0.84rem;line-height:1.6">
+              Attention is always a lookup mechanism. The variants differ mostly in which memory is being queried, how sharp the lookup is, and how many independent lookup patterns run in parallel.
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSoft() {
+      document.getElementById("vizArea").innerHTML = `
+        <div class="viz-grid">
+          <div class="card">
+            <div class="side-label">Query Token</div>
+            ${tokenStrip(TOKENS, 1)}
+          </div>
+          <div class="weighted-row">
+            <div class="weighted-card">
+              <strong>Routing Weights</strong>
+              ${routeList(TOKENS, SOFT_W)}
+            </div>
+            <div class="weighted-card">
+              <strong>Result</strong>
+              output = 0.12·V<sub>The</sub> + 0.60·V<sub>cat</sub> + 0.18·V<sub>sat</sub> + 0.10·V<sub>mat</sub>
+            </div>
+          </div>
+          <div class="legend">
+            <div class="legend-item"><span class="swatch" style="background:var(--green)"></span>all values contribute</div>
+            <div class="legend-item"><span class="swatch" style="background:var(--accent)"></span>larger bar = more influence</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderHard() {
+      const selected = 1;
+      document.getElementById("vizArea").innerHTML = `
+        <div class="viz-grid">
+          <div class="card">
+            <div class="side-label">Discrete Choice</div>
+            ${tokenStrip(TOKENS, selected)}
+          </div>
+          <div class="weighted-row">
+            <div class="weighted-card">
+              <strong>Scores Before Argmax</strong>
+              ${routeList(TOKENS, [0.18, 0.64, 0.12, 0.06])}
+            </div>
+            <div class="weighted-card">
+              <strong>After Argmax</strong>
+              output = V<sub>${TOKENS[selected].label}</sub><br><br>
+              All other positions are discarded instead of mixed softly.
+            </div>
+          </div>
+          <div class="card" style="border-color:rgba(247,129,102,0.3)">
+            <div style="color:var(--coral);font-size:0.82rem;line-height:1.6">
+              Hard selection is easier to interpret, but the discrete jump from "not selected" to "selected" is why gradients stop being useful.
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSelf() {
+      document.getElementById("vizArea").innerHTML = `
+        <div class="viz-grid">
+          <div class="card">
+            <div class="side-label">Same Sequence Provides Query and Memory</div>
+            ${tokenStrip(TOKENS, 1)}
+          </div>
+          <div class="matrix-wrap">
+            <div class="card">
+              <div class="side-label">Self-Attention Matrix</div>
+              ${matrix(SELF_W, TOKENS.map(token => token.color), 4, 4, 1)}
+            </div>
+            <div class="card">
+              <div class="side-label">Focus Row: "cat"</div>
+              ${routeList(TOKENS, SELF_W[1])}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCross() {
+      document.getElementById("vizArea").innerHTML = `
+        <div class="viz-grid">
+          <div class="family-grid">
+            <div class="family-card">
+              <h3>Encoder Memory</h3>
+              ${tokenStrip(ENC_TOKENS)}
+            </div>
+            <div class="family-card">
+              <h3>Decoder Query</h3>
+              ${tokenStrip([{ label: "vediamo", color: "#f78166" }], 0)}
+            </div>
+          </div>
+          <div class="weighted-row">
+            <div class="weighted-card">
+              <strong>Cross-Attention Weights</strong>
+              ${routeList(ENC_TOKENS, CROSS_W)}
+            </div>
+            <div class="weighted-card">
+              <strong>Interpretation</strong>
+              The decoder token asks the encoder memory where to look. Here it strongly prefers <strong style="color:${ENC_TOKENS[1].color}">see</strong>, so that encoder state contributes most to the next decoder update.
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderMultiHead() {
+      document.getElementById("vizArea").innerHTML = `
+        <div class="viz-grid">
+          <div class="head-grid">
+            ${HEADS.map(head => `
+              <div class="head-card">
+                <h3 style="color:${head.color}">${head.name}</h3>
+                <div style="color:var(--muted);font-size:0.74rem;margin-bottom:0.55rem">${head.focus}</div>
+                ${routeList(TOKENS, head.values)}
+              </div>
+            `).join("")}
+          </div>
+          <div class="card">
+            <div class="side-label">Why Multiple Heads Help</div>
+            <div style="color:var(--muted);font-size:0.84rem;line-height:1.6">
+              One head can stay local, another can self-anchor, another can chase entity relations. Concatenating them lets the block keep several routing hypotheses alive at once instead of forcing one attention map to do every job.
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderProps(props) {
+      document.getElementById("propsPanel").innerHTML = `
+        <div class="side-label">Properties</div>
+        <div class="card">
+          ${props.map(prop => `
+            <div class="prop-row">
+              <span class="prop-label">${prop.label}</span>
+              <span class="chip" style="color:${prop.color};border-color:${prop.color}40">${prop.val}</span>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function updateUI() {
+      const step = STEPS[currentStep];
+      document.getElementById("stepCounter").textContent = `Step ${currentStep + 1} of ${STEPS.length}`;
+      document.getElementById("progressFill").style.width = `${((currentStep + 1) / STEPS.length) * 100}%`;
+      document.getElementById("stepTitle").textContent = step.title;
+      document.getElementById("stepDesc").textContent = step.desc;
+      document.getElementById("formulaBox").innerHTML = step.formula;
+      document.getElementById("vizArea").innerHTML = "";
+      step.render();
+      renderProps(step.props);
+      document.getElementById("prevBtn").disabled = currentStep === 0;
+      document.getElementById("nextBtn").disabled = currentStep === STEPS.length - 1;
+    }
+
+    function changeStep(delta) {
+      const next = currentStep + delta;
+      if (next < 0 || next >= STEPS.length) return;
+      currentStep = next;
+      updateUI();
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight") changeStep(1);
+      if (event.key === "ArrowLeft") changeStep(-1);
+    });
+
+    updateUI();
+  </script>
+</body>
+</html>
