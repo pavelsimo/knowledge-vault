@@ -10,6 +10,7 @@
 | [[multimodal-models]] | Multimodal AI: BLIP, CLAP, image-text retrieval, image captioning, visual Q&A |
 | [[sentence-embeddings]] | Sentence embeddings: all-MiniLM-L6-v2, semantic search, vector spaces |
 | [[probability-statistics]] | Stanford CS109: probability theory, Bayes' theorem, random variables, covariance |
+| [[algorithms-patterns]] | Algorithmic templates: binary search on answers, two pointers, graph traversals, DP families, bit tricks |
 | [[neural-networks]] | Neural networks: loss functions, softmax, regularization, backpropagation, gradients |
 | [[optimization]] | Optimization: SGD, Momentum, RMSProp, Adam, AdamW, learning rate schedules |
 | [[convolutional-neural-networks]] | CNNs: filters, pooling, batch norm, activation functions, ResNet, weight initialization |
@@ -28,10 +29,13 @@
 | [[gpu-cuda]] | GPU and CUDA: compute capabilities, CUDA kernels, GPU memory, LLM VRAM math, quantization formats |
 | [[rag]] | RAG architectures: Naive, Multimodal, HyDE, Corrective, Graph, Hybrid, Adaptive, Agentic |
 | [[ai-coding]] | AI-assisted development: vibe coding, context engineering, Plan→Execute→Verify, security risks |
+| [[ml-learning-careers]] | Becoming an ML engineer: active learning, AI-assisted study loops, implementation-first practice, demo-driven career strategy |
 | [[ai-industry]] | AI-native organizations: Moonshot AI (Kimi), flat hierarchies, agent swarms, generalization hiring |
+| [[china-development-economics]] | China development model: central-local governance, tax reform, land finance, industrial policy, urbanization, debt, dual circulation |
 | [[quantization]] | Quantization: symmetric/asymmetric, block quantization, perplexity, KL divergence, speed benchmarks |
 | [[omniverse-usd]] | NVIDIA Omniverse, OpenUSD: stages, prims, schemas, digital twins, physical AI, Cosmos |
 | [[ai-agents]] | Claude sub-agents vs agent teams: orchestration patterns, context-centric design, when to use multi-agent systems |
 | [[ai-model-architectures]] | Eight specialized AI model types: LLM, LCM, LAM, MoE, VLM, SLM, MLM, SAM — architectures and selection guide |
 | [[system-design]] | System design fundamentals: OSI model, CDN, caching, sharding, CAP theorem, microservices, case studies (Uber, Netflix, WhatsApp) |
 | [[shaders]] | GPU shader programming: vertex/pixel shaders, GLSL/HLSL, GPU parallelism, VFX techniques, GPGPU |
+| [[game-math]] | Game-math essentials: unit circle, sin/cos, dot product, projections, `atan2`, and field-of-view checks |

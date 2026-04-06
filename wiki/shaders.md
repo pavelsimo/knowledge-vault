@@ -106,6 +106,7 @@ CUDA (NVIDIA) and OpenCL / SYCL are the primary GPGPU programming APIs. Compute 
 
 ## Related Topics
 
+- [[game-math]] — trigonometry, dot products, and direction vectors used constantly in graphics code
 - [[gpu-cuda]] — GPU architecture, CUDA kernels, VRAM math
 - [[computer-vision]] — GPU-accelerated image processing uses shader-like parallel kernels
 - [[generative-models]] — diffusion model inference runs as GPU kernels; output rendered with shaders

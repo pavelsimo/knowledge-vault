@@ -5,6 +5,8 @@ Robot learning covers how machines acquire skills through experience, demonstrat
 ## Source
 
 - `raw/03-stanford-cs231n/Stanford CS231N.md`
+- `raw/00-clippings/Should Robot Generalists Get Off Their High Horse.md`
+- `raw/00-clippings/The Physical AI Deployment Gap.md`
 
 ## Problem Formulation
 

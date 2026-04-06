@@ -6,16 +6,17 @@ The attention mechanism was invented to overcome the bottleneck in RNN-based seq
 
 - `raw/03-stanford-cs231n/Stanford CS231N.md`
 - `raw/00-clippings/Math behind Attention - Q, K, and V.md`
+- `raw/00-clippings/KV Caching in LLMs, Clearly Explained.md`
 
 ## Three Ways of Processing Sequences
 
 Before attention, there were two dominant approaches:
 
-| Approach | Compute | Memory | Parallelizable? | Limitation |
-|---|---|---|---|---|
-| **RNN** | O(N) | O(N) | No | Must compute hidden states sequentially; no parallelism |
-| **Convolution** | O(N) | O(N) | Yes | Must stack many layers to build up large receptive fields |
-| **Self-Attention** | O(N²) | O(N) | Yes | Output depends directly on all inputs (just 4 matmuls) |
+| Approach           | Compute | Memory | Parallelizable? | Limitation                                                |
+| ------------------ | ------- | ------ | --------------- | --------------------------------------------------------- |
+| **RNN**            | O(N)    | O(N)   | No              | Must compute hidden states sequentially; no parallelism   |
+| **Convolution**    | O(N)    | O(N)   | Yes             | Must stack many layers to build up large receptive fields |
+| **Self-Attention** | O(N²)   | O(N)   | Yes             | Output depends directly on all inputs (just 4 matmuls)    |
 
 Self-attention is highly parallel (it's just matrix multiplications), but expensive: O(N²) compute for a sequence of length N. This is why attention in LLMs becomes a bottleneck for very long contexts.
 
