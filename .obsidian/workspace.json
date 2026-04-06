@@ -1,20 +1,24 @@
 {
   "main": {
-    "id": "7f48f84a6510f8b2",
+    "id": "ce262ce38651407d",
     "type": "split",
     "children": [
       {
-        "id": "248adfa5e4787d72",
+        "id": "eb13779b65501f7d",
         "type": "tabs",
         "children": [
           {
-            "id": "0034efd2b7e3bd1d",
+            "id": "0f147abd8751e6a4",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "README.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "README"
             }
           }
         ]
@@ -23,15 +27,15 @@
     "direction": "vertical"
   },
   "left": {
-    "id": "e8c58ad3d7cc4777",
+    "id": "38cd52c2f626863e",
     "type": "split",
     "children": [
       {
-        "id": "1e675b513c7577c6",
+        "id": "e67d375d2dd00c06",
         "type": "tabs",
         "children": [
           {
-            "id": "11eb1fee7b23a1af",
+            "id": "33a5399dfe9f3bb8",
             "type": "leaf",
             "state": {
               "type": "file-explorer",
@@ -44,7 +48,7 @@
             }
           },
           {
-            "id": "d20a5eac6fd0a54a",
+            "id": "6b764e2ff680a16b",
             "type": "leaf",
             "state": {
               "type": "search",
@@ -61,7 +65,7 @@
             }
           },
           {
-            "id": "442fc8d0d7436fd2",
+            "id": "418aa885c8a2b1e0",
             "type": "leaf",
             "state": {
               "type": "bookmarks",
@@ -77,21 +81,22 @@
     "width": 300
   },
   "right": {
-    "id": "91bfde2a55c6d371",
+    "id": "3bedf992483d4cfa",
     "type": "split",
     "children": [
       {
-        "id": "7d5173fd4fcf94f0",
+        "id": "67afc1526a1464ae",
         "type": "tabs",
         "children": [
           {
-            "id": "dd383c7a96716ed6",
+            "id": "3d66bf59fe6d0453",
             "type": "leaf",
             "state": {
               "type": "backlink",
               "state": {
-                "collapseAll": true,
-                "extraContext": true,
+                "file": "README.md",
+                "collapseAll": false,
+                "extraContext": false,
                 "sortOrder": "alphabetical",
                 "showSearch": false,
                 "searchQuery": "",
@@ -99,25 +104,25 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks"
+              "title": "Backlinks for README"
             }
           },
           {
-            "id": "95ef0fe764047d2c",
+            "id": "22d050210abe6cda",
             "type": "leaf",
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "wiki/recurrent-neural-networks.md",
+                "file": "README.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from recurrent-neural-networks"
+              "title": "Outgoing links from README"
             }
           },
           {
-            "id": "8e170e3ade05b383",
+            "id": "adcb689d67d4cc87",
             "type": "leaf",
             "state": {
               "type": "tag",
@@ -132,7 +137,7 @@
             }
           },
           {
-            "id": "1541a41efa781ea0",
+            "id": "b116447d60db9541",
             "type": "leaf",
             "state": {
               "type": "all-properties",
@@ -146,25 +151,26 @@
             }
           },
           {
-            "id": "726b87fd9de2721a",
+            "id": "c5bf9be19fb62a3b",
             "type": "leaf",
             "state": {
               "type": "outline",
               "state": {
-                "file": "wiki/recurrent-neural-networks.md",
+                "file": "README.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of recurrent-neural-networks"
+              "title": "Outline of README"
             }
           }
         ]
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -177,53 +183,17 @@
       "bases:Create new base": false
     }
   },
-  "active": "0034efd2b7e3bd1d",
+  "active": "0f147abd8751e6a4",
   "lastOpenFiles": [
-    "raw/01-open-source-models-hugging-face/Open Source Models with Hugging Face.md",
-    "QUERIES.md",
+    "wiki/video-understanding.md",
+    "wiki/robot-learning.md",
+    "wiki/3d-vision.md",
+    "wiki/INDEX.md",
+    "wiki/convolutional-neural-networks.md",
+    "wiki/sentence-embeddings.md",
+    "README.md",
     "HEALTHCHECK.md",
     "COMPILE.md",
-    "README.md",
-    "wiki/3d-vision.md",
-    "wiki/probability-statistics.md",
-    "wiki/optimization.md",
-    "wiki/network-visualization.md",
-    "wiki/hugging-face.md",
-    "wiki/attention-transformers.md",
-    "wiki/recurrent-neural-networks.md",
-    "wiki/mlops.md",
-    "wiki/audio-processing.md",
-    "wiki/distributed-training.md",
-    "wiki/convolutional-neural-networks.md",
-    "wiki/video-understanding.md",
-    "wiki/gpu-cuda.md",
-    "wiki/robot-learning.md",
-    "wiki/computer-vision.md",
-    "wiki/transformers-library.md",
-    "wiki/self-supervised-learning.md",
-    "wiki/generative-models.md",
-    "wiki/semantic-segmentation.md",
-    "wiki/sentence-embeddings.md",
-    "wiki/nlp.md",
-    "wiki/self-supervised-learning.md.tmp.50382.1775427948163",
-    "raw/04-machine-learning-engineering-for-production-mlops/images/Pasted image 20260301211843.png",
-    "raw/04-machine-learning-engineering-for-production-mlops/images/Pasted image 20260228184049.png",
-    "raw/04-machine-learning-engineering-for-production-mlops/images/Pasted image 20260228162526.png",
-    "raw/04-machine-learning-engineering-for-production-mlops/images/Pasted image 20260228162011.png",
-    "raw/04-machine-learning-engineering-for-production-mlops/images/Pasted image 20260228154354.png",
-    "raw/04-machine-learning-engineering-for-production-mlops/images/Pasted image 20260228152824.png",
-    "raw/04-machine-learning-engineering-for-production-mlops/images/Pasted image 20260228152709.png",
-    "raw/04-machine-learning-engineering-for-production-mlops/images/Pasted image 20260228153952.png",
-    "raw/04-machine-learning-engineering-for-production-mlops/images/Pasted image 20260228152616.png",
-    "raw/04-machine-learning-engineering-for-production-mlops/images/Pasted image 20260228150943.png",
-    "raw/04-machine-learning-engineering-for-production-mlops/images",
-    "raw/04-machine-learning-engineering-for-production-mlops",
-    "images",
-    "raw/02-cs109-probability-for-computer-scientists/images",
-    "raw/02-cs109-probability-for-computer-scientists",
-    "raw/01-open-source-models-hugging-face/images/data",
-    "raw/01-open-source-models-hugging-face/images",
-    "raw/01-open-source-models-hugging-face/data/sample.wav",
-    "raw/01-open-source-models-hugging-face/data"
+    "wiki/attention-transformers.md"
   ]
 }
