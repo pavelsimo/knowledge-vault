@@ -4,9 +4,9 @@ Becoming an ML engineer is less about following a credential pipeline and more a
 
 ## Source
 
-- `raw/00-clippings/The Complete Guide How to Become an ML Engineer.md`
-- `raw/00-clippings/high-school-dropout-self-taught-via-chatgpt-becomes-openai-research-scientist.md`
-- `raw/00-clippings/Thread by @gabriel1.md`
+- [[raw/00-clippings/The Complete Guide How to Become an ML Engineer.md|raw/00-clippings/The Complete Guide How to Become an ML Engineer.md]]
+- [[raw/00-clippings/high-school-dropout-self-taught-via-chatgpt-becomes-openai-research-scientist.md|raw/00-clippings/high-school-dropout-self-taught-via-chatgpt-becomes-openai-research-scientist.md]]
+- [[raw/00-clippings/Thread by @gabriel1.md|raw/00-clippings/Thread by @gabriel1.md]]
 
 ## What an ML Engineer Actually Does
 
@@ -27,6 +27,10 @@ This is why the required skill stack spans both [[neural-networks]] and [[mlops]
 ## The Learning Loop That Actually Works
 
 The strongest recurring pattern is not passive content consumption. It is an iterative loop:
+
+![Top-down learning starts from a real target, recursively drills into missing concepts, and uses AI to close the understanding gap.](../raw/00-clippings/images/fa2da09dc9666ca0dc8c94af5c31b5d0_MD5.jpg)
+
+*This is the core study pattern from the sources: start with the real problem, then only descend into theory where confusion actually appears.*
 
 1. Pick a concrete thing to understand or build
 2. Implement it
@@ -120,6 +124,10 @@ This is why startup work, integrations, demos, and customer-facing problems can 
 ## Career Strategy: Direct Evidence Beats Proxies
 
 Degrees, internships, and school prestige are all proxies for capability. They become less important when you can show direct proof.
+
+![The strongest career signal is direct evidence of capability, not a stack of institutional proxies.](../raw/00-clippings/images/a6221ac4f28cb0c50e0e9d03358524d3_MD5.jpg)
+
+*The hiring argument here is blunt: demos collapse uncertainty faster than credentials because they let the other side observe the actual work.*
 
 The recommended strategy is brutally simple:
 - build something understandable in seconds

@@ -4,7 +4,7 @@ Optimization in machine learning refers to the algorithms that iteratively adjus
 
 ## Source
 
-- `raw/03-stanford-cs231n/Stanford CS231N.md`
+- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
 
 ## Gradient Descent
 

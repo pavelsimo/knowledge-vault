@@ -4,9 +4,9 @@ NLP covers tasks that involve understanding, generating, and transforming human 
 
 ## Source
 
-- `raw/01-open-source-models-hugging-face/01_text_generation.py`
-- `raw/01-open-source-models-hugging-face/02_translation.py`
-- `raw/01-open-source-models-hugging-face/03_sumarization.py`
+- [[raw/01-open-source-models-hugging-face/01_text_generation.py|raw/01-open-source-models-hugging-face/01_text_generation.py]]
+- [[raw/01-open-source-models-hugging-face/02_translation.py|raw/01-open-source-models-hugging-face/02_translation.py]]
+- [[raw/01-open-source-models-hugging-face/03_sumarization.py|raw/01-open-source-models-hugging-face/03_sumarization.py]]
 
 ## Text Generation
 

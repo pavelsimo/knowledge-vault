@@ -4,7 +4,7 @@ Network visualization techniques help understand what a neural network has learn
 
 ## Source
 
-- `raw/03-stanford-cs231n/Stanford CS231N.md`
+- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
 
 ## Motivation
 
@@ -41,6 +41,10 @@ Paper: [Deep Inside Convolutional Networks: Visualising Image Classification Mod
 
 Saliency maps produce a heatmap overlaid on the input image showing the most influential regions.
 
+![Saliency maps highlight which input pixels most affect the score for a prediction.](../raw/03-stanford-cs231n/images/img_350.png)
+
+*The gradients are often noisy, but they still answer the basic interpretability question: which pixels would most change the class score if you perturb them?*
+
 ## Class Activation Mapping (CAM)
 
 **Idea:** weight the last convolutional feature maps by the class-specific classifier weights and sum them.
@@ -61,6 +65,10 @@ CAM allows:
 **Limitation:** requires a Global Average Pooling (GAP) layer immediately before the classifier — constrains architecture.
 
 Paper: [Learning Deep Features for Discriminative Localization](https://arxiv.org/pdf/1512.04150)
+
+![CAM can weakly localize the regions responsible for a class prediction.](../raw/03-stanford-cs231n/images/img_355.png)
+
+*CAM is more visually intuitive than raw saliency maps because it lifts the explanation to feature-map regions. The tradeoff is architectural: classic CAM only works cleanly when the classifier sits on top of GAP features from the last conv layer.*
 
 ## Grad-CAM (Gradient-weighted Class Activation Mapping)
 

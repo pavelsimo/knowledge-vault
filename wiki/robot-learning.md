@@ -4,9 +4,10 @@ Robot learning covers how machines acquire skills through experience, demonstrat
 
 ## Source
 
-- `raw/03-stanford-cs231n/Stanford CS231N.md`
-- `raw/00-clippings/Should Robot Generalists Get Off Their High Horse.md`
-- `raw/00-clippings/The Physical AI Deployment Gap.md`
+- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
+- [[raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 17 Robot Learning - YouTube.md|raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 17 Robot Learning - YouTube.md]]
+- [[raw/00-clippings/Should Robot Generalists Get Off Their High Horse.md|raw/00-clippings/Should Robot Generalists Get Off Their High Horse.md]]
+- [[raw/00-clippings/The Physical AI Deployment Gap.md|raw/00-clippings/The Physical AI Deployment Gap.md]]
 
 ## Problem Formulation
 
@@ -273,7 +274,7 @@ The robotics data flywheel: once robots can collect data while creating economic
 
 ## Source
 
-- `raw/00-clippings/The Physical AI Deployment Gap.md`
+- [[raw/00-clippings/The Physical AI Deployment Gap.md|raw/00-clippings/The Physical AI Deployment Gap.md]]
 
 ## Related Topics
 
@@ -282,4 +283,5 @@ The robotics data flywheel: once robots can collect data while creating economic
 - [[generative-models]] — diffusion models applied to robot policies
 - [[attention-transformers]] — transformers backbone for RT-1, RT-2, π₀
 - [[self-supervised-learning]] — learning visual representations for robot perception
-- [[omniverse-usd]] — NVIDIA's simulation platform for Physical AI training and robot data generation
+- [[physical-ai]] — simulation-first training, synthetic data, and world models for embodied systems
+- [[omniverse]] — the simulation platform used to build many robot-training environments

@@ -4,9 +4,13 @@ Modern AI is not a single type of model — it is a family of specialized archit
 
 ## Source
 
-- `raw/00-clippings/Thread by @akshay_pachaar 1.md`
+- [[raw/00-clippings/Thread by @akshay_pachaar 1.md|raw/00-clippings/Thread by @akshay_pachaar 1.md]]
 
 ## The Eight Specialized Architectures
+
+![A compact map of eight specialized AI architectures, each organized around a different modality or deployment constraint.](../raw/00-clippings/images/fba2f20028a472ed39539670b5deb73c_MD5.jpg)
+
+*The point of this taxonomy is selection, not memorization: different model families exist because different tasks impose different structural bottlenecks.*
 
 ### 1. LLM — Large Language Model
 

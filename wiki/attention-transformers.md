@@ -4,9 +4,10 @@ The attention mechanism was invented to overcome the bottleneck in RNN-based seq
 
 ## Source
 
-- `raw/03-stanford-cs231n/Stanford CS231N.md`
-- `raw/00-clippings/Math behind Attention - Q, K, and V.md`
-- `raw/00-clippings/KV Caching in LLMs, Clearly Explained.md`
+- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
+- [[raw/00-clippings/Spring 2025  Lecture 8 Attention and Transformers - YouTube.md|raw/00-clippings/Spring 2025  Lecture 8 Attention and Transformers - YouTube.md]]
+- [[raw/00-clippings/Math behind Attention - Q, K, and V.md|raw/00-clippings/Math behind Attention - Q, K, and V.md]]
+- [[raw/00-clippings/KV Caching in LLMs, Clearly Explained.md|raw/00-clippings/KV Caching in LLMs, Clearly Explained.md]]
 
 ## Three Ways of Processing Sequences
 
@@ -36,6 +37,10 @@ Decoder: s₀ from c → predict y₁ "vediamo" → s₁ → y₂ "il" → s₂ 
 **Analogy without attention:** read a paragraph, someone takes it away, then translate everything from memory.
 
 **Analogy with attention:** read a paragraph, then look back at any specific word whenever you need it while translating.
+
+![Attention turns translation into a soft lookup over all encoder states.](../raw/03-stanford-cs231n/images/img_262.png)
+
+*At each decoding step, attention scores every encoder state, normalizes those scores with softmax, and builds a fresh context vector. It is a differentiable memory lookup, not a single fixed summary.*
 
 ## Attention Mechanism
 
@@ -79,7 +84,7 @@ Inputs: input vectors X (N × D_in)
 - Key matrix W_K: D_in × D_out
 - Value matrix W_V: D_in × D_out
 
-1. K = X · W_Q → [N × D_out]
+1. Q = X · W_Q → [N × D_out]
 2. K = X · W_K → [N × D_out]
 3. V = X · W_V → [N × D_out]
 4. Similarities A = Q · Kᵀ / √(D_out) → [N × N]  (scaled dot-product)

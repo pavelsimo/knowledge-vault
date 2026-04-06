@@ -4,9 +4,9 @@ This topic covers foundational probability theory for computer scientists, drawn
 
 ## Source
 
-- `raw/02-cs109-probability-for-computer-scientists/Stanford CS109.md`
-- Course playlist: https://www.youtube.com/playlist?list=PLoROMvodv4rOpr_A7B9SriE_iZmkanvUg
-- Book: https://probabilityforcs.firebaseapp.com/book
+- [[raw/02-cs109-probability-for-computer-scientists/Stanford CS109.md|raw/02-cs109-probability-for-computer-scientists/Stanford CS109.md]]
+- [Course playlist](https://www.youtube.com/playlist?list=PLoROMvodv4rOpr_A7B9SriE_iZmkanvUg)
+- [Book](https://probabilityforcs.firebaseapp.com/book)
 
 ## Foundations
 
@@ -26,6 +26,10 @@ Two events A and B are **independent** if knowing one gives no information about
 - Events "X₁ = 1" and "S = 7" **are independent** (P(S=7|X₁=1) = 1/6 = P(S=7))
 - Events "X₁ = 1" and "S = 5" **are NOT independent** (P(S=5|X₁=1) ≠ P(S=5))
 - Therefore X₁ and S as **random variables** are **dependent** — independence must hold for all values
+
+![Dice example showing why event independence does not automatically imply random-variable independence.](../raw/02-cs109-probability-for-computer-scientists/images/Pasted%20image%2020260208152615.png)
+
+*This is a good sanity-check example: one particular event involving the sum can be independent of one die outcome, while the random variables themselves are still dependent overall.*
 
 ## Bayes' Theorem
 

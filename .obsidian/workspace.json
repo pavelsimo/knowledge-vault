@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "wiki/3d-vision.md",
+                "file": "wiki/convolutional-neural-networks.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "3d-vision"
+              "title": "convolutional-neural-networks"
             }
           }
         ]
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "wiki/3d-vision.md",
+                "file": "wiki/convolutional-neural-networks.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for 3d-vision"
+              "title": "Backlinks for convolutional-neural-networks"
             }
           },
           {
@@ -113,12 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "wiki/3d-vision.md",
+                "file": "wiki/convolutional-neural-networks.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from 3d-vision"
+              "title": "Outgoing links from convolutional-neural-networks"
             }
           },
           {
@@ -156,13 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "wiki/3d-vision.md",
+                "file": "wiki/convolutional-neural-networks.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of 3d-vision"
+              "title": "Outline of convolutional-neural-networks"
             }
           }
         ]
@@ -186,32 +186,32 @@
   },
   "active": "0f147abd8751e6a4",
   "lastOpenFiles": [
-    "wiki/ai-coding.md",
+    "wiki/digital-twins.md",
+    "wiki/sentence-embeddings.md",
     "wiki/distributed-training.md",
-    "wiki/convolutional-neural-networks.md",
-    "wiki/china-development-economics.md",
-    "wiki/quantization.md",
-    "wiki/semantic-segmentation.md",
-    "wiki/ml-learning-careers.md",
-    "wiki/INDEX.md",
-    "wiki/gpu-cuda.md",
-    "wiki/3d-vision.md",
-    "wiki/nlp.md",
-    "wiki/hugging-face.md",
-    "wiki/computer-vision.md",
-    "wiki/transformers-library.md",
-    "raw/06-system-design/System Design.md",
-    "wiki/attention-transformers.md",
-    "wiki/quantum-computing.md",
-    "wiki/ai-agents.md",
-    "wiki/recurrent-neural-networks.md",
     "wiki/game-math.md",
-    "wiki/algorithms-patterns.md",
+    "wiki/omniverse.md",
+    "wiki/mlops.md",
+    "wiki/video-understanding.md",
+    "wiki/transformers-library.md",
+    "wiki/shaders.md",
+    "wiki/self-supervised-learning.md",
+    "wiki/quantum-computing.md",
+    "wiki/recurrent-neural-networks.md",
+    "wiki/open-usd.md",
+    "wiki/generative-models.md",
+    "wiki/gpu-cuda.md",
+    "wiki/quantization.md",
+    "wiki/ai-agents.md",
+    "raw/00-clippings/Chapter 1 Local Government Powers & Responsibilities.md",
+    "wiki/china-development-economics.md",
+    "wiki/omniverse-usd.md",
+    "wiki/physical-ai.md",
     "wiki/optimization.md",
-    "wiki/ai-model-architectures.md",
-    "wiki/audio-processing.md",
-    "wiki/multimodal-models.md",
-    "wiki/object-detection.md",
+    "wiki/INDEX.md",
+    "raw/00-clippings/The Complete Guide How to Become an ML Engineer.md",
+    "wiki/ml-learning-careers.md",
+    "raw/03-stanford-cs231n/Stanford CS231N.md",
     "wiki/optimization.md.tmp.21189.1775475369032",
     "wiki/semantic-segmentation.md.tmp.21189.1775475063469",
     "raw/00-clippings/images/b5a9fa231fa8c99df8948428cf42883c_MD5.jpg",

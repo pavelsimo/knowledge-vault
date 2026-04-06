@@ -4,7 +4,8 @@ Video understanding extends computer vision from still images to sequences of fr
 
 ## Source
 
-- `raw/03-stanford-cs231n/Stanford CS231N.md`
+- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
+- [[raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 10 Video Understanding - YouTube.md|raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 10 Video Understanding - YouTube.md]]
 
 ## Video as Data
 
@@ -89,6 +90,10 @@ Inspired by neuroscience: humans are excellent at recognizing motion from minima
 
 Paper: [Two-Stream Convolutional Networks for Action Recognition in Videos](https://arxiv.org/pdf/1406.2199)
 
+![Optical flow encodes per-pixel motion between neighboring video frames.](../raw/03-stanford-cs231n/images/img_385.png)
+
+*Two-stream models separate appearance from motion. Optical flow gives the temporal stream an explicit motion field instead of asking the network to infer motion entirely from raw RGB frames.*
+
 ### 6. 3D CNN with Inflated Weights (I3D)
 
 Reuse pretrained 2D ImageNet weights in a 3D CNN by "inflating" 2D filters to 3D:
@@ -161,6 +166,10 @@ Video is multimodal — images come with audio. Tasks include:
 Papers:
 - [Looking to Listen at the Cocktail Party](https://arxiv.org/pdf/1804.03619)
 - [Video-LLaVA: Learning United Visual Representations by Alignment Before Projection](https://arxiv.org/pdf/2311.10122)
+
+![Visual cues can guide separation of mixed audio sources in a video scene.](../raw/03-stanford-cs231n/images/img_414.png)
+
+*This is a good example of why video understanding is not just "image classification over time." The visual stream can help disambiguate who is speaking or which object produced which sound.*
 
 ## Datasets
 

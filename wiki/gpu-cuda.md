@@ -4,8 +4,11 @@ GPUs (Graphics Processing Units) are massively parallel processors that power mo
 
 ## Source
 
-- `raw/01-open-source-models-hugging-face/Open Source Models with Hugging Face.md`
-- `raw/03-stanford-cs231n/Stanford CS231N.md`
+- [[raw/01-open-source-models-hugging-face/Open Source Models with Hugging Face.md|raw/01-open-source-models-hugging-face/Open Source Models with Hugging Face.md]]
+- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
+- [[raw/00-clippings/Spring 2025  Lecture 11 Large Scale Distributed Training - YouTube.md|raw/00-clippings/Spring 2025  Lecture 11 Large Scale Distributed Training - YouTube.md]]
+- [[raw/00-clippings/GPU Memory Math for LLMs (2026 Edition).md|raw/00-clippings/GPU Memory Math for LLMs (2026 Edition).md]]
+- [[raw/00-clippings/Thread by @TheAhmadOsman.md|raw/00-clippings/Thread by @TheAhmadOsman.md]]
 
 ## What is a CUDA Kernel?
 
@@ -30,6 +33,19 @@ Each GPU generation has a **compute capability** code (sm_XX) that identifies it
 | H100 | Hopper | 9.0+ | sm_90 |
 
 **Personal GPU note:** GTX 1060 = Pascal architecture = sm_61 (compute capability 6.1)
+
+## Modern Training GPU: H100
+
+The H100 is the reference training GPU in many large-scale systems because it combines high-bandwidth memory, large tensor-core throughput, and fast intra-node interconnects.
+
+- **80 GB HBM**
+- **3,352 GB/s** memory bandwidth
+- **132 SMs** enabled after binning
+- Tensor Cores dominate deep learning throughput, especially for FP16/BF16/FP8 matrix math
+
+![NVIDIA H100 board layout and memory bandwidth numbers.](../raw/03-stanford-cs231n/images/img_423.png)
+
+*The practical lesson is simple: modern training is usually bandwidth-bound before it is "Python-bound." GPU architecture and memory movement dominate real throughput.*
 
 ## Common CUDA Error
 
@@ -208,13 +224,6 @@ For 2-GPU consumer builds (Intel/AMD platform with PCIe bifurcation):
 **Critical notes:**
 - M.2 slots can downrank PCIe slots — check manual carefully
 - Some motherboards disable secondary slot when bifurcation enabled
-
-## Source
-
-- `raw/01-open-source-models-hugging-face/Open Source Models with Hugging Face.md`
-- `raw/03-stanford-cs231n/Stanford CS231N.md`
-- `raw/00-clippings/GPU Memory Math for LLMs (2026 Edition).md`
-- `raw/00-clippings/Thread by @TheAhmadOsman.md`
 
 ## Related Topics
 

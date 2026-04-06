@@ -4,7 +4,8 @@ Self-supervised learning trains neural networks on unlabeled data by auto-genera
 
 ## Source
 
-- `raw/03-stanford-cs231n/Stanford CS231N.md`
+- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
+- [[raw/00-clippings/Spring 2025  Lecture 12 Self-Supervised Learning - YouTube.md|raw/00-clippings/Spring 2025  Lecture 12 Self-Supervised Learning - YouTube.md]]
 
 ## Why Self-Supervised Learning?
 
@@ -13,6 +14,8 @@ Supervised learning requires massive labeled datasets — expensive, incomplete,
 - No human annotation required
 - The data supervises itself via transformations you control
 - Learn representations that transfer broadly to many downstream tasks
+
+The practical payoff is strongest in the **low-label regime**. Pretrain once on large unlabeled corpora, then fine-tune on 1%, 10%, or full labels for a downstream task. As labeled data grows, supervised learning catches up, but SSL remains a powerful initializer and often wins when annotations are scarce or expensive.
 
 ## Learning Paradigms
 
@@ -113,6 +116,10 @@ SimCLR = Simple Contrastive Learning of Visual Representations. The main algorit
 5. Compute **InfoNCE loss** using all other 2(N−1) examples as negatives
 
 Key: use ALL non-positive samples in the batch as X negatives — as X grows the contrastive task gets harder and representations get richer.
+
+![SimCLR learns by matching two augmented views of the same image.](../raw/03-stanford-cs231n/images/img_523.png)
+
+*Two random augmentations of the same image form a positive pair. The encoder and projection head are trained to pull that pair together while pushing away other images in the batch.*
 
 Paper: [A Simple Framework for Contrastive Learning of Visual Representations](https://arxiv.org/pdf/2002.05709)
 

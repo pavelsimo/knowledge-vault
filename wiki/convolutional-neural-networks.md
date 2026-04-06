@@ -4,7 +4,9 @@ Convolutional Neural Networks (CNNs) are the dominant architecture for visual pr
 
 ## Source
 
-- `raw/03-stanford-cs231n/Stanford CS231N.md`
+- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
+- [[raw/00-clippings/Spring 2025  Lecture 5 Image Classification with CNNs - YouTube.md|raw/00-clippings/Spring 2025  Lecture 5 Image Classification with CNNs - YouTube.md]]
+- [[raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 6 CNN Architectures - YouTube.md|raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 6 CNN Architectures - YouTube.md]]
 
 ## Why CNNs?
 

@@ -4,9 +4,13 @@ This page covers insights into how leading AI companies are structured, how they
 
 ## Source
 
-- `raw/00-clippings/100 Hours Inside Kimi.md`
+- [[raw/00-clippings/100 Hours Inside Kimi.md|raw/00-clippings/100 Hours Inside Kimi.md]]
 
 ## Moonshot AI (Kimi) — Key Observations
+
+![Moonshot AI positions itself as a frontier-model company built around a single capability race.](../raw/00-clippings/images/6f67962b3ead519480711217a5c99435_MD5.jpg)
+
+*The branding fits the operating model in the notes: the company is organized around a single high-stakes bet on model capability rather than around traditional corporate departments.*
 
 ### Profile
 
@@ -76,6 +80,10 @@ Kimi's engineers developed **MoBA (Mixture of Block Attention)** to enable 128K+
 - Three retreats over ~18 months; the project was never killed
 
 ## Patterns in AI-Native Companies
+
+![The case study frames Moonshot as a company that strips away bureaucracy in favor of direct capability building.](../raw/00-clippings/images/51ce14242fe803581531d2bfdbd3ebb7_MD5.jpg)
+
+*The useful takeaway is not the office aesthetic. It is the institutional design choice: compress hierarchy so more of the organization points directly at the model problem.*
 
 | Pattern | Description |
 |---------|-------------|

@@ -4,9 +4,10 @@ Audio processing covers the pipeline from raw waveforms to AI-powered tasks like
 
 ## Source
 
-- `raw/01-open-source-models-hugging-face/05_zero_shot_audio_classification.py`
-- `raw/01-open-source-models-hugging-face/06_automatic_speech_recognition.py`
-- `raw/01-open-source-models-hugging-face/07_text_to_speech.py`
+- [[raw/01-open-source-models-hugging-face/Open Source Models with Hugging Face.md|raw/01-open-source-models-hugging-face/Open Source Models with Hugging Face.md]]
+- [[raw/01-open-source-models-hugging-face/05_zero_shot_audio_classification.py|raw/01-open-source-models-hugging-face/05_zero_shot_audio_classification.py]]
+- [[raw/01-open-source-models-hugging-face/06_automatic_speech_recognition.py|raw/01-open-source-models-hugging-face/06_automatic_speech_recognition.py]]
+- [[raw/01-open-source-models-hugging-face/07_text_to_speech.py|raw/01-open-source-models-hugging-face/07_text_to_speech.py]]
 
 ## Sampling Rate
 
@@ -27,6 +28,10 @@ Models are trained at a specific sampling rate and interpret input as if one sec
 - Formula: `interpreted_duration = actual_samples / model_expected_rate`
 
 Always **resample** audio to match the model's expected rate before inference.
+
+![Sampling converts a continuous sound wave into a discrete digital signal.](../raw/01-open-source-models-hugging-face/images/img_1.png)
+
+*This is the core representation change behind all audio ML: microphones produce a continuous physical signal, and sampling turns it into a sequence of numbers the model can process.*
 
 ## Stereo vs Mono
 

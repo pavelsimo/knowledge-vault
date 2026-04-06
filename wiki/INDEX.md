@@ -8,6 +8,7 @@
 | [[audio-processing]] | Audio AI: sampling rates, ASR, TTS, zero-shot audio classification, stereo vs mono |
 | [[computer-vision]] | Computer vision: image classification challenges, KNN, distance metrics, linear classifiers |
 | [[multimodal-models]] | Multimodal AI: BLIP, CLAP, image-text retrieval, image captioning, visual Q&A |
+| [[human-centered-ai]] | Human-centered AI: perception limits, bias, privacy, augmentation, and designing AI around human values |
 | [[sentence-embeddings]] | Sentence embeddings: all-MiniLM-L6-v2, semantic search, vector spaces |
 | [[probability-statistics]] | Stanford CS109: probability theory, Bayes' theorem, random variables, covariance |
 | [[algorithms-patterns]] | Algorithmic templates: binary search on answers, two pointers, graph traversals, DP families, bit tricks |
@@ -23,6 +24,10 @@
 | [[self-supervised-learning]] | Pretext tasks, contrastive learning (SimCLR, MoCo, DINO), MAE — learning without labels |
 | [[generative-models]] | Autoencoders, VAEs, GANs, diffusion models, rectified flow, latent diffusion, DiT |
 | [[3d-vision]] | 3D shape representations, PointNet, NeRF, Gaussian Splatting, 3D datasets |
+| [[open-usd]] | OpenUSD scene representation: stages, prims, composition, schemas, and ecosystem interoperability |
+| [[omniverse]] | NVIDIA's OpenUSD-native platform for simulation apps, industrial workflows, and virtual environments |
+| [[digital-twins]] | Digital twins: live virtual replicas for planning, simulation, operations, and optimization |
+| [[physical-ai]] | Physical AI: simulation-first development, world models, synthetic data, and robot foundation models |
 | [[robot-learning]] | RL, imitation learning, diffusion policy, robotic foundation models (RT-2, π₀, GR00T) |
 | [[distributed-training]] | Data/tensor/pipeline/context parallelism, FSDP/ZeRO, MFU, activation checkpointing |
 | [[mlops]] | MLOps: data drift, concept drift, model monitoring, deployment strategies, evaluation metrics |
@@ -33,7 +38,7 @@
 | [[ai-industry]] | AI-native organizations: Moonshot AI (Kimi), flat hierarchies, agent swarms, generalization hiring |
 | [[china-development-economics]] | China development model: central-local governance, tax reform, land finance, industrial policy, urbanization, debt, dual circulation |
 | [[quantization]] | Quantization: symmetric/asymmetric, block quantization, perplexity, KL divergence, speed benchmarks |
-| [[omniverse-usd]] | NVIDIA Omniverse, OpenUSD: stages, prims, schemas, digital twins, physical AI, Cosmos |
+| [[quantum-computing]] | Quantum computing primer: qubits, superposition, entanglement, gates, and quantum advantage basics |
 | [[ai-agents]] | Claude sub-agents vs agent teams: orchestration patterns, context-centric design, when to use multi-agent systems |
 | [[ai-model-architectures]] | Eight specialized AI model types: LLM, LCM, LAM, MoE, VLM, SLM, MLM, SAM — architectures and selection guide |
 | [[system-design]] | System design fundamentals: OSI model, CDN, caching, sharding, CAP theorem, microservices, case studies (Uber, Netflix, WhatsApp) |

@@ -4,8 +4,8 @@ MLOps (Machine Learning Operations) is an emerging discipline comprising the too
 
 ## Source
 
-- `raw/04-machine-learning-engineering-for-production-mlops/Machine Learning Engineering for Production (MLOps).md`
-- Course: https://www.youtube.com/watch?v=NgWujOrCZFo&list=PLkDaE6sCZn6GMoA0wbpJLi3t34Gd8l0aK
+- [[raw/04-machine-learning-engineering-for-production-mlops/Machine Learning Engineering for Production (MLOps).md|raw/04-machine-learning-engineering-for-production-mlops/Machine Learning Engineering for Production (MLOps).md]]
+- [Course](https://www.youtube.com/watch?v=NgWujOrCZFo&list=PLkDaE6sCZn6GMoA0wbpJLi3t34Gd8l0aK)
 
 ## ML Project Lifecycle
 
@@ -112,7 +112,15 @@ The relationship between inputs and correct outputs changes — the meaning of t
 - **Gradual:** natural evolution of language or user behavior over time
 - **Sudden shock:** overnight disruption (e.g., "Zoom" shifting from "go fast" to "video meeting" in 2020)
 
+![MLOps distinguishes changing inputs from changing input-to-label meaning.](../raw/04-machine-learning-engineering-for-production-mlops/images/Pasted%20image%20202602271112907.png)
+
+*This is the operational distinction that matters: data drift means the inputs changed but the task stayed the same; concept drift means the correct interpretation changed too.*
+
 ## Model Monitoring in Production
+
+![Deployment monitoring is iterative in the same way model development is iterative: traffic, performance, and analysis feed continuous adjustment.](../raw/04-machine-learning-engineering-for-production-mlops/images/Pasted%20image%2020260227121101.png)
+
+*The operational lesson is that monitoring is not a static dashboard task. You keep refining what you watch as the system and traffic change.*
 
 ### Software Metrics
 
@@ -215,7 +223,15 @@ Maintain two identical production environments:
 
 The key advantage is zero-downtime rollback — you never have to "undeploy" anything, just redirect the router.
 
+![Blue-green deployment keeps old and new production stacks live behind a router.](../raw/04-machine-learning-engineering-for-production-mlops/images/Pasted%20image%2020260227115016.png)
+
+*Blue-green is mostly an infrastructure pattern, not an ML-specific one. It matters in ML because rollback speed is often the difference between a contained bad release and a production incident.*
+
 ## Evaluation Metrics
+
+![A confusion matrix makes precision and recall concrete by showing exactly where false positives and false negatives come from.](../raw/04-machine-learning-engineering-for-production-mlops/images/Pasted%20image%2020260228152616.png)
+
+*This is why confusion matrices stay useful even when the formulas are memorized: they force you to think in terms of business-relevant error types, not just one scalar score.*
 
 ### Confusion Matrix
 

@@ -4,12 +4,16 @@ Multi-agent systems in Claude let you decompose complex tasks across specialized
 
 ## Source
 
-- `raw/00-clippings/Claude Subagents vs. Agent Teams, explained.md`
-- `raw/00-clippings/OpenClaw + CodexClaudeCode Agent Swarm The One-Person Dev Team Full Setup.md`
+- [[raw/00-clippings/Claude Subagents vs. Agent Teams, explained.md|raw/00-clippings/Claude Subagents vs. Agent Teams, explained.md]]
+- [[raw/00-clippings/OpenClaw + CodexClaudeCode Agent Swarm The One-Person Dev Team Full Setup.md|raw/00-clippings/OpenClaw + CodexClaudeCode Agent Swarm The One-Person Dev Team Full Setup.md]]
 
 ## The Core Distinction
 
 The right question is never "should I use multiple agents?" but "what kind of coordination does this task actually need?"
+
+![Sub-agents isolate work and report back to one parent, while agent teams coordinate through shared state and peer communication.](../raw/00-clippings/images/57c3fe6d8afadc9f176cf149189b69c3_MD5.jpg)
+
+*This diagram captures the architectural split better than any slogan: one pattern is about isolated delegation, the other is about persistent coordination.*
 
 | Property | Sub-Agents | Agent Teams |
 |---|---|---|
@@ -172,6 +176,10 @@ Start with a single agent. Push it until you find where it breaks. That failure 
 
 Context windows are zero-sum. You have to choose what goes in. Fill it with business context and you have no room for the codebase. Fill it with code and the agent knows nothing about why it matters. This constraint drives the two-tier production architecture.
 
+![A separate orchestration layer can hold business context while downstream coding agents stay focused on implementation.](../raw/00-clippings/images/d5caaae2e9e4cbedb33ff36e4a68cb83_MD5.jpg)
+
+*This is the production version of the same idea: split systems by context ownership, not by org chart.*
+
 ### Context Comparison: Orchestrator vs. Coding Agent
 
 | | Orchestrator | Coding Agent |
@@ -216,7 +224,7 @@ Each parallel agent needs its own worktree, its own `node_modules`, and runs its
 
 ## Source
 
-- `raw/00-clippings/OpenClaw + CodexClaudeCode Agent Swarm The One-Person Dev Team Full Setup.md`
+- [[raw/00-clippings/OpenClaw + CodexClaudeCode Agent Swarm The One-Person Dev Team Full Setup.md|raw/00-clippings/OpenClaw + CodexClaudeCode Agent Swarm The One-Person Dev Team Full Setup.md]]
 
 ## Related Topics
 

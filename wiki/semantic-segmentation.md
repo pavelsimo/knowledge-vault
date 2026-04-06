@@ -4,7 +4,8 @@ Semantic segmentation labels every pixel in an image with a class category (e.g.
 
 ## Source
 
-- `raw/03-stanford-cs231n/Stanford CS231N.md`
+- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
+- [[raw/00-clippings/Spring 2025  Lecture 9 Object Detection, Image Segmentation, Visualizing - YouTube.md|raw/00-clippings/Spring 2025  Lecture 9 Object Detection, Image Segmentation, Visualizing - YouTube.md]]
 
 ## Why CNNs Need Modification for Dense Prediction
 
@@ -76,6 +77,10 @@ Mask R-CNN extends Faster R-CNN by adding a third head that predicts a 28×28 bi
 4. Three parallel heads: class label, bounding box refinement, binary mask
 
 Paper: [Mask R-CNN](https://arxiv.org/pdf/1703.06870)
+
+![Mask R-CNN extends detection with a per-RoI mask prediction head.](../raw/03-stanford-cs231n/images/img_341.png)
+
+*This is the clean conceptual bridge from object detection to instance segmentation: keep the detection pipeline, then add a small mask head that predicts a binary mask for each proposed object.*
 
 ### Panoptic Segmentation
 

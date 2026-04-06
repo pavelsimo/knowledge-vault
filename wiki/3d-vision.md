@@ -4,7 +4,8 @@
 
 ## Source
 
-- `raw/03-stanford-cs231n/Stanford CS231N.md`
+- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
+- [[raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 15 3D Vision - YouTube.md|raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 15 3D Vision - YouTube.md]]
 
 ## Shape Representation Considerations
 
@@ -16,6 +17,10 @@ Any 3D shape representation must address five concerns:
 5. **Animation** — can it be animated? How?
 
 ## Shape Representations
+
+![3D geometry can be represented in many explicit and implicit ways.](../raw/03-stanford-cs231n/images/img_689.png)
+
+*A central 3D-vision problem is choosing the representation itself. Point clouds, meshes, voxels, parametric surfaces, occupancy fields, and SDFs all make different tradeoffs for storage, rendering, editing, and learning.*
 
 There are two broad families: **explicit** (the surface is directly represented) and **implicit** (the surface is defined as the level-set of a function).
 

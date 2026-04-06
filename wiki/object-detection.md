@@ -4,8 +4,9 @@ Object detection is the task of identifying **what** objects are in an image and
 
 ## Source
 
-- `raw/03-stanford-cs231n/Stanford CS231N.md`
-- `raw/01-open-source-models-hugging-face/08_object_detection.py`
+- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
+- [[raw/00-clippings/Spring 2025  Lecture 9 Object Detection, Image Segmentation, Visualizing - YouTube.md|raw/00-clippings/Spring 2025  Lecture 9 Object Detection, Image Segmentation, Visualizing - YouTube.md]]
+- [[raw/01-open-source-models-hugging-face/08_object_detection.py|raw/01-open-source-models-hugging-face/08_object_detection.py]]
 
 ## Task Taxonomy
 
@@ -69,6 +70,10 @@ Grid-based end-to-end detection:
 
 Notable versions: YOLOv2/YOLO9000, YOLOv3, and many subsequent iterations.
 
+![YOLO frames detection as one grid-based prediction problem over the full image.](../raw/03-stanford-cs231n/images/img_334.png)
+
+*The key YOLO idea is to predict boxes and class probabilities for the whole image in one shot instead of proposing regions first. That is what made the original family much faster than RCNN-style detectors.*
+
 ### SSD (Single Shot MultiBox Detector)
 - Multi-scale anchor boxes — better at small objects than original YOLO
 - Uses feature maps at multiple scales
@@ -90,6 +95,10 @@ from transformers import pipeline
 detector = pipeline("object-detection", model="facebook/detr-resnet-50")
 result = detector(image)
 ```
+
+![DETR predicts a set of boxes directly from transformer features with bipartite matching.](../raw/03-stanford-cs231n/images/img_338.png)
+
+*DETR removes anchors and hand-designed post-processing from the core training objective. The model directly outputs a set of detections and matches them to ground truth during training.*
 
 ## Anchor Boxes
 

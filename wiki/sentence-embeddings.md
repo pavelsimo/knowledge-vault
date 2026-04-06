@@ -4,7 +4,7 @@ Sentence embeddings are dense vector representations of text that capture semant
 
 ## Source
 
-- `raw/01-open-source-models-hugging-face/04_sentence_embeddings.py`
+- [[raw/01-open-source-models-hugging-face/04_sentence_embeddings.py|raw/01-open-source-models-hugging-face/04_sentence_embeddings.py]]
 
 ## Core Model: all-MiniLM-L6-v2
 

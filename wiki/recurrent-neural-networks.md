@@ -4,7 +4,8 @@ Recurrent Neural Networks (RNNs) are neural networks designed for sequential dat
 
 ## Source
 
-- `raw/03-stanford-cs231n/Stanford CS231N.md`
+- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
+- [[raw/00-clippings/Spring 2025  Lecture 7 Recurrent Neural Networks - YouTube.md|raw/00-clippings/Spring 2025  Lecture 7 Recurrent Neural Networks - YouTube.md]]
 
 ## Vanilla RNN (Elman RNN)
 
@@ -78,6 +79,20 @@ The same weight matrix W is used at every time step — this is what makes it "r
 **Disadvantages:**
 - Cannot be parallelized (must process sequentially)
 - Vanilla RNNs struggle with long-range dependencies (vanishing gradients)
+
+## Encoder-Decoder Bottleneck
+
+Classical sequence-to-sequence RNNs compress the entire input sequence into one final hidden state, then ask the decoder to generate everything from that single vector.
+
+```
+Input sequence → RNN encoder → final state c → RNN decoder → output sequence
+```
+
+This works on short sequences, but it creates an information bottleneck on long inputs: the model must remember everything important in one fixed-size state.
+
+![Classical seq2seq uses one fixed context vector for the whole output.](../raw/03-stanford-cs231n/images/img_259.png)
+
+*Pre-attention seq2seq: the encoder summarizes the whole source sentence into one context vector. Attention was introduced to remove this bottleneck.*
 
 ## Multilayer RNNs
 

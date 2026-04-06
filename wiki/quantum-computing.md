@@ -4,7 +4,7 @@ Quantum computing is a fundamentally different computation model that exploits q
 
 ## Source
 
-- `raw/00-clippings/A Primer on Quantum Computing.md`
+- [[raw/00-clippings/A Primer on Quantum Computing.md|raw/00-clippings/A Primer on Quantum Computing.md]]
 
 ## Why Quantum Computing Exists: The Classical Limit
 
@@ -29,6 +29,10 @@ Quantum computing begins at this constraint — instead of fighting quantum effe
 ### Superposition
 
 A classical bit is a coin lying flat — either heads (1) or tails (0). A **qubit** is like a coin spinning in the air: before it lands, it exists as a combination of both 0 and 1 simultaneously. The act of measurement collapses the superposition to a definite 0 or 1.
+
+![A qubit is easiest to visualize as a state that can remain in superposition until measurement forces a classical outcome.](../raw/00-clippings/images/3c3684d2b2a42095bb63c3113c9849ea_MD5.jpg)
+
+*The coin analogy is not perfect physics, but it is the right mental starting point: superposition is neither classical 0 nor classical 1 before measurement.*
 
 The three states:
 - **1** — definite state (coin flat, heads)
@@ -84,6 +88,10 @@ The gap between physical and logical qubits is the central challenge:
 ### Industry Qubit Trajectory (2024–2030+)
 
 Estimated physical qubit counts (Upper/Lower range) vs. logical qubits (source: IBM, Google, Quantinuum):
+
+![The industry expects physical qubits to rise much faster than usable logical qubits, which is why cryptographic risk remains a longer-term issue.](../raw/00-clippings/images/85b2367eb51edd5d259774e54effcd68_MD5.jpg)
+
+*That gap is the real reality check for quantum headlines: growing hardware counts do not immediately translate into fault-tolerant computation.*
 
 | Year | Physical Qubits (Est.) | Logical Qubits (Est.) |
 |---|---|---|

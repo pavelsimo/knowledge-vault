@@ -4,9 +4,13 @@ RAG is a technique that augments LLM generation by retrieving relevant external 
 
 ## Source
 
-- `raw/00-clippings/Thread by @akshay_pachaar.md`
+- [[raw/00-clippings/Thread by @akshay_pachaar.md|raw/00-clippings/Thread by @akshay_pachaar.md]]
 
 ## 8 RAG Architectures
+
+![Overview of eight common RAG architectures from naive retrieval to agentic orchestration.](../raw/00-clippings/images/43db844df62357ba91915b8dd13f94fb_MD5.jpg)
+
+*This diagram is useful as a map of the design space. Most real systems are variations on these retrieval, routing, verification, and orchestration patterns rather than entirely new categories.*
 
 ### 1. Naive RAG
 

@@ -4,7 +4,9 @@ Neural networks are computational models composed of stacked layers of simple op
 
 ## Source
 
-- `raw/03-stanford-cs231n/Stanford CS231N.md`
+- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
+- [[raw/00-clippings/Spring 2025  Lecture 3 Regularization and Optimization - YouTube.md|raw/00-clippings/Spring 2025  Lecture 3 Regularization and Optimization - YouTube.md]]
+- [[raw/00-clippings/Spring 2025  Lecture 4 Neural Networks and Backpropagation - YouTube.md|raw/00-clippings/Spring 2025  Lecture 4 Neural Networks and Backpropagation - YouTube.md]]
 
 ## From Linear to Non-Linear
 

@@ -4,7 +4,7 @@ The `transformers` library by Hugging Face is a framework-agnostic Python librar
 
 ## Source
 
-- `raw/01-open-source-models-hugging-face/`
+- [[raw/01-open-source-models-hugging-face/Open Source Models with Hugging Face.md|raw/01-open-source-models-hugging-face/Open Source Models with Hugging Face.md]]
 
 ## Framework Agnosticism
 
@@ -18,6 +18,10 @@ This is why PyTorch is not installed automatically — you pick your backend exp
 ## Pipeline API
 
 The `Pipeline` object is the high-level abstraction for solving tasks end-to-end:
+
+![The `transformers` pipeline wraps preprocessing, model execution, and postprocessing behind one task-level interface.](../raw/01-open-source-models-hugging-face/images/img.png)
+
+*This is why the library feels simple from the outside: one task string hides a lot of modality-specific plumbing underneath.*
 
 ```python
 from transformers import pipeline

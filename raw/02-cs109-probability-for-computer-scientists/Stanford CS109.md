@@ -1,7 +1,8 @@
 - https://www.youtube.com/playlist?list=PLoROMvodv4rOpr_A7B9SriE_iZmkanvUg
+- https://probabilitycoders.stanford.edu/spr26
+- [https://probabilityforcs.firebaseapp.com/book](https://probabilityforcs.firebaseapp.com/book)
 
 ![Pasted image 20260124150019.png](images/Pasted%20image%2020260124150019.png)  
-[https://probabilityforcs.firebaseapp.com/book](https://probabilityforcs.firebaseapp.com/book)
 
 ![Pasted image 20260110115916.png](images/Pasted%20image%2020260110115916.png)  
 ![Pasted image 20260110120755.png](images/Pasted%20image%2020260110120755.png)  

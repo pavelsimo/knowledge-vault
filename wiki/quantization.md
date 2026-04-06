@@ -4,7 +4,7 @@ Quantization is lossy compression for neural network weights — it maps values 
 
 ## Source
 
-- `raw/00-clippings/Quantization from the ground up.md`
+- [[raw/00-clippings/Quantization from the ground up.md|raw/00-clippings/Quantization from the ground up.md]]
 
 ## Why Models Are So Large
 

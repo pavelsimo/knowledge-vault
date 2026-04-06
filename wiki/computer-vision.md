@@ -2,14 +2,16 @@
 
 Computer vision is the field of teaching machines to interpret and understand images and video. It encompasses a range of tasks from basic image classification to complex segmentation and 3D understanding. This topic synthesizes content from Stanford CS231N and Hugging Face applied examples.
 
-## Sources
+## Source
 
-- `raw/03-stanford-cs231n/Stanford CS231N.md`
-- `raw/01-open-source-models-hugging-face/08_object_detection.py`
-- `raw/01-open-source-models-hugging-face/09_segmentation_mask.py`
-- `raw/01-open-source-models-hugging-face/10-depth-estimation.py`
-- `raw/01-open-source-models-hugging-face/11-image-retrieval.py`
-- `raw/01-open-source-models-hugging-face/12-image-captioning.py`
+- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
+- [[raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 1 Introduction - YouTube.md|raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 1 Introduction - YouTube.md]]
+- [[raw/00-clippings/Spring 2025  Lecture 2 Image Classification with Linear Classifiers - YouTube.md|raw/00-clippings/Spring 2025  Lecture 2 Image Classification with Linear Classifiers - YouTube.md]]
+- [[raw/01-open-source-models-hugging-face/08_object_detection.py|raw/01-open-source-models-hugging-face/08_object_detection.py]]
+- [[raw/01-open-source-models-hugging-face/09_segmentation_mask.py|raw/01-open-source-models-hugging-face/09_segmentation_mask.py]]
+- [[raw/01-open-source-models-hugging-face/10-depth-estimation.py|raw/01-open-source-models-hugging-face/10-depth-estimation.py]]
+- [[raw/01-open-source-models-hugging-face/11-image-retrieval.py|raw/01-open-source-models-hugging-face/11-image-retrieval.py]]
+- [[raw/01-open-source-models-hugging-face/12-image-captioning.py|raw/01-open-source-models-hugging-face/12-image-captioning.py]]
 
 ## Image Classification
 
@@ -18,6 +20,8 @@ Image classification assigns a single label from a fixed set of categories to an
 ### The Semantic Gap
 
 **The core problem:** an image is a tensor of integers between [0, 255]. A cat photo is stored as an 800 × 600 × 3 array of numbers — the computer sees nothing but those numbers. A human looking at the same photo instantly recognizes a cat. This gap between the human semantic understanding and the machine's pixel representation is the central challenge of computer vision.
+
+The difficulty is not just "pixels are low-level." Even for the *same* object, almost every pixel can change under viewpoint shifts, lighting changes, background clutter, occlusion, or deformation. Humans treat those as nuisance factors; a vision model has to learn that invariance from data.
 
 ### Why It's Hard: The Challenges
 
@@ -78,6 +82,10 @@ A linear classifier makes predictions using: `f(x; W) = Wx + b`
 
 **Hard cases for linear classifiers:** non-linear decision boundaries, circular data, multimodal class distributions — solved by stacking layers into neural networks.
 
+![Flattening an image into class templates destroys spatial layout.](../raw/03-stanford-cs231n/images/img_108.png)
+
+*CS231N linear-classifier slide: flattening a `32×32×3` image into `3072` numbers throws away adjacency and translation structure. That is the core reason CNNs outperform raw linear templates on images.*
+
 ## Segmentation Mask Generation
 
 Pixel-accurate object outlining without necessarily identifying the class (class-agnostic segmentation).
@@ -100,6 +108,7 @@ Estimating the distance of objects in an image from the camera — common in aut
 - [[object-detection]] — detecting and localizing multiple objects in an image
 - [[convolutional-neural-networks]] — the dominant architecture for vision
 - [[multimodal-models]] — models combining vision with text
+- [[human-centered-ai]] — where vision systems help, fail, and interact with human values
 - [[neural-networks]] — foundational building blocks
 - [[attention-transformers]] — ViT: transformers applied to vision
 - [[hugging-face]] — pretrained models for vision tasks

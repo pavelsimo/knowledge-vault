@@ -4,8 +4,8 @@ System design is the process of defining the architecture, interfaces, and data 
 
 ## Source
 
-- `raw/06-system-design/System Design.md`
-- Course by Karan Pratap Singh: https://karanpratapsingh.com/courses/system-design
+- [[raw/06-system-design/System Design.md|raw/06-system-design/System Design.md]]
+- [Course by Karan Pratap Singh](https://karanpratapsingh.com/courses/system-design)
 
 ---
 
@@ -37,6 +37,10 @@ Seven-layer model for network communication, from top (user-facing) to bottom (p
 | 3 | **Network** | Routing packets across networks; finds best physical path |
 | 2 | **Data Link** | Transfer between devices on the same network; packets → frames |
 | 1 | **Physical** | Physical cables, switches; data → bit stream (1s and 0s) |
+
+![The OSI model is a stacked abstraction for reasoning about where networking responsibilities live.](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/osi-model/osi-model.png)
+
+*The value of the model is diagnostic clarity: when something breaks, you can ask which layer owns the failure instead of treating "the network" as one blob.*
 
 ### TCP vs UDP
 
@@ -113,6 +117,10 @@ The write-around cache diagram shows: Client → Read → Cache (fast path); Cli
 ### CDN (Content Delivery Network)
 
 A CDN places content on geographically distributed edge servers so users get responses from the nearest location rather than the origin.
+
+![A CDN reduces latency by serving users from regional edge servers instead of a single distant origin.](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/system-design/chapter-I/content-delivery-network/cdn-map.png)
+
+*This is one of the most intuitive system-design patterns because the user-visible effect is immediate: distance is latency, and edges buy that distance back.*
 
 The CDN topology: a single **Origin Server** (e.g., London) connects via dashed backbone links to **Edge Servers** deployed in regional data centers (USA, Japan, Brazil, Australia). End users in each region are served by their nearest edge server rather than the London origin. This dramatically reduces latency for global audiences.
 
