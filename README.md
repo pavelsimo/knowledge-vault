@@ -23,4 +23,5 @@ A personal knowledge base about Pavel personal interests.
 - Investing
 - XR
 - LeRobot
-- 
+- Game Programming
+- Computer Graphics

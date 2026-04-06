@@ -11,14 +11,10 @@
             "id": "0034efd2b7e3bd1d",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "wiki/distributed-training.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "distributed-training"
+              "title": "New tab"
             }
           }
         ]
@@ -94,7 +90,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "wiki/distributed-training.md",
                 "collapseAll": true,
                 "extraContext": true,
                 "sortOrder": "alphabetical",
@@ -104,7 +99,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for distributed-training"
+              "title": "Backlinks"
             }
           },
           {
@@ -113,12 +108,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "wiki/distributed-training.md",
+                "file": "wiki/recurrent-neural-networks.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from distributed-training"
+              "title": "Outgoing links from recurrent-neural-networks"
             }
           },
           {
@@ -156,13 +151,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "wiki/distributed-training.md",
+                "file": "wiki/recurrent-neural-networks.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of distributed-training"
+              "title": "Outline of recurrent-neural-networks"
             }
           }
         ]
@@ -184,33 +179,33 @@
   },
   "active": "0034efd2b7e3bd1d",
   "lastOpenFiles": [
-    "wiki/gpu-cuda.md",
+    "raw/01-open-source-models-hugging-face/Open Source Models with Hugging Face.md",
+    "QUERIES.md",
+    "HEALTHCHECK.md",
+    "COMPILE.md",
+    "README.md",
     "wiki/3d-vision.md",
+    "wiki/probability-statistics.md",
+    "wiki/optimization.md",
+    "wiki/network-visualization.md",
+    "wiki/hugging-face.md",
     "wiki/attention-transformers.md",
-    "wiki/distributed-training.md",
-    "wiki/robot-learning.md",
-    "wiki/audio-processing.md",
-    "wiki/computer-vision.md",
-    "wiki/convolutional-neural-networks.md",
-    "wiki/transformers-library.md",
-    "wiki/video-understanding.md",
-    "wiki/self-supervised-learning.md",
     "wiki/recurrent-neural-networks.md",
+    "wiki/mlops.md",
+    "wiki/audio-processing.md",
+    "wiki/distributed-training.md",
+    "wiki/convolutional-neural-networks.md",
+    "wiki/video-understanding.md",
+    "wiki/gpu-cuda.md",
+    "wiki/robot-learning.md",
+    "wiki/computer-vision.md",
+    "wiki/transformers-library.md",
+    "wiki/self-supervised-learning.md",
     "wiki/generative-models.md",
     "wiki/semantic-segmentation.md",
     "wiki/sentence-embeddings.md",
     "wiki/nlp.md",
-    "wiki/neural-networks.md",
-    "wiki/mlops.md",
-    "wiki/multimodal-models.md",
-    "wiki/INDEX.md",
-    "wiki/optimization.md",
-    "wiki/probability-statistics.md",
     "wiki/self-supervised-learning.md.tmp.50382.1775427948163",
-    "wiki/hugging-face.md",
-    "wiki/network-visualization.md",
-    "wiki/object-detection.md",
-    "raw/03-stanford-cs231n/Stanford CS231N.md",
     "raw/04-machine-learning-engineering-for-production-mlops/images/Pasted image 20260301211843.png",
     "raw/04-machine-learning-engineering-for-production-mlops/images/Pasted image 20260228184049.png",
     "raw/04-machine-learning-engineering-for-production-mlops/images/Pasted image 20260228162526.png",

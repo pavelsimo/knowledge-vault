@@ -1,0 +1,1 @@
+Read everything in raw/. Then compile a wiki in wiki/ following the rules in README.md. Create an INDEX.md first, then create one .md file per major topic. Link related topics. Summarize every source.
