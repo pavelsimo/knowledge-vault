@@ -9,6 +9,12 @@ Multimodal models are AI systems that accept and relate more than one type of da
 - [[raw/01-open-source-models-hugging-face/12-image-captioning.py|raw/01-open-source-models-hugging-face/12-image-captioning.py]]
 - [[raw/01-open-source-models-hugging-face/05_zero_shot_audio_classification.py|raw/01-open-source-models-hugging-face/05_zero_shot_audio_classification.py]]
 
+## Key Papers
+
+- [Learning Transferable Visual Models From Natural Language Supervision (CLIP)](https://arxiv.org/pdf/2103.00020) - the paper that made zero-shot vision-language transfer mainstream.
+- [BLIP: Bootstrapping Language-Image Pre-training for Unified Vision-Language Understanding and Generation](https://arxiv.org/pdf/2201.12086) - a strong image-captioning and image-text-matching reference.
+- [CLAP: Learning Audio Concepts from Natural Language Supervision](https://arxiv.org/pdf/2211.06687) - the audio-text analogue to CLIP used for zero-shot audio classification.
+
 ## What Makes a Model Multimodal
 
 A model is **multimodal** when it takes more than one type of input — for example:

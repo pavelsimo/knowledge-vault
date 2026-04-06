@@ -7,6 +7,15 @@ Self-supervised learning trains neural networks on unlabeled data by auto-genera
 - [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
 - [[raw/00-clippings/Spring 2025  Lecture 12 Self-Supervised Learning - YouTube.md|raw/00-clippings/Spring 2025  Lecture 12 Self-Supervised Learning - YouTube.md]]
 
+## Key Papers
+
+- [Unsupervised Representation Learning by Predicting Image Rotations](https://arxiv.org/pdf/1803.07728) - a clean early pretext-task paper.
+- [Masked Autoencoders Are Scalable Vision Learners](https://arxiv.org/pdf/2111.06377) - the standard MAE paper for masked-image pretraining.
+- [A Simple Framework for Contrastive Learning of Visual Representations](https://arxiv.org/pdf/2002.05709) - the SimCLR reference.
+- [Improved Baselines with Momentum Contrastive Learning (MoCo v2)](https://arxiv.org/pdf/2003.04297) - the queue-based alternative to large-batch SimCLR.
+- [Emerging Properties in Self-Supervised Vision Transformers](https://arxiv.org/pdf/2104.14294) - the DINO paper.
+- [DINOv2: Emergent Abilities in Self-Supervised Vision Transformers](https://hal.science/hal-04376640v2/file/CVPR_2023_dinov2%20%284%29.pdf) - a strong modern general-purpose SSL vision encoder reference.
+
 ## Why Self-Supervised Learning?
 
 Supervised learning requires massive labeled datasets — expensive, incomplete, and task-specific. Self-supervised learning asks: **can the model learn useful representations from raw data alone?**

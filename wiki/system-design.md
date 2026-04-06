@@ -5,7 +5,57 @@ System design is the process of defining the architecture, interfaces, and data 
 ## Source
 
 - [[raw/06-system-design/System Design.md|raw/06-system-design/System Design.md]]
+- [[raw/06-system-design/diagrams/README.md|raw/06-system-design/diagrams/README.md]]
 - [Course by Karan Pratap Singh](https://karanpratapsingh.com/courses/system-design)
+
+## Local Diagram Set
+
+The system-design folder includes a local Excalidraw library that mirrors the written notes. The diagram files are not separate theories; they are the visual companions for the concepts and case studies summarized on this page.
+
+- [[raw/06-system-design/diagrams/README.md|raw/06-system-design/diagrams/README.md]] - explains that the local `.excalidraw` files are intended to be imported into Excalidraw for viewing, editing, or export.
+- [[raw/06-system-design/diagrams/api-gateway.excalidraw|raw/06-system-design/diagrams/api-gateway.excalidraw]] - gateway as the front door for routing, auth, and request aggregation.
+- [[raw/06-system-design/diagrams/caching.excalidraw|raw/06-system-design/diagrams/caching.excalidraw]] - cache placement and read/write policy tradeoffs.
+- [[raw/06-system-design/diagrams/cap.excalidraw|raw/06-system-design/diagrams/cap.excalidraw]] - visual summary of consistency, availability, and partition tolerance under failure.
+- [[raw/06-system-design/diagrams/cdn.excalidraw|raw/06-system-design/diagrams/cdn.excalidraw]] - origin plus edge-distribution topology for global latency reduction.
+- [[raw/06-system-design/diagrams/circuit-breaker.excalidraw|raw/06-system-design/diagrams/circuit-breaker.excalidraw]] - failure isolation pattern that trips open when a dependency degrades.
+- [[raw/06-system-design/diagrams/clustering.excalidraw|raw/06-system-design/diagrams/clustering.excalidraw]] - active-active and active-passive node grouping for HA.
+- [[raw/06-system-design/diagrams/consistent-hashing.excalidraw|raw/06-system-design/diagrams/consistent-hashing.excalidraw]] - hash-ring layout that minimizes key movement during resharding.
+- [[raw/06-system-design/diagrams/cqrs.excalidraw|raw/06-system-design/diagrams/cqrs.excalidraw]] - separate command and query paths for differing read/write workloads.
+- [[raw/06-system-design/diagrams/database-replication.excalidraw|raw/06-system-design/diagrams/database-replication.excalidraw]] - master-replica and replication-flow topology.
+- [[raw/06-system-design/diagrams/db-dbms.excalidraw|raw/06-system-design/diagrams/db-dbms.excalidraw]] - distinction between a database and the database-management system around it.
+- [[raw/06-system-design/diagrams/disaster-recovery.excalidraw|raw/06-system-design/diagrams/disaster-recovery.excalidraw]] - backup, failover, and recovery-region planning.
+- [[raw/06-system-design/diagrams/distributed-transactions.excalidraw|raw/06-system-design/diagrams/distributed-transactions.excalidraw]] - coordinator-driven commit flow across multiple nodes.
+- [[raw/06-system-design/diagrams/domain-name-system.excalidraw|raw/06-system-design/diagrams/domain-name-system.excalidraw]] - recursive and iterative DNS resolution path.
+- [[raw/06-system-design/diagrams/enterprise-service-bus.excalidraw|raw/06-system-design/diagrams/enterprise-service-bus.excalidraw]] - centrally mediated enterprise integration pattern.
+- [[raw/06-system-design/diagrams/event-driven-architecture.excalidraw|raw/06-system-design/diagrams/event-driven-architecture.excalidraw]] - producers, events, and asynchronous consumers.
+- [[raw/06-system-design/diagrams/event-sourcing.excalidraw|raw/06-system-design/diagrams/event-sourcing.excalidraw]] - append-only event log as the source of truth.
+- [[raw/06-system-design/diagrams/federated-database.excalidraw|raw/06-system-design/diagrams/federated-database.excalidraw]] - unified access across independently owned databases.
+- [[raw/06-system-design/diagrams/geohashing-quadtrees.excalidraw|raw/06-system-design/diagrams/geohashing-quadtrees.excalidraw]] - spatial indexing approaches for location-aware systems.
+- [[raw/06-system-design/diagrams/indexes.excalidraw|raw/06-system-design/diagrams/indexes.excalidraw]] - index data structures and lookup acceleration.
+- [[raw/06-system-design/diagrams/load-balancing.excalidraw|raw/06-system-design/diagrams/load-balancing.excalidraw]] - request distribution across backend servers.
+- [[raw/06-system-design/diagrams/lp-ws-sse.excalidraw|raw/06-system-design/diagrams/lp-ws-sse.excalidraw]] - long polling, WebSockets, and server-sent events compared for realtime delivery.
+- [[raw/06-system-design/diagrams/message-brokers.excalidraw|raw/06-system-design/diagrams/message-brokers.excalidraw]] - brokered messaging with routing and decoupled producers/consumers.
+- [[raw/06-system-design/diagrams/message-queues.excalidraw|raw/06-system-design/diagrams/message-queues.excalidraw]] - queued work distribution and asynchronous processing.
+- [[raw/06-system-design/diagrams/monoliths-microservices.excalidraw|raw/06-system-design/diagrams/monoliths-microservices.excalidraw]] - service-boundary tradeoffs between one deployment and many.
+- [[raw/06-system-design/diagrams/n-tier-architecture.excalidraw|raw/06-system-design/diagrams/n-tier-architecture.excalidraw]] - presentation, application, and data-tier separation.
+- [[raw/06-system-design/diagrams/netflix.excalidraw|raw/06-system-design/diagrams/netflix.excalidraw]] - streaming-system case-study architecture.
+- [[raw/06-system-design/diagrams/oauth-openid-connect.excalidraw|raw/06-system-design/diagrams/oauth-openid-connect.excalidraw]] - delegated authorization plus identity-layer flow.
+- [[raw/06-system-design/diagrams/osi.excalidraw|raw/06-system-design/diagrams/osi.excalidraw]] - seven-layer networking stack.
+- [[raw/06-system-design/diagrams/pacelc.excalidraw|raw/06-system-design/diagrams/pacelc.excalidraw]] - latency-versus-consistency tradeoff outside partition events.
+- [[raw/06-system-design/diagrams/proxy.excalidraw|raw/06-system-design/diagrams/proxy.excalidraw]] - forward and reverse proxy placement.
+- [[raw/06-system-design/diagrams/pubsub.excalidraw|raw/06-system-design/diagrams/pubsub.excalidraw]] - topic-based publish/subscribe fan-out.
+- [[raw/06-system-design/diagrams/rate-limiting.excalidraw|raw/06-system-design/diagrams/rate-limiting.excalidraw]] - throttling patterns for protecting shared services.
+- [[raw/06-system-design/diagrams/scaling.excalidraw|raw/06-system-design/diagrams/scaling.excalidraw]] - scale-up versus scale-out resource growth.
+- [[raw/06-system-design/diagrams/service-discovery.excalidraw|raw/06-system-design/diagrams/service-discovery.excalidraw]] - dynamic lookup of service instances in distributed systems.
+- [[raw/06-system-design/diagrams/sharding.excalidraw|raw/06-system-design/diagrams/sharding.excalidraw]] - horizontal partitioning of data across nodes.
+- [[raw/06-system-design/diagrams/sso.excalidraw|raw/06-system-design/diagrams/sso.excalidraw]] - single-sign-on flow across multiple applications.
+- [[raw/06-system-design/diagrams/tcp-udp.excalidraw|raw/06-system-design/diagrams/tcp-udp.excalidraw]] - transport-layer tradeoff between reliability and latency.
+- [[raw/06-system-design/diagrams/transactions.excalidraw|raw/06-system-design/diagrams/transactions.excalidraw]] - atomic database transaction lifecycle.
+- [[raw/06-system-design/diagrams/twitter.excalidraw|raw/06-system-design/diagrams/twitter.excalidraw]] - social-feed case-study architecture.
+- [[raw/06-system-design/diagrams/uber.excalidraw|raw/06-system-design/diagrams/uber.excalidraw]] - ride-matching and geospatial case-study architecture.
+- [[raw/06-system-design/diagrams/url-shortener.excalidraw|raw/06-system-design/diagrams/url-shortener.excalidraw]] - classic short-link service decomposition.
+- [[raw/06-system-design/diagrams/virtualization-containerization.excalidraw|raw/06-system-design/diagrams/virtualization-containerization.excalidraw]] - virtualization stack compared with containers.
+- [[raw/06-system-design/diagrams/whatsapp.excalidraw|raw/06-system-design/diagrams/whatsapp.excalidraw]] - messaging-system case-study architecture.
 
 ---
 

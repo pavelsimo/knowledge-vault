@@ -8,6 +8,13 @@ Object detection is the task of identifying **what** objects are in an image and
 - [[raw/00-clippings/Spring 2025  Lecture 9 Object Detection, Image Segmentation, Visualizing - YouTube.md|raw/00-clippings/Spring 2025  Lecture 9 Object Detection, Image Segmentation, Visualizing - YouTube.md]]
 - [[raw/01-open-source-models-hugging-face/08_object_detection.py|raw/01-open-source-models-hugging-face/08_object_detection.py]]
 
+## Key Papers
+
+- [Rich Feature Hierarchies for Accurate Object Detection and Semantic Segmentation (R-CNN)](https://arxiv.org/pdf/1311.2524) - the starting point for the modern two-stage detector family.
+- [Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks](https://arxiv.org/pdf/1506.01497) - the paper that made proposal generation end-to-end.
+- [You Only Look Once: Unified, Real-Time Object Detection](https://arxiv.org/pdf/1506.02640) - the classic single-stage detector paper.
+- [End-to-End Object Detection with Transformers (DETR)](https://arxiv.org/pdf/2005.12872) - the paper that removed anchors and NMS from the core formulation.
+
 ## Task Taxonomy
 
 Four related vision tasks with increasing spatial complexity:

@@ -9,6 +9,12 @@ The attention mechanism was invented to overcome the bottleneck in RNN-based seq
 - [[raw/00-clippings/Math behind Attention - Q, K, and V.md|raw/00-clippings/Math behind Attention - Q, K, and V.md]]
 - [[raw/00-clippings/KV Caching in LLMs, Clearly Explained.md|raw/00-clippings/KV Caching in LLMs, Clearly Explained.md]]
 
+## Key Papers
+
+- [Neural Machine Translation by Jointly Learning to Align and Translate](https://arxiv.org/pdf/1409.0473) - the classic encoder-decoder attention paper.
+- [Attention Is All You Need](https://arxiv.org/pdf/1706.03762) - the transformer paper that replaced recurrence with self-attention.
+- [An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale](https://arxiv.org/pdf/2010.11929) - the paper that transferred the transformer cleanly into vision.
+
 ## Three Ways of Processing Sequences
 
 Before attention, there were two dominant approaches:
@@ -21,7 +27,7 @@ Before attention, there were two dominant approaches:
 
 Self-attention is highly parallel (it's just matrix multiplications), but expensive: O(N²) compute for a sequence of length N. This is why attention in LLMs becomes a bottleneck for very long contexts.
 
-(Vaswani et al., "Attention Is All You Need", NeurIPS 2017)
+Reference paper: [Attention Is All You Need](https://arxiv.org/pdf/1706.03762)
 
 ## The Problem Attention Solves
 
@@ -117,7 +123,7 @@ headᵢ = Attention(Q·Wᵢᵠ, K·Wᵢᴷ, V·Wᵢᵛ)
 
 ## Transformer Architecture
 
-A transformer block (Vaswani et al., "Attention Is All You Need", NeurIPS 2017):
+A transformer block from [Attention Is All You Need](https://arxiv.org/pdf/1706.03762):
 
 ```
 Input: set of vectors x₁, x₂, x₃, x₄

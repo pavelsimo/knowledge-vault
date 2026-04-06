@@ -10,6 +10,47 @@ OpenUSD (Universal Scene Description) is the scene description and composition s
 - [Introduction to USD](https://openusd.org/release/intro.html)
 - [OpenUSD API](https://openusd.org/release/api/index.html)
 
+## Tutorial Source Inventory
+
+The OpenUSD raw material is a staged tutorial: it starts with a single cube, then grows toward hierarchy, schemas, properties, and custom metadata.
+
+- [[raw/05-omniverse/01-create-usd-file.py|raw/05-omniverse/01-create-usd-file.py]] - creates a new `.usda` stage and defines the first `Cube` prim.
+- [[raw/05-omniverse/02-defining-cube-stage.py|raw/05-omniverse/02-defining-cube-stage.py]] - reopens the stage and inspects the authored cube definition.
+- [[raw/05-omniverse/03-creating-hierarchy.py|raw/05-omniverse/03-creating-hierarchy.py]] - builds a `Scope -> Xform -> Cube` hierarchy to show scenegraph structure.
+- [[raw/05-omniverse/04-lighting-stage.py|raw/05-omniverse/04-lighting-stage.py]] - adds `DistantLight` and `SphereLight` prims plus authored transforms and intensities.
+- [[raw/05-omniverse/05-adding-attributes-prim.py|raw/05-omniverse/05-adding-attributes-prim.py]] - inspects cube schema attributes and authors display color.
+- [[raw/05-omniverse/06-getting-value-current-attribute.py|raw/05-omniverse/06-getting-value-current-attribute.py]] - reads the cube size, doubles it, and adds a translated secondary cube.
+- [[raw/05-omniverse/07-traversing-stage.py|raw/05-omniverse/07-traversing-stage.py]] - demonstrates depth-first stage traversal across the composed scene.
+- [[raw/05-omniverse/08-does-the-prim-exist.py|raw/05-omniverse/08-does-the-prim-exist.py]] - checks for child prim existence under a known path.
+- [[raw/05-omniverse/09-defining-prim-without-schema.py|raw/05-omniverse/09-defining-prim-without-schema.py]] - uses generic `DefinePrim` to author namespace objects without a typed schema.
+- [[raw/05-omniverse/10-getting-validating-and-setting-prims-path.py|raw/05-omniverse/10-getting-validating-and-setting-prims-path.py]] - retrieves prims by path and contrasts valid versus invalid lookups.
+- [[raw/05-omniverse/11-setting-default-prim.py|raw/05-omniverse/11-setting-default-prim.py]] - marks `/hello` as the stage default prim for downstream referencing.
+- [[raw/05-omniverse/12-usdgeom-and-xform.py|raw/05-omniverse/12-usdgeom-and-xform.py]] - introduces `UsdGeom.Xform` as the typed transform container for a scene root.
+- [[raw/05-omniverse/13-scope-and-cube.py|raw/05-omniverse/13-scope-and-cube.py]] - adds `Scope` and `Cube` children under the world transform to separate grouping from geometry.
+- [[raw/05-omniverse/14-usdshade-and-material.py|raw/05-omniverse/14-usdshade-and-material.py]] - defines a `Material` prim to illustrate `UsdShade` containers.
+- [[raw/05-omniverse/15-usdlux-and-distantlight.py|raw/05-omniverse/15-usdlux-and-distantlight.py]] - adds an environment scope and a typed `DistantLight` schema.
+- [[raw/05-omniverse/16-retrieving-properties-prim.py|raw/05-omniverse/16-retrieving-properties-prim.py]] - lists property names on a cube to separate prim structure from property payload.
+- [[raw/05-omniverse/17-getting-values-for-attributes.py|raw/05-omniverse/17-getting-values-for-attributes.py]] - reads fallback values for cube size, display color, and extent.
+- [[raw/05-omniverse/18-authoring-attributes.py|raw/05-omniverse/18-authoring-attributes.py]] - authors explicit size, extent, and display-color opinions on the cube.
+- [[raw/05-omniverse/19-create-additional-attributes.py|raw/05-omniverse/19-create-additional-attributes.py]] - creates custom metadata attributes such as weight, size, type, and hazard flags.
+- [[raw/05-omniverse/20-modifying-attributes.py|raw/05-omniverse/20-modifying-attributes.py]] - sets and reads custom attribute values, completing the custom-metadata flow.
+
+## Asset Inventory
+
+The authored and referenced assets show how the tutorial scripts materialize into concrete USD layers.
+
+- [[raw/05-omniverse/assets/01-first_stage.usda|raw/05-omniverse/assets/01-first_stage.usda]] - minimal stage containing only a single authored `Cube` prim.
+- [[raw/05-omniverse/assets/01-first_stage_flattened-inter.usda|raw/05-omniverse/assets/01-first_stage_flattened-inter.usda]] - intermediate flattened view of the first stage prior to schema expansion.
+- [[raw/05-omniverse/assets/01-first_stage_flattened.usda|raw/05-omniverse/assets/01-first_stage_flattened.usda]] - fully flattened mesh form of the initial cube, exposing generated points, normals, and topology.
+- [[raw/05-omniverse/assets/03-second-stage.usda|raw/05-omniverse/assets/03-second-stage.usda]] - hierarchy plus authored cube size/color and two lights.
+- [[raw/05-omniverse/assets/03-second-stage_flattened-inter.usda|raw/05-omniverse/assets/03-second-stage_flattened-inter.usda]] - partially flattened representation of the hierarchy with light opinions preserved.
+- [[raw/05-omniverse/assets/03-second-stage_flattened.usda|raw/05-omniverse/assets/03-second-stage_flattened.usda]] - flattened mesh and transform version of the second stage.
+- [[raw/05-omniverse/assets/04-prims.usda|raw/05-omniverse/assets/04-prims.usda]] - generic namespace example with `hello/world` and a default prim.
+- [[raw/05-omniverse/assets/05-many_prims.usda|raw/05-omniverse/assets/05-many_prims.usda]] - typed world scene collecting geometry, material, and lighting scopes under one root.
+- [[raw/05-omniverse/assets/06-attributes.usda|raw/05-omniverse/assets/06-attributes.usda]] - attribute-focused stage with authored cube extent, display color, size, and transform.
+- [[raw/05-omniverse/assets/07-custom_attributes.usda|raw/05-omniverse/assets/07-custom_attributes.usda]] - referenced asset wrapper with user-defined custom attributes for workflow metadata.
+- [[raw/05-omniverse/assets/08-cubebox_a02_distilled.usd|raw/05-omniverse/assets/08-cubebox_a02_distilled.usd]] - large binary USD asset referenced by the custom-attribute example to attach metadata to a real mesh payload.
+
 ## Core Mental Model
 
 The key concept is the **stage**: the composed scenegraph you work with at runtime. A stage may be assembled from many layers and files, but applications traverse it as one coherent hierarchy of prims and properties.

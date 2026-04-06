@@ -7,6 +7,13 @@ As models grow beyond billions of parameters, training on a single GPU becomes i
 - [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
 - [[raw/00-clippings/Spring 2025  Lecture 11 Large Scale Distributed Training - YouTube.md|raw/00-clippings/Spring 2025  Lecture 11 Large Scale Distributed Training - YouTube.md]]
 
+## Key Papers
+
+- [ZeRO: Memory Optimizations Toward Training Trillion Parameter Models](https://arxiv.org/pdf/1910.02054) - the core reference for optimizer-state and parameter sharding.
+- [GPipe: Efficient Training of Giant Neural Networks using Pipeline Parallelism](https://arxiv.org/pdf/1811.06965) - the standard reference for pipeline stages and microbatch bubbles.
+- [Ring Attention with Blockwise Transformers for Near-Infinite Context](https://arxiv.org/pdf/2310.01889) - a representative paper on context-length scaling.
+- [The Llama 3 Herd of Models](https://arxiv.org/pdf/2407.21783) - a practical large-scale training report with system details that matter in production.
+
 ## Why Distribute?
 
 | Model size | Single GPU memory needed |

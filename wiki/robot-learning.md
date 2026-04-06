@@ -9,6 +9,23 @@ Robot learning covers how machines acquire skills through experience, demonstrat
 - [[raw/00-clippings/Should Robot Generalists Get Off Their High Horse.md|raw/00-clippings/Should Robot Generalists Get Off Their High Horse.md]]
 - [[raw/00-clippings/The Physical AI Deployment Gap.md|raw/00-clippings/The Physical AI Deployment Gap.md]]
 
+## Key Papers
+
+- [Playing Atari with Deep Reinforcement Learning](https://arxiv.org/pdf/1312.5602) - the landmark deep RL paper that made learned policies mainstream.
+- [Implicit Behavioral Cloning](https://arxiv.org/pdf/2109.00137) - an important reference for multimodal policy learning through energy-based action scoring.
+- [Diffusion Policy: Visuomotor Policy Learning via Action Diffusion](https://arxiv.org/abs/2303.04137) - one of the central modern papers for robot-action generation.
+- [RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control](https://arxiv.org/pdf/2307.15818) - a key paper behind the VLA framing.
+- [π₀: A Vision-Language-Action Flow Model for General Robot Control](https://arxiv.org/pdf/2410.24164) - a strong recent reference for flow-based robot foundation models.
+- [GR00T N1: An Open Foundation Model for Generalist Humanoid Robots](https://arxiv.org/pdf/2503.14734) - a representative humanoid foundation-model paper.
+
+![Diffusion Policy reframes robot control as iterative action denoising rather than one-shot regression.](../raw/03-stanford-cs231n/images/2026-01-01-22-12-59.png)
+
+*This paper figure is useful because it makes the shift in policy learning concrete: explicit regression, implicit energy models, and diffusion policies are different answers to the same multimodal-action problem.*
+
+![Recent robot-foundation-model work is best understood as a paper lineage from RT-1 to RT-2, RT-X, OpenVLA, and Pi-Zero.](../raw/03-stanford-cs231n/images/2026-01-02-12-58-40.png)
+
+*The timeline matters here. This topic is moving through papers and systems reports at high speed, so the page should foreground the model lineage rather than treating all VLA systems as one blur.*
+
 ## Problem Formulation
 
 Goal: learn a **policy** π(s) → a that maps observations/states to actions to maximize cumulative reward.

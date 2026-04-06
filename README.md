@@ -14,6 +14,9 @@ A personal knowledge base about Pavel personal interests.
 - Link related topics to each other using [[topic-name]] format
 - Maintain an INDEX.md in wiki/ that lists every topic with a one-line description
 - When new raw sources are added, update the relevant wiki articles
+- Give a lot of importance to research papers when the topic has a meaningful paper trail
+- References to papers must be clickable markdown links
+- When a paper is referenced, try your best to include a suitable supporting image or figure
 
 ## My Interests
 - AI
@@ -26,4 +29,3 @@ A personal knowledge base about Pavel personal interests.
 - Game Programming
 - Computer Graphics
 - System Design
-

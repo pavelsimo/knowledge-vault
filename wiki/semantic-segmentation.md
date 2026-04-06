@@ -6,6 +6,21 @@ Semantic segmentation labels every pixel in an image with a class category (e.g.
 
 - [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
 - [[raw/00-clippings/Spring 2025  Lecture 9 Object Detection, Image Segmentation, Visualizing - YouTube.md|raw/00-clippings/Spring 2025  Lecture 9 Object Detection, Image Segmentation, Visualizing - YouTube.md]]
+- [[raw/01-open-source-models-hugging-face/09_segmentation_mask.py|raw/01-open-source-models-hugging-face/09_segmentation_mask.py]]
+- [[raw/01-open-source-models-hugging-face/09_segmentation_mask_single_point.py|raw/01-open-source-models-hugging-face/09_segmentation_mask_single_point.py]]
+
+## Key Papers
+
+- [U-Net: Convolutional Networks for Biomedical Image Segmentation](https://arxiv.org/pdf/1505.04597) - the classic encoder-decoder with skip connections for dense prediction.
+- [Mask R-CNN](https://arxiv.org/pdf/1703.06870) - the core instance-segmentation paper.
+- [0.1% Data Makes Segment Anything Slim](https://arxiv.org/pdf/2312.05284) - the paper closest to the promptable segmentation examples used in this repo.
+
+## Promptable Segmentation In Practice
+
+The Hugging Face examples ground the theory in Segment Anything style prompting. Instead of predicting a semantic label map for every class, the model can generate masks from sparse prompts.
+
+- [[raw/01-open-source-models-hugging-face/09_segmentation_mask.py|raw/01-open-source-models-hugging-face/09_segmentation_mask.py]] - runs `Zigeng/SlimSAM-uniform-77` on the sample image and visualizes the model's mask proposals over the full image.
+- [[raw/01-open-source-models-hugging-face/09_segmentation_mask_single_point.py|raw/01-open-source-models-hugging-face/09_segmentation_mask_single_point.py]] - adds a single input point prompt targeting the toddler's torso, then renders the three candidate masks returned for that prompt.
 
 ## Why CNNs Need Modification for Dense Prediction
 

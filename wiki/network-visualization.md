@@ -6,6 +6,12 @@ Network visualization techniques help understand what a neural network has learn
 
 - [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
 
+## Key Papers
+
+- [Deep Inside Convolutional Networks: Visualising Image Classification Models and Saliency Maps](https://arxiv.org/pdf/1312.6034) - the saliency-map reference point.
+- [Learning Deep Features for Discriminative Localization](https://arxiv.org/pdf/1512.04150) - the original CAM paper.
+- [Grad-CAM: Visual Explanations from Deep Networks via Gradient-Based Localization](https://arxiv.org/pdf/1610.02391) - the paper that made class-localization explanations broadly useful beyond CAM-compatible architectures.
+
 ## Motivation
 
 Deep networks are often described as "black boxes." Visualization techniques let us answer:

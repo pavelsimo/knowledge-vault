@@ -13,6 +13,11 @@ Computer vision is the field of teaching machines to interpret and understand im
 - [[raw/01-open-source-models-hugging-face/11-image-retrieval.py|raw/01-open-source-models-hugging-face/11-image-retrieval.py]]
 - [[raw/01-open-source-models-hugging-face/12-image-captioning.py|raw/01-open-source-models-hugging-face/12-image-captioning.py]]
 
+## Key Papers
+
+- [0.1% Data Makes Segment Anything Slim](https://arxiv.org/pdf/2312.05284) - the paper behind the lightweight SAM-style model used in the repo examples.
+- [Vision Transformers for Dense Prediction](https://arxiv.org/pdf/2103.13413) - the DPT paper anchoring the depth-estimation section.
+
 ## Image Classification
 
 Image classification assigns a single label from a fixed set of categories to an image (e.g., "cat" or "dog").

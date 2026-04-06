@@ -7,6 +7,14 @@ Video understanding extends computer vision from still images to sequences of fr
 - [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
 - [[raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 10 Video Understanding - YouTube.md|raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 10 Video Understanding - YouTube.md]]
 
+## Key Papers
+
+- [Large-scale Video Classification with Convolutional Neural Networks](https://arxiv.org/pdf/1406.2199) - the classic late-fusion baseline reference.
+- [3D Convolutional Neural Networks for Human Action Recognition](https://arxiv.org/abs/1412.0767) - the standard early 3D CNN paper.
+- [Two-Stream Convolutional Networks for Action Recognition in Videos](https://arxiv.org/pdf/1406.2199) - the reference for explicit motion/appearance separation.
+- [Quo Vadis, Action Recognition? A New Model and the Kinetics Dataset](https://arxiv.org/pdf/1705.07750) - the I3D paper and a key benchmark-era transition point.
+- [Is Space-Time Attention All You Need for Video Understanding?](https://arxiv.org/pdf/2102.05095) - a representative transformer-era paper for video.
+
 ## Video as Data
 
 Video = 2D images + time
@@ -142,7 +150,9 @@ Classification
 
 Key note: sometimes the CNN is not backpropagated through (to save memory). Pretrain the CNN on ImageNet or Kinetics, then use it as a fixed feature extractor, and only train the RNN.
 
-Papers: Baccouche et al., "Sequential Deep Learning for Human Action Recognition" (2011); Donahue et al., "Long-term Recurrent Convolutional Networks" (CVPR 2015)
+Related papers:
+- [Sequential Deep Learning for Human Action Recognition](https://www.scitepress.org/PublishedPapers/2011/35110/35110.pdf)
+- [Long-term Recurrent Convolutional Networks](https://arxiv.org/pdf/1411.4389)
 
 ## Spatio-Temporal Detection
 

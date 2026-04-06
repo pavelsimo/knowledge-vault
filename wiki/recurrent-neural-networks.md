@@ -7,6 +7,12 @@ Recurrent Neural Networks (RNNs) are neural networks designed for sequential dat
 - [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
 - [[raw/00-clippings/Spring 2025  Lecture 7 Recurrent Neural Networks - YouTube.md|raw/00-clippings/Spring 2025  Lecture 7 Recurrent Neural Networks - YouTube.md]]
 
+## Key Papers
+
+- [Finding Structure in Time](https://crl.ucsd.edu/~elman/Papers/fsit.pdf) - the classic Elman RNN reference for recurrent state over sequences.
+- [Long Short-Term Memory](https://www.bioinf.jku.at/publications/older/2604.pdf) - the foundational LSTM paper for long-range sequence memory.
+- [Sequence to Sequence Learning with Neural Networks](https://arxiv.org/pdf/1409.3215) - the standard seq2seq paper that made encoder-decoder RNNs dominant before transformers.
+
 ## Vanilla RNN (Elman RNN)
 
 The simplest RNN, sometimes called an "Elman RNN" after Prof. Jeffrey Elman. The state consists of a single hidden vector h:

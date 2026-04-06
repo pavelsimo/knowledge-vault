@@ -8,6 +8,19 @@ NVIDIA Omniverse is an application platform for building OpenUSD-native 3D tools
 - [NVIDIA Omniverse](https://www.nvidia.com/en-us/omniverse/)
 - [NVIDIA Omniverse Documentation](https://docs.omniverse.nvidia.com/)
 
+## Runtime And Notebook Support Files
+
+The Omniverse folder is not only conceptual notes. It also includes the environment scaffolding required to run the OpenUSD examples inside notebooks and lightweight local projects.
+
+- [[raw/05-omniverse/.gitignore|raw/05-omniverse/.gitignore]] - ignores local JetBrains project metadata so tutorial workspaces stay clean.
+- [[raw/05-omniverse/requirements.txt|raw/05-omniverse/requirements.txt]] - pins the minimal Python stack for notebook demos: `usd-core`, packaging helpers, `requests`, and IPython.
+- [[raw/05-omniverse/utils/__init__.py|raw/05-omniverse/utils/__init__.py]] - re-exports helper modules while intentionally excluding visualization imports that may require vendor packages too early.
+- [[raw/05-omniverse/utils/health_checks.py|raw/05-omniverse/utils/health_checks.py]] - validates Python-package compatibility against `requirements.txt` before notebook visualization is attempted.
+- [[raw/05-omniverse/utils/helperfunctions.py|raw/05-omniverse/utils/helperfunctions.py]] - provides `create_new_stage`, a safe helper that reuses an existing USD layer or creates a new one.
+- [[raw/05-omniverse/utils/sample_assets.py|raw/05-omniverse/utils/sample_assets.py]] - generates or downloads sample USD content, including large demonstration assets for visualization workflows.
+- [[raw/05-omniverse/utils/setup.py|raw/05-omniverse/utils/setup.py]] - centralizes content-directory paths used by the notebook tooling.
+- [[raw/05-omniverse/utils/visualization.py|raw/05-omniverse/utils/visualization.py]] - serves USD files and renders syntax-highlighted or interactive HTML viewers inside Jupyter.
+
 ## Platform Model
 
 Omniverse sits above [[open-usd]] and uses it as the common scene representation. In practice, that means CAD exports, BIM data, robotics assets, material libraries, and simulation metadata can all meet in one composed scene instead of being trapped in tool-specific formats.

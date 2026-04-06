@@ -8,6 +8,17 @@ Convolutional Neural Networks (CNNs) are the dominant architecture for visual pr
 - [[raw/00-clippings/Spring 2025  Lecture 5 Image Classification with CNNs - YouTube.md|raw/00-clippings/Spring 2025  Lecture 5 Image Classification with CNNs - YouTube.md]]
 - [[raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 6 CNN Architectures - YouTube.md|raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 6 CNN Architectures - YouTube.md]]
 
+## Key Papers
+
+- [ImageNet Classification with Deep Convolutional Neural Networks (AlexNet)](https://proceedings.neurips.cc/paper_files/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf) - the breakthrough paper that made deep CNNs the default vision architecture.
+- [Very Deep Convolutional Networks for Large-Scale Image Recognition (VGG)](https://arxiv.org/pdf/1409.1556) - the paper that standardized stacked `3x3` convolutions.
+- [Deep Residual Learning for Image Recognition (ResNet)](https://arxiv.org/pdf/1512.03385) - the decisive paper on skip connections for very deep CNNs.
+- [Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification](https://arxiv.org/pdf/1502.01852) - the Kaiming-initialization paper referenced later in this page.
+
+![AlexNet is the historical inflection point that turned CNNs into the dominant vision backbone.](../raw/03-stanford-cs231n/images/img_110.png)
+
+*This architecture slide is worth keeping near the top because it anchors several later themes on the page: convolution stacks, pooling, fully connected heads, and the ImageNet-era design language that VGG and ResNet evolved from.*
+
 ## Why CNNs?
 
 A fully-connected layer on an image:
@@ -29,7 +40,7 @@ A typical CNN: `Input → [Conv → ReLU]* → Pool → [FC]* → Softmax`
 
 All the nodes in a CNN are neurons — they just have different connectivity patterns.
 
-**Historical milestone:** AlexNet (Krizhevsky, Sutskever, Hinton, 2012) won ImageNet with a deep CNN — the paper that triggered the modern deep learning era. It achieved top-5 error of 15.3% vs. the prior year's 26.2%.
+**Historical milestone:** [ImageNet Classification with Deep Convolutional Neural Networks (AlexNet)](https://proceedings.neurips.cc/paper_files/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf) won ImageNet with a deep CNN and triggered the modern deep learning era. It achieved top-5 error of 15.3% vs. the prior year's 26.2%.
 
 ## Convolution Layer: Dimensions
 
@@ -57,7 +68,7 @@ Example without padding: 7 × 7 input, 3 × 3 filter → output is 5 × 5. **Pro
 
 ## VGGNet: Why 3×3 Filters?
 
-VGGNet (Simonyan & Zisserman, 2014) uses stacked 3×3 conv layers exclusively:
+[Very Deep Convolutional Networks for Large-Scale Image Recognition (VGG)](https://arxiv.org/pdf/1409.1556) uses stacked 3×3 conv layers exclusively:
 
 - **Effective receptive field:** 3 stacked 3×3 conv layers have the same receptive field as one 7×7 layer
 - **Fewer parameters:** 3 × (3² × C²) = 27C² vs. one 7² × C² = 49C² — for the same C channels, 3×3 stacks use 45% fewer parameters
@@ -124,6 +135,10 @@ The ImageNet Large Scale Visual Recognition Challenge drove the deep learning re
 | — | Human | Russakovsky et al. | 5.1% |
 
 AlexNet (8 layers) in 2012 cut the error rate nearly in half compared to 2011 — the event that launched the modern deep learning era. ResNet (152 layers) surpassed human-level performance on this benchmark in 2015.
+
+![ImageNet winners show the paper-driven jump from AlexNet to VGG, GoogLeNet, and ResNet.](../raw/03-stanford-cs231n/images/img_163.png)
+
+*The pattern is the important part: benchmark progress was not smooth optimization, it came from architecture papers that changed how the field designed networks.*
 
 ## Pooling Layers
 
@@ -207,6 +222,10 @@ Deep networks suffer from degradation — more layers → worse training perform
 ```
 output = F(x) + x
 ```
+
+![ResNet reframes depth as learning residual change on top of an identity path.](../raw/03-stanford-cs231n/images/img_174.png)
+
+*This figure captures the core ResNet paper insight more directly than a paragraph: the deeper model should only need to learn the residual difference from identity, not relearn the whole mapping from scratch.*
 
 Each block only needs to learn what **changed** (the residual), not everything from scratch:
 - Gradients flow directly back through skip connections → no vanishing gradient

@@ -8,6 +8,14 @@ Generative models learn the probability distribution of data, enabling them to s
 - [[raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 13 Generative Models 1 - YouTube.md|raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 13 Generative Models 1 - YouTube.md]]
 - [[raw/00-clippings/Stanford CS231N Deep Learning for Computer Vision Spring 2025  Lecture 14 Generative Models 2.md|raw/00-clippings/Stanford CS231N Deep Learning for Computer Vision Spring 2025  Lecture 14 Generative Models 2.md]]
 
+## Key Papers
+
+- [Auto-Encoding Variational Bayes](https://arxiv.org/pdf/1312.6114) - the foundational VAE paper.
+- [Generative Adversarial Nets](https://arxiv.org/pdf/1406.2661) - the paper that established GAN training as a major generative paradigm.
+- [Denoising Diffusion Probabilistic Models](https://arxiv.org/pdf/2006.11239) - the key diffusion-model paper for denoising-based generation.
+- [High-Resolution Image Synthesis with Latent Diffusion Models](https://arxiv.org/pdf/2112.10752) - the paper behind Stable Diffusion-style latent-space generation.
+- [Scalable Diffusion Models with Transformers](https://arxiv.org/pdf/2212.09748) - the main DiT reference for transformer-based diffusion backbones.
+
 ## Discriminative vs Generative
 
 | Model type | Learns | Question |
@@ -192,7 +200,7 @@ Running diffusion in pixel space is expensive. LDMs compress images into a lower
 2. Run the diffusion process in this compact latent space
 3. Decode the final latent back to pixels with the VAE decoder
 
-**LDM architecture (from Rombach et al., "High-Resolution Image Synthesis with Latent Diffusion Models", CVPR 2022):**
+**LDM architecture (from [High-Resolution Image Synthesis with Latent Diffusion Models](https://arxiv.org/pdf/2112.10752)):**
 - Left side: VAE with Encoder (Image H×W×3 → Latent H/D × W/D × C) + Decoder + Discriminator (GAN loss)
 - Center: Diffusion model trained to remove noise from **latents** (encoder is frozen during diffusion training)
 - Right side at inference: sample random latent → iteratively apply diffusion model to denoise → run decoder → final image

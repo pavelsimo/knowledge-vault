@@ -7,6 +7,13 @@
 - [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
 - [[raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 15 3D Vision - YouTube.md|raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 15 3D Vision - YouTube.md]]
 
+## Key Papers
+
+- [PointNet: Deep Learning on Point Sets for 3D Classification and Segmentation](https://arxiv.org/pdf/1612.00593) - the canonical starting point for deep learning on unordered point clouds.
+- [Occupancy Networks: Learning 3D Reconstruction in Function Space](https://arxiv.org/pdf/1812.03828) - a clean formulation of implicit occupancy fields for reconstruction.
+- [NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis](https://arxiv.org/pdf/2003.08934) - the paper that made neural view synthesis a central 3D-vision paradigm.
+- [3D Gaussian Splatting for Real-Time Radiance Field Rendering](https://arxiv.org/pdf/2308.04079) - the key real-time alternative to slower NeRF-style rendering.
+
 ## Shape Representation Considerations
 
 Any 3D shape representation must address five concerns:
