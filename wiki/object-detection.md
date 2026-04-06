@@ -7,6 +7,19 @@ Object detection is the task of identifying **what** objects are in an image and
 - `raw/03-stanford-cs231n/Stanford CS231N.md`
 - `raw/01-open-source-models-hugging-face/08_object_detection.py`
 
+## Task Taxonomy
+
+Four related vision tasks with increasing spatial complexity:
+
+| Task | Output | Spatial info |
+|---|---|---|
+| **Classification** | Single label (e.g., CAT) | None — "no spatial extent" |
+| **Semantic Segmentation** | Per-pixel labels (GRASS, CAT, TREE, SKY) | Pixels only — "no objects, just pixels" |
+| **Object Detection** | Bounding boxes + class labels (DOG, DOG, CAT) | Multiple objects with locations |
+| **Instance Segmentation** | Per-pixel labels per instance (each dog separately) | Multiple objects with pixel-precise boundaries |
+
+Object detection + instance segmentation are the "Multiple Object" tasks — they must handle a variable number of objects per image.
+
 ## Task Definition
 
 Given an image, output:
@@ -32,9 +45,15 @@ Two-stage detectors first generate region proposals, then classify each proposal
 - Much faster than R-CNN
 
 ### Faster R-CNN
-- Replace Selective Search with a **Region Proposal Network (RPN)** — also a CNN
-- End-to-end trainable
-- Still the foundation for many modern two-stage detectors
+
+End-to-end pipeline:
+1. Image → CNN backbone → feature map
+2. Feature map → Region Proposal Network (RPN) → proposals (candidate bounding boxes)
+3. Feature map + proposals → ROI pooling → fixed-size features per proposal
+4. Features → Classification head → class labels + bounding-box regression loss
+5. Both Classification loss and Bounding-box regression loss are trained jointly end-to-end
+
+The RPN is a small CNN that slides over the feature map and predicts whether each location contains an object. This replaces Selective Search (which was external and not end-to-end trainable).
 
 ## Single-Stage Detectors (YOLO / SSD / RetinaNet)
 

@@ -1,0 +1,10 @@
+#usda 1.0
+(
+    doc = """Generated from Composed Stage of root layer C:\\Users\\SIP4BE\\Documents\\Workspace\\Playground\\learn-open-usd\\assets\\01-first_stage.usda
+"""
+)
+
+def Cube "cube"
+{
+}
+

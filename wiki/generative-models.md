@@ -18,15 +18,22 @@ Generative models learn the probability distribution of data, enabling them to s
 
 ## Taxonomy of Generative Models
 
+From Goodfellow's "Tutorial on Generative Adversarial Networks" (adapted in CS231N):
+
 ```
 Generative Models
-├── Explicit Density (can compute/approximate p(x))
-│   ├── Tractable density → Autoregressive models (PixelCNN, GPT)
-│   └── Approximate density → VAEs (optimize ELBO)
-└── Implicit Density (cannot compute p(x), but can sample)
-    ├── Direct sampling → GANs
-    └── Iterative sampling → Diffusion models
+├── Can compute P(x) directly
+│   ├── Explicit Density
+│   │   ├── Tractable density → Autoregressive models (PixelCNN, GPT)
+│   │   └── Approximate density → Variational Autoencoder (VAE) — optimize ELBO
+│   └── Iterative procedure to approximate samples → (see implicit)
+└── Cannot compute P(x), but can sample from P(x)
+    └── Implicit Density
+        ├── Direct sampling → Generative Adversarial Network (GAN)
+        └── Indirect (iterative) → Diffusion Models
 ```
+
+The key split: **explicit** models reason about probabilities directly, **implicit** models just generate samples without assigning likelihoods.
 
 ## Training Objective: Maximum Likelihood
 
@@ -59,14 +66,35 @@ Key papers:
 
 VAEs extend autoencoders to be **probabilistic generative models**. Instead of encoding x to a fixed z, the encoder outputs a distribution q(z|x) (mean and variance).
 
+**VAE generative process:**
+1. Sample z from prior `p(z)` (e.g., Gaussian)
+2. Sample x from conditional `p_θ(x | z)` using the decoder
+
+After training, generate new data: `sample z from p(z) → feed to decoder → get new x`. The latent z encodes factors like object identity, appearance, orientation, scene type.
+
 **Problem:** computing the true posterior P(z|x) is **intractable** (the integral over all possible z is too hard).
 
-**Solution:** maximize the **ELBO (Evidence Lower Bound)** instead:
+**Solution — ELBO derivation:**
+```
+log p_θ(x) = log [p_θ(x|z)p(z)] / p_θ(z|x)
+           = log [p_θ(x|z)p(z)q_φ(z|x)] / [p_θ(z|x)q_φ(z|x)]
+```
+Applying Jensen's inequality to lower-bound the log-likelihood:
 ```
 ELBO = E[log P(x|z)] - KL(q(z|x) || p(z))
 ```
 - Reconstruction term: decoder should reconstruct x from z
 - KL term: keep the learned distribution close to the prior (usually Gaussian)
+
+**Comparison of three generative model training objectives:**
+```
+Autoregressive: p_θ(x) = Π p_θ(xᵢ | x₁,...,xᵢ₋₁)   ← directly maximize likelihood
+
+VAE:            p_θ(x) = ∫ p_θ(x|z)p(z)dz ≥ E[log p_θ(x|z)] - D_KL(q_φ(z|x) || p(z))
+                          ← maximize ELBO (lower bound on likelihood)
+
+GAN:            give up modeling p(x), but draw samples from p(x)   ← adversarial training
+```
 
 **Analogy:** you can't reach the cloud (true density) with your ruler, but you can push a floor (ELBO) up toward it as high as possible.
 
@@ -157,6 +185,13 @@ Running diffusion in pixel space is expensive. LDMs compress images into a lower
 1. Train a VAE to compress images into latent codes
 2. Run the diffusion process in this compact latent space
 3. Decode the final latent back to pixels with the VAE decoder
+
+**LDM architecture (from Rombach et al., "High-Resolution Image Synthesis with Latent Diffusion Models", CVPR 2022):**
+- Left side: VAE with Encoder (Image H×W×3 → Latent H/D × W/D × C) + Decoder + Discriminator (GAN loss)
+- Center: Diffusion model trained to remove noise from **latents** (encoder is frozen during diffusion training)
+- Right side at inference: sample random latent → iteratively apply diffusion model to denoise → run decoder → final image
+
+Modern LDM pipelines use **VAE + GAN + Diffusion** — each component handles what it's best at.
 
 State of the art: VAE + GAN (for the encoder/decoder) + Diffusion (for the generation process).
 

@@ -8,17 +8,57 @@ Recurrent Neural Networks (RNNs) are neural networks designed for sequential dat
 
 ## Vanilla RNN (Elman RNN)
 
-The simplest RNN. At each time step t, it takes:
-- `xₜ` — current input
-- `hₜ₋₁` — previous hidden state (memory)
+The simplest RNN, sometimes called an "Elman RNN" after Prof. Jeffrey Elman. The state consists of a single hidden vector h:
 
-And computes:
 ```
-hₜ = tanh(W · [hₜ₋₁, xₜ] + b)
-yₜ = W_y · hₜ
+hₜ = tanh(Whh · hₜ₋₁ + Wxh · xₜ)    ← hidden state update
+yₜ = Why · hₜ                          ← output (when needed)
 ```
+
+Three weight matrices: Whh (hidden-to-hidden), Wxh (input-to-hidden), Why (hidden-to-output). The **tanh** activation squashes values to [-1, 1].
 
 The **hidden state** is the internal memory of the RNN — it summarizes everything the model has seen up to time t.
+
+**Truncated Backpropagation Through Time (TBPTT):** full BPTT through very long sequences (e.g., an entire text corpus) is computationally intractable. TBPTT processes the sequence in chunks:
+- Carry hidden states forward through time forever (full sequence)
+- Only backpropagate for a smaller fixed number of steps
+- Breaks the sequence into windows; gradients don't flow further back than the window
+
+**CNN + RNN for image captioning:**
+```
+Image → CNN encoder → initial hidden state h₀
+h₀ → RNN: [START] → "straw" → "hat" → END → yₜ
+```
+The CNN encodes visual features (using W_hi for the image-to-hidden projection), initializes the RNN hidden state, and the RNN generates words autoregressively. Each step: x_t = previous word → h_t = RNN(x_t, h_{t-1}) → y_t = predicted next word.
+
+## Sequence Processing Modes
+
+RNNs can be configured for different input-output patterns:
+
+| Mode | Diagram | Example |
+|---|---|---|
+| **One-to-one** | 1 input → 1 output | Standard classification (not really an RNN) |
+| **One-to-many** | 1 input → sequence output | Image captioning: image → sentence |
+| **Many-to-one** | Sequence input → 1 output | Sentiment: sentence → positive/negative |
+| **Many-to-many (synced)** | Seq → seq (same length) | Video: each frame → action label |
+| **Many-to-many (async)** | Seq → seq (different length) | Translation: English → French |
+
+The many-to-many synced case: at each step t, the RNN receives input xₜ, produces output yₜ, and updates hidden state hₜ. Loss Lₜ is computed at each output, and total loss L = sum of all Lₜ. This is sometimes called "action prediction" — e.g., a sequence of video frames → a sequence of action class labels.
+
+## Computational Graph
+
+Many-to-many RNN unrolled:
+```
+W (shared)
+h₀ → fW → h₁ → fW → h₂ → fW → h₃ → ... → hT
+       ↑          ↑          ↑
+       x₁         x₂         x₃
+
+       y₁  L₁     y₂  L₂     y₃  L₃     yT  LT
+                                              ↓
+                                              L (total)
+```
+The same weight matrix W is used at every time step — this is what makes it "recurrent."
 
 ## Applications of RNNs
 
@@ -27,6 +67,7 @@ The **hidden state** is the internal memory of the RNN — it summarizes everyth
 - Sentiment analysis
 - Time series prediction
 - Music generation
+- Interpretable cells: researchers have found cells that track specific structure (e.g., a "line length tracking cell" that activates with a blue/red gradient showing current position within a line of text)
 
 ## RNN Tradeoffs
 
@@ -69,6 +110,22 @@ The LSTM has two streams of information:
 | **Cell gate** `g̃ₜ` | Candidate values to add |
 | **Output gate** `oₜ` | What part of cell state to expose as output |
 
+**LSTM gate computation in matrix form:**
+```
+⎛ i ⎞   ⎛ σ    ⎞         ⎛ hₜ₋₁ ⎞
+⎜ f ⎟ = ⎜ σ    ⎟ · W  ·  ⎜      ⎟
+⎜ o ⎟   ⎜ σ    ⎟         ⎝  xₜ  ⎠
+⎝ g ⎠   ⎝ tanh ⎠
+```
+
+All four gates are computed in one matrix multiply. Gates i, f, o use sigmoid (output ∈ [0,1]); candidate update g uses tanh (output ∈ [-1,1]).
+
+```
+cₜ = f ⊙ cₜ₋₁ + i ⊙ g    ← cell state update (forget old, write new)
+hₜ = o ⊙ tanh(cₜ)         ← hidden state (what to expose)
+```
+
+Also written explicitly:
 ```
 fₜ = σ(Wf · [hₜ₋₁, xₜ] + bf)
 iₜ = σ(Wi · [hₜ₋₁, xₜ] + bi)
@@ -82,9 +139,12 @@ The cell state behaves like a **highway** — gradients can flow back without be
 
 ### Does LSTM Solve Vanishing Gradients?
 
-Not completely, but it makes long-range learning much easier:
-- Gradients can flow back through the cell state pathway without attenuation
-- LSTM doesn't guarantee no vanishing/exploding gradients, but provides a cleaner path
+No — but it makes long-range learning much easier:
+- If forget gate f = 1 and input gate i = 0, the cell state cₜ = cₜ₋₁ — information is preserved indefinitely
+- By contrast, a vanilla RNN must learn a recurrent weight matrix Wh that preserves info through repeated multiplication — much harder
+- LSTM doesn't **guarantee** no vanishing/exploding gradient, but provides an easier path to learn long-distance dependencies
+
+**Sequence to sequence with attention:** the original motivation for attention was to fix the RNN encoder-decoder bottleneck. Encoder produces h₁, h₂, h₃, h₄ for "we see the sky". At each decoder step, the context vector cₜ is a different weighted combination of all encoder states — "looks at" different parts of the input sequence at each output step. (Bahdanau et al., "Neural machine translation by jointly learning to align and translate", ICLR 2015)
 
 LSTMs saw enormous success in NLP before the transformer revolution (2017–2018).
 

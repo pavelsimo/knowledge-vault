@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "README.md",
+                "file": "wiki/recurrent-neural-networks.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "README"
+              "title": "recurrent-neural-networks"
             }
           }
         ]
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "README.md",
+                "file": "wiki/recurrent-neural-networks.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for README"
+              "title": "Backlinks for recurrent-neural-networks"
             }
           },
           {
@@ -113,12 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "README.md",
+                "file": "wiki/recurrent-neural-networks.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from README"
+              "title": "Outgoing links from recurrent-neural-networks"
             }
           },
           {
@@ -156,13 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "README.md",
+                "file": "wiki/recurrent-neural-networks.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of README"
+              "title": "Outline of recurrent-neural-networks"
             }
           }
         ]
@@ -180,20 +180,57 @@
       "daily-notes:Open today's daily note": false,
       "templates:Insert template": false,
       "command-palette:Open command palette": false,
-      "bases:Create new base": false
+      "bases:Create new base": false,
+      "obsidian-local-images-plus:Local Images Plus  0.16.4\r\nLocalize attachments (plugin folder)": false
     }
   },
   "active": "0f147abd8751e6a4",
   "lastOpenFiles": [
-    "wiki/video-understanding.md",
-    "wiki/robot-learning.md",
+    "wiki/optimization.md.tmp.21189.1775475369032",
+    "wiki/semantic-segmentation.md.tmp.21189.1775475063469",
+    "wiki/omniverse-usd.md",
+    "wiki/neural-networks.md",
+    "wiki/network-visualization.md",
     "wiki/3d-vision.md",
-    "wiki/INDEX.md",
-    "wiki/convolutional-neural-networks.md",
+    "wiki/ai-agents.md",
+    "wiki/ai-coding.md",
+    "wiki/ai-model-architectures.md",
+    "wiki/attention-transformers.md",
+    "wiki/audio-processing.md",
+    "wiki/computer-vision.md",
+    "wiki/generative-models.md",
+    "wiki/gpu-cuda.md",
+    "wiki/video-understanding.md",
+    "wiki/transformers-library.md",
+    "wiki/system-design.md",
+    "wiki/shaders.md",
     "wiki/sentence-embeddings.md",
-    "README.md",
-    "HEALTHCHECK.md",
-    "COMPILE.md",
-    "wiki/attention-transformers.md"
+    "wiki/semantic-segmentation.md",
+    "wiki/self-supervised-learning.md",
+    "wiki/rag.md",
+    "wiki/quantization.md",
+    "wiki/optimization.md",
+    "wiki/nlp.md",
+    "wiki/object-detection.md",
+    "wiki/ai-industry.md",
+    "raw/00-clippings/images/b5a9fa231fa8c99df8948428cf42883c_MD5.jpg",
+    "raw/00-clippings/images/e38f7858b9adbcfb2a859a98b248d5f7_MD5.jpg",
+    "raw/00-clippings/images/626cc957e024462e786be43dd87e8669_MD5.png",
+    "raw/00-clippings/images/199b53fec81b72ec2c1126a51978719c_MD5.png",
+    "raw/00-clippings/images/a86e78a8a0c1721daab5c8d6d1d8163d_MD5.png",
+    "raw/00-clippings/images/413f419e640f4b18f3d25f9565acfd33_MD5.png",
+    "raw/00-clippings/images/192eefb404766f43d1f4c71cada34594_MD5.png",
+    "raw/00-clippings/images/9e7cdd73f3267d6c9a701c58b5eea932_MD5.png",
+    "raw/00-clippings/images/53ef6e92b127e50f631ecfd46cf01469_MD5.png",
+    "raw/00-clippings/images/2b9277e6e9cb0e5e5d4a725caf47f05d_MD5.png",
+    "raw/06-system-design/diagrams/whatsapp.excalidraw",
+    "raw/06-system-design/diagrams/virtualization-containerization.excalidraw",
+    "raw/06-system-design/diagrams/url-shortener.excalidraw",
+    "raw/06-system-design/diagrams/uber.excalidraw",
+    "raw/06-system-design/diagrams/twitter.excalidraw",
+    "raw/06-system-design/diagrams/transactions.excalidraw",
+    "raw/06-system-design/diagrams/tcp-udp.excalidraw",
+    "raw/06-system-design/diagrams/sso.excalidraw",
+    "raw/06-system-design/diagrams/sharding.excalidraw"
   ]
 }

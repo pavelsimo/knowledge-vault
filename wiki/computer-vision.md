@@ -15,28 +15,40 @@ Computer vision is the field of teaching machines to interpret and understand im
 
 Image classification assigns a single label from a fixed set of categories to an image (e.g., "cat" or "dog").
 
+### The Semantic Gap
+
+**The core problem:** an image is a tensor of integers between [0, 255]. A cat photo is stored as an 800 × 600 × 3 array of numbers — the computer sees nothing but those numbers. A human looking at the same photo instantly recognizes a cat. This gap between the human semantic understanding and the machine's pixel representation is the central challenge of computer vision.
+
 ### Why It's Hard: The Challenges
 
 | Challenge | Description |
 |-----------|-------------|
-| **Semantic gap** | Humans understand meaning; machines see raw pixel values |
-| **Viewpoint variation** | Camera movement changes all pixels, even for the same object |
-| **Illumination** | Same object looks different under different lighting |
-| **Background clutter** | Other objects in the scene confuse the classifier |
+| **Semantic gap** | Humans understand meaning; machines see raw pixel values (an 800×600×3 tensor) |
+| **Viewpoint variation** | Camera movement changes ALL pixels, even for the same object |
+| **Illumination** | RGB pixel values are a function of surface material, color, AND light source — same cat looks different under different lighting |
+| **Background clutter** | Other objects in the background make it harder to clearly see the target object |
 | **Occlusion** | Part of the object is hidden |
 | **Deformation** | Object appears in unusual shapes or poses |
-| **Intra-class variation** | Objects in the same class look very different |
-| **Context** | Surroundings influence recognition |
+| **Intra-class variation** | Objects in the same category can look very different |
+| **Context** | Surroundings influence how an object is recognized |
 
 ### Algorithmic vs Data-Driven Approach
 
 **Algorithmic (hand-crafted rules):**
 - Detect edges → detect corners → combine into object rules
-- Problem: doesn't scale; must repeat for every new class
+- Problem: doesn't scale; must repeat for every new class; rules too simple to capture real variations
 
 **Data-driven approach:**
-- Collect labeled data → train a model → let it learn features automatically
-- Foundation of modern deep learning
+```python
+def train(images, labels):
+    # Machine learning!
+    return model
+
+def predict(model, test_images):
+    # Use model to predict labels
+    return test_labels
+```
+The model learns features automatically from examples — training data with labels for airplane, automobile, bird, cat, deer, etc. Foundation of modern deep learning.
 
 ## Distance Metrics for Image Comparison
 

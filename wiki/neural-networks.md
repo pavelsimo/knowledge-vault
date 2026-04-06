@@ -15,7 +15,12 @@ A **linear classifier** computes: `f(x; W) = Wx + b`
 - **Neural networks = many linear classifiers stacked together** with non-linear activations in between
 - More layers = more capacity to learn complex patterns
 
-**Hard cases for linear classifiers:** circular data, XOR patterns, multi-region classes — all require non-linearity.
+**Hard cases for linear classifiers (three canonical failure modes):**
+- **XOR/quadrant problem:** Class 1 in quadrants 1 & 3, Class 2 in quadrants 2 & 4. No single line can separate them.
+- **Donut problem:** Class 1 in a ring (1 ≤ L2 norm ≤ 2), Class 2 everywhere else. The boundary is circular.
+- **Multi-modal class:** Class 1 appears as three separated blobs, Class 2 is everything else. No connected linear region can capture all three.
+
+All three require non-linearity to solve.
 
 ## Loss Functions
 
@@ -44,13 +49,29 @@ H(P, Q) = -Σ P(i) log Q(i)
 ```
 Where P = true distribution (one-hot), Q = predicted probabilities.
 
-### Multiclass SVM Loss
+### Multiclass SVM Loss (Hinge Loss)
 
 ```
-L = Σ max(0, sⱼ - sᵧ + 1)   for all j ≠ y
+Lᵢ = Σⱼ≠ᵧᵢ max(0, sⱼ - sᵧᵢ + 1)
 ```
-- Penalizes incorrect class scores that are too close to (or higher than) the correct score
-- **Rarely used today** — softmax + cross-entropy has replaced it in all modern frameworks
+Where:
+- `sⱼ` = score for (incorrect) class j
+- `sᵧᵢ` = score for the correct class
+- `1` = margin — penalizes any incorrect class whose score is within 1 of the correct score
+
+For every incorrect class: if the incorrect score is higher than (correct score − 1), add that gap as loss. Otherwise add zero. Total loss per example = sum of all penalties.
+
+- **Rarely used today** — softmax + cross-entropy has replaced it in all modern frameworks (PyTorch, TensorFlow, JAX)
+
+### Regularization Formulas
+
+From the slides, the three regularization penalties explicitly:
+
+```
+L2: R(W) = Σₖ Σₗ W²ₖ,ₗ
+L1: R(W) = Σₖ Σₗ |Wₖ,ₗ|
+Elastic net: R(W) = Σₖ Σₗ βW²ₖ,ₗ + |Wₖ,ₗ|
+```
 
 ## Regularization
 
@@ -101,6 +122,14 @@ Numerical gradients are only used to **verify** backpropagation implementations 
 - Used in all modern deep learning frameworks
 
 A vector of derivatives = a **gradient**.
+
+**Backprop with vectors:** for a gate z = f(x, y) where x has dimension D_x and y has D_y:
+- z has dimension D_z
+- Local gradients are Jacobian matrices: ∂z/∂x is [D_x × D_z], ∂z/∂y is [D_y × D_z]
+- Downstream gradient ∂L/∂x = (∂z/∂x) · (∂L/∂z) — a matrix-vector multiply
+- Loss L is always a scalar regardless of intermediate tensor dimensions
+
+**Biological analogy:** A real neuron collects impulses via dendrites toward the cell body, then fires down the axon to presynaptic terminals. An artificial neuron computes: `f(Σᵢ wᵢxᵢ + b)` — inputs weighted by synaptic strengths, summed at the cell body, passed through an activation function, sent as output. The analogy is approximate but gives intuition for why the architecture is called a "neural" network.
 
 ## Convex vs Non-Convex Optimization
 

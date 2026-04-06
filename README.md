@@ -25,3 +25,5 @@ A personal knowledge base about Pavel personal interests.
 - LeRobot
 - Game Programming
 - Computer Graphics
+- System Design
+

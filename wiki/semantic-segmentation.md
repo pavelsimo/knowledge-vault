@@ -24,6 +24,17 @@ Every pixel is assigned a class label. The model learns:
 
 **Limitation:** semantic segmentation does not differentiate between instances — all "cow" pixels are labeled "cow" regardless of how many cows exist.
 
+### Naive Approach: Sliding Window
+
+The simplest (and computationally most expensive) approach:
+1. For each pixel in the image, extract a patch centered on that pixel
+2. Classify the center pixel by passing the patch through a CNN
+3. Repeat for every pixel
+
+This produces correct results but is **extremely slow** — a separate forward pass per pixel. No GPU parallelism across pixels.
+
+Better approaches (FCN, encoder-decoder) process the entire image in a single forward pass and produce dense predictions efficiently.
+
 ## Unpooling / Upsampling
 
 To restore spatial resolution after downsampling:

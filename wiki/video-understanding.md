@@ -56,11 +56,20 @@ T × 3 × H × W  →  reshape to  (3T) × H × W  →  standard 2D CNN
 
 ### 4. 3D CNN
 
-Treat time as a first-class dimension alongside height and width. Convolutions operate on spatiotemporal volumes:
+**2D Conv (Early Fusion) vs. 3D Conv comparison:**
 
+| | 2D Conv (Early Fusion) | 3D Conv |
+|---|---|---|
+| Input | C_in × T × H × W (3D grid with C_in-dim feat at each point) | C_in × T × H × W |
+| Weight | C_out × C_in × 1 × 3 × 3 (no temporal kernel!) | C_out × C_in × T × 3 × 3 |
+| Slide over | x and y | x, y, AND time |
+| Output | C_out × H × W (2D grid) | C_out × H × W (2D grid) |
+| Temporal issue | No temporal shift-invariance — learns separate filters for same motion at different times in clip | Temporal shift-invariant |
+
+Treat time as a first-class dimension alongside height and width:
 ```
 Kernel: (kT × kH × kW)
-Input: 3 × T × H × W
+Input: 3 × T × H × W (e.g., 3 × 16 × 224 × 224)
 ```
 
 **Strengths:** explicit motion modeling; learns temporal patterns hierarchically; temporal shift-invariant.
@@ -112,9 +121,33 @@ Given a long **untrimmed** video, identify when (start/end timestamps) different
 
 Paper: [Rethinking the Faster R-CNN Architecture for Temporal Action Localization](https://arxiv.org/pdf/1804.07667)
 
+## Modeling Long-Term Temporal Structure with RNNs
+
+To model temporal structure beyond what a single CNN clip can capture, use CNN feature extractors feeding into an RNN:
+
+```
+Frame₁  Frame₂  Frame₃  Frame₄  Frame₅
+  ↓        ↓        ↓       ↓       ↓
+ CNN      CNN      CNN     CNN     CNN    (2D or 3D, sometimes frozen as feature extractor)
+  ↓        ↓        ↓       ↓       ↓
+ LSTM ←→ LSTM ←→ LSTM ←→ LSTM ←→ LSTM   (bidirectional, captures long-range dependencies)
+  ↓
+Classification
+```
+
+Key note: sometimes the CNN is not backpropagated through (to save memory). Pretrain the CNN on ImageNet or Kinetics, then use it as a fixed feature extractor, and only train the RNN.
+
+Papers: Baccouche et al., "Sequential Deep Learning for Human Action Recognition" (2011); Donahue et al., "Long-term Recurrent Convolutional Networks" (CVPR 2015)
+
 ## Spatio-Temporal Detection
 
 Given a long untrimmed video, detect all people in both space (where) and time (when) and classify their activities.
+
+**Example from AVA dataset:** given an untrimmed clip, simultaneously detect:
+- A person clinking glasses → "drink"
+- Two people → "open → close" interaction
+- A person reaching → "grab (a person) → hug"
+- A person looking at phone → "answer phone"
 
 Dataset: [AVA: A Video Dataset of Spatio-temporally Localized Atomic Visual Actions](https://arxiv.org/pdf/1705.08421)
 

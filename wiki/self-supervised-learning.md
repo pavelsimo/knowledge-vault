@@ -51,11 +51,18 @@ Mask a region of the image and train the model to predict the missing pixels fro
 
 Paper: [Context Encoders: Feature Learning by Inpainting](https://arxiv.org/pdf/1604.07379)
 
-### Image Colorization
+### Image Colorization / Split-Brain Autoencoder
 
 Train on grayscale images to predict the color channels. Forces the model to understand what objects look like — you can't color a banana without knowing it's a banana.
 
-Paper: [Colorful Image Colorization](https://arxiv.org/pdf/1603.08511)
+**Split-brain autoencoder:** split the image into two cross-channel prediction tasks:
+- F₁: predict one subset of color channels from the rest
+- F₂: predict the remaining channels
+Both sub-networks must learn good representations since neither can see all channels.
+
+Papers:
+- [Colorful Image Colorization](https://arxiv.org/pdf/1603.08511)
+- [Split-Brain Autoencoders: Unsupervised Learning by Cross-Channel Prediction](https://arxiv.org/pdf/1611.09842)
 
 ### Video Colorization → Tracking
 
@@ -69,7 +76,11 @@ Paper: [Tracking Emerges by Colorizing Videos](https://arxiv.org/pdf/1806.09594)
 
 Mask 50–75% of image patches (at random) and train a ViT to reconstruct the missing patches from visible patches only. The high masking ratio forces the model to understand global image structure, not just fill in local texture.
 
-- Architecture: asymmetric encoder-decoder (encoder sees only visible patches; lightweight decoder reconstructs missing patches)
+- Architecture: **asymmetric** encoder-decoder
+  - Encoder: processes only visible (unmasked) patches — sees far fewer tokens than full image
+  - Decoder: merges encoder outputs with learned mask tokens (placed in previously masked positions), adds positional encodings, uses transformer blocks followed by linear projection for pixel reconstruction
+  - The decoder is **not used post-training** — only the encoder is fine-tuned downstream
+- The asymmetric design means the encoder and decoder can be designed independently; unlike traditional AEs or U-Net, they are not tightly coupled
 - No labels — fully self-supervised
 - Strong results that match or exceed supervised pretraining
 
@@ -83,14 +94,25 @@ Contrastive learning trains a model to:
 
 **Key concept — invariance:** the model learns which transformations should NOT change the identity of an image (crops, color shifts, rotations, blur → still the same cat).
 
+### Downstream Task Setup
+
+Once pretraining is complete, the learned representation is used for labeled tasks:
+```
+Dataset (with labels) → Encoder → Learned Representation → FC layer → Labels
+                                   (frozen or fine-tuned)  (trained)
+```
+Labels are automatically generated from data structure during pretraining. The encoder learns general visual features; the small FC head adapts to the specific downstream task.
+
 ### SimCLR
 
-SimCLR = Simple Contrastive Learning of Visual Representations:
-1. Take an image
-2. Apply two different random augmentations → two views x and x⁺
-3. Encode both with the same CNN encoder → embeddings z and z⁺
-4. Use **InfoNCE loss** to pull z and z⁺ together and push all other embeddings apart
-5. Requires very large batch sizes (many negatives)
+SimCLR = Simple Contrastive Learning of Visual Representations. The main algorithm:
+1. Sample a minibatch of N images from dataset
+2. Apply two augmentation functions t, t' from family T to each image → N pairs
+3. For each pair, encode with shared encoder f(·) → representations h, h⁺
+4. Project to latent space with projection head g(·) → z, z⁺
+5. Compute **InfoNCE loss** using all other 2(N−1) examples as negatives
+
+Key: use ALL non-positive samples in the batch as X negatives — as X grows the contrastive task gets harder and representations get richer.
 
 Paper: [A Simple Framework for Contrastive Learning of Visual Representations](https://arxiv.org/pdf/2002.05709)
 

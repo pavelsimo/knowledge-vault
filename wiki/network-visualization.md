@@ -45,6 +45,14 @@ Saliency maps produce a heatmap overlaid on the input image showing the most inf
 
 **Idea:** weight the last convolutional feature maps by the class-specific classifier weights and sum them.
 
+**Limitation: CAM can only be applied to the last convolutional layer.** It requires a global average pooling layer before the final classifier — the architecture must be specifically designed for CAM.
+
+CAM produces class-specific heatmaps:
+- **Top-5 predictions for one image:** church, dome, monastery, mosque, dome — each produces a different heatmap highlighting different spatial regions
+- **Single class localization:** barbell → bright spots over the barbells and hands in the image, very dark elsewhere
+
+This means the network implicitly localizes objects during training with only image-level labels — no bounding boxes needed. When the model predicts "barbell," it has learned to look at where the barbells actually are.
+
 CAM allows:
 - Identifying which image regions contribute most to a class prediction
 - **Weakly supervised localization** — highlights where the object is without using bounding-box labels during training

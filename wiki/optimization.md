@@ -20,13 +20,33 @@ w ← w - η · ∇L(w)
 
 ## Stochastic Gradient Descent (SGD)
 
-Standard gradient descent computes the gradient on **all training data** — too expensive for large datasets.
+Full batch gradient descent computes the gradient over ALL N examples each step:
+```
+L(W) = (1/N) Σᵢ Lᵢ(xᵢ, yᵢ, W) + λR(W)
+∇_W L(W) = (1/N) Σᵢ ∇_W Lᵢ(xᵢ, yᵢ, W) + λ∇_W R(W)
+```
+"Full sum expensive when N is large!"
 
-**SGD** computes the gradient on a **random mini-batch** each step:
+**SGD** computes the gradient on a **random mini-batch** each step (32/64/128 common):
+```python
+# Vanilla Minibatch Gradient Descent
+while True:
+    data_batch = sample_training_data(data, 256)  # sample 256 examples
+    weights_grad = evaluate_gradient(loss_fun, data_batch, weights)
+    weights += - step_size * weights_grad          # perform parameter update
+```
 - "Stochastic" = random (each mini-batch is a random sample)
 - The gradient is a **noisy estimate** of the true gradient
 - Why it works: the noise can help escape poor local minima and improve generalization
 - All modern deep learning uses SGD variants
+
+**Learning rate behavior:** visualizing train loss curves:
+- **Very high LR:** loss explodes or oscillates wildly
+- **High LR:** converges fast but to worse final value
+- **Good LR:** smooth convergence to best minimum
+- **Low LR:** converges slowly but steadily toward good solution
+
+"In reality, all of these could be good learning rates" — the best choice depends on the schedule. Train/Val accuracy both still rising → need to train longer (underfitting).
 
 ### Problems with Vanilla SGD
 
@@ -36,17 +56,26 @@ Standard gradient descent computes the gradient on **all training data** — too
 
 ## SGD with Momentum
 
-Momentum adds a velocity term that accumulates gradients over time:
+SGD computes `x_{t+1} = x_t - α∇f(x_t)`. Momentum keeps a velocity that continues moving in the general direction of previous iterations:
 
 ```
-v ← β·v - η·∇L(w)
-w ← w + v
+SGD:              x_{t+1} = x_t - α∇f(x_t)
+
+SGD + Momentum:   v_{t+1} = ρv_t + ∇f(x_t)
+                  x_{t+1} = x_t - αv_{t+1}
 ```
+
+Where:
+- ρ = "rho" gives the momentum; typically ρ = 0.9 or 0.99
+- v = velocity (running mean of gradients)
+- "Build up velocity as a running mean of gradients"
 
 Benefits:
 - Builds speed along consistent directions (accelerates on flat surfaces)
 - Dampens oscillations along steep/noisy directions
 - Helps escape saddle points
+
+(Sutskever et al., "On the importance of initialization and momentum in deep learning", ICML 2013)
 
 ## RMSProp
 
@@ -122,6 +151,17 @@ Second-order methods (e.g., Newton's Method) use the **Hessian** (curvature info
 - 100K parameters → 10¹⁰ elements in the Hessian
 - GPT-3: 175B parameters → Hessian is astronomically large
 - Computing, storing, and inverting it is completely infeasible
+
+## Practical Optimizer Advice
+
+From CS231N slides:
+- **Adam(W)** is a good default choice in many cases; it often works fine even with a constant learning rate
+- **SGD + Momentum** can outperform Adam but may require more tuning of LR and schedule
+- If you can afford full batch updates, look beyond 1st order optimization (2nd order and beyond)
+
+**Historical recognition:** Adam won the ICLR 2025 "Test of Time" award — "Adam revolutionized neural network training, enabling significantly faster convergence and more stable training across a wide variety of architectures and tasks." (Kingma & Ba, 2015, 42K citations)
+
+In practice, AdamW with cosine decay + warmup is the standard recipe for transformer training.
 
 ## Optimizer Summary
 

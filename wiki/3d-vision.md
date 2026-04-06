@@ -6,6 +6,15 @@
 
 - `raw/03-stanford-cs231n/Stanford CS231N.md`
 
+## Shape Representation Considerations
+
+Any 3D shape representation must address five concerns:
+1. **Storage** — how is it stored in computer memory?
+2. **Creation** — what input metaphors/interfaces allow authoring new shapes?
+3. **Operations** — what editing operations are natural? (simplification, smoothing, filtering, repairing)
+4. **Rendering** — how does it render? (rasterization, ray tracing, neural rendering)
+5. **Animation** — can it be animated? How?
+
 ## Shape Representations
 
 There are two broad families: **explicit** (the surface is directly represented) and **implicit** (the surface is defined as the level-set of a function).
@@ -46,6 +55,7 @@ Paper: [Dynamic Graph CNN for Learning on Point Clouds](https://arxiv.org/pdf/18
 #### Parametric Representations
 - Surfaces defined by mathematical parameters (u, v) coordinates
 - **Parametric curves:** Bezier curves, B-splines, NURBS
+- **Example:** a torus is defined analytically as `f(u,v) = ((2 + cos u)cos v, (2 + cos u)sin v, sin u)` — a smooth closed surface with no polygon mesh needed. Sampling is easy (just plug in u,v values); testing inside/outside requires solving the equation.
 
 ### Implicit Representations
 
@@ -115,10 +125,26 @@ Each Gaussian has:
 
 Paper: [3D Gaussian Splatting for Real-Time Radiance Field Rendering](https://arxiv.org/pdf/2308.04079)
 
+## Representing Element Structure
+
+Complex objects benefit from structured representations that capture part hierarchy and relationships:
+
+| Representation | Properties | Tradeoffs |
+|---|---|---|
+| **Segmented Geometry** | Object split into labeled parts (e.g., chair seat, legs, back) | Simple to construct; integrity of atomic elements not guaranteed by construction |
+| **Part Sets** | Unordered collection of geometry pieces | Flexible; no relationship structure |
+| **Relationship Graphs** | Nodes = parts, edges = spatial relationships | Captures spatial constraints |
+| **Hierarchies** | Tree structure (e.g., base → seat → legs) | Models natural parent-child structure |
+| **Hierarchical Graphs** | Tree + lateral relationships per level | Models both hierarchical and lateral; difficult to annotate |
+| **Programs** | Code that generates the shape (circle, line, draw commands) | Subsumes all other representations; expresses degrees of freedom; hardest to get training data |
+
+Programs are the most expressive — they can generate any other representation — but require collecting data in program form, which is expensive.
+
 ## 3D Datasets
 
 | Dataset | Content | Scale |
 |---------|---------|-------|
+| [Princeton Shape Benchmark](https://shape.cs.princeton.edu/benchmark/) | 3D CAD models in 182 categories (sunflower, chair, person, shuttle, hand, piano, car, dog) | 1,814 models |
 | [ShapeNet](https://arxiv.org/pdf/1512.03012) | 3D CAD models | 55 categories |
 | [Objaverse](https://arxiv.org/pdf/2212.08051) | Annotated 3D objects | 800K objects |
 | [Objaverse-XL](https://arxiv.org/pdf/2307.05663) | 3D objects | 10M+ objects |

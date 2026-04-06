@@ -38,13 +38,17 @@ At BF16/FP16: 2 bytes × 4 numbers = **8 bytes per parameter**.
 
 ## GPU Cluster Bandwidth Hierarchy
 
-| Scale | Bandwidth | Technology |
-|-------|-----------|------------|
-| Inside 1 GPU | 3,352 GB/s | HBM memory |
-| 1 server (8 GPUs) | ~900 GB/s | NVLink/NVSwitch |
-| 1 rack (16 GPUs) | ~900 GB/s | NVSwitch domain |
-| 1 pod (3,072 GPUs) | ~50 GB/s | InfiniBand/Ethernet |
-| Full cluster (24,576 GPUs) | <50 GB/s | Cross-pod networking |
+The Meta Llama 3 cluster architecture shows the real hierarchy:
+
+| Scale | Bandwidth | Technology | Example |
+|-------|-----------|------------|---------|
+| Inside 1 GPU | 3,352 GB/s | HBM memory | On-chip, fastest |
+| 1 server (8 GPUs) | ~900 GB/s | NVLink/NVSwitch | Between GPUs |
+| 1 rack (2 servers = 16 GPUs) | ~900 GB/s | NVSwitch domain | Same rack |
+| 1 pod (192 racks = 3,072 GPUs) | ~50 GB/s | InfiniBand/Ethernet | Across racks |
+| Full cluster (24,576 GPUs) | <50 GB/s | Cross-pod networking | Across pods |
+
+The Llama 3 cluster is organized as: GPU → Server (8 GPUs) → Rack (2 servers) → Pod (192 racks = 3,072 GPUs at 50 GB/s between pods).
 
 **Analogy:** 1 GPU = talking to yourself; 8 GPUs = people in the same room; 3K GPUs = people across a city; 24K GPUs = people across continents on Zoom.
 
@@ -80,12 +84,19 @@ During the forward pass, each layer produces activations needed for backpropagat
 
 ### Pipeline Parallelism (PP)
 
-Split model layers across GPUs in stages:
-- GPU 1: layers 1–4
-- GPU 2: layers 5–8
-- GPU 3: layers 9–12
+Split model layers across GPUs in stages (Huang et al., "Gpipe"):
+- GPU 1: layers 1–N/4
+- GPU 2: layers N/4+1 to N/2
+- GPU 3: layers N/2+1 to 3N/4
+- GPU 4: layers 3N/4+1 to N
 
-Mini-batches are split into micro-batches to keep all stages busy (pipeline scheduling). Idle time when one stage waits for another is called a **pipeline bubble**.
+**Microbatch scheduling:** mini-batches are split into micro-batches so all stages stay busy simultaneously. Forward pass goes left-to-right, backward pass goes right-to-left.
+
+**MFU impact of 4-way PP with 4 microbatches:**
+- Naive (1 microbatch): max MFU = 1/4 = **25%** — only 1 GPU busy at a time
+- With 4 microbatches: max MFU = 16/28 ≈ **57.1%** — overlap reduces idle "pipeline bubble"
+
+More microbatches = smaller bubble = better MFU, but more memory for activations. Reference: [Gpipe: Efficient Training of Giant Neural Networks using Pipeline Parallelism](https://arxiv.org/pdf/1811.06965)
 
 ### Tensor Parallelism (TP)
 
@@ -120,7 +131,11 @@ Reference: [The Llama 3 Herd of Models](https://arxiv.org/pdf/2407.21783)
 
 ### HFU (Hardware FLOPs Utilization)
 
-How much of the GPU's theoretical peak compute is achieved in the best case (pure GEMM):
+The fraction of theoretical matmul performance actually achieved in practice:
+- H100 theoretical: 989.4 TFLOPS/sec of 16-bit matrix multiplications on Tensor Cores
+- In practice: large matrix multiply gets **~80% HFU** on H100
+- Smaller matrices (< 4096×4096) achieve significantly less
+
 ```
 HFU = achieved FLOPs / theoretical peak FLOPs
 ```

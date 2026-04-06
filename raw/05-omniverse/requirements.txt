@@ -1,0 +1,4 @@
+usd-core
+packaging
+requests
+ipython==8.31.0
