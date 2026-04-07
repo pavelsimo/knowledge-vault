@@ -44,3 +44,4 @@
 | [[system-design]] | System design fundamentals: OSI model, CDN, caching, sharding, CAP theorem, microservices, case studies (Uber, Netflix, WhatsApp) |
 | [[shaders]] | GPU shader programming: vertex/pixel shaders, GLSL/HLSL, GPU parallelism, VFX techniques, GPGPU |
 | [[game-math]] | Game-math essentials: unit circle, sin/cos, dot product, projections, `atan2`, and field-of-view checks |
+| [[hailo]] | Hailo-8 edge AI accelerator: HailoRT client setup, Dataflow Compiler, ONNX→HEF compilation, PCIe fixes |
