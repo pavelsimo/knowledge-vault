@@ -4,744 +4,688 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quantization — Knowledge Vault</title>
-  <link rel="icon" href="data:," />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #0d1117;
-      --surface: #161b22;
-      --border: #30363d;
-      --text: #e6edf3;
-      --muted: #8b949e;
-      --accent: #d29922;
-      --blue: #79c0ff;
-      --green: #3fb950;
-      --coral: #f78166;
-      --purple: #bc8cff;
+      --bg: #0d1117; --surface: #161b22; --border: #30363d;
+      --text: #e6edf3; --muted: #8b949e; --accent: #3fb950;
+      --blue: #58a6ff; --coral: #f78166; --green: #3fb950; --yellow: #d29922; --purple: #bc8cff;
     }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    nav {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 0.85rem 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    nav a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 0.875rem;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+    nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.85rem 1.5rem; display: flex; align-items: center; gap: 1rem; }
+    nav a { color: var(--muted); text-decoration: none; font-size: 0.875rem; display: flex; align-items: center; gap: 0.4rem; }
     nav a:hover { color: var(--accent); }
     nav .sep { color: var(--border); }
     nav .title { color: var(--text); font-weight: 600; font-size: 0.875rem; }
-    .tag {
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--accent);
-      background: rgba(210,153,34,0.12);
-      padding: 0.2rem 0.55rem;
-      border-radius: 999px;
-    }
-    main {
-      flex: 1;
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem;
-      width: 100%;
-    }
-    h1 { font-size: 1.8rem; margin-bottom: 0.45rem; }
-    .subtitle {
-      color: var(--muted);
-      font-size: 0.96rem;
-      line-height: 1.6;
-      margin-bottom: 1.4rem;
-      max-width: 780px;
-    }
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      align-items: center;
-      margin-bottom: 1.3rem;
-    }
-    .toolbar-group {
-      display: flex;
-      gap: 0.45rem;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .toolbar-label {
-      color: var(--muted);
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-right: 0.2rem;
-    }
-    .chip-btn {
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text);
-      border-radius: 999px;
-      padding: 0.38rem 0.75rem;
-      font-size: 0.8rem;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .chip-btn.active,
-    .chip-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-    .step-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-    .step-indicator { font-size: 0.8rem; color: var(--muted); }
-    .progress-bar {
-      height: 3px;
-      background: var(--border);
-      border-radius: 999px;
-      overflow: hidden;
-      margin-bottom: 1.4rem;
-    }
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: var(--accent);
-      transition: width 0.35s ease;
-    }
-    .step-title {
-      font-size: 1.15rem;
-      font-weight: 600;
-      color: var(--accent);
-      margin-bottom: 0.35rem;
-    }
-    .step-desc {
-      color: var(--muted);
-      font-size: 0.92rem;
-      line-height: 1.65;
-      margin-bottom: 1.4rem;
-      max-width: 780px;
-    }
-    .layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.8fr);
-      gap: 1.25rem;
-      margin-bottom: 1.4rem;
-    }
-    @media (max-width: 820px) {
-      .layout { grid-template-columns: 1fr; }
-    }
-    .viz-area, .panel {
+    .tag { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); background: rgba(63,185,80,0.12); padding: 0.2rem 0.55rem; border-radius: 999px; }
+
+    main { flex: 1; max-width: 980px; margin: 0 auto; padding: 2rem 1.5rem; width: 100%; }
+    h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 1.75rem; line-height: 1.55; }
+
+    .step-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+    .step-indicator { font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .progress-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 1.25rem; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.4s ease; }
+    .step-title { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.35rem; color: var(--accent); }
+    .step-desc { color: var(--muted); font-size: 0.875rem; line-height: 1.6; margin-bottom: 1.25rem; max-width: 700px; }
+
+    .viz-area {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1rem;
-    }
-    .viz-area { min-height: 380px; }
-    .panel { display: flex; flex-direction: column; gap: 0.95rem; }
-    .side-label {
-      font-size: 0.72rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-      margin-bottom: 0.5rem;
-    }
-    .formula-box {
-      background: #0d1117;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 0.9rem 1rem;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 0.82rem;
-      line-height: 1.7;
-      color: var(--green);
-    }
-    .formula-box .comment { color: var(--muted); }
-    .info-card {
-      background: #0d1117;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 0.9rem 1rem;
-      color: var(--muted);
-      font-size: 0.84rem;
-      line-height: 1.6;
-    }
-    .link-list {
+      border-radius: 14px;
+      padding: 1.5rem 1.5rem 1rem;
+      margin-bottom: 1.25rem;
+      min-height: 320px;
       display: flex;
-      flex-wrap: wrap;
-      gap: 0.55rem;
-    }
-    .link-chip {
-      text-decoration: none;
-      color: var(--blue);
-      border: 1px solid rgba(121,192,255,0.35);
-      background: rgba(121,192,255,0.08);
-      border-radius: 999px;
-      padding: 0.35rem 0.65rem;
-      font-size: 0.78rem;
-    }
-    .link-chip:hover { border-color: var(--blue); }
-    .number-line {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       position: relative;
-      height: 82px;
-      margin-top: 1rem;
-      border-radius: 12px;
-      background: #0d1117;
-      border: 1px solid var(--border);
-      padding: 1rem 1rem 1.2rem;
-    }
-    .axis {
-      position: absolute;
-      left: 1rem;
-      right: 1rem;
-      top: 36px;
-      height: 2px;
-      background: linear-gradient(90deg, var(--coral), var(--accent), var(--green));
-      border-radius: 999px;
-    }
-    .tick {
-      position: absolute;
-      width: 1px;
-      height: 14px;
-      background: var(--border);
-      top: 30px;
-    }
-    .tick-label {
-      position: absolute;
-      top: 48px;
-      transform: translateX(-50%);
-      font-size: 0.7rem;
-      color: var(--muted);
-      font-family: ui-monospace, monospace;
-    }
-    .marker {
-      position: absolute;
-      top: 18px;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      transform: translateX(-50%);
-      border: 2px solid #0d1117;
-      box-shadow: 0 0 0 1px var(--border);
-    }
-    .marker-label {
-      position: absolute;
-      top: 0;
-      transform: translateX(-50%);
-      font-size: 0.68rem;
-      font-family: ui-monospace, monospace;
-      color: var(--text);
-      white-space: nowrap;
-    }
-    .mapping-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 0.7rem;
-      margin-top: 1rem;
-    }
-    .mapping-card {
-      background: #0d1117;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 0.75rem;
-      font-size: 0.78rem;
-    }
-    .mapping-card strong {
-      display: block;
-      font-size: 0.86rem;
-      color: var(--text);
-      margin-bottom: 0.35rem;
-    }
-    .mapping-card .delta { color: var(--muted); }
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 0.8rem;
-      margin-top: 1rem;
-    }
-    .metric {
-      background: #0d1117;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 0.85rem;
-    }
-    .metric .label {
-      display: block;
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-      margin-bottom: 0.4rem;
-    }
-    .metric strong { font-size: 1.15rem; }
-    .metric small { color: var(--muted); }
-    .table-like {
-      display: grid;
-      gap: 0.5rem;
-      margin-top: 0.7rem;
-    }
-    .table-row {
-      display: grid;
-      grid-template-columns: 140px 1fr 90px;
-      gap: 0.7rem;
-      align-items: center;
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-    .bar-track {
-      height: 12px;
-      background: #0d1117;
-      border-radius: 999px;
       overflow: hidden;
-      border: 1px solid var(--border);
     }
-    .bar-fill { height: 100%; border-radius: 999px; }
-    .controls {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    .btn {
-      padding: 0.55rem 1.2rem;
-      border-radius: 8px;
-      border: 1px solid var(--border);
+    svg text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+
+    .controls-panel {
       background: var(--surface);
-      color: var(--text);
-      font-size: 0.875rem;
-      cursor: pointer;
-      transition: all 0.15s;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 1.25rem;
       display: flex;
-      align-items: center;
-      gap: 0.4rem;
+      gap: 2rem;
+      flex-wrap: wrap;
+      align-items: flex-end;
     }
+    .ctrl-group { display: flex; flex-direction: column; gap: 0.4rem; flex: 1; min-width: 160px; }
+    .ctrl-label { font-size: 0.75rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; display: flex; justify-content: space-between; }
+    .ctrl-label span { color: var(--text); font-weight: 700; }
+    input[type="range"] {
+      -webkit-appearance: none; appearance: none;
+      width: 100%; height: 4px;
+      background: var(--border); border-radius: 999px; outline: none; cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--accent); border: 2px solid var(--bg);
+      box-shadow: 0 0 0 2px var(--accent);
+      transition: transform 0.15s;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+    .toggle-row { display: flex; gap: 0.5rem; }
+    .toggle-btn {
+      padding: 0.35rem 0.85rem; border-radius: 6px; border: 1px solid var(--border);
+      background: var(--bg); color: var(--muted); font-size: 0.8rem;
+      cursor: pointer; transition: all 0.15s; font-weight: 500;
+    }
+    .toggle-btn.active { background: rgba(63,185,80,0.15); border-color: var(--accent); color: var(--accent); }
+
+    .nav-controls { display: flex; align-items: center; gap: 1rem; }
+    .btn { padding: 0.55rem 1.25rem; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 0.875rem; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 0.4rem; }
     .btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
     .btn:disabled { opacity: 0.35; cursor: not-allowed; }
-    .btn-primary {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #0d1117;
-      font-weight: 600;
-    }
-    .btn-primary:hover:not(:disabled) {
-      background: #e0b64a;
-      border-color: #e0b64a;
-      color: #0d1117;
-    }
-    .kbd {
-      font-size: 0.7rem;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 0.1rem 0.35rem;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: #0d1117; font-weight: 600; }
+    .btn-primary:hover:not(:disabled) { background: #56d364; border-color: #56d364; color: #0d1117; }
+    .kbd { font-size: 0.7rem; color: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 0.1rem 0.35rem; font-family: monospace; }
+
+    .formula-box { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 0.85rem 1.2rem; font-family: monospace; font-size: 0.82rem; color: var(--green); line-height: 1.75; width: 100%; }
+    .formula-box .c { color: var(--muted); }
+    .formula-box .h { color: var(--purple); }
+    .formula-box .v { color: var(--blue); }
+    .formula-box .e { color: var(--coral); }
+
+    .bench-row { display: flex; flex-direction: column; gap: 0.5rem; width: 100%; }
+    .bench-item { display: flex; align-items: center; gap: 0.75rem; }
+    .bench-label { font-size: 0.78rem; color: var(--muted); width: 120px; flex-shrink: 0; text-align: right; font-family: monospace; }
+    .bench-track { flex: 1; height: 22px; background: var(--bg); border-radius: 4px; border: 1px solid var(--border); overflow: hidden; }
+    .bench-fill { height: 100%; border-radius: 3px; transition: width 0.8s cubic-bezier(0.34,1.56,0.64,1); display: flex; align-items: center; padding-left: 8px; }
+    .bench-fill span { font-size: 0.7rem; font-weight: 700; color: #0d1117; white-space: nowrap; }
+    .bench-section { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0.5rem 0 0.25rem 135px; }
+
+    .legend { display: flex; gap: 1.25rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+    .legend-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; color: var(--muted); }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    @media (max-width: 680px) { .controls-panel { flex-direction: column; gap: 1rem; } }
   </style>
 </head>
 <body>
-  <nav>
-    <a href="index.html">
+
+<nav>
+  <a href="index.html">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    Home
+  </a>
+  <span class="sep">›</span>
+  <span class="title">Quantization</span>
+  <div style="margin-left:auto"><span class="tag">Efficiency</span></div>
+</nav>
+
+<main>
+  <h1>Quantization</h1>
+  <p class="subtitle">Lossy compression for neural network weights — mapping float32 values into integers to make models 4× smaller and 2× faster while retaining 90%+ quality.</p>
+
+  <div class="step-header">
+    <span class="step-indicator" id="stepCounter">Step 1 of 6</span>
+    <div style="display:flex;gap:0.5rem;align-items:center">
+      <span class="kbd">←</span><span class="kbd">→</span>
+      <span style="font-size:0.75rem;color:var(--muted)">navigate</span>
+    </div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:16.67%"></div></div>
+
+  <div class="step-title" id="stepTitle"></div>
+  <div class="step-desc" id="stepDesc"></div>
+
+  <div class="legend" id="legend"></div>
+  <div class="viz-area" id="vizArea">
+    <svg id="mainSvg" width="100%" viewBox="0 0 860 300" xmlns="http://www.w3.org/2000/svg"></svg>
+  </div>
+
+  <div class="controls-panel" id="ctrlPanel" style="display:none">
+    <div class="ctrl-group">
+      <div class="ctrl-label">Bit-width <span id="bitsDisplay">8-bit</span></div>
+      <input type="range" id="bitsSlider" min="0" max="2" step="1" value="0" />
+      <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--muted);margin-top:2px">
+        <span>8</span><span>4</span><span>2</span>
+      </div>
+    </div>
+    <div class="ctrl-group">
+      <div class="ctrl-label">Mode</div>
+      <div class="toggle-row">
+        <button class="toggle-btn active" id="symBtn" onclick="setMode('sym')">Symmetric</button>
+        <button class="toggle-btn" id="asymBtn" onclick="setMode('asym')">Asymmetric</button>
+      </div>
+    </div>
+    <div class="ctrl-group" style="flex:0 0 auto;justify-content:flex-end;align-items:flex-end">
+      <div style="font-size:0.72rem;color:var(--muted);margin-bottom:4px">RMSE error</div>
+      <div id="errorDisplay" style="font-size:1.4rem;font-weight:700;color:var(--coral);font-family:monospace">—</div>
+    </div>
+  </div>
+
+  <div class="formula-box" id="formulaBox"></div>
+
+  <div class="nav-controls" style="margin-top:1.25rem">
+    <button class="btn" id="prevBtn" disabled onclick="changeStep(-1)">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
-      Home
-    </a>
-    <span class="sep">›</span>
-    <span class="title">Quantization</span>
-    <div style="margin-left:auto"><span class="tag">Efficiency</span></div>
-  </nav>
+      Prev
+    </button>
+    <button class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">
+      Next
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+</main>
 
-  <main>
-    <h1>Quantization</h1>
-    <p class="subtitle">Quantization maps high-precision weights into a smaller integer range. The win is smaller models and higher throughput; the risk is approximation error, especially when outliers force too many values into too few buckets.</p>
+<script>
+const BITS_MAP = [8, 4, 2];
+let currentStep = 0;
+let bitsIdx = 0;
+let mode = 'sym';
 
-    <div class="toolbar">
-      <div class="toolbar-group">
-        <span class="toolbar-label">Bit Width</span>
-        <button class="chip-btn active" data-bits="8">8-bit</button>
-        <button class="chip-btn" data-bits="4">4-bit</button>
-        <button class="chip-btn" data-bits="2">2-bit</button>
-      </div>
-      <div class="toolbar-group">
-        <span class="toolbar-label">Mapping</span>
-        <button class="chip-btn active" data-method="symmetric">Symmetric</button>
-        <button class="chip-btn" data-method="asymmetric">Asymmetric</button>
-      </div>
-    </div>
+// Reproducible seeded weights
+function seededRng(seed) {
+  let s = seed >>> 0;
+  return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 0x100000000; };
+}
+const rng = seededRng(42);
+function gaussian() {
+  const u1 = rng() + 1e-10, u2 = rng();
+  return Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+}
+const RAW_WEIGHTS = Array.from({length: 48}, () => +( gaussian() * 0.35 ).toFixed(4));
 
-    <div class="step-header">
-      <span class="step-indicator" id="stepCounter">Step 1 of 6</span>
-      <div style="display:flex;gap:0.5rem;align-items:center">
-        <span class="kbd">←</span><span class="kbd">→</span>
-        <span style="font-size:0.75rem;color:var(--muted)">navigate</span>
-      </div>
-    </div>
-    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+function quantSym(vals, bits) {
+  const qmax = (1 << (bits - 1)) - 1;
+  const vmax = Math.max(...vals.map(Math.abs));
+  const scale = vmax / qmax;
+  const q = vals.map(v => Math.round(v / scale));
+  const dq = q.map(v => v * scale);
+  return { q, dq, scale, zero: 0 };
+}
+function quantAsym(vals, bits) {
+  const qmax = (1 << (bits - 1)) - 1;
+  const qmin = -(1 << (bits - 1));
+  const vmax = Math.max(...vals), vmin = Math.min(...vals);
+  const scale = (vmax - vmin) / (qmax - qmin);
+  const zero = Math.round(qmin - vmin / scale);
+  const q = vals.map(x => Math.round(x / scale + zero));
+  const dq = q.map(x => scale * (x - zero));
+  return { q, dq, scale, zero };
+}
+function rmse(orig, dq) {
+  return Math.sqrt(orig.reduce((s, v, i) => s + (v - dq[i]) ** 2, 0) / orig.length);
+}
 
-    <div class="step-title" id="stepTitle"></div>
-    <div class="step-desc" id="stepDesc"></div>
+// SVG helpers
+const NS = "http://www.w3.org/2000/svg";
+function se(tag, attrs, text) {
+  const el = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+  if (text !== undefined) el.textContent = text;
+  return el;
+}
+function addGlow(svg, id = "glow", sd = 3) {
+  const defs = se("defs", {});
+  const f = se("filter", {id, x:"-40%", y:"-40%", width:"180%", height:"180%"});
+  const b = se("feGaussianBlur", {stdDeviation: String(sd), result:"blur"});
+  const m = se("feMerge", {});
+  m.appendChild(se("feMergeNode", {in:"blur"}));
+  m.appendChild(se("feMergeNode", {in:"SourceGraphic"}));
+  f.appendChild(b); f.appendChild(m); defs.appendChild(f);
+  svg.appendChild(defs);
+}
+function animDot(svg, path, color, dur, delay) {
+  const c = se("circle", {r:"5", fill: color, opacity:"0.9"});
+  const a = se("animateMotion", {dur, begin: delay, repeatCount:"indefinite",
+    calcMode:"linear", keyTimes:"0;1", keyPoints:"0;1", path});
+  c.appendChild(a); svg.appendChild(c);
+}
+function hexRgb(h) {
+  return [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)].join(",");
+}
 
-    <div class="layout">
-      <div class="viz-area" id="vizArea"></div>
-      <div class="panel">
-        <div>
-          <div class="side-label">Formula</div>
-          <div class="formula-box" id="formulaBox"></div>
-        </div>
-        <div class="info-card" id="noteBox"></div>
-        <div>
-          <div class="side-label">Source Links</div>
-          <div class="link-list">
-            <a class="link-chip" href="https://ngrok.com/blog/quantization" target="_blank" rel="noreferrer">Quantization from the Ground Up</a>
-            <a class="link-chip" href="https://github.com/ggml-org/llama.cpp" target="_blank" rel="noreferrer">llama.cpp</a>
-          </div>
-        </div>
-      </div>
-    </div>
+// ── Render functions ────────────────────────────────────────────────────────
 
-    <div class="controls">
-      <button class="btn" id="prevBtn" onclick="changeStep(-1)">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
-        Prev
-      </button>
-      <button class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">
-        Next
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-      </button>
-    </div>
-  </main>
+function getSvg() { return document.getElementById("mainSvg"); }
 
-  <script>
-    const sampleValues = [-0.89, 0.16, 0.08, -0.13, 0.16, -0.54];
-    const blockWithOutlier = [...sampleValues, 10];
-    const qualityRows = [
-      { label: "bfloat16", perplexity: 8.186, kl: 0.0, color: "#8b949e" },
-      { label: "8-bit sym", perplexity: 8.193, kl: 0.0008, color: "#79c0ff" },
-      { label: "4-bit asym", perplexity: 8.563, kl: 0.0593, color: "#3fb950" },
-      { label: "4-bit sym", perplexity: 8.71, kl: 0.0675, color: "#d29922" },
-      { label: "2-bit asym", perplexity: 66.1, kl: 2.1447, color: "#f78166" }
-    ];
-    const speedRows = [
-      { label: "bfloat16", m1: 19.45, h100: 106.85, color: "#8b949e" },
-      { label: "8-bit sym", m1: 32.36, h100: 141.61, color: "#79c0ff" },
-      { label: "4-bit asym", m1: 43.32, h100: 175.70, color: "#3fb950" },
-      { label: "4-bit sym", m1: 46.05, h100: 177.06, color: "#d29922" },
-      { label: "2-bit asym", m1: 40.25, h100: 166.90, color: "#f78166" }
-    ];
+function renderDistribution() {
+  const svg = getSvg();
+  svg.setAttribute("viewBox", "0 0 860 300");
+  svg.innerHTML = "";
+  addGlow(svg, "glow", 4);
 
-    const STEPS = [
-      {
-        title: "Precision Is Memory, and Memory Is Deployment",
-        desc: "An 80B-parameter model in bfloat16 is roughly 160 GB before accounting for runtime state. Quantization works because most learned weights cluster near zero, so many tasks survive a lower-precision representation surprisingly well.",
-        formula: `<span class="comment">// Approximate weight storage for 80B params</span><br>bfloat16 ≈ 160 GB<br>int8 ≈ 80 GB<br>int4 ≈ 40 GB<br>int2 ≈ 20 GB`,
-        note: `The memory math is linear in bits per parameter. Halving precision halves weight storage, which is why quantization is the standard path from training-scale models to local or high-throughput inference.`,
-        render: renderMemoryView
-      },
-      {
-        title: "Symmetric Quantization Uses Zero as the Center",
-        desc: "Symmetric quantization finds one scale from the largest absolute value, maps floats into an integer range like [-7, 7], and dequantizes by multiplying by that same scale. It is simple and fast, but can waste range when the data is skewed.",
-        formula: `<span class="comment">// Symmetric quantization</span><br>v<sub>max</sub> = max(|values|)<br>q<sub>max</sub> = 2<sup>bits-1</sup> - 1<br>scale = v<sub>max</sub> / q<sub>max</sub><br>q = round(v / scale)<br>v̂ = q · scale`,
-        note: `The sample values come directly from the wiki note. At 4-bit, symmetric mapping produces about 18% average percentage error on this set because the positive side of the integer range is underused.`,
-        render: renderInteractiveMapping
-      },
-      {
-        title: "Asymmetric Quantization Shifts the Zero Point",
-        desc: "Asymmetric quantization lets the integer range slide to fit the actual min and max values. That adds a zero-point offset, but it often cuts error sharply when the data distribution is not centered around zero.",
-        formula: `<span class="comment">// Asymmetric quantization</span><br>scale = (v<sub>max</sub> - v<sub>min</sub>) / (q<sub>max</sub> - q<sub>min</sub>)<br>zero = q<sub>min</sub> - round(v<sub>min</sub> / scale)<br>q = round(v / scale + zero)<br>v̂ = scale · (q - zero)`,
-        note: `For the same 4-bit budget, asymmetric mapping on the sample set drops average percentage error from roughly 18.0% to 8.5%. The cost is storing an extra zero-point for each quantized block.`,
-        render: renderInteractiveMapping
-      },
-      {
-        title: "Outliers Break Global Quantization, So Models Use Blocks",
-        desc: "A single large outlier can stretch the scale so far that ordinary weights collapse into just a few buckets. Real systems quantize in small blocks, each with its own scale and optional zero point, to localize that damage.",
-        formula: `<span class="comment">// Block quantization</span><br>split weights into blocks of 32..256 params<br>for each block:<br>&nbsp;&nbsp;estimate scale (+ zero for asym)<br>&nbsp;&nbsp;quantize locally<br><br><span class="comment">// Tradeoff</span><br>smaller blocks → lower error, more metadata`,
-        note: `The outlier example mirrors the source article: adding a single weight of 10 turns global 4-bit quantization into a disaster, while block-local scales keep the normal weights from all collapsing to zero.`,
-        render: renderBlockQuantization
-      },
-      {
-        title: "Benchmark Quality: 8-bit Is Nearly Lossless, 4-bit Is the Sweet Spot",
-        desc: "The wiki’s Qwen 3.5 9B numbers show the standard pattern. 8-bit hardly moves perplexity at all. 4-bit introduces visible but acceptable loss. 2-bit crosses the line where the model’s distribution changes enough to collapse generation quality.",
-        formula: `<span class="comment">// Lower is better</span><br>Perplexity compares confidence in the correct next token<br>KL divergence compares the whole token distribution<br><br><span class="comment">// Practical read</span><br>8-bit ≈ near-lossless<br>4-bit ≈ useful compression sweet spot<br>2-bit ≈ often too destructive`,
-        note: `Perplexity uses only the correct-token probability. KL divergence is stricter because it tracks how the whole output distribution moves after quantization.`,
-        render: renderQualityBenchmarks
-      },
-      {
-        title: "Throughput Often Improves Because Memory Traffic Shrinks",
-        desc: "Quantization is not just about fitting the model into RAM or VRAM. Moving fewer bits through the memory hierarchy can increase tokens per second substantially, which is why 4-bit inference is commonly both smaller and faster.",
-        formula: `<span class="comment">// Throughput intuition</span><br>less data moved per weight fetch<br>→ lower memory bandwidth pressure<br>→ higher tokens/sec<br><br><span class="comment">// Caveat</span><br>extreme quantization can lose speed if dequant overhead or accuracy collapse dominates`,
-        note: `On both M1 Max and H100 in the wiki numbers, 4-bit runs about 2.3× faster than bfloat16. That gain is large enough that quantization is usually the first efficiency lever people reach for.`,
-        render: renderSpeedBenchmarks
-      }
-    ];
+  const axisY = 240, L = 70, R = 720;
 
-    let currentStep = 0;
-    let selectedBits = 8;
-    let selectedMethod = "symmetric";
+  // Grid lines
+  for (let i = 1; i <= 4; i++) {
+    svg.appendChild(se("line", {x1:L, y1:axisY - i*44, x2:R, y2:axisY - i*44,
+      stroke:"#21262d", "stroke-width":"1"}));
+  }
 
-    function quantizeSym(values, bits) {
-      const vmax = Math.max(...values.map(v => Math.abs(v)));
-      const qmax = Math.max(1, 2 ** (bits - 1) - 1);
-      const scale = vmax / qmax || 1;
-      const quantized = values.map(v => Math.round(v / scale));
-      const dequantized = quantized.map(v => v * scale);
-      return { quantized, dequantized, scale, zero: 0, qmin: -(2 ** (bits - 1)), qmax };
+  // Gradient fill under curve
+  const defs2 = se("defs", {});
+  const grad = se("linearGradient", {id:"dGrad", x1:"0%", y1:"0%", x2:"0%", y2:"100%"});
+  grad.appendChild(se("stop", {"offset":"0%", "stop-color":"#3fb950", "stop-opacity":"0.30"}));
+  grad.appendChild(se("stop", {"offset":"100%", "stop-color":"#3fb950", "stop-opacity":"0.03"}));
+  defs2.appendChild(grad); svg.insertBefore(defs2, svg.firstChild);
+
+  const sigma = 0.27;
+  let pd = "";
+  for (let i = 0; i <= 200; i++) {
+    const t = i / 200, v = -1.2 + t * 2.4;
+    const x = L + t * (R - L);
+    const y = axisY - Math.exp(-v*v / (2*sigma*sigma)) * 170;
+    pd += (i === 0 ? "M" : "L") + x.toFixed(1) + "," + y.toFixed(1);
+  }
+  svg.appendChild(se("path", {d: pd + ` L${R},${axisY} L${L},${axisY} Z`, fill:"url(#dGrad)", stroke:"none"}));
+  svg.appendChild(se("path", {d: pd, fill:"none", stroke:"#3fb950", "stroke-width":"2.5"}));
+
+  // Weight dots
+  RAW_WEIGHTS.slice(0, 36).forEach((w, i) => {
+    const t = (w + 1.2) / 2.4;
+    const x = L + t * (R - L);
+    const density = Math.exp(-w*w / (2*sigma*sigma));
+    const y = axisY - density * 170 - 18 - (i % 3) * 12;
+    const mag = Math.min(Math.abs(w) / 0.6, 1);
+    svg.appendChild(se("circle", {cx:x.toFixed(1), cy:y.toFixed(1), r:"4",
+      fill:`rgb(${88+Math.round(mag*80)},${166-Math.round(mag*80)},255)`, opacity:"0.85"}));
+  });
+
+  // Axis
+  svg.appendChild(se("line", {x1:L, y1:axisY, x2:R, y2:axisY, stroke:"#30363d", "stroke-width":"1.5"}));
+  [-1.0,-0.5,0,0.5,1.0].forEach(v => {
+    const x = L + ((v+1.2)/2.4)*(R-L);
+    svg.appendChild(se("line", {x1:x, y1:axisY-4, x2:x, y2:axisY+4, stroke:"#30363d", "stroke-width":"1.5"}));
+    svg.appendChild(se("text", {x, y:axisY+17, fill:"#8b949e", "font-size":"12", "text-anchor":"middle"}, v.toFixed(1)));
+  });
+  svg.appendChild(se("text", {x:(L+R)/2, y:axisY+33, fill:"#8b949e", "font-size":"11", "text-anchor":"middle"}, "Weight value"));
+
+  // Memory bars (right panel)
+  const bars = [
+    {label:"bfloat16", gb:160, color:"#58a6ff"},
+    {label:"int8",     gb:80,  color:"#3fb950"},
+    {label:"int4",     gb:40,  color:"#bc8cff"},
+    {label:"int2",     gb:20,  color:"#d29922"},
+  ];
+  const bx = 740;
+  svg.appendChild(se("text", {x:bx, y:24, fill:"#8b949e", "font-size":"10", "font-weight":"600"}, "80B MODEL"));
+  bars.forEach((b, i) => {
+    const by = 34 + i * 40, bw = (b.gb / 160) * 110;
+    svg.appendChild(se("rect", {x:bx, y:by, width:bw, height:24, rx:"3",
+      fill:`rgba(${hexRgb(b.color)},0.12)`, stroke:b.color, "stroke-width":"1.5"}));
+    svg.appendChild(se("text", {x:bx + bw + 6, y:by+16, fill:b.color, "font-size":"11"}, `${b.gb}GB`));
+    svg.appendChild(se("text", {x:bx-4, y:by+16, fill:"#8b949e", "font-size":"10", "text-anchor":"end"}, b.label));
+  });
+}
+
+function renderNumberLine() {
+  const svg = getSvg();
+  svg.setAttribute("viewBox", "0 0 860 300");
+  svg.innerHTML = "";
+  addGlow(svg, "glow", 4);
+
+  const bits = BITS_MAP[bitsIdx];
+  const isAsym = mode === 'asym';
+  const vals = RAW_WEIGHTS.slice(0, 24);
+  const res = isAsym ? quantAsym(vals, bits) : quantSym(vals, bits);
+  const { dq, scale, zero } = res;
+  const err = rmse(vals, dq);
+  document.getElementById("errorDisplay").textContent = err.toFixed(4);
+
+  const axisY = 160, L = 60, R = 800, vRange = 1.05;
+
+  // Integer buckets
+  const qmax = (1 << (bits-1)) - 1, qmin = -(1 << (bits-1));
+  const bucketCount = qmax - qmin + 1;
+  for (let qi = qmin; qi <= qmax; qi++) {
+    const fv = isAsym ? scale * (qi - zero) : qi * scale;
+    const t = (fv + vRange) / (2*vRange);
+    const x = L + t * (R - L);
+    if (x < L - 4 || x > R + 4) continue;
+    const bw = Math.max(4, (R - L) / (bucketCount + 1) * 0.75);
+    svg.appendChild(se("rect", {
+      x:(x - bw/2).toFixed(1), y:axisY-38, width:bw.toFixed(1), height:"32", rx:"3",
+      fill:"rgba(188,140,255,0.1)", stroke:"#bc8cff", "stroke-width":"1", opacity:"0.8"
+    }));
+    if (bits <= 4) {
+      svg.appendChild(se("text", {x, y:axisY-42, fill:"#bc8cff", "font-size":"9", "text-anchor":"middle"}, String(qi)));
     }
+  }
 
-    function quantizeAsym(values, bits) {
-      const vmax = Math.max(...values);
-      const vmin = Math.min(...values);
-      const qmax = Math.max(1, 2 ** (bits - 1) - 1);
-      const qmin = -(2 ** (bits - 1));
-      const scale = (vmax - vmin) / (qmax - qmin) || 1;
-      const zero = qmin - Math.round(vmin / scale);
-      const quantized = values.map(v => Math.round(v / scale + zero));
-      const dequantized = quantized.map(v => scale * (v - zero));
-      return { quantized, dequantized, scale, zero, qmin, qmax };
+  // Axis
+  svg.appendChild(se("line", {x1:L, y1:axisY, x2:R, y2:axisY, stroke:"#30363d", "stroke-width":"1.5"}));
+  [-1.0,-0.5,0,0.5,1.0].forEach(v => {
+    const x = L + ((v+vRange)/(2*vRange))*(R-L);
+    svg.appendChild(se("line", {x1:x, y1:axisY-4, x2:x, y2:axisY+4, stroke:"#30363d", "stroke-width":"1.5"}));
+    svg.appendChild(se("text", {x, y:axisY+17, fill:"#8b949e", "font-size":"11", "text-anchor":"middle"}, v.toFixed(1)));
+  });
+
+  // Zero-point marker (asym)
+  if (isAsym) {
+    const zpX = L + ((scale*(0-zero) + vRange)/(2*vRange))*(R-L);
+    svg.appendChild(se("line", {x1:zpX, y1:axisY-60, x2:zpX, y2:axisY+10,
+      stroke:"#d29922", "stroke-width":"2", "stroke-dasharray":"5,3"}));
+    svg.appendChild(se("text", {x:zpX+4, y:axisY-64, fill:"#d29922", "font-size":"10"}, "zero-point"));
+  }
+
+  // Dots row (y=axisY+40)
+  const dotY = axisY + 42;
+  vals.forEach((w, i) => {
+    const fx = L + ((w+vRange)/(2*vRange))*(R-L);
+    const dx = L + ((dq[i]+vRange)/(2*vRange))*(R-L);
+    if (Math.abs(fx - dx) > 1) {
+      svg.appendChild(se("line", {x1:fx.toFixed(1), y1:dotY, x2:dx.toFixed(1), y2:dotY,
+        stroke:"#f78166", "stroke-width":"1.5", opacity:"0.65"}));
     }
+    svg.appendChild(se("circle", {cx:dx.toFixed(1), cy:dotY, r:"4",
+      fill:"none", stroke:"#bc8cff", "stroke-width":"1.5", opacity:"0.5"}));
+    const dot = se("circle", {cx:fx.toFixed(1), cy:dotY, r:"5", fill:"#58a6ff", opacity:"0.85"});
+    if (i < 5) dot.setAttribute("filter","url(#glow)");
+    svg.appendChild(dot);
+  });
 
-    function quantize(values, bits, method) {
-      return method === "asymmetric" ? quantizeAsym(values, bits) : quantizeSym(values, bits);
+  // Animated snap dots
+  vals.slice(0,9).forEach((w, i) => {
+    const fx = L + ((w+vRange)/(2*vRange))*(R-L);
+    const dx = L + ((dq[i]+vRange)/(2*vRange))*(R-L);
+    if (Math.abs(fx-dx) < 1) return;
+    animDot(svg, `M${fx.toFixed(1)},${dotY} L${dx.toFixed(1)},${dotY}`,
+      "#3fb950", "1.8s", `${i*0.2}s`);
+  });
+
+  // Info box
+  const ix = 820;
+  svg.appendChild(se("text", {x:ix, y:55, fill:"#8b949e", "font-size":"10", "text-anchor":"middle"}, `${bits}-bit`));
+  svg.appendChild(se("text", {x:ix, y:70, fill:"#3fb950", "font-size":"14", "text-anchor":"middle", "font-weight":"700"},
+    `${Math.pow(2,bits)} levels`));
+  svg.appendChild(se("text", {x:ix, y:86, fill:"#8b949e", "font-size":"10", "text-anchor":"middle"}, `scale=${scale.toFixed(4)}`));
+  if (isAsym) svg.appendChild(se("text", {x:ix, y:100, fill:"#d29922", "font-size":"10", "text-anchor":"middle"}, `zero=${zero}`));
+
+  // Row labels
+  svg.appendChild(se("text", {x:L, y:dotY+18, fill:"#8b949e", "font-size":"10"},
+    "● original  ○ dequantized  — error"));
+}
+
+function renderBlockGrid() {
+  const svg = getSvg();
+  svg.setAttribute("viewBox", "0 0 860 300");
+  svg.innerHTML = "";
+  addGlow(svg, "glow", 4);
+
+  const COLS = 16, ROWS = 3, BLOCK = 16;
+  const cW = 46, cH = 32, sX = 50, sY = 55;
+  const bColors = ["#58a6ff","#3fb950","#bc8cff","#d29922","#f78166","#79c0ff"];
+  const weights = [...RAW_WEIGHTS.slice(0,48)];
+  weights[18] = 1.45;
+
+  for (let row = 0; row < ROWS; row++) {
+    for (let col = 0; col < COLS; col++) {
+      const idx = row * COLS + col;
+      if (idx >= weights.length) break;
+      const bi = Math.floor(idx / BLOCK);
+      const isOut = idx === 18;
+      const x = sX + col * cW, y = sY + row * (cH + 10);
+      const bc = bColors[bi % bColors.length];
+      svg.appendChild(se("rect", {x, y, width:cW-3, height:cH, rx:"3",
+        fill: isOut ? "rgba(247,129,102,0.25)" : `rgba(${hexRgb(bc)},0.1)`,
+        stroke: isOut ? "#f78166" : bc,
+        "stroke-width": isOut ? "2.5" : "1",
+        filter: isOut ? "url(#glow)" : "none"}));
+      svg.appendChild(se("text", {x:x+cW/2-1, y:y+cH/2+4,
+        fill: isOut ? "#f78166" : bc,
+        "font-size": isOut ? "11" : "10",
+        "font-weight": isOut ? "700" : "400",
+        "text-anchor":"middle", "font-family":"monospace"},
+        weights[idx].toFixed(2)));
     }
+  }
 
-    function averagePercentError(values, dequantized) {
-      const ratios = values.map((value, index) => Math.abs((dequantized[index] - value) / value));
-      const mean = ratios.reduce((sum, value) => sum + value, 0) / ratios.length;
-      return mean * 100;
-    }
+  // Block boundary dashes + labels
+  for (let b = 0; b < 3; b++) {
+    const bStart = b * BLOCK;
+    const bCol = bStart % COLS, bRow = Math.floor(bStart / COLS);
+    const bx = sX + bCol * cW - 5, by = sY + bRow * (cH+10) - 6;
+    const bwCols = Math.min(BLOCK, COLS - bCol);
+    const bc = bColors[b % bColors.length];
+    svg.appendChild(se("rect", {x:bx, y:by, width:bwCols*cW, height:cH+22,
+      rx:"5", fill:"none", stroke:bc, "stroke-width":"2", "stroke-dasharray":"5,3", opacity:"0.55"}));
+    svg.appendChild(se("text", {x:bx+5, y:by-5, fill:bc, "font-size":"10", "font-weight":"600"},
+      `Block ${b}  scale=${(0.011 + b*0.003).toFixed(4)}`));
+    // Animated flow dot
+    animDot(svg, `M${bx+5},${by+cH/2+5} L${bx+bwCols*cW-8},${by+cH/2+5}`,
+      bc, "1.6s", `${b*0.55}s`);
+  }
 
-    function formatSigned(value, digits = 2) {
-      return `${value >= 0 ? "+" : ""}${value.toFixed(digits)}`;
-    }
+  // Outlier annotation
+  const ox = sX + 2 * cW + cW/2;
+  const oy = sY + 1 * (cH+10) + cH + 16;
+  svg.appendChild(se("text", {x:ox, y:oy, fill:"#f78166", "font-size":"10", "text-anchor":"middle"}, "outlier"));
+  svg.appendChild(se("text", {x:ox, y:oy+13, fill:"#8b949e", "font-size":"10", "text-anchor":"middle"}, "contained"));
 
-    function markerPosition(value, min = -1, max = 1) {
-      return ((value - min) / (max - min)) * 100;
-    }
+  svg.appendChild(se("text", {x:sX, y:sY + ROWS*(cH+10)+30,
+    fill:"#8b949e", "font-size":"11"},
+    "Each block has its own scale — outliers only affect their local block, not the whole model."));
+}
 
-    function renderMemoryView() {
-      const rows = [
-        { label: "bfloat16", value: 160, color: "#8b949e" },
-        { label: "8-bit", value: 80, color: "#79c0ff" },
-        { label: "4-bit", value: 40, color: "#d29922" },
-        { label: "2-bit", value: 20, color: "#f78166" }
-      ];
-      const max = rows[0].value;
-      document.getElementById("vizArea").innerHTML = `
-        <div class="table-like">
-          ${rows.map(row => `
-            <div class="table-row">
-              <div>${row.label}</div>
-              <div class="bar-track"><div class="bar-fill" style="width:${(row.value / max) * 100}%;background:${row.color}"></div></div>
-              <div>${row.value} GB</div>
-            </div>
-          `).join("")}
-        </div>
-        <div class="stats-grid">
-          <div class="metric"><span class="label">Compression</span><strong>4× smaller</strong><small>bf16 → int4</small></div>
-          <div class="metric"><span class="label">Typical Use</span><strong>Consumer inference</strong><small>fits much more hardware</small></div>
-        </div>
-      `;
-    }
+function renderQualityBench() {
+  const vizArea = document.getElementById("vizArea");
+  vizArea.innerHTML = "";
+  const container = document.createElement("div");
+  container.className = "bench-row"; container.style.width = "100%";
 
-    function renderNumberLine(values, quantizedValues, dequantizedValues) {
-      return `
-        <div class="number-line">
-          <div class="axis"></div>
-          ${[-1, -0.5, 0, 0.5, 1].map(tick => `
-            <div class="tick" style="left:${markerPosition(tick)}%"></div>
-            <div class="tick-label" style="left:${markerPosition(tick)}%">${tick.toFixed(1)}</div>
-          `).join("")}
-          ${values.map((value, index) => `
-            <div class="marker" style="left:${markerPosition(value)}%;background:var(--blue)"></div>
-            <div class="marker-label" style="left:${markerPosition(value)}%">${value.toFixed(2)}</div>
-            <div class="marker" style="left:${markerPosition(dequantizedValues[index])}%;background:var(--accent);top:52px"></div>
-          `).join("")}
-        </div>
-      `;
-    }
+  const ppl = [
+    {label:"bfloat16",    val:8.186,  max:70, color:"#58a6ff"},
+    {label:"8-bit sym",   val:8.193,  max:70, color:"#3fb950"},
+    {label:"4-bit asym",  val:8.563,  max:70, color:"#bc8cff"},
+    {label:"4-bit sym",   val:8.710,  max:70, color:"#d29922"},
+    {label:"2-bit asym",  val:66.10,  max:70, color:"#f78166"},
+  ];
+  const kl = [
+    {label:"8-bit sym",   val:0.0008, max:2.5, color:"#3fb950"},
+    {label:"4-bit asym",  val:0.0593, max:2.5, color:"#bc8cff"},
+    {label:"4-bit sym",   val:0.0675, max:2.5, color:"#d29922"},
+    {label:"2-bit asym",  val:2.1447, max:2.5, color:"#f78166"},
+  ];
 
-    function renderInteractiveMapping() {
-      const result = quantize(sampleValues, selectedBits, selectedMethod);
-      const avgError = averagePercentError(sampleValues, result.dequantized);
-      document.getElementById("vizArea").innerHTML = `
-        <div class="info-card" style="margin-bottom:0.9rem">
-          Blue markers show original values; amber markers show the dequantized reconstruction after ${selectedBits}-bit ${selectedMethod} mapping.
-        </div>
-        ${renderNumberLine(sampleValues, result.quantized, result.dequantized)}
-        <div class="mapping-grid">
-          ${sampleValues.map((value, index) => `
-            <div class="mapping-card">
-              <strong>${value.toFixed(2)} → q=${result.quantized[index]}</strong>
-              v̂ = ${result.dequantized[index].toFixed(4)}
-              <div class="delta">Δ ${formatSigned(result.dequantized[index] - value, 4)}</div>
-            </div>
-          `).join("")}
-        </div>
-        <div class="stats-grid">
-          <div class="metric"><span class="label">Scale</span><strong>${result.scale.toFixed(4)}</strong><small>${selectedMethod === "asymmetric" ? `zero point ${result.zero}` : "zero-centered"}</small></div>
-          <div class="metric"><span class="label">Avg Error</span><strong>${avgError.toFixed(1)}%</strong><small>mean absolute percentage error</small></div>
-          <div class="metric"><span class="label">Integer Range</span><strong>[${result.qmin}, ${result.qmax}]</strong><small>${selectedBits}-bit target space</small></div>
-        </div>
-      `;
-    }
-
-    function renderBlockQuantization() {
-      const whole = quantize(blockWithOutlier, 4, selectedMethod);
-      const blockA = quantize(sampleValues, 4, selectedMethod);
-      const blockB = quantize([10], 4, selectedMethod);
-      const wholeError = averagePercentError(blockWithOutlier, whole.dequantized);
-      const blockError = (
-        averagePercentError(sampleValues, blockA.dequantized) * sampleValues.length +
-        averagePercentError([10], blockB.dequantized)
-      ) / blockWithOutlier.length;
-
-      document.getElementById("vizArea").innerHTML = `
-        <div class="mapping-grid">
-          <div class="mapping-card">
-            <strong>Global block with outlier</strong>
-            values = [${blockWithOutlier.join(", ")}]
-            <div class="delta">single scale = ${whole.scale.toFixed(4)}</div>
-            <div class="delta">avg error ≈ ${wholeError.toFixed(1)}%</div>
-          </div>
-          <div class="mapping-card">
-            <strong>Local block A</strong>
-            values = [${sampleValues.join(", ")}]
-            <div class="delta">scale = ${blockA.scale.toFixed(4)}</div>
-          </div>
-          <div class="mapping-card">
-            <strong>Local block B</strong>
-            values = [10]
-            <div class="delta">scale = ${blockB.scale.toFixed(4)}</div>
-          </div>
-        </div>
-        <div class="table-like">
-          <div class="table-row">
-            <div>Global 4-bit</div>
-            <div class="bar-track"><div class="bar-fill" style="width:${Math.min(wholeError, 100)}%;background:linear-gradient(90deg,var(--coral),#ffb86c)"></div></div>
-            <div>${wholeError.toFixed(1)}% error</div>
-          </div>
-          <div class="table-row">
-            <div>Blockwise 4-bit</div>
-            <div class="bar-track"><div class="bar-fill" style="width:${Math.min(blockError, 100)}%;background:linear-gradient(90deg,var(--green),var(--blue))"></div></div>
-            <div>${blockError.toFixed(1)}% error</div>
-          </div>
-        </div>
-        <div class="info-card" style="margin-top:1rem">
-          One outlier can dominate the scale so badly that ordinary weights all map near zero. Block quantization confines that outlier to one local scale instead of poisoning the entire tensor.
-        </div>
-      `;
-    }
-
-    function renderQualityBenchmarks() {
-      const maxPerplexity = Math.max(...qualityRows.map(row => row.perplexity));
-      const maxKl = Math.max(...qualityRows.map(row => row.kl));
-      document.getElementById("vizArea").innerHTML = `
-        <div class="side-label" style="margin-bottom:0.7rem">Perplexity</div>
-        <div class="table-like">
-          ${qualityRows.map(row => `
-            <div class="table-row">
-              <div>${row.label}</div>
-              <div class="bar-track"><div class="bar-fill" style="width:${(row.perplexity / maxPerplexity) * 100}%;background:${row.color}"></div></div>
-              <div>${row.perplexity.toFixed(3)}</div>
-            </div>
-          `).join("")}
-        </div>
-        <div class="side-label" style="margin:1rem 0 0.7rem">Mean KL Divergence</div>
-        <div class="table-like">
-          ${qualityRows.filter(row => row.kl > 0).map(row => `
-            <div class="table-row">
-              <div>${row.label}</div>
-              <div class="bar-track"><div class="bar-fill" style="width:${(row.kl / maxKl) * 100}%;background:${row.color}"></div></div>
-              <div>${row.kl.toFixed(4)}</div>
-            </div>
-          `).join("")}
-        </div>
-      `;
-    }
-
-    function renderSpeedBenchmarks() {
-      const maxSpeed = Math.max(...speedRows.flatMap(row => [row.m1, row.h100]));
-      document.getElementById("vizArea").innerHTML = `
-        <div class="side-label" style="margin-bottom:0.7rem">M1 Max Tokens / Sec</div>
-        <div class="table-like">
-          ${speedRows.map(row => `
-            <div class="table-row">
-              <div>${row.label}</div>
-              <div class="bar-track"><div class="bar-fill" style="width:${(row.m1 / maxSpeed) * 100}%;background:${row.color}"></div></div>
-              <div>${row.m1.toFixed(2)}</div>
-            </div>
-          `).join("")}
-        </div>
-        <div class="side-label" style="margin:1rem 0 0.7rem">H100 Tokens / Sec</div>
-        <div class="table-like">
-          ${speedRows.map(row => `
-            <div class="table-row">
-              <div>${row.label}</div>
-              <div class="bar-track"><div class="bar-fill" style="width:${(row.h100 / maxSpeed) * 100}%;background:${row.color}"></div></div>
-              <div>${row.h100.toFixed(2)}</div>
-            </div>
-          `).join("")}
-        </div>
-      `;
-    }
-
-    function renderStep() {
-      const step = STEPS[currentStep];
-      document.getElementById("stepCounter").textContent = `Step ${currentStep + 1} of ${STEPS.length}`;
-      document.getElementById("progressFill").style.width = `${((currentStep + 1) / STEPS.length) * 100}%`;
-      document.getElementById("stepTitle").textContent = step.title;
-      document.getElementById("stepDesc").textContent = step.desc;
-      document.getElementById("formulaBox").innerHTML = step.formula;
-      document.getElementById("noteBox").textContent = step.note;
-      step.render();
-      document.getElementById("prevBtn").disabled = currentStep === 0;
-      document.getElementById("nextBtn").disabled = currentStep === STEPS.length - 1;
-    }
-
-    function changeStep(delta) {
-      const next = currentStep + delta;
-      if (next < 0 || next >= STEPS.length) return;
-      currentStep = next;
-      renderStep();
-    }
-
-    document.querySelectorAll("[data-bits]").forEach(button => {
-      button.addEventListener("click", () => {
-        selectedBits = Number(button.dataset.bits);
-        document.querySelectorAll("[data-bits]").forEach(item => item.classList.toggle("active", Number(item.dataset.bits) === selectedBits));
-        renderStep();
-      });
+  function addBench(data, title, delay0) {
+    const s = document.createElement("div"); s.className = "bench-section"; s.textContent = title; container.appendChild(s);
+    data.forEach((d, i) => {
+      const row = document.createElement("div"); row.className = "bench-item";
+      const lbl = document.createElement("div"); lbl.className = "bench-label"; lbl.textContent = d.label;
+      const track = document.createElement("div"); track.className = "bench-track";
+      const fill = document.createElement("div"); fill.className = "bench-fill";
+      fill.style.background = d.color; fill.style.width = "0%";
+      const txt = document.createElement("span"); txt.textContent = d.val.toFixed(d.val < 1 ? 4 : 3);
+      fill.appendChild(txt); track.appendChild(fill); row.appendChild(lbl); row.appendChild(track); container.appendChild(row);
+      setTimeout(() => { fill.style.width = ((d.val / d.max) * 100).toFixed(1) + "%"; }, delay0 + i * 120);
     });
+  }
+  addBench(ppl, "Perplexity (lower = better)", 80);
+  addBench(kl, "KL Divergence (lower = better)", 700);
+  vizArea.appendChild(container);
+}
 
-    document.querySelectorAll("[data-method]").forEach(button => {
-      button.addEventListener("click", () => {
-        selectedMethod = button.dataset.method;
-        document.querySelectorAll("[data-method]").forEach(item => item.classList.toggle("active", item.dataset.method === selectedMethod));
-        renderStep();
-      });
+function renderSpeedBench() {
+  const vizArea = document.getElementById("vizArea");
+  vizArea.innerHTML = "";
+  const container = document.createElement("div");
+  container.className = "bench-row"; container.style.width = "100%";
+
+  const formats = ["bfloat16","8-bit sym","4-bit asym","4-bit sym","2-bit asym"];
+  const m1 =   [19.45, 32.36, 43.32, 46.05, 40.25];
+  const h100 = [106.85, 141.61, 175.70, 177.06, 166.90];
+  const maxV = 180;
+
+  function addBench(vals, color, title, delay0) {
+    const s = document.createElement("div"); s.className = "bench-section"; s.textContent = title; container.appendChild(s);
+    formats.forEach((fmt, i) => {
+      const row = document.createElement("div"); row.className = "bench-item";
+      const lbl = document.createElement("div"); lbl.className = "bench-label"; lbl.textContent = fmt;
+      const track = document.createElement("div"); track.className = "bench-track";
+      const fill = document.createElement("div"); fill.className = "bench-fill";
+      fill.style.background = color; fill.style.width = "0%";
+      const txt = document.createElement("span"); txt.textContent = vals[i].toFixed(2);
+      fill.appendChild(txt); track.appendChild(fill); row.appendChild(lbl); row.appendChild(track); container.appendChild(row);
+      setTimeout(() => { fill.style.width = ((vals[i] / maxV) * 100).toFixed(1) + "%"; }, delay0 + i * 100);
     });
+  }
+  addBench(m1, "#bc8cff", "M1 Max (tokens/sec)", 80);
+  addBench(h100, "#58a6ff", "H100 (tokens/sec)", 650);
+  vizArea.appendChild(container);
+}
 
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "ArrowRight") changeStep(1);
-      if (event.key === "ArrowLeft") changeStep(-1);
-    });
+// ── Steps ───────────────────────────────────────────────────────────────────
 
-    renderStep();
-  </script>
+const STEPS = [
+  {
+    title: "Why Models Are Large",
+    desc: "An 80B bfloat16 model occupies ~160 GB. Most weights cluster near zero — a Gaussian distribution. Quantization replaces expensive floats with cheap integers to make models smaller and faster.",
+    legend: [{color:"#58a6ff",label:"Weight values (float)"},{color:"#3fb950",label:"Density"}],
+    formula:`<span class="c">// Memory footprint — 80B parameter model</span>
+<span class="h">bfloat16</span>  80B × 2 B   = <span class="v">160 GB</span>   <span class="c">// training standard</span>
+<span class="h">int8    </span>  80B × 1 B   = <span class="v"> 80 GB</span>   <span class="c">// 2× smaller</span>
+<span class="h">int4    </span>  80B × 0.5 B = <span class="v"> 40 GB</span>   <span class="c">// 4× smaller ← sweet spot</span>
+<span class="h">int2    </span>  80B × 0.25B = <span class="v"> 20 GB</span>   <span class="c">// 8× smaller, quality collapses</span>`,
+    showControls: false, render: renderDistribution
+  },
+  {
+    title: "Symmetric Quantization",
+    desc: "Center around zero. Scale = max(|v|) / qmax. Simple and fast, but wastes range when weights are skewed. Use the slider to see how fewer bits reduce resolution.",
+    legend: [{color:"#58a6ff",label:"Float weights"},{color:"#bc8cff",label:"Integer buckets"},{color:"#f78166",label:"Quantization error"}],
+    formula:`<span class="c">// Symmetric: centered at 0</span>
+<span class="h">qmax</span>  = 2^(<span class="v">bits</span>−1) − 1   <span class="c">// 8-bit → 127, 4-bit → 7, 2-bit → 1</span>
+<span class="h">scale</span> = max(|values|) / qmax
+<span class="h">q</span>     = round(v / scale)  <span class="c">// quantize</span>
+<span class="h">dq</span>    = q × scale         <span class="c">// dequantize</span>`,
+    showControls: true, render: renderNumberLine
+  },
+  {
+    title: "Asymmetric Quantization",
+    desc: "Shift the range to match actual data distribution using a zero-point offset. Reduces average quantization error ~50% vs symmetric at the same bit width — better for skewed weight distributions.",
+    legend: [{color:"#58a6ff",label:"Float weights"},{color:"#bc8cff",label:"Integer buckets"},{color:"#f78166",label:"Quantization error"},{color:"#d29922",label:"Zero-point offset"}],
+    formula:`<span class="c">// Asymmetric: shifted range</span>
+<span class="h">scale</span> = (vmax − vmin) / (qmax − qmin)
+<span class="h">zero</span>  = round(qmin − vmin / scale) <span class="c">// offset</span>
+<span class="h">q</span>     = round(v / scale + zero)   <span class="c">// quantize</span>
+<span class="h">dq</span>    = scale × (q − zero)         <span class="c">// dequantize</span>`,
+    showControls: true, forceMode: 'asym', render: renderNumberLine
+  },
+  {
+    title: "Block Quantization",
+    desc: "Outlier weights skew the global scale and crush all other values into a tiny range. Solution: quantize in blocks of 32–256 weights. Each block has its own scale — outliers are contained locally.",
+    legend: [{color:"#58a6ff",label:"Normal weights"},{color:"#f78166",label:"Outlier"},{color:"#3fb950",label:"Block boundary"}],
+    formula:`<span class="c">// Block quantization — per-block scale</span>
+<span class="h">BLOCK_SIZE</span> = 64           <span class="c">// typical: 32–256</span>
+<span class="c">// For each block:</span>
+<span class="h">scale_i</span>  = max(|block_i|) / qmax
+<span class="h">q_i</span>     = round(block_i / scale_i)
+<span class="c">// Metadata: 1 scale × bfloat16 per block</span>
+<span class="c">// 64 weights @ 0.5B + 2B scale = 34B total</span>`,
+    showControls: false, render: renderBlockGrid
+  },
+  {
+    title: "Quality Impact",
+    desc: "8-bit is nearly lossless (+0.1% perplexity). 4-bit asymmetric retains ~90% quality. 2-bit collapses — the model produces repetitive garbage output. Data from Qwen 3.5 9B on WikiText-2.",
+    legend: [{color:"#3fb950",label:"Better (lower perplexity)"},{color:"#f78166",label:"Degraded quality"}],
+    formula:`<span class="c">// Qwen 3.5 9B benchmarks (WikiText-2)</span>
+<span class="h">bfloat16       </span> ppl=<span class="v"> 8.186</span>  KL=<span class="v">baseline</span>
+<span class="h">8-bit symmetric</span> ppl=<span class="v"> 8.193</span>  KL=<span class="v">0.0008</span>  <span class="c">← nearly lossless</span>
+<span class="h">4-bit asymmetric</span> ppl=<span class="v"> 8.563</span> KL=<span class="v">0.0593</span>  <span class="c">← ~90% quality</span>
+<span class="h">4-bit symmetric</span> ppl=<span class="v"> 8.710</span>  KL=<span class="v">0.0675</span>
+<span class="h">2-bit asymmetric</span> ppl=<span class="e">66.100</span>  KL=<span class="e">2.1447</span>  <span class="c">← collapses</span>`,
+    showControls: false, render: renderQualityBench
+  },
+  {
+    title: "Speed: Quantization Is Faster",
+    desc: "Fewer bits = less memory bandwidth = faster inference. 4-bit runs ~2.3× faster than bfloat16 on both M1 Max and H100. The bottleneck is memory movement, not arithmetic.",
+    legend: [{color:"#bc8cff",label:"M1 Max"},{color:"#58a6ff",label:"H100"}],
+    formula:`<span class="c">// Tokens/sec — Qwen 3.5 9B</span>
+<span class="h">bfloat16       </span> M1=<span class="v"> 19.45</span>  H100=<span class="v">106.85</span>  <span class="c">baseline</span>
+<span class="h">8-bit symmetric</span> M1=<span class="v"> 32.36</span>  H100=<span class="v">141.61</span>  <span class="c">1.7× faster</span>
+<span class="h">4-bit asymmetric</span> M1=<span class="v"> 43.32</span> H100=<span class="v">175.70</span>  <span class="c">2.3× faster</span>
+<span class="h">4-bit symmetric </span> M1=<span class="v"> 46.05</span>  H100=<span class="v">177.06</span>  <span class="c">2.4× faster</span>`,
+    showControls: false, render: renderSpeedBench
+  }
+];
+
+// ── Controls ────────────────────────────────────────────────────────────────
+
+function setMode(m) {
+  mode = m;
+  document.getElementById("symBtn").classList.toggle("active", m === "sym");
+  document.getElementById("asymBtn").classList.toggle("active", m === "asym");
+  if (currentStep === 1 || currentStep === 2) renderCurrentStep();
+}
+
+document.getElementById("bitsSlider").addEventListener("input", function() {
+  bitsIdx = +this.value;
+  document.getElementById("bitsDisplay").textContent = BITS_MAP[bitsIdx] + "-bit";
+  if (currentStep === 1 || currentStep === 2) renderCurrentStep();
+});
+
+function ensureSvg() {
+  const va = document.getElementById("vizArea");
+  if (!document.getElementById("mainSvg")) {
+    va.innerHTML = '<svg id="mainSvg" width="100%" viewBox="0 0 860 300" xmlns="http://www.w3.org/2000/svg"></svg>';
+  }
+}
+
+function renderCurrentStep() {
+  const step = STEPS[currentStep];
+  if (step.forceMode) {
+    mode = step.forceMode;
+    document.getElementById("symBtn").classList.toggle("active", mode === "sym");
+    document.getElementById("asymBtn").classList.toggle("active", mode === "asym");
+  }
+  const isBench = step.render === renderQualityBench || step.render === renderSpeedBench;
+  if (isBench) {
+    step.render();
+    return;
+  }
+  ensureSvg();
+  step.render();
+}
+
+function updateUI() {
+  const step = STEPS[currentStep];
+  document.getElementById("stepCounter").textContent = `Step ${currentStep+1} of ${STEPS.length}`;
+  document.getElementById("progressFill").style.width = `${((currentStep+1)/STEPS.length)*100}%`;
+  document.getElementById("stepTitle").textContent = step.title;
+  document.getElementById("stepDesc").textContent = step.desc;
+  document.getElementById("formulaBox").innerHTML = step.formula;
+  document.getElementById("prevBtn").disabled = currentStep === 0;
+  document.getElementById("nextBtn").disabled = currentStep === STEPS.length - 1;
+  document.getElementById("ctrlPanel").style.display = step.showControls ? "flex" : "none";
+  if (!step.showControls) document.getElementById("errorDisplay").textContent = "—";
+
+  document.getElementById("legend").innerHTML = (step.legend || []).map(l =>
+    `<div class="legend-item"><div class="legend-dot" style="background:${l.color}"></div>${l.label}</div>`
+  ).join("");
+
+  // Restore SVG container before non-bench renders
+  const isBench = step.render === renderQualityBench || step.render === renderSpeedBench;
+  if (!isBench) {
+    document.getElementById("vizArea").innerHTML =
+      '<svg id="mainSvg" width="100%" viewBox="0 0 860 300" xmlns="http://www.w3.org/2000/svg"></svg>';
+  }
+  renderCurrentStep();
+}
+
+function changeStep(delta) {
+  const n = currentStep + delta;
+  if (n < 0 || n >= STEPS.length) return;
+  currentStep = n;
+  updateUI();
+}
+
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowRight") changeStep(1);
+  if (e.key === "ArrowLeft") changeStep(-1);
+});
+
+updateUI();
+</script>
 </body>
 </html>

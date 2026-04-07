@@ -90,6 +90,77 @@
     </div>
   </main>
   <script>
+    // ── SVG scatter plot helper ──────────────────────────────────────────────
+    const NS = "http://www.w3.org/2000/svg";
+    function se(tag, attrs, txt) {
+      const el = document.createElementNS(NS, tag);
+      for (const [k,v] of Object.entries(attrs)) el.setAttribute(k,v);
+      if (txt !== undefined) el.textContent = txt;
+      return el;
+    }
+    function buildPlotSvg(activeQuery, showConnections) {
+      const svg = document.createElementNS(NS,"svg");
+      svg.setAttribute("width","100%");
+      svg.setAttribute("viewBox","0 0 480 320");
+      svg.setAttribute("style","display:block");
+      // Glow
+      const defs=se("defs",{});
+      const f=se("filter",{id:"sg",x:"-40%",y:"-40%",width:"180%",height:"180%"});
+      const b=se("feGaussianBlur",{stdDeviation:"4",result:"blur"});
+      const m=se("feMerge",{});
+      m.appendChild(se("feMergeNode",{in:"blur"}));
+      m.appendChild(se("feMergeNode",{in:"SourceGraphic"}));
+      f.appendChild(b); f.appendChild(m); defs.appendChild(f);
+      svg.appendChild(defs);
+      // Grid
+      for (let i=0;i<=4;i++) {
+        svg.appendChild(se("line",{x1:30,y1:30+i*60,x2:450,y2:30+i*60,stroke:"#21262d","stroke-width":"1"}));
+        svg.appendChild(se("line",{x1:30+i*105,y1:30,x2:30+i*105,y2:290,stroke:"#21262d","stroke-width":"1"}));
+      }
+      // Convert x%,y% → SVG coords (map 0-100% to 30-450, 30-290)
+      function toSvg(px,py) {
+        return {x:30+px/100*420, y:30+py/100*260};
+      }
+      // Connection lines from query to others (if showConnections)
+      if (showConnections) {
+        const qPoint = POINTS.find(p=>p.id===activeQuery);
+        const qSvg = toSvg(qPoint.x, qPoint.y);
+        const sims = SIMS[activeQuery];
+        sims.forEach(([label,score,color],i) => {
+          const target = POINTS.find(p=>p.label===label);
+          if (!target) return;
+          const tSvg = toSvg(target.x, target.y);
+          // Line
+          svg.appendChild(se("line",{
+            x1:qSvg.x.toFixed(1),y1:qSvg.y.toFixed(1),
+            x2:tSvg.x.toFixed(1),y2:tSvg.y.toFixed(1),
+            stroke:color,"stroke-width":(0.8+score*2.5).toFixed(1),
+            opacity:(0.15+score*0.6).toFixed(2)}));
+          // Animated dot on top-3 connections
+          if (i < 3) {
+            const c=se("circle",{r:"3.5",fill:color,opacity:"0.9"});
+            const path=`M${qSvg.x.toFixed(1)},${qSvg.y.toFixed(1)} L${tSvg.x.toFixed(1)},${tSvg.y.toFixed(1)}`;
+            c.appendChild(se("animateMotion",{dur:"1.6s",begin:`${i*0.55}s`,
+              repeatCount:"indefinite",calcMode:"linear",keyTimes:"0;1",keyPoints:"0;1",path}));
+            svg.appendChild(c);
+          }
+        });
+      }
+      // Points
+      POINTS.forEach(p => {
+        const {x,y}=toSvg(p.x,p.y);
+        const isActive=p.id===activeQuery;
+        svg.appendChild(se("circle",{cx:x.toFixed(1),cy:y.toFixed(1),
+          r:isActive?"10":"7",fill:p.color,
+          opacity:isActive?"1":"0.7",
+          filter:isActive?"url(#sg)":"none"}));
+        svg.appendChild(se("text",{x:(x+13).toFixed(1),y:(y+4).toFixed(1),
+          fill:p.color,"font-size":"10","font-weight":isActive?"700":"400"},p.label));
+      });
+      return svg;
+    }
+    // ── End SVG scatter plot helper ──────────────────────────────────────────
+
     const POINTS = [
       {id:"dogs", label:"I love dogs", x:68, y:38, color:"#79c0ff"},
       {id:"puppies", label:"Puppies are great", x:76, y:30, color:"#3fb950"},
@@ -169,16 +240,23 @@
       </div>`;
     }
     function renderPlot() {
-      document.getElementById("vizArea").innerHTML = plotHtml(currentQuery);
+      const va=document.getElementById("vizArea"); va.innerHTML="";
+      va.appendChild(buildPlotSvg(currentQuery, false));
     }
     function renderRanking() {
-      document.getElementById("vizArea").innerHTML = `${plotHtml(currentQuery)}<div style="margin-top:1rem">${rankingHtml()}</div>`;
+      const va=document.getElementById("vizArea"); va.innerHTML="";
+      va.appendChild(buildPlotSvg(currentQuery, true));
+      va.innerHTML+=`<div style="margin-top:0.75rem">${rankingHtml()}</div>`;
     }
     function renderClusters() {
-      document.getElementById("vizArea").innerHTML = `${plotHtml(currentQuery)}<div class="card" style="margin-top:1rem">Animal-related texts cluster together on the upper-right. Technical topics drift away into their own region. The exact coordinates are illustrative, but the clustering behavior is real.</div>`;
+      const va=document.getElementById("vizArea"); va.innerHTML="";
+      va.appendChild(buildPlotSvg(currentQuery, false));
+      va.innerHTML+=`<div class="card" style="margin-top:0.75rem">Animal-related texts cluster together on the upper-right. Technical topics drift away into their own region. The exact coordinates are illustrative, but the clustering behavior is real.</div>`;
     }
     function renderRagFlow() {
-      document.getElementById("vizArea").innerHTML = `${rankingHtml()}<div class="card" style="margin-top:1rem"><div class="side-label">RAG Prompt Assembly</div>query → embed → retrieve top-k → attach docs → generate answer</div>`;
+      const va=document.getElementById("vizArea"); va.innerHTML="";
+      va.appendChild(buildPlotSvg(currentQuery, true));
+      va.innerHTML+=`${rankingHtml()}<div class="card" style="margin-top:0.75rem"><div class="side-label">RAG Prompt Assembly</div>query → embed → retrieve top-k → attach docs → generate answer</div>`;
     }
     function renderStep() {
       const step = STEPS[currentStep];

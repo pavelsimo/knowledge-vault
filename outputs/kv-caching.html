@@ -408,6 +408,91 @@
   </main>
 
   <script>
+    // ── SVG helpers ──────────────────────────────────────────────────────────
+    const NS = "http://www.w3.org/2000/svg";
+    function se(tag, attrs, txt) {
+      const el = document.createElementNS(NS, tag);
+      for (const [k,v] of Object.entries(attrs)) el.setAttribute(k,v);
+      if (txt !== undefined) el.textContent = txt;
+      return el;
+    }
+    function addGlowDef(svg) {
+      const defs = se("defs",{});
+      const f = se("filter",{id:"glow",x:"-40%",y:"-40%",width:"180%",height:"180%"});
+      const b = se("feGaussianBlur",{stdDeviation:"3",result:"blur"});
+      const m = se("feMerge",{});
+      m.appendChild(se("feMergeNode",{in:"blur"}));
+      m.appendChild(se("feMergeNode",{in:"SourceGraphic"}));
+      f.appendChild(b); f.appendChild(m); defs.appendChild(f);
+      svg.appendChild(defs);
+    }
+    // Build token-sequence SVG showing cache state
+    // tokens: array of {label, kind: "prompt"|"cached"|"new"|"recompute"}
+    function buildTokenSeqSvg(tokens, animateAll) {
+      const svg = document.createElementNS(NS,"svg");
+      svg.setAttribute("width","100%");
+      svg.setAttribute("viewBox","0 0 700 120");
+      svg.setAttribute("style","display:block;margin-bottom:0.75rem");
+      addGlowDef(svg);
+      const nw=72, nh=38, gap=8;
+      const total=tokens.length*(nw+gap)-gap;
+      const startX=(700-total)/2, y=40;
+      const kindColor = {
+        prompt:"#79c0ff", cached:"#3fb950", new:"#f78166", recompute:"#d29922", generated:"#7ee787"
+      };
+      tokens.forEach((t,i) => {
+        const x=startX+i*(nw+gap);
+        const color=kindColor[t.kind]||"#8b949e";
+        const isAnimated = animateAll || t.kind==="new" || t.kind==="recompute";
+        svg.appendChild(se("rect",{x,y,width:nw,height:nh,rx:"6",
+          fill:`rgba(${hexRgb2(color)},0.12)`,stroke:color,"stroke-width":"1.5",
+          filter:isAnimated?"url(#glow)":"none"}));
+        svg.appendChild(se("text",{x:x+nw/2,y:y+nh/2-4,fill:color,
+          "font-size":"11","font-weight":"600","text-anchor":"middle"},t.label));
+        svg.appendChild(se("text",{x:x+nw/2,y:y+nh/2+10,fill:color,
+          "font-size":"9","text-anchor":"middle","opacity":"0.75"},t.kind==="cached"?"cached":t.kind==="new"?"new →KV":""));
+      });
+      // Compute flow dot: from first token to last token
+      if (tokens.length > 0) {
+        const firstX = startX + nw/2;
+        const lastX = startX + (tokens.length-1)*(nw+gap) + nw/2;
+        if (animateAll) {
+          // Multiple dots flowing across ALL tokens
+          for (let i=0;i<Math.min(tokens.length,3);i++) {
+            const c = se("circle",{r:"4",fill:"#d29922",opacity:"0.9"});
+            const path = `M${firstX.toFixed(1)},${y+nh/2} L${lastX.toFixed(1)},${y+nh/2}`;
+            const a = se("animateMotion",{dur:"2s",begin:`${i*0.65}s`,
+              repeatCount:"indefinite",calcMode:"linear",keyTimes:"0;1",keyPoints:"0;1",path});
+            c.appendChild(a); svg.appendChild(c);
+          }
+        } else {
+          // Single dot on the new token only
+          const newIdx = tokens.findIndex(t=>t.kind==="new");
+          if (newIdx >= 0) {
+            const nx = startX + newIdx*(nw+gap) + nw/2;
+            const c = se("circle",{r:"4",fill:"#f78166",opacity:"0.9"});
+            const path = `M${nx.toFixed(1)},${y+nh/2-16} L${nx.toFixed(1)},${y+4}`;
+            const a = se("animateMotion",{dur:"1.2s",begin:"0s",
+              repeatCount:"indefinite",calcMode:"linear",keyTimes:"0;1",keyPoints:"0;1",path});
+            c.appendChild(a); svg.appendChild(c);
+          }
+        }
+      }
+      // Legend row
+      const lx = 40, ly = 98;
+      [["#79c0ff","prompt"],["#3fb950","cached"],["#f78166","new token"],["#d29922","recomputed"]].forEach(([color,label],i) => {
+        const lxi = lx + i*150;
+        svg.appendChild(se("rect",{x:lxi,y:ly,width:10,height:10,rx:"2",fill:color}));
+        svg.appendChild(se("text",{x:lxi+14,y:ly+9,fill:"#8b949e","font-size":"10"},label));
+      });
+      return svg;
+    }
+    function hexRgb2(h) {
+      if (!h.startsWith("#")) return "88,166,255";
+      return [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)].join(",");
+    }
+    // ── End SVG helpers ──────────────────────────────────────────────────────
+
     const promptTokens = ["The", "sky", "over", "Berlin", "looks", "clear"];
     const generatedTokens = ["today", ".", "It", "feels", "warm", "."];
     const decodeSteps = generatedTokens.map((_, i) => i + 1);
@@ -477,7 +562,12 @@
 
     function renderDecodeLoop() {
       const viz = document.getElementById("vizArea");
-      viz.innerHTML = `
+      const tokens = promptTokens.slice(0,-1).map(l=>({label:l,kind:"prompt"}));
+      tokens.push({label:promptTokens[promptTokens.length-1],kind:"new"});
+      tokens.push({label:"today",kind:"generated"});
+      viz.innerHTML = "";
+      viz.appendChild(buildTokenSeqSvg(tokens, false));
+      viz.innerHTML += `
         <div style="display:flex;flex-direction:column;justify-content:center;height:100%">
           <div class="token-row">
             ${promptTokens.slice(0, -1).map(token => tokenHtml(token)).join("")}
@@ -534,7 +624,12 @@
     function renderNoCacheWork() {
       const maxValue = cumulativeNoCache[cumulativeNoCache.length - 1];
       const viz = document.getElementById("vizArea");
-      viz.innerHTML = `
+      // Show all tokens being recomputed (animated dots over all)
+      const tkns = promptTokens.map(l=>({label:l,kind:"recompute"}));
+      tkns.push({label:"new",kind:"new"});
+      viz.innerHTML = "";
+      viz.appendChild(buildTokenSeqSvg(tkns, true));
+      viz.innerHTML += `
         <div class="table-like">
           ${decodeSteps.map((step, index) => `
             <div class="table-row">
@@ -555,7 +650,12 @@
 
     function renderCacheAppend() {
       const viz = document.getElementById("vizArea");
-      viz.innerHTML = `
+      // Cached: prompt tokens glow green (cached), one new token only
+      const tkns = promptTokens.map(l=>({label:l,kind:"cached"}));
+      tkns.push({label:"new",kind:"new"});
+      viz.innerHTML = "";
+      viz.appendChild(buildTokenSeqSvg(tkns, false));
+      viz.innerHTML += `
         <div>
           <div class="token-row">
             ${promptTokens.map(token => tokenHtml(token, "prompt")).join("")}
