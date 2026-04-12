@@ -1,0 +1,17 @@
+{
+  "name": "knowledge-vault-slides",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "slides": "node scripts/wiki-to-slides.js",
+    "slides:all": "node scripts/wiki-to-slides.js --all",
+    "slides:clean": "rm -rf outputs/slides"
+  },
+  "dependencies": {
+    "@marp-team/marp-cli": "^4.1.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -48,21 +48,21 @@ Like Gemma 3, Gemma 4 interleaves layers of local attention (also called “slid
 
 Remember that in global attention, every token attends to all tokens that came before it. Sliding window attention, however, only attends to tokens within a certain limit. This significantly reduces the compute needed to calculate the full attention.
 
-![](https://substackcdn.com/image/fetch/$s_!KjIB!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Ffea15481-672a-4fe2-b803-5f4d493998d5_4770x2460.png)
+![[raw/00-clippings/images/643915107e98086d557e480f4f4548f5_MD5.webp]]
 
 In practice, that means that when text is processed using a sliding window, it may only see a part of the entire sequence rather than the entire thing. The “sliding” then refers to the idea of continuously moving the sequence in view as the number of tokens are being generated.
 
-![](https://substackcdn.com/image/fetch/$s_!MKWU!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F39531efc-71c3-44b6-97aa-546b108fb4d6_4770x1242.png)
+![[raw/00-clippings/images/0c98cc8cfd6118c001a3ef3ac4755aae_MD5.webp]]
 
 You typically fix the number of tokens it can see previously. In the case of Gemma 4 models, the smaller models (E2B and E4B) have a sliding window of 512 tokens and the larger models (26B A4B and 31B) have a sliding window of 1024 tokens.
 
 Let’s go through an example with a sliding window of 4 tokens to see what is happening at each token generation:
 
-![](https://substackcdn.com/image/fetch/$s_!YTt2!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F3015e48f-a122-4af5-b443-a95681039f9c_4770x2082.png)
+![[raw/00-clippings/images/e4982f5300dc9e7471a3d79078b3f4b9_MD5.webp]]
 
 In our example, there is only attention given to the last four tokens which at some point in the generation starts to “ignore” the ones that came before that. However, it is actually not forgetting the representations that it calculated in the previous steps. The hidden states allow for the attention to be passed along the attention mechanism from previous layers and steps all the way to the current token.
 
-![](https://substackcdn.com/image/fetch/$s_!AsCY!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Ff26153b1-ec96-4c04-ad84-717bc134b06b_4020x2046.png)
+![[raw/00-clippings/images/d1910c6da2db4a7eff45d204ed24af39_MD5.webp]]
 
 Although information can be propagated by stacking sliding windows, it is not a perfect recall or attention mechanism. Think of it like a game of telephone, information gets diluted each time it passes through another layer!
 
@@ -70,11 +70,11 @@ Therefore, much like in Gemma 3, local attention and global attention layers are
 
 In Gemma 3, this interleaving was generally in a 4:1 pattern with 4 layers of local attention followed by a single layer of global attention. However, Gemma 3 - 4B for instance had 34 layers, which means its last layer used local attention rather than global attention. This was changed in the Gemma 4 models to make sure that the last layer is always global attention.
 
-![](https://substackcdn.com/image/fetch/$s_!tQBR!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Feb2f917c-31b6-4461-a881-d1ae4a6d0071_4146x2982.png)
+![[raw/00-clippings/images/948d80dca6e036aaad0782668a4c482d_MD5.webp]]
 
 The 4:1 pattern, however, is only for the E2B as all other variants have a 5:1 pattern where they start with 5 layers of local attention followed by a single layer of global attention. We can visualize this pattern side-by-side to also demonstrate the depth of these models.
 
-![](https://substackcdn.com/image/fetch/$s_!CRux!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F3253caa8-0499-42c7-beaf-ff1e828d890e_3012x3510.png)
+![[raw/00-clippings/images/0b2d1bcf742682ece5b4d2e84275c748_MD5.webp]]
 
 Note that the context window of the local attention layers were reduced from 1024 to 512 tokens to allow for further efficiency gains.
 
@@ -90,7 +90,7 @@ Much like Gemma 3, these models use Grouped Query Attention (GQA) which allows t
 
 With Gemma 4, the global attention layers are made more efficient by having 8 Query heads to share one KV head. This drastically reduces the caching needed of the KV values since global attention by itself already has a lot it needs to store (the entire context) compared to the small context of the local attention layers.
 
-![](https://substackcdn.com/image/fetch/$s_!NqV3!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fbe2618d8-6c06-4e87-bc30-e865ccab1f15_5790x2760.png)
+![[raw/00-clippings/images/272602c16cc2b336638ad49d3ab94299_MD5.webp]]
 
 Note that reducing the number of keys and values per head may hurt performance and so to compensate for that, the size of the Keys was doubled!
 
@@ -102,27 +102,27 @@ Despite the improvements to the grouping in Grouped Query Attention, the global 
 
 A neat trick, that does not hurt performance that much, is by using the Keys and Values only in the global attention layers. Effectively, this means that all Keys are equivalent to the Values which further reduces the memory requirements for the KV-Cache (or perhaps more accurately now the K-cache for the global attention layer).
 
-![](https://substackcdn.com/image/fetch/$s_!HBUg!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Ffc081644-bfea-4956-a9cd-235eb5c93b0f_4100x2060.png)
+![[raw/00-clippings/images/f920fcc873ab307835c4bcc3b444dded_MD5.webp]]
 
 ### p-RoPE
 
 An important component of any Large Language Model is how it keeps track of the order of words in a sequence. One of the most common techniques is called Rotary Positional Encodings (RoPE). RoPE takes the Query and Key vectors and slices them up into pairs of two values. Each pair can now be seen as a vector in 2-dimensional space pointing towards a direction. RoPE rotates this direction slightly for each pair of values at decreasing speeds. The first pair has a large rotation compared to the last pair. This rotation allows the model to track the relative distances between words.
 
-![](https://substackcdn.com/image/fetch/$s_!m7Qp!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fd981478a-907b-403e-aaf4-fb93aa37955d_4456x2544.png)
+![[raw/00-clippings/images/b6b0493435b19b3bd3d49f9e9494ba30_MD5.webp]]
 
 Let’s zoom in a bit on what happens if we were to rotate a query embedding. It first gets cut up into pairs of 2 and each subsequent pair is rotated. The rotation itself becomes smaller with each pair. This is referred to as the frequency, where a high frequency means that the rotation is quite large whereas a small frequency results in a smaller rotation.
 
-![](https://substackcdn.com/image/fetch/$s_!HT5D!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fd2ef73d6-fd46-407f-94fb-1f294ca6528a_4080x2040.png)
+![[raw/00-clippings/images/fb3874c098643e7ea86f7e8f0e9a0383_MD5.webp]]
 
 High frequency pairs are very sensitive to small changes in position due to the amount of information they were given at the first place (large rotation). They are great for tracking a word’s position. The low frequency pairs, however, are given a very slight rotation and barely move at all from word to word. Since these low frequency pairs only contain minimal positional information, and are closest to what the original KQ values were, they are more suitable for tracking semantic content. As such, they stay the most true to what they originally were (without positional information).
 
-![](https://substackcdn.com/image/fetch/$s_!uS48!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fce6aa947-cd32-47cc-8d45-acc07984a706_5130x1665.png)
+![[raw/00-clippings/images/8f537ac33aadefa9fb6979f140f0677d_MD5.webp]]
 
 However, as it turns out, the high frequency pairs already contain sufficient positional information. The low frequency pairs contain just a little bit of positional information which is too little to be meaningful. It can even be harmful as models tend to use the low frequency pairs for semantic information, so the added positional information is just noise. Moreover, with long contexts the small rotations stack up and can eventually cause tokens that are far apart to become misaligned. This hinders the model’s ability to connect words across long sequences.
 
 An elegant solution to this problem is by simply applying RoPE to only some of the dimensions of all vectors, which is called p-RoPE. If p is 0.25, then only the first 25% of pairs get positional information and all other pairs are set to 0. This allows the low frequency pairs to preserve meaning.
 
-![](https://substackcdn.com/image/fetch/$s_!IFpH!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fc204db00-74ba-46c6-9747-b1203bf2e666_4080x2400.png)
+![[raw/00-clippings/images/1e812641fea8168e471e0a41508f635e_MD5.webp]]
 
 Gemma 4 uses p-RoPE on global attention layers since the context window is much higher there compared to the local attention layers. Moreover, p-RoPE is especially useful in global attention layers since large context windows may result in distances between tokens that the model hadn’t seen before. The space of all possible RoPE rotations is quite large with global attention versus local attention and by limiting the number of rotations, the model can do a much better job of handling a large context.
 
@@ -134,7 +134,7 @@ When we put everything together, you get the following improvements applied to t
 - Keys = Values
 - p-RoPE where p=0.25
 
-![](https://substackcdn.com/image/fetch/$s_!udLN!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F79da2845-0098-444d-83f5-61a80e464538_4848x2920.png)
+![[raw/00-clippings/images/8565df156f34c5c5479d309af55d211a_MD5.webp]]
 
 ## The Vision Encoder
 
@@ -142,7 +142,7 @@ A big component of the Gemma 4 releases are their multimodal capabilities. All v
 
 What makes this possible is a Vision Encoder based on the Vision Transformer (ViT) to process the images. A ViT works similarly to a regular Large Language Model and instead of tokenizing text into sequences of words, it splits up the input image into sequences of patches. Each patch (a subset of the input image) is then passed a Transformer model which spits out an embedding per patch.
 
-![](https://substackcdn.com/image/fetch/$s_!N5tr!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fbe6b733c-9d08-4c26-a4ae-a98cb8ac70bc_5352x2760.png)
+![[raw/00-clippings/images/c414e76df667e5d9418415cda7dfa29e_MD5.webp]]
 
 Each patch is a snippet of the original image and tends to be 16 by 16 pixels. The original paper was aptly named “An image is worth 16x16 words: Transformers for image recognition at scale”.
 
@@ -150,19 +150,19 @@ Each patch is a snippet of the original image and tends to be 16 by 16 pixels. T
 
 ViT assumes that the original image is a square that can be divided into patches of 16 by 16 pixels. However, there is a downside to this approach. When you process sequences of patches but the original image can be all different kinds of sizes, the position of a given patch (for instance patch 4) can mean different things depending on the proportion of the original image. For instance, if we assume that the original image will always be a grid of 3 by 3 patches, then patch 4 will always be in the middle. However, if the grid is dynamic and can be 2 by 4 patches for instance, then patch 4 will not be in the middle.
 
-![](https://substackcdn.com/image/fetch/$s_!gXv-!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F987e3dda-3d3d-4f3d-80e6-1b3f2fa8ba20_5560x2820.png)
+![[raw/00-clippings/images/7011f3112868d822176bb3303d4d7bfb_MD5.webp]]
 
 As such, applying RoPE is not straightforward anymore because the meaning of position (“Patch 4”) is now fully dependent on the aspect ratio of the original image.
 
 An interesting technique applied in Gemma 4 is to replace RoPE by 2D RoPE, which attempts to instill the 2D position of a patch into the positional embeddings rather than seeing them as a 1D sequence of patches. To do so, the embedding of a patch is first split up into two equal-sized parts. RoPE is applied to both parts of the embedding independently, but instead of using m as the position, they now use width (w) and height (h) to add positional information. That way, half of the embedding now contains positional information about its relative width position and the other half contains positional information about its relative height position.
 
-![](https://substackcdn.com/image/fetch/$s_!YBFT!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F1991ddef-1083-401f-b419-33caa3aaed60_6440x2320.png)
+![[raw/00-clippings/images/a162908a2b6bc350a8ccbbba33010b37_MD5.webp]]
 
 Using 2D RoPE is not all that is needed to support variable aspect ratios. The original ViT, for instance, resizes the input to make them into squares so that the processed input nicely fits patches of 16 by 16 pixels. Imagine you have a wide image and you want to force it into a square… that would look either quite weird or crop away much of its content!
 
 Gemma 4 introduces support for different aspect ratios by adaptively resizing the input image so that it still supports patches of 16 by 16 pixels. To maintain the original aspect ratio it will pad the image whenever there couldn’t be a perfect fit of a 16 by 16 pixel box.
 
-![](https://substackcdn.com/image/fetch/$s_!1Us2!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F08bd6389-c503-4c44-8e3a-2e349195d989_4352x2784.png)
+![[raw/00-clippings/images/760d2f2de6d03d66858c3a47962de187_MD5.webp]]
 
 The original ViT typically assumed a fixed size for the square and therefore would always get back a fixed number of patches (9 in our example). The adaptive resizing method returns a variable number of patches, which can grow quickly in size. Therefore, the tokens generated by the ViT are pooled based on their spatial location. Patch embeddings close to each other get merged until a fixed number of patch embeddings are left.
 
@@ -172,7 +172,7 @@ Although variable aspect ratios solve a bunch of problems, how do we decide the 
 
 One method would be to always decide on a certain fixed number of patches and resize the image accordingly. However, for certain tasks we might want to support higher resolutions, such as object detection and segmentation whilst for video you might be alright with smaller resolutions to speed up analyzing subsequent frames.
 
-![](https://substackcdn.com/image/fetch/$s_!Ydmv!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F63325403-8aec-4269-86ed-cee314e78d76_5600x2180.png)
+![[raw/00-clippings/images/8307240fef9085f6b5c41f964ae21883_MD5.webp]]
 
 Gemma 4 supports different resolutions by introducing a soft token budget. This budget represents the maximum number of patch embeddings (also called soft tokens or visual tokens) are passed to the LLM to process. The user can decide between budget sizes of 70, 140, 280, 560, or 1120 tokens.
 
@@ -182,13 +182,13 @@ This budget determines how much the image is resized. Imagine you have a budget 
 
 The budget sizes roughly represent the following resolutions:
 
-![](https://substackcdn.com/image/fetch/$s_!KwmX!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F63b9b1b6-b137-4d52-9eb3-681cea2eba69_1323x496.png)
+![[raw/00-clippings/images/4d8f372e2768ec643d0e52ac3e6c94a8_MD5.webp]]
 
 For simplicity, this assumes a square but with variable aspect ratio it can take different ratios and as a result, the patches will also have different dimensions. Also note how the soft tokens are smaller than the actual number of pooled embeddings, that is because the resolution should be multiples of 48 considering 3 patches of 16 pixels are pooled to a single embedding.
 
 Below is an example of how an initially large number of patches gets averaged (also called pooling) into a lower number of patch embeddings (also called soft tokens).
 
-![](https://substackcdn.com/image/fetch/$s_!Zl1j!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F46207f33-328a-40aa-ac72-61faab484749_3216x3008.png)
+![[raw/00-clippings/images/54437d8bc9844ba65b6fb9af5997427a_MD5.webp]]
 
 The pooled patches are typically smaller than the token budget because not every image will perfectly capture the maximum number of patches.
 
@@ -198,11 +198,11 @@ The patch embeddings generated as a result of the image encoder cannot be given 
 
 There is a nice example in the image below where you can see how a given image encoder creates an embedding that is much different from the token embedding created by the text encoder.
 
-![](https://substackcdn.com/image/fetch/$s_!z6fD!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F61ce0dd5-88fb-421b-9718-9cd5f1de1dc5_5640x4000.png)
+![[raw/00-clippings/images/5ecccfa77a0223d9af6f13e1cdd55e97_MD5.webp]]
 
 To make sure that the patch embeddings are aligned correctly with the token embedding the patch embeddings are typically projected using a small neural network so that they have the same dimensions and value distributions as what the language model expects. In Gemma 4, this projection is then followed by RMSNorm to match scale expectations of subsequent Transformer blocks.
 
-![](https://substackcdn.com/image/fetch/$s_!RKWU!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F20e856f9-a1a4-4c79-8f6c-9ee0ece5a361_4656x3928.png)
+![[raw/00-clippings/images/a15e4918bc727a80708721341b00c455_MD5.webp]]
 
 And that’s how images are processed by Gemma 4! Note that to perform this linear projection, it is trained alongside Gemma 4 to make sure that the projected patch embeddings closely match what Gemma 4 expects.
 
@@ -216,7 +216,7 @@ When we put everything together, the Gemma 4 architecture that all variants shar
 - Either Dense or Mixture of Experts
 - Vision encoder
 
-![](https://substackcdn.com/image/fetch/$s_!0-CF!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fecba0193-890d-4f66-ae5a-e6bfdb683841_2424x2672.png)
+![[raw/00-clippings/images/06ea6eebd56b14ccda834e69f3586644_MD5.webp]]
 
 Note that the feedforward neural networks (FFNNs) are not interleaved with Mixture of Experts (MoE). Any Gemma 4 variants will have either one in all layers or the other.
 
@@ -232,7 +232,7 @@ Despite the popularity of Mixture of Experts (which we cover later), the Gemma 4
 
 This model is architecturally quite similar to its Gemma 3 counterpart, namely the 27B variant. They both interleave local and global attention and have the same pre- and post- RMSNorm. What it does differently are the aspects we discussed before, like K=V and using P-RoPE. In particular, Gemma 4 - 31B has fewer layers (60 vs 62) but is a wider model.
 
-![](https://substackcdn.com/image/fetch/$s_!SJVj!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F5b9136de-9e06-4dbb-86b3-ee1c07bd3028_3000x4488.png)
+![[raw/00-clippings/images/83e167269569ad3e00ca4ebf74da4c9b_MD5.webp]]
 
 Unlike the Mixture of Experts model and the per-layer embeddings of the tiny models, this variant does not have a “magic” ingredient for us to explore. I think it is a nice representation of the “vanilla” Gemma 4 architecture and allows us to build on this to explore the other models.
 
@@ -240,7 +240,7 @@ Unlike the Mixture of Experts model and the per-layer embeddings of the tiny mod
 
 Gemma 4 has a variant that contains “A” in its name, namely the 26 A4B model. The “A” stands for “active parameters” in contrast to the total number of parameters they contain. Specifically, the 26B A4B model contains in total 26 billion parameters (which are all loaded in memory) but only 4 billion parameters are used during inference. These are referred to as the “active parameters”. By only activating a subset of parameters, these models run much faster than their total number of parameters might suggest.
 
-![](https://substackcdn.com/image/fetch/$s_!6B9e!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F8869694f-06de-4318-bd3a-c9359a3be1ae_4000x6128.png)
+![[raw/00-clippings/images/e256477a6b5619f5b1447e6e05adc6be_MD5.webp]]
 
 The architecture that makes this possible is called Mixture of Experts or MoE. Instead of using one big Feedforward Neural Network (FFNN), it uses several smaller ones and dynamically chooses which ones to process a given input.
 
@@ -253,17 +253,17 @@ A given token embedding is processed in the MoE layer by first passing to the ro
 
 The probabilities allow for some experts to have a larger or smaller influence on the processed embeddings compared to other experts. As such, the processed embedding is multiplied by the expert probability.
 
-![](https://substackcdn.com/image/fetch/$s_!CU2S!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F32e57db5-ea63-4a3e-a193-c430708f2da8_4704x4744.png)
+![[raw/00-clippings/images/567729490ac74280b5ca25082a6658c7_MD5.webp]]
 
 Although the visual shows a single expert, most MoE activate at least several and combine the result. In Gemma 4, the MoE variant has 128 experts that the router can choose from and 8 will be activated at a time.
 
 Moreover, there is a **shared expert**. This expert will always be activated and used to process the input embedding. The underlying idea of having a shared expert is that it contains a lot of general knowledge that should always be activated, whereas the selected experts contain more fine-grained knowledge. In Gemma 4, this shared expert is three times the size to make sure it encompasses the necessary general knowledge.
 
-![](https://substackcdn.com/image/fetch/$s_!Rzhe!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fb7b3eb2f-f178-43aa-902c-cd66ace3a131_4704x5272.png)
+![[raw/00-clippings/images/462515840837962b8b2d2b381a63a8b4_MD5.webp]]
 
 Now that you have a big picture of Mixture of Experts in Gemma 4, let’s explore a bit more in-depth what it means to have an efficient architecture with sparse and active parameters. The **sparse parameters** are every single parameter of the model which needs to be loaded into memory when you want to load the model. Gemma 4’s 26B billion parameter model for instance is quite large and you might think that it will run slow because of its big size. However, not all of its sparse parameters are actually used by your device (e.g., GPU) when you are running the model. With Mixture of Experts in Gemma 4, only 8 experts and 1 shared expert is actually used for intermediate calculations. All other 119 experts can take a backseat. These are the active parameters and represent the “ **A** ” in “26B **A** 4B”. This means that although this model is large, it runs almost as fast as a 4B parameter model!
 
-![](https://substackcdn.com/image/fetch/$s_!txYk!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Faf9da40e-432c-481c-8d1d-3699896517f1_3660x3870.png)
+![[raw/00-clippings/images/cdf73d5b22b0735c03ef67d5e321b76a_MD5.webp]]
 
 I’ve had a blast trying this model and I can tell you that it is a quite capable to run. However, you might want to use a smaller model if you want to run it on device like on your phone.
 
@@ -271,7 +271,7 @@ I’ve had a blast trying this model and I can tell you that it is a quite capab
 
 Gemma 4 has a variant that contains “E” in its name, namely the E2B and E4B model. The “E” stands for “effective parameters” in contrast to the total number of parameters they contain.
 
-![](https://substackcdn.com/image/fetch/$s_!X3cx!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Ffaff88e2-4cd6-4669-8211-7d5b6039559c_5082x5160.png)
+![[raw/00-clippings/images/3a74afc3eb20fb83df60fa5479b9339f_MD5.webp]]
 
 These models are very efficient and great for on-device use cases. What makes these models especially exciting is that they contain an additional audio encoder for processing audio alongside text and images.
 
@@ -283,7 +283,7 @@ An interesting component of the smaller Gemma 4 models is the “E” in “E2B�
 
 To explore what this means in practice, let’s first cover what happens at the token embedding layer. Whenever it receives a given token, it looks up its embedding using a lookup table. This table can be quite large since it has to store an embedding for each word in its entire vocabulary. Gemma 4 E2B, for instance, has 262,144 tokens each with an embedding size of 1536 dimensions.
 
-![](https://substackcdn.com/image/fetch/$s_!i3rO!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fea5dd72c-ec58-4da9-94b6-fcc50f46210d_7790x2870.png)
+![[raw/00-clippings/images/8c89ead9d30b7f3d2409eb5e39eacc27_MD5.webp]]
 
 Then, the embeddings for each token gets put through stacks of decoder blocks and iteratively processed. To improve the capabilities of a model, you would normally just add a couple of layers or more parameters. Bigger models tend to outperform smaller ones.
 
@@ -296,17 +296,17 @@ These embeddings are quite a bit smaller (256 versus 1536 dimensions in E2B and 
 
 These are called Per-Layer Embeddings (PLE) and as the name suggests, are embeddings that used for specific layers.
 
-![](https://substackcdn.com/image/fetch/$s_!0AhS!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fe6c18411-5f64-4843-8809-9aa581b4ee7f_4130x3810.png)
+![[raw/00-clippings/images/58608d6871a9ded97d0eb87673da7d82_MD5.webp]]
 
 At the start of inference, the model grabs the set of embeddings for each input token. Each input token will have an embedding per layer to be used at that specific layer. Note that this lookup is done only once during inference, making this action quite compute efficient since there is no need to lookup the embeddings every time a layer is activated.
 
-![](https://substackcdn.com/image/fetch/$s_!nf1_!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fa820d8bb-a7c8-4de1-b350-f74160c5634b_4130x2590.png)
+![[raw/00-clippings/images/5bd9437e74a4eca212c220671ceabcbb_MD5.webp]]
 
 These embeddings are processed between each set of decoder blocks. Here, are gating function is used to decide how to weigh each value in a chosen embedding. This allows the model to additionally focus on certain parts of the embedding retrieved from the lookup table. The resulting embedding, still of dimensionality 256, is then projected up to match the original embedding size (1,536 for E2B and 2,560 for E4B).
 
 After a normalization layer, this weighted representation is then combined with the original output of the previous decoder block. This allows for the processed signal to be “reminded” of what the token embedding represents, rather than it being mixed through a bunch of layers and getting a lot of context added to it.
 
-![](https://substackcdn.com/image/fetch/$s_!otr7!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F2e78b43b-e615-4ba0-a3de-7361138b28e2_5560x8280.png)
+![[raw/00-clippings/images/d9a52548dcf62ad6217cd9626ada2437_MD5.webp]]
 
 The model can now focus its internal dimensions on making sense of the tokens rather than needing to carry around information from the bottom layer. This makes the existing layers much more efficient and expressive than they would be on their own.
 
@@ -324,17 +324,17 @@ There are several steps to this process but let’s start at the beginning. A co
 2. **Group into chunks** – The mel features are grouped into chunks as a starting point for the sequence of tokens.
 3. **Downsample chunks** - The chunks are overlapped and processed by two 2-dimensional convolutional layers to shorten the sequence length. As such, it converts the 2D chunks into a sequence of embeddings (also called “soft” tokens to represent the continuous nature of the token).
 
-![](https://substackcdn.com/image/fetch/$s_!fjgL!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F93de9d19-38b6-4487-964c-1faa79971366_1856x1660.png)
+![[raw/00-clippings/images/17aae94eb751430bcd236c35847cb5d3_MD5.webp]]
 
 Fun fact: I recorded audio myself and created the mel spectogram for this visual!
 
 This process is much like the linear projection of the image patches to create embeddings. They still need to be processed subsequently by an encoder so that the embeddings are filled with contextual information. The audio encoder used in Gemma 4 is called a conformer and is much like a regular Transformer Encoder but also uses a convolutional module to process the soft tokens. A nice comparison is between the dense Gemma 4 31B and how the Conformer is implemented. Note how it produces embeddings rather than tokens.
 
-![](https://substackcdn.com/image/fetch/$s_!ZU5p!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F7f598397-69e1-4185-bba6-ebe9881c9e7d_2000x2992.png)
+![[raw/00-clippings/images/468cb5a2efddd03e1798d12d13d9dec5_MD5.webp]]
 
 Much like the vision encoder, the embeddings produced by the Conformer are projected onto the dimensional space of the embeddings that Gemma 4 would expect. Otherwise, you get a mismatch in embedding size which cannot be processed by Gemma 4.
 
-![](https://substackcdn.com/image/fetch/$s_!KsrJ!,w_1456,c_limit,f_webp,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F0f6fd442-0913-4538-b49a-262025b7aa4e_5820x3990.png)
+![[raw/00-clippings/images/974dcc12d97ea391c8325a8f4f9a32fa_MD5.webp]]
 
 This gives us a pipeline that feels quite similar to what we explored with the vision encoder!
 

@@ -1,0 +1,31 @@
+# Knowledge Base Schema
+
+## What This Is
+A personal knowledge base about Pavel personal interests. 
+
+## How It's Organized
+- raw/ contains unprocessed source material. Never modify these files.
+- wiki/ contains the organized wiki. AI maintains this entirely.
+- outputs/ contains generated reports, answers, and analyses.
+
+## Wiki Rules
+- Every topic gets its own .md file in wiki/
+- Every wiki file starts with a one-paragraph summary
+- Link related topics to each other using [[topic-name]] format
+- Maintain an INDEX.md in wiki/ that lists every topic with a one-line description
+- When new raw sources are added, update the relevant wiki articles
+- Give a lot of importance to research papers when the topic has a meaningful paper trail
+- References to papers must be clickable markdown links
+- When a paper is referenced, try your best to include a suitable supporting image or figure
+
+## My Interests
+- AI
+- Math
+- Omniverse
+- Robotics
+- Investing
+- XR
+- LeRobot
+- Game Programming
+- Computer Graphics
+- System Design
