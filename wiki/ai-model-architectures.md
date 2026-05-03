@@ -71,6 +71,8 @@ MoE replaces a single dense feedforward network with many specialized "expert" s
 
 **The MoE VRAM trap:** MoE models require all expert weights resident in memory simultaneously even though only a few activate per token. A 47B-parameter MoE model may need as much VRAM as a 70B dense model. See [[gpu-cuda]] for VRAM math.
 
+For a detailed walkthrough of MoE in practice, see [[gemma-4]] — Gemma 4's 26B A4B model uses 128 experts with 8 active + 1 shared expert (3× size), running at the speed of a 4B model despite 26B total parameters.
+
 ---
 
 ### 5. VLM — Vision-Language Model
@@ -166,3 +168,5 @@ The design key: the image encoder is the expensive step and runs once. The promp
 - [[gpu-cuda]] — VRAM requirements per architecture type, MoE trap
 - [[computer-vision]] — SAM for segmentation; VLM for visual reasoning
 - [[ai-agents]] — LAM as the architecture for autonomous agents
+- [[gemma-4]] — concrete MoE + VLM example: 26B A4B with 128 experts, vision encoder, per-layer embeddings
+- [[llm-training]] — how LLMs of all types are pre-trained, fine-tuned, and aligned with RLHF
