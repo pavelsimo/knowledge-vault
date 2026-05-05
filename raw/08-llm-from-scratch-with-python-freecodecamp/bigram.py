@@ -43,9 +43,8 @@ print(train_data.shape, val_data.shape)
 
 def get_batch(split):
     data = train_data if split == 'train' else val_data
-
     ix = torch.randint(len(data) - block_size, (batch_size,))
-    print("Random indices:", ix)
+    #print("Random indices:", ix)
     x = torch.stack([data[i:i+block_size] for i in ix])
     y = torch.stack([data[i+1:i+block_size+1] for i in ix])
     x, y = x.to(device), y.to(device)
@@ -63,6 +62,21 @@ for t in range(block_size):
     context = x[:t+1]
     target = y[t]
     print(f"when input is {context} the target: {target}")
+
+@torch.no_grad()  # disable gradient tracking to save memory and speed up evaluation
+def estimate_loss():
+    out = {}
+    model.eval()  # switch to eval mode so dropout/batchnorm behave correctly
+    for split in ['train', 'val']:
+        losses = torch.zeros(100)
+        for k in range(100):
+            X, Y = get_batch(split)
+            logits, loss = model(X, Y)
+            losses[k] = loss.item()  # store scalar loss for this batch
+        out[split] = losses.mean()  # average over 100 batches for a stable estimate
+    model.train()  # restore training mode before returning
+    return out
+
 
 class BigramLanguageModel(nn.Module):
     def __init__(self, vocab_size: int) -> None:
@@ -138,6 +152,44 @@ class BigramLanguageModel(nn.Module):
 
 vocab_size = len(chars)
 model = BigramLanguageModel(vocab_size).to(device)
+
+context = torch.zeros((1, 1), dtype=torch.long, device=device)
+generated_chars = decode(model.generate(context, max_new_tokens=500)[0].tolist())
+print("Generated chars:", generated_chars)
+
+learning_rate = 3e-4
+optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
+epochs = 100000
+
+for epoch in range(epochs):
+    # Sample a random batch of input sequences (xb) and their targets (yb).
+    # xb and yb are the same data shifted by one position — each target is
+    # the token that should follow the corresponding input token.
+    xb, yb = get_batch('train')
+
+    # Run the forward pass: look up embeddings, compute logits, and calculate
+    # the cross-entropy loss measuring how wrong the current predictions are.
+    logits, loss = model.forward(xb, yb)
+
+    # Clear gradients from the previous step before computing new ones.
+    # set_to_none=True frees the memory instead of filling it with zeros,
+    # which is slightly faster.
+    optimizer.zero_grad(set_to_none=True)
+
+    # Backpropagation: compute the gradient of the loss with respect to every
+    # parameter in the model (the embedding table rows in this case).
+    # Each gradient says "nudge this value up or down to reduce the loss."
+    loss.backward()
+
+    # Apply the gradients: update every parameter by a small step in the
+    # direction that reduces the loss, scaled by the learning rate.
+    optimizer.step()
+
+    if epoch % 500 == 0:
+        losses = estimate_loss()
+        print(f"Epoch {epoch+1}/{epochs}  train: {losses['train']:.4f}  val: {losses['val']:.4f}")
+
+print(loss.item())
 
 context = torch.zeros((1, 1), dtype=torch.long, device=device)
 generated_chars = decode(model.generate(context, max_new_tokens=500)[0].tolist())

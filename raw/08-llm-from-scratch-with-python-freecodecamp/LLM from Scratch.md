@@ -428,3 +428,136 @@ final embedding table:
   d → [-0.1, -0.1, -0.1, -0.1,  2.4]   ← 'e' dominates
   e → [ 2.4, -0.1, -0.1, -0.1, -0.1]   ← 'a' dominates (cycle wraps around)
 ```
+
+---
+
+## estimate_loss — Stable Loss Evaluation
+
+```python
+@torch.no_grad()
+def estimate_loss():
+    out = {}
+    model.eval()
+    for split in ['train', 'val']:
+        losses = torch.zeros(100)
+        for k in range(100):
+            X, Y = get_batch(split)
+            logits, loss = model(X, Y)
+            losses[k] = loss.item()
+        out[split] = losses.mean()
+    model.train()
+    return out
+```
+
+> **❓ What does "disable gradient tracking" mean?**
+
+During training, PyTorch records every operation on tensors so it can later compute gradients via backpropagation. This recording is the "computation graph" and it costs memory and time. During evaluation you don't need gradients — you're just measuring the loss, not updating weights. `@torch.no_grad()` tells PyTorch to skip building the graph entirely, making the forward pass faster and cheaper.
+
+```
+training:    forward pass → PyTorch records ops → loss.backward() uses them
+evaluation:  forward pass → no recording needed → @torch.no_grad() skips it
+```
+
+> **❓ What does "eval mode" mean? What is the default mode?**
+
+The default mode is **training mode** (`model.train()`). You switch to evaluation mode with `model.eval()`. The two modes exist because some layers behave differently depending on whether the model is learning or being tested:
+
+```
+model.train()  ← default — layers use training behavior
+model.eval()   ← evaluation — layers use inference behavior
+```
+
+> **❓ Why would dropout/batchnorm behave "incorrectly" without eval mode?**
+
+Two layers change behavior between modes:
+
+**Dropout** — during training it randomly zeros out some neurons (e.g. 20%) to prevent overfitting. During eval this would be wrong: you'd get different outputs each call and your loss estimate would be noisy and meaningless. In eval mode dropout is disabled — all neurons are active.
+
+**Batch Normalization** — during training it normalizes using the statistics of the *current batch*. During eval it should use the running statistics accumulated across all training batches, which are more stable. Using current-batch stats at eval time would give inconsistent results across batches of different sizes.
+
+```
+dropout:
+  train → randomly zero 20% of activations  ← adds noise intentionally
+  eval  → all activations pass through      ← consistent, deterministic
+
+batch norm:
+  train → normalize using current batch mean/std
+  eval  → normalize using running mean/std accumulated over all training
+```
+
+> **❓ Who calls `estimate_loss`? When?**
+
+In this file — **nobody**. 🙃 The function is defined but never wired up to the training loop. The loop currently just prints `loss.item()` from the last batch directly, which is a noisy single-batch reading.
+
+In the original Karpathy tutorial the training loop calls `estimate_loss` periodically — every N steps — to print a clean progress report:
+
+```python
+for epoch in range(epochs):
+    if epoch % 500 == 0:                     # every 500 steps
+        losses = estimate_loss()             # average over 100 batches
+        print(f"train: {losses['train']:.4f}  val: {losses['val']:.4f}")
+    ...
+```
+
+The gap between `train` loss and `val` loss is what tells you if the model is overfitting.
+
+> **❓ Why use `@torch.no_grad()` as a decorator? Is the function registering somewhere?**
+
+No registration happens — it's purely a wrapper. The decorator rewrites the function at definition time so every call automatically runs inside a `no_grad` context. These two are exactly equivalent:
+
+```python
+# decorator form
+@torch.no_grad()
+def estimate_loss():
+    ...
+
+# manual form — identical behavior
+def estimate_loss():
+    with torch.no_grad():
+        ...
+```
+
+Under the hood Python does: `estimate_loss = torch.no_grad()(estimate_loss)`. The decorator form is preferred when the *entire* function should run without gradients — it expresses that intent at the top instead of indenting everything inside a `with` block.
+
+> **❓ Why does `estimate_loss` run its own forward passes? Why not just record losses during training?**
+
+Three reasons you can't reuse the training loop's loss:
+
+**1. Val loss is never computed during training.** The training loop only touches `'train'` batches. There is no val loss to record — `estimate_loss` is the only place it gets computed.
+
+**2. Training loss is measured in the wrong mode.** During training, dropout is active — neurons are randomly zeroed out. The loss you see is from a crippled version of the model. `estimate_loss` calls `model.eval()` first, so it measures the full model without dropout noise. The two numbers aren't directly comparable.
+
+**3. Accumulated training losses mix weak and strong model states.** Over 500 steps the model keeps improving. Averaging those 500 losses blends an older, worse model with the current one — a misleading number that doesn't reflect current performance.
+
+```
+step 1    model is weak   → loss 3.2  ┐
+step 2    model improves  → loss 3.0  │  averaging gives a misleading ~2.7
+...                                   │  that doesn't reflect current state
+step 500  model now       → loss 2.4  ┘
+
+estimate_loss() at step 500 → 100 fresh batches on current weights → true 2.4
+```
+
+`estimate_loss` is a deliberate *pause and snapshot*: eval mode, val data, stable weights, averaged over 100 batches.
+
+> **❓ When dropout "disables neurons", does it zero out the weights?**
+
+No — dropout zeros **activations**, not weights. The weights stay completely intact.
+
+- **Weights** = the numbers stored in the model that get updated by the optimizer (e.g. embedding table rows)
+- **Activations** = the intermediate values computed as data flows through the network (the outputs of neurons)
+
+```
+input:       [1.0,  2.0,  3.0,  4.0]
+             ↓     ↓     ↓     ↓
+activations: [a0,   a1,   a2,   a3]   ← computed from weights
+
+dropout mask (p=0.5): [1, 0, 1, 0]   ← randomly chosen each forward pass
+
+after dropout: [a0,   0,   a2,   0]  ← a1 and a3 silenced
+               weights of a1, a3 are untouched — still there
+```
+
+Think of it like a worker calling in sick. Their tools and skills (weights) are still at the desk — they just produce no output today. Tomorrow a different worker might call in sick.
+
+The subtle effect on weights: because a zeroed neuron contributes nothing to the output, no gradient flows back through it during that step, so its weights don't get updated that step. But they accumulate updates on all the steps when they are active. This forces every neuron to learn independently rather than leaning on its neighbors — which is the whole point of dropout.
