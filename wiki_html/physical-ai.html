@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physical AI — Knowledge Vault</title>
+<style>
+:root {
+  --ivory:#FAF9F5; --paper:#FFFFFF; --slate:#141413;
+  --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D;
+  --g100:#F0EEE6; --g200:#E6E3DA; --g300:#D1CFC5; --g500:#87867F; --g700:#3D3D3A;
+  --serif:ui-serif,Georgia,"Times New Roman",Times,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}
+h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+.intro a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms;display:inline-flex;align-items:center;gap:7px}
+nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}
+.sec-body ul,.sec-body ol{margin:0 0 16px;padding-left:20px}
+.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--clay)}
+pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
+code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}
+th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}
+td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+.tag{display:inline-flex;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--g300);color:var(--g500);background:var(--paper)}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}
+footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+
+/* timeline component */
+.milestones{display:flex;flex-direction:column;gap:0;margin-top:24px}
+.milestone{display:grid;grid-template-columns:110px 28px 1fr;gap:0 18px;position:relative}
+.milestone .when{text-align:right;font-family:var(--mono);font-size:11.5px;color:var(--g500);padding-top:4px}
+.milestone .dot-col{display:flex;flex-direction:column;align-items:center}
+.milestone .dot{width:14px;height:14px;border-radius:50%;background:var(--paper);border:3px solid var(--clay);margin-top:4px;flex-shrink:0}
+.milestone .dot.done{background:var(--olive);border-color:var(--olive)}
+.milestone .line{width:2px;flex:1;background:var(--g300);margin:4px 0}
+.milestone:last-child .line{display:none}
+.milestone .mbody{padding-bottom:32px}
+.milestone .mbody h3{font-family:var(--serif);font-weight:500;font-size:18px;color:var(--slate);margin-bottom:4px}
+.milestone .mbody p{font-size:14px;color:var(--g500);margin-bottom:8px;max-width:580px}
+.milestone .mtags{display:flex;gap:6px;flex-wrap:wrap}
+.milestone .mtag{font-family:var(--mono);font-size:11px;background:var(--g100);border:1px solid var(--g300);border-radius:6px;padding:2px 8px;color:var(--g700)}
+@media(max-width:640px){.milestone{grid-template-columns:80px 24px 1fr}}
+</style>
+</head>
+<body><div class="wrap">
+  <header class="masthead">
+    <div class="eyebrow">Knowledge Vault</div>
+    <h1>Physical <em>AI</em></h1>
+    <p class="intro">AI systems that perceive, reason, and act in the physical world through robots, autonomous vehicles, and embodied machines. The core bottleneck is not model architecture but the cost and danger of collecting real-world interaction data — which pushes the whole stack toward simulation-first development.</p>
+    <nav class="toc">
+      <a href="#why-hard">Why It Is Hard</a>
+      <a href="#sim-first">Simulation-First Stack</a>
+      <a href="#foundation-model">Foundation-Model View</a>
+      <a href="#cosmos">Cosmos Workflow</a>
+      <a href="#related">Related Topics</a>
+    </nav>
+  </header>
+
+  <section id="why-hard">
+    <div class="sec-head"><span class="idx">01</span><h2>Why It Is Hard</h2></div>
+    <div class="sec-body">
+      <p>Two constraints dominate physical AI development:</p>
+      <ul>
+        <li>Real-world data collection is slow, expensive, and hard to diversify</li>
+        <li>Physical testing is risky, destructive, and operationally expensive</li>
+      </ul>
+      <p>That creates the <strong>robotics data gap</strong>: teams need far more edge cases and task diversity than they can safely collect in the real world. A robot that trains only on real data is bottlenecked not by compute but by time and physical risk.</p>
+    </div>
+  </section>
+
+  <section id="sim-first">
+    <div class="sec-head"><span class="idx">02</span><h2>Simulation-First Stack</h2></div>
+    <div class="sec-body">
+      <p>The standard answer is to convert the data problem into a compute problem. The pipeline flows from virtual environments through synthetic generation to real-world deployment:</p>
+
+      <div class="milestones">
+        <div class="milestone">
+          <div class="when">Phase 1</div>
+          <div class="dot-col"><span class="dot done"></span><span class="line"></span></div>
+          <div class="mbody">
+            <h3>Digital Twin Environment</h3>
+            <p>Build high-fidelity simulation environments in <a href="omniverse.html">Omniverse</a> with physically grounded rendering, physics, and sensor models. The virtual world must match real-world material properties and lighting.</p>
+            <div class="mtags"><span class="mtag">Omniverse</span><span class="mtag">PhysX</span><span class="mtag">RTX Rendering</span></div>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="when">Phase 2</div>
+          <div class="dot-col"><span class="dot done"></span><span class="line"></span></div>
+          <div class="mbody">
+            <h3>Synthetic Data Generation</h3>
+            <p>Expand what the model sees without repeating physical capture. Domain randomization, procedural scene generation, and sim-to-real augmentation cover the long tail of rare edge cases.</p>
+            <div class="mtags"><span class="mtag">Domain Randomization</span><span class="mtag">Procedural Gen</span><span class="mtag">Sim-to-Real</span></div>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="when">Phase 3</div>
+          <div class="dot-col"><span class="dot"></span><span class="line"></span></div>
+          <div class="mbody">
+            <h3>World Model Training</h3>
+            <p>World models predict or generate future world states for training and evaluation. They let robots simulate actions mentally before executing them physically — avoiding mistakes without real-world trial and error.</p>
+            <div class="mtags"><span class="mtag">World Foundation Models</span><span class="mtag">Cosmos</span><span class="mtag">Video Prediction</span></div>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="when">Phase 4</div>
+          <div class="dot-col"><span class="dot"></span><span class="line"></span></div>
+          <div class="mbody">
+            <h3>Real-World Deployment</h3>
+            <p>Policies trained in simulation transfer to real hardware. Teleoperation and real-world data collection fine-tune the sim-trained policy for the specific deployment environment.</p>
+            <div class="mtags"><span class="mtag">Sim-to-Real Transfer</span><span class="mtag">Fine-tuning</span><span class="mtag">Teleoperation</span></div>
+          </div>
+        </div>
+      </div>
+
+      <p><em>This is the core shift: spend more GPU time so you can spend less robot time.</em></p>
+    </div>
+  </section>
+
+  <section id="foundation-model">
+    <div class="sec-head"><span class="idx">03</span><h2>Foundation-Model View</h2></div>
+    <div class="sec-body">
+      <p>A physical-AI foundation model maps sensor and language inputs into action outputs. The architecture is "LLM-like" in shape, but the output is not text — it is control.</p>
+      <table>
+        <thead><tr><th>Input modality</th><th>Examples</th></tr></thead>
+        <tbody>
+          <tr><td>Sensor tokens</td><td>Camera images, lidar point clouds, force/torque readings, proprioception</td></tr>
+          <tr><td>Text or task tokens</td><td>Natural language instructions, goal images, structured task specs</td></tr>
+          <tr><td>Action tokens (output)</td><td>Joint torques, velocities, gripper commands, end-effector trajectories</td></tr>
+        </tbody>
+      </table>
+      <p>The power of treating robot control as a token prediction problem is that it opens the door to pre-training on internet-scale data and then fine-tuning on robot-specific experience — the same scaling playbook that worked for language and vision.</p>
+    </div>
+  </section>
+
+  <section id="cosmos">
+    <div class="sec-head"><span class="idx">04</span><h2>Cosmos Workflow</h2></div>
+    <div class="sec-body">
+      <p>NVIDIA Cosmos is a world-foundation-model platform with three recurring functions that cover the full simulation pipeline:</p>
+      <table>
+        <thead><tr><th>Component</th><th>Role</th><th>Why it matters</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Predict</strong></td><td>Generate plausible world trajectories or videos</td><td>A small real dataset becomes a much larger, more varied training curriculum</td></tr>
+          <tr><td><strong>Transfer</strong></td><td>Create controllable augmentations from real or synthetic footage</td><td>Bridges the domain gap between simulation and physical deployment</td></tr>
+          <tr><td><strong>Reason</strong></td><td>Support downstream world understanding and decision-making</td><td>Enables planning and evaluation before committing to physical actions</td></tr>
+        </tbody>
+      </table>
+      <p>Predict-style models matter because they turn limited real experience into diverse training curricula. The model learns from thousands of variations it has never physically encountered.</p>
+    </div>
+  </section>
+
+  <section id="related">
+    <div class="sec-head"><span class="idx">05</span><h2>Related Topics</h2></div>
+    <div class="sec-body">
+      <ul>
+        <li><a href="robot-learning.html">Robot Learning</a> — policy learning and foundation-model robotics sit directly on this stack</li>
+        <li><a href="omniverse.html">Omniverse</a> — simulation infrastructure for embodied-AI development</li>
+        <li><a href="digital-twins.html">Digital Twins</a> — realistic twins are where many systems get trained and validated</li>
+        <li><a href="open-usd.html">OpenUSD</a> — the scene format powering simulation environments</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer><span class="k">Knowledge Vault</span><a href="INDEX.html">← All topics</a></footer>
+</div></body>
+</html>

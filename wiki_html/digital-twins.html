@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digital Twins — Knowledge Vault</title>
+<style>
+:root {
+  --ivory:#FAF9F5; --paper:#FFFFFF; --slate:#141413;
+  --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D;
+  --g100:#F0EEE6; --g200:#E6E3DA; --g300:#D1CFC5; --g500:#87867F; --g700:#3D3D3A;
+  --serif:ui-serif,Georgia,"Times New Roman",Times,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}
+h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+.intro a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms;display:inline-flex;align-items:center;gap:7px}
+nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}
+.sec-body ul,.sec-body ol{margin:0 0 16px;padding-left:20px}
+.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--clay)}
+pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
+code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}
+th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}
+td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+.tag{display:inline-flex;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--g300);color:var(--g500);background:var(--paper)}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}
+footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+
+/* timeline component */
+.milestones{display:flex;flex-direction:column;gap:0;margin:24px 0}
+.milestone{display:grid;grid-template-columns:100px 28px 1fr;gap:0 18px;position:relative}
+.milestone .when{text-align:right;font-family:var(--mono);font-size:11.5px;color:var(--g500);padding-top:4px}
+.milestone .dot-col{display:flex;flex-direction:column;align-items:center}
+.milestone .dot{width:14px;height:14px;border-radius:50%;background:var(--paper);border:3px solid var(--clay);margin-top:4px;flex-shrink:0}
+.milestone .dot.done{background:var(--olive);border-color:var(--olive)}
+.milestone .line{width:2px;flex:1;background:var(--g300);margin:4px 0}
+.milestone:last-child .line{display:none}
+.milestone .mbody{padding-bottom:32px}
+.milestone .mbody h3{font-family:var(--serif);font-weight:500;font-size:18px;color:var(--slate);margin-bottom:4px}
+.milestone .mbody p{font-size:14px;color:var(--g500);margin-bottom:8px;max-width:580px}
+.milestone .mtags{display:flex;gap:6px;flex-wrap:wrap}
+.milestone .mtag{font-family:var(--mono);font-size:11px;background:var(--g100);border:1px solid var(--g300);border-radius:6px;padding:2px 8px;color:var(--g700)}
+@media(max-width:640px){.milestone{grid-template-columns:72px 22px 1fr}}
+
+/* data loop flowchart */
+.flow-box{background:var(--paper);border:1.5px solid var(--g300);border-radius:12px;padding:24px;overflow-x:auto;margin:20px 0}
+.flow-box svg{display:block;width:100%;height:auto}
+</style>
+</head>
+<body><div class="wrap">
+  <header class="masthead">
+    <div class="eyebrow">Knowledge Vault</div>
+    <h1>Digital <em>Twins</em></h1>
+    <p class="intro">Live virtual representations of physical products, facilities, or processes that stay aligned with real-world data. The core idea is to combine 3D structure, operational telemetry, simulation, and visualization so teams can plan, validate, and optimize decisions in software before applying them to the physical system.</p>
+    <nav class="toc">
+      <a href="#what-makes-twin">What Makes a Twin</a>
+      <a href="#enabling-tech">Enabling Technologies</a>
+      <a href="#phases">Design to Operations</a>
+      <a href="#use-cases">Common Use Cases</a>
+      <a href="#related">Related Topics</a>
+    </nav>
+  </header>
+
+  <section id="what-makes-twin">
+    <div class="sec-head"><span class="idx">01</span><h2>What Makes a Twin Different</h2></div>
+    <div class="sec-body">
+      <p>A digital twin is more than a 3D model. The important shift is from static visualization to a living model that can answer "what happens if we change this?"</p>
+      <ul>
+        <li>It mirrors a real asset, process, or environment</li>
+        <li>It can ingest real-time or historical data from sensors and enterprise systems</li>
+        <li>It supports simulation, analysis, and operational decision-making</li>
+      </ul>
+
+      <div class="flow-box">
+        <svg viewBox="0 0 680 240" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrDT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#87867F"/>
+            </marker>
+            <marker id="arrDTC" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#D97757"/>
+            </marker>
+          </defs>
+
+          <!-- Physical World -->
+          <rect x="20" y="88" width="140" height="64" rx="10" fill="#141413"/>
+          <text x="90" y="113" text-anchor="middle" font-family="ui-serif,Georgia,serif" font-size="13" fill="#FAF9F5" font-weight="500">Physical</text>
+          <text x="90" y="131" text-anchor="middle" font-family="ui-serif,Georgia,serif" font-size="13" fill="#FAF9F5" font-weight="500">World</text>
+
+          <!-- Sensor / Data ingestion -->
+          <rect x="220" y="20" width="140" height="52" rx="8" fill="#FAF9F5" stroke="#D1CFC5" stroke-width="1.5"/>
+          <text x="290" y="42" text-anchor="middle" font-family="ui-monospace,monospace" font-size="11" fill="#141413" font-weight="600">Sensor Data</text>
+          <text x="290" y="59" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9.5" fill="#87867F">IoT · cameras · telemetry</text>
+
+          <rect x="220" y="168" width="140" height="52" rx="8" fill="#FAF9F5" stroke="#D1CFC5" stroke-width="1.5"/>
+          <text x="290" y="190" text-anchor="middle" font-family="ui-monospace,monospace" font-size="11" fill="#141413" font-weight="600">Enterprise Data</text>
+          <text x="290" y="207" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9.5" fill="#87867F">ERP · MES · BIM · CAD</text>
+
+          <!-- Digital Twin -->
+          <rect x="430" y="72" width="160" height="96" rx="10" fill="#D97757" fill-opacity="0.1" stroke="#D97757" stroke-width="2"/>
+          <text x="510" y="105" text-anchor="middle" font-family="ui-serif,Georgia,serif" font-size="14" fill="#141413" font-weight="500">Digital Twin</text>
+          <text x="510" y="125" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9.5" fill="#87867F">3D model + live data</text>
+          <text x="510" y="142" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9.5" fill="#87867F">simulation + analysis</text>
+
+          <!-- Arrows: physical → sensors, enterprise -->
+          <path d="M160 106 Q190 46 220 46" stroke="#87867F" stroke-width="1.5" fill="none" marker-end="url(#arrDT)"/>
+          <path d="M160 134 Q190 194 220 194" stroke="#87867F" stroke-width="1.5" fill="none" marker-end="url(#arrDT)"/>
+
+          <!-- Arrows: data → twin -->
+          <path d="M360 46 Q394 46 430 108" stroke="#87867F" stroke-width="1.5" fill="none" marker-end="url(#arrDT)"/>
+          <path d="M360 194 Q394 194 430 132" stroke="#87867F" stroke-width="1.5" fill="none" marker-end="url(#arrDT)"/>
+
+          <!-- Feedback arrow: twin → physical (decisions) -->
+          <path d="M430 120 Q300 120 200 120 Q140 120 160 120" stroke="#D97757" stroke-width="1.5" fill="none" stroke-dasharray="5 4" marker-end="url(#arrDTC)"/>
+          <text x="300" y="113" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9.5" fill="#D97757">decisions / interventions</text>
+        </svg>
+      </div>
+
+      <p>The data loop is continuous: physical systems feed data into the twin, the twin enables simulation and analysis, and decisions flow back to the physical world. Static 3D models are not twins — the live data connection is what makes the difference.</p>
+    </div>
+  </section>
+
+  <section id="enabling-tech">
+    <div class="sec-head"><span class="idx">02</span><h2>Enabling Technologies</h2></div>
+    <div class="sec-body">
+      <p>Four ingredients show up repeatedly in production digital twin implementations:</p>
+      <table>
+        <thead><tr><th>Technology</th><th>Role in the twin</th></tr></thead>
+        <tbody>
+          <tr><td><strong>OpenUSD</strong></td><td>Unifies CAD, BIM, scanned geometry, metadata, and IoT-linked assets into one composable scene</td></tr>
+          <tr><td><strong>Computer graphics</strong></td><td>Physically grounded rendering, lighting, and simulation — the twin must look and behave like the real thing</td></tr>
+          <tr><td><strong>Accelerated computing</strong></td><td>Industrial-scale visualization and physics require GPU-accelerated rendering and simulation</td></tr>
+          <tr><td><strong>Generative AI</strong></td><td>Synthetic data, natural-language interfaces, and faster interaction with complex systems</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="phases">
+    <div class="sec-head"><span class="idx">03</span><h2>Design to Operations: Twin Phases</h2></div>
+    <div class="sec-body">
+      <p>A typical digital twin lifecycle for a manufacturing facility flows through three major phases:</p>
+
+      <div class="milestones">
+        <div class="milestone">
+          <div class="when">Design</div>
+          <div class="dot-col"><span class="dot done"></span><span class="line"></span></div>
+          <div class="mbody">
+            <h3>Data Ingestion &amp; Scene Assembly</h3>
+            <p>Ingest layout and equipment data from many upstream tools (CAD, BIM, 3D scan, process simulation). Compose them into a shared USD scene with adjustment layers and payloads. Different teams and suppliers each own their layer.</p>
+            <div class="mtags"><span class="mtag">OpenUSD</span><span class="mtag">Connectors</span><span class="mtag">Layer composition</span></div>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="when">Simulation</div>
+          <div class="dot-col"><span class="dot done"></span><span class="line"></span></div>
+          <div class="mbody">
+            <h3>Validation &amp; Optimization</h3>
+            <p>Use the twin for planning, review, and simulation. Test layout changes, robot trajectories, material flow, and safety scenarios in software before committing physical resources. Train AI models using synthetic data from the twin.</p>
+            <div class="mtags"><span class="mtag">PhysX</span><span class="mtag">Isaac Sim</span><span class="mtag">Synthetic data</span><span class="mtag">XR review</span></div>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="when">Operations</div>
+          <div class="dot-col"><span class="dot"></span><span class="line"></span></div>
+          <div class="mbody">
+            <h3>Live Monitoring &amp; Continuous Improvement</h3>
+            <p>Connect live sensor data, production telemetry, and enterprise systems to the running twin. Monitor OEE, detect anomalies, and validate changes before deploying them to the floor. The twin becomes the operational system of record for the facility.</p>
+            <div class="mtags"><span class="mtag">IoT integration</span><span class="mtag">MES / ERP</span><span class="mtag">Anomaly detection</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="use-cases">
+    <div class="sec-head"><span class="idx">04</span><h2>Common Use Cases</h2></div>
+    <div class="sec-body">
+      <ul>
+        <li><strong>Factory planning and material-flow optimization</strong> — test layout, routing, and throughput changes before physical rearrangement</li>
+        <li><strong>Robotics training and validation</strong> — generate synthetic data and test robot policies before real deployment</li>
+        <li><strong>Optical inspection and defect detection</strong> — train vision models on perfect, annotated synthetic data from the twin</li>
+        <li><strong>Smart-city planning and traffic simulation</strong> — model pedestrian flow, traffic routing, and infrastructure changes</li>
+        <li><strong>Data center modeling</strong> — simulate energy, cooling, and workload distribution; optimize efficiency without physical experimentation</li>
+      </ul>
+      <p>The business case is consistent: one environment supports design review, process simulation, and production operations instead of separate disconnected tools. The twin provides a single source of truth that all stakeholders can query.</p>
+    </div>
+  </section>
+
+  <section id="related">
+    <div class="sec-head"><span class="idx">05</span><h2>Related Topics</h2></div>
+    <div class="sec-body">
+      <ul>
+        <li><a href="omniverse.html">Omniverse</a> — the platform layer used to build and operate many twins</li>
+        <li><a href="open-usd.html">OpenUSD</a> — the data integration layer underneath the scene</li>
+        <li><a href="physical-ai.html">Physical AI</a> — twins are a proving ground for robot and autonomy systems</li>
+        <li><a href="robot-learning.html">Robot Learning</a> — synthetic data from twins feeds policy training</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer><span class="k">Knowledge Vault</span><a href="INDEX.html">← All topics</a></footer>
+</div></body>
+</html>

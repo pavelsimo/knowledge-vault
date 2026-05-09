@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generative Models — Knowledge Vault</title>
+<style>
+:root {
+  --ivory:#FAF9F5; --paper:#FFFFFF; --slate:#141413;
+  --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D;
+  --g100:#F0EEE6; --g200:#E6E3DA; --g300:#D1CFC5; --g500:#87867F; --g700:#3D3D3A;
+  --serif:ui-serif,Georgia,"Times New Roman",Times,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}
+h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+.intro a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms;display:inline-flex;align-items:center;gap:7px}
+nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}
+.sec-body ul,.sec-body ol{margin:0 0 16px;padding-left:20px}
+.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--clay)}
+pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
+code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}
+th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}
+td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+
+/* ── model comparison cards (component 01 pattern: side-by-side) ── */
+.model-compare{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin:28px 0}
+@media(max-width:900px){.model-compare{grid-template-columns:1fr}}
+.mc-card{background:var(--paper);border:1.5px solid var(--g300);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:16px}
+.mc-card .mc-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--clay);margin-bottom:2px}
+.mc-card h3{font-family:var(--serif);font-size:20px;font-weight:500;color:var(--slate);margin:0}
+.mc-card .mc-desc{font-size:14px;color:var(--g700)}
+.mc-card .mc-pros,.mc-card .mc-cons{font-size:13px}
+.mc-card .mc-pros li::marker{color:var(--olive)}
+.mc-card .mc-cons li::marker{color:var(--clay)}
+.mc-card .mc-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
+.mc-badge{font-family:var(--mono);font-size:11px;padding:3px 10px;border-radius:999px;border:1px solid var(--g300);color:var(--g500);background:var(--g100)}
+.callout{display:flex;gap:12px;border:1.5px solid var(--oat);background:rgba(227,218,204,.3);border-radius:10px;padding:14px 16px;margin:18px 0;font-size:14px;color:var(--g700)}
+.callout .ico{color:var(--clay);font-weight:700;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <div class="eyebrow">AI · Deep Learning</div>
+  <h1><em>Generative</em> models</h1>
+  <p class="intro">
+    Generative models learn the probability distribution of data, enabling them to synthesize
+    new samples. Unlike discriminative models (which learn P(y|x)), generative models learn
+    P(x) or P(x|y). This topic covers the full taxonomy: autoencoders, VAEs, GANs, and diffusion models.
+  </p>
+  <nav class="toc">
+    <a href="#discriminative">Discriminative vs Generative</a>
+    <a href="#taxonomy">Taxonomy</a>
+    <a href="#vae">VAE</a>
+    <a href="#gan">GAN</a>
+    <a href="#diffusion">Diffusion</a>
+    <a href="#ldm">Latent Diffusion</a>
+    <a href="#state">State 2025</a>
+  </nav>
+</header>
+
+<!-- ── SECTION 1 ── -->
+<section id="discriminative">
+  <div class="sec-head"><span class="idx">01</span><h2>Discriminative vs Generative</h2></div>
+  <div class="sec-body">
+    <table>
+      <thead>
+        <tr><th>Model type</th><th>Learns</th><th>Question</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Discriminative</strong></td><td>P(y|x)</td><td>"Given this image, what's the probability it's a cat?"</td></tr>
+        <tr><td><strong>Generative</strong></td><td>P(x)</td><td>"What kinds of images exist, and how likely are they?"</td></tr>
+        <tr><td><strong>Conditional generative</strong></td><td>P(x|y)</td><td>"Generate an image, given that the label is cat."</td></tr>
+      </tbody>
+    </table>
+    <p><strong>When to use generative models:</strong> whenever there is ambiguity in the output.
+    Asking for "a dog wearing a hot-dog hat" has many valid answers — generative models capture this distribution.</p>
+
+    <h3>Training objective: maximum likelihood</h3>
+    <p>All generative models optimize maximum likelihood:</p>
+    <pre>W* = argmax_W Σᵢ log p(x⁽ⁱ⁾; W)</pre>
+    <p>Equivalent to minimizing <strong>Negative Log Likelihood (NLL)</strong>.</p>
+  </div>
+</section>
+
+<!-- ── SECTION 2: Taxonomy ── -->
+<section id="taxonomy">
+  <div class="sec-head"><span class="idx">02</span><h2>Taxonomy of generative models</h2></div>
+  <div class="sec-body">
+    <pre>Generative Models
+├── Can compute P(x) directly (Explicit Density)
+│   ├── Tractable density → Autoregressive models (PixelCNN, GPT)
+│   └── Approximate density → VAE — optimize ELBO
+└── Cannot compute P(x), but can sample from P(x) (Implicit Density)
+    ├── Direct sampling → GAN
+    └── Indirect (iterative) → Diffusion Models</pre>
+    <p>The key split: <strong>explicit</strong> models reason about probabilities directly;
+    <strong>implicit</strong> models just generate samples without assigning likelihoods.</p>
+
+    <div class="model-compare">
+      <div class="mc-card">
+        <div>
+          <div class="mc-label">Explicit · Approximate</div>
+          <h3>VAE</h3>
+        </div>
+        <p class="mc-desc">Probabilistic encoder-decoder. Learns a structured latent space where you can sample and interpolate.</p>
+        <ul class="mc-pros">
+          <li>Stable training</li>
+          <li>Interpretable latent space</li>
+          <li>Used in LDM encoder</li>
+        </ul>
+        <ul class="mc-cons">
+          <li>Blurry samples (vs GAN/Diffusion)</li>
+          <li>Optimizes ELBO, not exact likelihood</li>
+        </ul>
+        <div class="mc-badges">
+          <span class="mc-badge">ELBO objective</span>
+          <span class="mc-badge">Stable</span>
+        </div>
+      </div>
+      <div class="mc-card">
+        <div>
+          <div class="mc-label">Implicit · Direct</div>
+          <h3>GAN</h3>
+        </div>
+        <p class="mc-desc">Generator vs Discriminator minimax game. Dominated image synthesis 2016–2021.</p>
+        <ul class="mc-pros">
+          <li>Sharp, high-quality images</li>
+          <li>Fast inference (single pass)</li>
+        </ul>
+        <ul class="mc-cons">
+          <li>Unstable training</li>
+          <li>Mode collapse</li>
+          <li>No likelihood estimate</li>
+        </ul>
+        <div class="mc-badges">
+          <span class="mc-badge">Adversarial</span>
+          <span class="mc-badge">Mostly superseded</span>
+        </div>
+      </div>
+      <div class="mc-card">
+        <div>
+          <div class="mc-label">Implicit · Iterative</div>
+          <h3>Diffusion</h3>
+        </div>
+        <p class="mc-desc">Iterative denoising from noise. Current state of the art for image and video generation.</p>
+        <ul class="mc-pros">
+          <li>Stable training</li>
+          <li>High quality &amp; diversity</li>
+          <li>Scales well with compute</li>
+        </ul>
+        <ul class="mc-cons">
+          <li>Slow inference (many steps)</li>
+          <li>High compute cost</li>
+        </ul>
+        <div class="mc-badges">
+          <span class="mc-badge">SOTA 2025</span>
+          <span class="mc-badge">Iterative</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 3: VAE ── -->
+<section id="vae">
+  <div class="sec-head"><span class="idx">03</span><h2>Variational Autoencoders (VAE)</h2></div>
+  <div class="sec-body">
+    <p>VAEs extend autoencoders to be <strong>probabilistic generative models</strong>. Instead of
+    encoding x to a fixed z, the encoder outputs a distribution q(z|x) (mean and variance).</p>
+
+    <h3>VAE generative process</h3>
+    <ol>
+      <li>Sample z from prior <code>p(z)</code> (e.g., Gaussian)</li>
+      <li>Sample x from conditional <code>p_θ(x | z)</code> using the decoder</li>
+    </ol>
+    <p>After training, generate new data: <code>sample z from p(z) → feed to decoder → get new x</code>.</p>
+
+    <h3>ELBO derivation</h3>
+    <p>Computing the true posterior P(z|x) is <strong>intractable</strong>. Solution: lower-bound the log-likelihood:</p>
+    <pre>ELBO = E[log P(x|z)] - KL(q(z|x) || p(z))</pre>
+    <ul>
+      <li><strong>Reconstruction term:</strong> decoder should reconstruct x from z</li>
+      <li><strong>KL term:</strong> keep the learned distribution close to the prior (usually Gaussian)</li>
+    </ul>
+    <div class="callout">
+      <span class="ico">★</span>
+      <div><strong>Analogy:</strong> you can't reach the cloud (true density) with your ruler, but you can push a floor (ELBO) up toward it as high as possible.</div>
+    </div>
+    <p><a href="https://arxiv.org/pdf/1312.6114">Auto-Encoding Variational Bayes (Kingma &amp; Welling)</a></p>
+  </div>
+</section>
+
+<!-- ── SECTION 4: GAN ── -->
+<section id="gan">
+  <div class="sec-head"><span class="idx">04</span><h2>GANs (Generative Adversarial Networks)</h2></div>
+  <div class="sec-body">
+    <p>Two networks compete in a <strong>minimax game</strong>:</p>
+    <ul>
+      <li><strong>Generator G:</strong> takes random noise z → produces fake image G(z)</li>
+      <li><strong>Discriminator D:</strong> tries to distinguish real images x from fakes G(z)</li>
+    </ul>
+    <p><strong>Goal:</strong> the generator learns to fool the discriminator until D can no longer
+    distinguish fake from real. At equilibrium: p_G = p_data.</p>
+    <p><strong>Analogy:</strong> forger (G) vs. detective (D). Forger improves to create more convincing
+    fakes; detective improves to catch them.</p>
+
+    <h3>Training challenges</h3>
+    <ul>
+      <li>No stable loss curve to monitor progress</li>
+      <li>Unstable training (mode collapse, oscillation)</li>
+      <li>Hard to scale to large models</li>
+    </ul>
+
+    <h3>Key papers</h3>
+    <ul>
+      <li><a href="https://arxiv.org/pdf/1406.2661">Generative Adversarial Nets (Goodfellow et al., 2014)</a></li>
+      <li><a href="https://arxiv.org/pdf/1511.06434">DCGAN</a> — first GAN to work on non-toy data</li>
+      <li><a href="https://arxiv.org/pdf/1812.04948">StyleGAN</a></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ── SECTION 5: Diffusion ── -->
+<section id="diffusion">
+  <div class="sec-head"><span class="idx">05</span><h2>Diffusion Models</h2></div>
+  <div class="sec-body">
+    <p>Diffusion models generate images by <strong>iteratively denoising</strong> random noise:</p>
+    <ul>
+      <li><strong>Forward process (training):</strong> gradually add Gaussian noise to a real image over T steps until it becomes pure noise</li>
+      <li><strong>Reverse process (inference):</strong> a neural network learns to predict and remove the noise step-by-step, starting from pure noise</li>
+    </ul>
+    <p><a href="https://arxiv.org/pdf/2006.11239">Denoising Diffusion Probabilistic Models (DDPM)</a></p>
+
+    <h3>Rectified Flow</h3>
+    <p>Trains the model to move along <strong>straight paths</strong> from noise to data (vs. curved DDPM paths). Faster inference (1–4 steps vs. dozens). Used in Stable Diffusion 3, FLUX.</p>
+    <p><a href="https://arxiv.org/pdf/2209.03003">Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow</a></p>
+
+    <h3>Classifier-Free Guidance (CFG)</h3>
+    <p>Trains one model for both conditional and unconditional generation. At inference:</p>
+    <pre>score = score_unconditional + w × (score_conditional - score_unconditional)</pre>
+    <p>Higher guidance weight w → samples more strongly matching the condition.</p>
+    <p><a href="https://arxiv.org/pdf/2207.12598">Classifier-Free Diffusion Guidance</a></p>
+
+    <h3>Diffusion Transformer (DiT)</h3>
+    <p>Replace the U-Net backbone inside diffusion models with a Transformer. Scales better with compute.
+    Used in Stable Diffusion 3, FLUX, Sora.</p>
+    <p><a href="https://arxiv.org/pdf/2212.09748">Scalable Diffusion Models with Transformers</a></p>
+
+    <h3>Diffusion Distillation</h3>
+    <p>Compress many denoising steps to fewer via distillation:</p>
+    <ul>
+      <li><a href="https://arxiv.org/pdf/2202.00512">Progressive Distillation for Fast Sampling</a></li>
+      <li><a href="https://arxiv.org/pdf/2303.01469">Consistency Models</a></li>
+      <li>Adversarial Diffusion Distillation (ADD)</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ── SECTION 6: LDM ── -->
+<section id="ldm">
+  <div class="sec-head"><span class="idx">06</span><h2>Latent Diffusion Models (LDMs)</h2></div>
+  <div class="sec-body">
+    <p>Running diffusion in pixel space is expensive. LDMs compress images into a lower-dimensional
+    latent space first:</p>
+    <ol>
+      <li>Train a VAE to compress images into latent codes</li>
+      <li>Run the diffusion process in this compact latent space</li>
+      <li>Decode the final latent back to pixels with the VAE decoder</li>
+    </ol>
+    <p>Modern LDM pipelines use <strong>VAE + GAN + Diffusion</strong> — each component handles what
+    it's best at:</p>
+    <ul>
+      <li><strong>VAE + GAN:</strong> encoder/decoder for crisp image reconstruction</li>
+      <li><strong>Diffusion:</strong> the generation process in latent space</li>
+    </ul>
+    <p><a href="https://arxiv.org/pdf/2112.10752">High-Resolution Image Synthesis with Latent Diffusion Models</a></p>
+
+    <h3>Text-to-Image and Text-to-Video</h3>
+    <ul>
+      <li><strong>Text-to-image:</strong> FLUX (Black Forest Labs), Stable Diffusion 3</li>
+      <li><strong>Text-to-video:</strong> Sora (OpenAI), MovieGen (Meta), HunyuanVideo (Tencent), Wan (Alibaba), Cosmos (NVIDIA)</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ── SECTION 7: State 2025 ── -->
+<section id="state">
+  <div class="sec-head"><span class="idx">07</span><h2>Current state (2025)</h2></div>
+  <div class="sec-body">
+    <table>
+      <thead>
+        <tr><th>Family</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>GANs</td><td>Historically important, mostly replaced</td></tr>
+        <tr><td>Diffusion models</td><td>Dominant for image and video generation</td></tr>
+        <tr><td>Autoregressive models</td><td>Dominant for language; increasingly used for images</td></tr>
+        <tr><td>VAEs</td><td>Essential component in LDM encoder/decoder</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Related Topics</h3>
+    <ul>
+      <li><a href="self-supervised-learning.html">self-supervised-learning</a> — MAE and contrastive learning are related unsupervised methods</li>
+      <li><a href="attention-transformers.html">attention-transformers</a> — DiT uses transformers</li>
+      <li><a href="neural-networks.html">neural-networks</a> — backprop and loss functions underlying all generative models</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <span class="k">Knowledge Vault</span>
+  <span>AI · Generative Models</span>
+</footer>
+
+</div>
+</body>
+</html>

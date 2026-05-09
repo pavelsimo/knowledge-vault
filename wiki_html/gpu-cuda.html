@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GPU & CUDA — Knowledge Vault</title>
+<style>
+:root{--ivory:#FAF9F5;--paper:#FFFFFF;--slate:#141413;--clay:#D97757;--clay-d:#B85C3E;--oat:#E3DACC;--olive:#788C5D;--g100:#F0EEE6;--g200:#E6E3DA;--g300:#D1CFC5;--g500:#87867F;--g700:#3D3D3A;--serif:ui-serif,Georgia,"Times New Roman",Times,serif;--sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;--mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms}nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}.sec-body ul{margin:0 0 16px;padding-left:20px}.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}a:hover{text-decoration-color:var(--clay)}
+pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
+code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}pre code{background:none;padding:0;font-size:inherit}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}footer a{color:var(--clay)}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+.callout{background:var(--g100);border-left:3px solid var(--clay);border-radius:0 6px 6px 0;padding:14px 18px;margin:0 0 20px;font-size:14px;color:var(--g700)}
+/* VRAM fit grid */
+.vram-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:0 0 24px}
+.vram-card{background:var(--paper);border:1.5px solid var(--g300);border-radius:10px;padding:16px}
+.vram-card .size{font-family:var(--mono);font-size:22px;font-weight:600;color:var(--clay);margin-bottom:8px}
+.vram-card .rows{font-size:13px;color:var(--g700);line-height:1.9}
+.vram-card .rows span{font-family:var(--mono);font-size:11px;color:var(--g500)}
+/* tier badge */
+.tier{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;text-transform:uppercase;margin-right:6px}
+.tier-s{background:#D97757;color:#fff}
+.tier-a{background:#788C5D;color:#fff}
+/* error callout */
+.error-box{background:#fff5f5;border:1.5px solid #F5B8A9;border-radius:8px;padding:14px 18px;margin:0 0 20px;font-family:var(--mono);font-size:13px;color:#8B2A1A}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="masthead">
+  <div class="eyebrow">Knowledge Vault</div>
+  <h1>GPU &amp; <em>CUDA</em></h1>
+  <p class="intro">GPUs are massively parallel processors that power modern deep learning. CUDA is NVIDIA's programming platform for running computations on their GPUs. Understanding GPU architecture is essential for debugging memory issues and choosing the right hardware for LLM inference.</p>
+  <nav class="toc">
+    <a href="#kernels">CUDA Kernels</a>
+    <a href="#architectures">GPU Architectures</a>
+    <a href="#vram">VRAM Math</a>
+    <a href="#parallelism">Parallelism</a>
+    <a href="#tier">GPU Tier List</a>
+    <a href="#related">Related Topics</a>
+  </nav>
+</header>
+
+<section id="kernels">
+  <div class="sec-head"><span class="idx">01</span><h2>CUDA Kernels</h2></div>
+  <div class="sec-body">
+    <p>A <strong>kernel</strong> is a function that runs on the GPU — highly parallelized across thousands of cores simultaneously. Deep learning operations (matrix multiplications, attention, convolutions) are all implemented as CUDA kernels.</p>
+    <p>When PyTorch runs an operation:</p>
+    <ol style="padding-left:20px;margin:0 0 16px">
+      <li>It does <em>not</em> send Python code to the GPU</li>
+      <li>It calls pre-compiled <strong>CUDA kernels</strong> (binary machine code) for the specific GPU architecture</li>
+      <li>These kernels are embedded in the PyTorch binary at build time</li>
+    </ol>
+    <h3>Common CUDA Error</h3>
+    <div class="error-box">CUDA error: no kernel image is available for execution on the device</div>
+    <p><strong>Meaning:</strong> The PyTorch build doesn't include compiled kernels for your GPU's architecture. Fix options: (1) install a PyTorch version that supports your GPU, (2) build from source for your specific architecture, (3) use CPU inference.</p>
+
+    <h3>Safetensors vs pytorch_model.bin</h3>
+    <table>
+      <tr><th>Format</th><th>Security</th><th>Speed</th><th>Portability</th></tr>
+      <tr><td><code>pytorch_model.bin</code></td><td>Can execute Python on load (unsafe)</td><td>Slower (deserialization)</td><td>PyTorch only</td></tr>
+      <tr><td><code>.safetensors</code></td><td>Cannot execute code (safe)</td><td>Faster (memory-mapped)</td><td>Multi-framework</td></tr>
+    </table>
+    <div class="callout">Modern Hugging Face models default to <strong>.safetensors</strong> — always prefer it.</div>
+  </div>
+</section>
+
+<section id="architectures">
+  <div class="sec-head"><span class="idx">02</span><h2>GPU Architectures</h2></div>
+  <div class="sec-body">
+    <p>Each GPU generation has a <strong>compute capability</strong> code (sm_XX) that identifies its supported CUDA features. PyTorch wheels only embed kernels for a subset of these.</p>
+    <table>
+      <tr><th>GPU Family</th><th>Architecture</th><th>Compute Capability</th><th>Code</th></tr>
+      <tr><td>GTX 900</td><td>Maxwell</td><td>5.2</td><td>sm_52</td></tr>
+      <tr><td>GTX 10xx (Pascal)</td><td>Pascal</td><td>6.1</td><td><strong>sm_61</strong></td></tr>
+      <tr><td>RTX 20xx</td><td>Turing</td><td>7.5</td><td>sm_75</td></tr>
+      <tr><td>RTX 30xx</td><td>Ampere</td><td>8.6</td><td>sm_86</td></tr>
+      <tr><td>RTX 40xx</td><td>Ada Lovelace</td><td>8.9</td><td>sm_89</td></tr>
+      <tr><td>H100</td><td>Hopper</td><td>9.0+</td><td>sm_90</td></tr>
+    </table>
+
+    <h3>Modern Training GPU: H100</h3>
+    <p>The H100 is the reference training GPU in many large-scale systems:</p>
+    <ul>
+      <li><strong>80 GB HBM</strong> high-bandwidth memory</li>
+      <li><strong>3,352 GB/s</strong> memory bandwidth</li>
+      <li><strong>132 SMs</strong> enabled after binning</li>
+      <li>Tensor Cores dominate FP16/BF16/FP8 matrix math</li>
+    </ul>
+    <div class="callout">Modern training is usually <strong>bandwidth-bound</strong> before it is compute-bound. GPU architecture and memory movement dominate real throughput.</div>
+  </div>
+</section>
+
+<section id="vram">
+  <div class="sec-head"><span class="idx">03</span><h2>LLM VRAM Math</h2></div>
+  <div class="sec-body">
+    <p>The core formula for estimating how much VRAM a model requires:</p>
+    <pre><code>VRAM (GB) ≈ Parameters (billions) × (bits per weight ÷ 8)</code></pre>
+
+    <h3>Memory per 1B Parameters by Precision</h3>
+    <table>
+      <tr><th>Format</th><th>Bits</th><th>GB / 1B params</th></tr>
+      <tr><td>FP16 / BF16</td><td>16</td><td>~2.0 GB</td></tr>
+      <tr><td>FP8 / INT8</td><td>8</td><td>~1.0 GB</td></tr>
+      <tr><td>4-bit quants</td><td>4</td><td>~0.5 GB</td></tr>
+      <tr><td>GGUF Q6_K</td><td>~6.6</td><td>~0.82 GB</td></tr>
+      <tr><td>GGUF Q5_K</td><td>~5.5</td><td>~0.69 GB</td></tr>
+      <tr><td>GGUF Q4_K</td><td>~4.5</td><td>~0.56 GB</td></tr>
+      <tr><td>GGUF Q3_K</td><td>~3.5</td><td>~0.43 GB</td></tr>
+      <tr><td>GGUF Q2_K</td><td>~2.6</td><td>~0.33 GB</td></tr>
+    </table>
+    <div class="callout"><strong>Quick rule:</strong> FP16 = 2× model size in GB · FP8 = 1× · 4-bit = 0.5×</div>
+
+    <h3>What Actually Fits by VRAM Size</h3>
+    <div class="vram-grid">
+      <div class="vram-card"><div class="size">8 GB</div><div class="rows">FP16 <span>~3B</span><br>FP8 <span>~6–7B</span><br>4-bit <span>~12–13B</span></div></div>
+      <div class="vram-card"><div class="size">12 GB</div><div class="rows">FP16 <span>~5B</span><br>FP8 <span>~10B</span><br>4-bit <span>~18–20B</span></div></div>
+      <div class="vram-card"><div class="size">16 GB</div><div class="rows">FP16 <span>~7B</span><br>FP8 <span>~13B</span><br>4-bit <span>~25B</span></div></div>
+      <div class="vram-card"><div class="size">24 GB</div><div class="rows">FP16 <span>~10–12B</span><br>FP8 <span>~20B</span><br>4-bit <span>~35–40B</span></div></div>
+      <div class="vram-card"><div class="size">48 GB</div><div class="rows">FP16 <span>~20–24B</span><br>FP8 <span>~40B</span><br>4-bit <span>~70–80B</span></div></div>
+      <div class="vram-card"><div class="size">80 GB</div><div class="rows">FP16 <span>~35–40B</span><br>FP8 <span>~70B</span><br>4-bit <span>~140B class</span></div></div>
+    </div>
+
+    <h3>The VRAM Tax: Overhead Beyond Weights</h3>
+    <p>Weights are only part of your VRAM budget:</p>
+    <ul>
+      <li><strong>KV cache</strong> — grows with context length; explodes at 32K, 128K+</li>
+      <li><strong>Activations</strong> — spike under certain execution paths</li>
+      <li><strong>Batching / concurrency</strong> — multiplies usage fast in agent workloads</li>
+      <li><strong>Framework overhead</strong> — varies by runtime (vLLM, TensorRT-LLM, llama.cpp)</li>
+      <li><strong>CUDA Graphs</strong> — reserve extra memory for latency/throughput gains</li>
+    </ul>
+    <div class="callout">Add <strong>10–30%</strong> on top of weight memory. For long context or high concurrency, plan for even more.</div>
+
+    <h3>MoE Memory Trap</h3>
+    <p>Mixture-of-Experts (MoE) models confuse people: "8×7B" sounds like 56B, but only a subset of experts activate per token. <strong>Total parameters → memory footprint</strong>. <strong>Active parameters → compute cost (speed)</strong>. You may still need to load all experts into VRAM unless you shard across GPUs.</p>
+
+    <h3>Model Loading Overhead</h3>
+    <pre><code>Required memory ≈ checkpoint_size × 1.1 to 1.3</code></pre>
+    <p>Example: <code>model.safetensors</code> = 1.62 GB → Runtime ≈ 1.62 × 1.3 ≈ <strong>2.1 GB</strong>. The extra accounts for activation buffers, optimizer states, and framework overhead.</p>
+  </div>
+</section>
+
+<section id="parallelism">
+  <div class="sec-head"><span class="idx">04</span><h2>Model Parallelism</h2></div>
+  <div class="sec-body">
+    <p>When a model is too large for a single GPU:</p>
+    <table>
+      <tr><th>Strategy</th><th>What is split</th><th>Use case</th></tr>
+      <tr><td><strong>Data parallelism</strong></td><td>Same model on each GPU, different batches</td><td>Default for smaller models</td></tr>
+      <tr><td><strong>Tensor parallelism</strong></td><td>Individual weight matrices split across GPUs</td><td>Very large layers</td></tr>
+      <tr><td><strong>Pipeline parallelism</strong></td><td>Model layers split across GPUs</td><td>Long models, many layers</td></tr>
+      <tr><td><strong>Context parallelism</strong></td><td>Sequence/attention computation split</td><td>Long context windows</td></tr>
+    </table>
+    <div class="callout">Context parallelism (CP): GPUs exchange K and V matrices; each GPU computes attention for its subset of tokens.</div>
+  </div>
+</section>
+
+<section id="tier">
+  <div class="sec-head"><span class="idx">05</span><h2>GPU Tier List (2025–2026)</h2></div>
+  <div class="sec-body">
+    <p>Rankings by software maturity, VRAM, perf/W &amp; perf/$, multi-GPU scaling, reliability, and availability.</p>
+
+    <h3><span class="tier tier-s">S Tier</span></h3>
+    <table>
+      <tr><th>GPU</th><th>VRAM</th><th>Why</th></tr>
+      <tr><td><strong>NVIDIA H100</strong></td><td>80 GB</td><td>FP8/BF16 monster, NVLink/NVSwitch scale, MIG tenancy</td></tr>
+      <tr><td><strong>NVIDIA RTX PRO 6000 Blackwell</strong></td><td>96 GB</td><td>Single-slot Blackwell, 4,000 AI TOPS &amp; 1,792 GB/s bandwidth</td></tr>
+      <tr><td><strong>NVIDIA A100</strong></td><td>80 GB</td><td>Stability benchmark, mature stack, MIG support</td></tr>
+      <tr><td><strong>Tenstorrent Blackhole p150a</strong></td><td>32 GB</td><td>RISC-V AI SoC, &gt;2.5 TFLOPS/W</td></tr>
+    </table>
+
+    <h3><span class="tier tier-a">A Tier</span></h3>
+    <table>
+      <tr><th>GPU</th><th>VRAM</th><th>Why</th></tr>
+      <tr><td><strong>NVIDIA GeForce RTX 5090</strong></td><td>32 GB</td><td>Top consumer perf/$ with 32 GB GDDR7</td></tr>
+      <tr><td><strong>NVIDIA L40S</strong></td><td>48 GB</td><td>Ada datacenter card with FP8, graphics &amp; media blocks</td></tr>
+      <tr><td><strong>NVIDIA RTX 6000 Ada</strong></td><td>48 GB</td><td>ECC workstation champ for dual/quad builds</td></tr>
+      <tr><td><strong>NVIDIA GeForce RTX 4090</strong></td><td>24 GB</td><td>Huge community support; stellar perf/$ for solos</td></tr>
+    </table>
+
+    <h3>Quick Picks by Budget</h3>
+    <table>
+      <tr><th>Budget</th><th>NVIDIA</th><th>Tenstorrent</th><th>AMD</th></tr>
+      <tr><td>Budget ($2–3K)</td><td>RTX 4090 or 3090</td><td>Wormhole n300d (used)</td><td>Radeon RX 8900 XT</td></tr>
+      <tr><td>Indie ($5–8K)</td><td>Dual 5090 / 4090 / RTX 6000 Ada</td><td>Twin Blackhole p150c</td><td>AMD PRO W9000</td></tr>
+      <tr><td>Startup-Lab ($10–15K+)</td><td>4× 5090 / 6000 Ada or 2× A100</td><td>4× Blackhole p150a mesh</td><td>2× MI210 or 4× W9000</td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="related">
+  <div class="sec-head"><span class="idx">06</span><h2>Related Topics</h2></div>
+  <div class="sec-body">
+    <ul>
+      <li><a href="quantization.html">Quantization</a> — how weight precision (FP16, INT8, 4-bit) determines VRAM footprint and speed</li>
+      <li><a href="distributed-training.html">Distributed Training</a> — sharding large models across multiple GPUs</li>
+      <li><a href="transformers-library.html">Transformers Library</a> — loading models and managing memory</li>
+      <li><a href="hugging-face.html">Hugging Face</a> — model formats and checkpoint downloads</li>
+      <li><a href="attention-transformers.html">Attention & Transformers</a> — attention = matrix multiplies + softmax, all GPU-accelerated</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <span class="k">Knowledge Vault</span>
+  <a href="INDEX.html">← All topics</a>
+</footer>
+</div>
+</body>
+</html>

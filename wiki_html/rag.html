@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG — Knowledge Vault</title>
+<style>
+:root{--ivory:#FAF9F5;--paper:#FFFFFF;--slate:#141413;--clay:#D97757;--clay-d:#B85C3E;--oat:#E3DACC;--olive:#788C5D;--g100:#F0EEE6;--g200:#E6E3DA;--g300:#D1CFC5;--g500:#87867F;--g700:#3D3D3A;--serif:ui-serif,Georgia,"Times New Roman",Times,serif;--sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;--mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms}nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}.sec-body ul{margin:0 0 16px;padding-left:20px}.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}a:hover{text-decoration-color:var(--clay)}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}footer a{color:var(--clay)}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+/* architecture cards grid */
+.arch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin:0 0 24px}
+.arch-card{background:var(--paper);border:1.5px solid var(--g300);border-radius:10px;padding:18px;cursor:pointer;transition:border-color 150ms,box-shadow 150ms}
+.arch-card:hover,.arch-card.active{border-color:var(--clay);box-shadow:0 6px 20px rgba(217,119,87,.15)}
+.arch-card .num{font-family:var(--mono);font-size:10px;color:var(--clay);font-weight:600;margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em}
+.arch-card .name{font-family:var(--serif);font-size:17px;font-weight:500;color:var(--slate);margin-bottom:6px}
+.arch-card .pipe{font-family:var(--mono);font-size:11px;color:var(--g500);margin-bottom:10px;line-height:1.6}
+.arch-card .desc{font-size:13.5px;color:var(--g700);display:none}
+.arch-card.active .desc{display:block}
+.arch-card .tag{display:inline-flex;font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:999px;border:1px solid var(--g300);color:var(--g500);background:var(--paper);margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="masthead">
+  <div class="eyebrow">Knowledge Vault</div>
+  <h1>Retrieval-Augmented <em>Generation</em></h1>
+  <p class="intro">RAG augments LLM generation by retrieving relevant external documents at inference time, grounding the model's output in up-to-date or domain-specific knowledge without retraining. The retrieved context is injected into the prompt alongside the user's query.</p>
+  <nav class="toc">
+    <a href="#architectures">8 Architectures</a>
+    <a href="#selection">Selection Guide</a>
+    <a href="#related">Related Topics</a>
+  </nav>
+</header>
+
+<section id="architectures">
+  <div class="sec-head"><span class="idx">01</span><h2>8 RAG Architectures</h2></div>
+  <div class="sec-body">
+    <p>Click any card to expand details.</p>
+    <div class="arch-grid">
+      <div class="arch-card" onclick="toggle(this)">
+        <div class="num">01</div>
+        <div class="name">Naive RAG</div>
+        <div class="pipe">Query → Embed → Vector DB → Prompt → LLM → Output</div>
+        <div class="desc">Retrieves documents purely based on vector similarity between the query embedding and stored document embeddings. Works best for simple, fact-based queries where direct semantic matching is sufficient.</div>
+        <span class="tag">baseline</span>
+      </div>
+      <div class="arch-card" onclick="toggle(this)">
+        <div class="num">02</div>
+        <div class="name">Multimodal RAG</div>
+        <div class="pipe">Query → Embed → Vector DB (multi-modal) → Prompt → LLM</div>
+        <div class="desc">Handles multiple data types (text, images, audio) by embedding and retrieving across modalities. Ideal for cross-modal tasks: answering a text query with both text and image context. Requires modality-specific encoders (e.g., CLIP for image-text).</div>
+        <span class="tag">multimodal</span>
+      </div>
+      <div class="arch-card" onclick="toggle(this)">
+        <div class="num">03</div>
+        <div class="name">HyDE</div>
+        <div class="pipe">Query → Generate Hypothetical Doc → Embed → Vector DB → LLM</div>
+        <div class="desc">Addresses the problem where queries are not semantically similar to documents. The LLM first generates a hypothetical answer, then that answer's embedding is used to retrieve real documents. Bridges the vocabulary/style gap between short queries and long documents.</div>
+        <span class="tag">query expansion</span>
+      </div>
+      <div class="arch-card" onclick="toggle(this)">
+        <div class="num">04</div>
+        <div class="name">Corrective RAG</div>
+        <div class="pipe">Query → Embed → Analyzer → Web Search → Prompt → LLM</div>
+        <div class="desc">Validates retrieved results by comparing them against trusted sources (e.g., web search). Filters or corrects retrieved content before passing to the LLM. Useful when the knowledge base may be stale or incomplete.</div>
+        <span class="tag">freshness</span>
+      </div>
+      <div class="arch-card" onclick="toggle(this)">
+        <div class="num">05</div>
+        <div class="name">Graph RAG</div>
+        <div class="pipe">Query → Graph Generator → Graph DB + Vector DB → LLM</div>
+        <div class="desc">Converts retrieved content into a knowledge graph capturing entities and relationships. Provides structured context alongside raw text to the LLM. Enhances multi-hop reasoning over interconnected facts. Example: Microsoft GraphRAG.</div>
+        <span class="tag">multi-hop</span>
+      </div>
+      <div class="arch-card" onclick="toggle(this)">
+        <div class="num">06</div>
+        <div class="name">Hybrid RAG</div>
+        <div class="pipe">Query → Vector DB (dense) + Graph DB (structured) → LLM</div>
+        <div class="desc">Combines dense vector retrieval with graph-based retrieval in a single pipeline. Useful when the task requires both unstructured text and structured relational data. Produces richer answers by leveraging complementary retrieval signals.</div>
+        <span class="tag">hybrid</span>
+      </div>
+      <div class="arch-card" onclick="toggle(this)">
+        <div class="num">07</div>
+        <div class="name">Adaptive RAG</div>
+        <div class="pipe">Query → Analyzer → (Direct | Reasoning Chain) → Vector DB → LLM</div>
+        <div class="desc">Dynamically decides whether a query requires simple retrieval or a multi-step reasoning chain. Routes simple queries directly to retrieval (faster, cheaper). Breaks complex queries into sub-queries via reasoning chain for better coverage.</div>
+        <span class="tag">routing</span>
+      </div>
+      <div class="arch-card" onclick="toggle(this)">
+        <div class="num">08</div>
+        <div class="name">Agentic RAG</div>
+        <div class="pipe">Query → Agent (ReAct/CoT + Memory) → Tools → Output</div>
+        <div class="desc">Uses AI agents with planning, reasoning (ReAct, CoT), and memory to orchestrate retrieval from multiple sources. Best for complex workflows requiring tool use, external APIs, or combining multiple RAG techniques. The agent decides what to retrieve, when, and from where.</div>
+        <span class="tag">agents</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="selection">
+  <div class="sec-head"><span class="idx">02</span><h2>Architecture Selection Guide</h2></div>
+  <div class="sec-body">
+    <table>
+      <tr><th>Use Case</th><th>Recommended Architecture</th></tr>
+      <tr><td>Simple fact lookup</td><td>Naive RAG</td></tr>
+      <tr><td>Images + text context</td><td>Multimodal RAG</td></tr>
+      <tr><td>Short query, long docs</td><td>HyDE</td></tr>
+      <tr><td>Freshness-critical data</td><td>Corrective RAG</td></tr>
+      <tr><td>Multi-hop reasoning over facts</td><td>Graph RAG</td></tr>
+      <tr><td>Mixed structured + unstructured</td><td>Hybrid RAG</td></tr>
+      <tr><td>Mixed simple + complex queries</td><td>Adaptive RAG</td></tr>
+      <tr><td>Multi-tool / multi-source workflows</td><td>Agentic RAG</td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="related">
+  <div class="sec-head"><span class="idx">03</span><h2>Related Topics</h2></div>
+  <div class="sec-body">
+    <ul>
+      <li><a href="attention-transformers.html">Attention & Transformers</a> — the LLM backbone that generates from retrieved context</li>
+      <li><a href="sentence-embeddings.html">Sentence Embeddings</a> — vector similarity search is core to most RAG variants</li>
+      <li><a href="nlp.html">NLP</a> — text retrieval and generation fundamentals</li>
+      <li><a href="multimodal-models.html">Multimodal Models</a> — cross-modal retrieval in Multimodal RAG</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <span class="k">Knowledge Vault</span>
+  <a href="INDEX.html">← All topics</a>
+</footer>
+</div>
+<script>
+function toggle(el){el.classList.toggle('active')}
+</script>
+</body>
+</html>

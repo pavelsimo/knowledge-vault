@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hugging Face — Knowledge Vault</title>
+<style>
+:root {
+  --ivory:#FAF9F5; --paper:#FFFFFF; --slate:#141413;
+  --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D;
+  --g100:#F0EEE6; --g200:#E6E3DA; --g300:#D1CFC5; --g500:#87867F; --g700:#3D3D3A;
+  --serif:ui-serif,Georgia,"Times New Roman",Times,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}
+h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+.intro a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms;display:inline-flex;align-items:center;gap:7px}
+nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}
+.sec-body ul,.sec-body ol{margin:0 0 16px;padding-left:20px}
+.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--clay)}
+pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
+code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}
+th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}
+td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+.tag{display:inline-flex;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--g300);color:var(--g500);background:var(--paper)}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}
+footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+
+/* ── tabs ── */
+.tabs{border:1.5px solid var(--g300);border-radius:10px;background:var(--paper);margin:20px 0;overflow:hidden}
+.tabbar{display:flex;border-bottom:1px solid var(--g300);background:var(--g100);flex-wrap:wrap}
+.tabbar button{appearance:none;border:none;background:none;font-family:var(--mono);font-size:12px;color:var(--g500);padding:10px 16px;cursor:pointer;border-right:1px solid var(--g300);transition:color 100ms}
+.tabbar button.on{background:var(--paper);color:var(--slate);border-bottom:2px solid var(--clay);margin-bottom:-1px}
+.tabbar button:hover:not(.on){color:var(--g700)}
+.tabpane{display:none;padding:22px 24px}
+.tabpane.on{display:block}
+.callout{display:flex;gap:12px;border:1.5px solid var(--oat);background:rgba(227,218,204,.35);border-radius:10px;padding:14px 16px;margin:18px 0;font-size:14px}
+.callout .ico{color:var(--clay);font-weight:600;flex-shrink:0}
+
+/* model cards */
+.model-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin:16px 0}
+.model-card{background:var(--paper);border:1.5px solid var(--g300);border-radius:8px;padding:14px 16px}
+.model-card code{display:block;font-family:var(--mono);font-size:12px;color:var(--clay);margin-bottom:6px}
+.model-card .purpose{font-size:13px;color:var(--g700)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <div class="eyebrow">Open Source AI</div>
+  <h1>Hugging <em>Face</em></h1>
+  <p class="intro">The central hub for open-source AI models, datasets, and demos — infrastructure for discovering, sharing, and running machine learning models across all modalities: text, audio, images, and video.</p>
+  <nav class="toc">
+    <a href="#s1">Model Hub</a>
+    <a href="#s2">Tasks</a>
+    <a href="#s3">Leaderboards</a>
+    <a href="#s4">Model Types</a>
+    <a href="#s5">Notable Models</a>
+  </nav>
+</header>
+
+<section id="s1">
+  <div class="sec-head"><span class="idx">01</span><h2>Model Hub</h2></div>
+  <div class="sec-body">
+    <div class="tabs" data-tabs>
+      <div class="tabbar">
+        <button class="on" data-t="0">Model Hub</button>
+        <button data-t="1">Tasks</button>
+        <button data-t="2">Leaderboards</button>
+        <button data-t="3">Tools &amp; Chat</button>
+      </div>
+
+      <div class="tabpane on">
+        <h3>How Models Are Organized</h3>
+        <p>Models are hosted as repositories containing weights, configs, and tokenizer files. Models can have multiple <strong>checkpoints</strong> — snapshots of saved weights at different training stages. Loading a model technically means loading a checkpoint (pre-trained weights + configuration).</p>
+        <table>
+          <thead><tr><th>Format</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><code>pytorch_model.bin</code></td><td>Legacy format; serialized PyTorch checkpoint via <code>torch.save()</code></td></tr>
+            <tr><td><code>.safetensors</code></td><td>Modern format; safer (no arbitrary Python execution), faster (memory-mapped), portable across frameworks</td></tr>
+          </tbody>
+        </table>
+        <div class="callout"><span class="ico">!</span><div><strong>Memory note:</strong> A loaded model needs ~10–30% more memory than the raw checkpoint file size. Example: <code>model.safetensors</code> = 1.62 GB → ~2.1 GB RAM needed at runtime.</div></div>
+        <p>Depending on your hardware, you may not be able to run the largest checkpoints.</p>
+      </div>
+
+      <div class="tabpane">
+        <h3>Task Categories</h3>
+        <p>Hugging Face organizes models by task type. Key categories:</p>
+        <ul>
+          <li><strong>Chat Completion</strong> — conversational LLMs and instruction-following models</li>
+          <li><strong>Feature Extraction</strong> — embedding models for semantic search and retrieval</li>
+          <li><strong>Automatic Speech Recognition</strong> — audio-to-text transcription (e.g., Whisper)</li>
+          <li><strong>Text to Video</strong> — generative video from text prompts</li>
+          <li><strong>Object Detection</strong> — locate and classify objects in images</li>
+          <li><strong>Image Segmentation</strong> — pixel-level mask generation</li>
+          <li><strong>Depth Estimation</strong> — monocular depth from single images</li>
+          <li><strong>Image-Text Matching</strong> — cross-modal similarity and retrieval</li>
+          <li><strong>Machine Translation</strong> — multilingual text translation</li>
+          <li><strong>Zero-shot Audio Classification</strong> — classify audio without task-specific training</li>
+        </ul>
+      </div>
+
+      <div class="tabpane">
+        <h3>Evaluation and Rankings</h3>
+        <p>Hugging Face hosts the community's primary model evaluation infrastructure:</p>
+        <ul>
+          <li><strong><a href="https://huggingface.co/open-llm-leaderboard" target="_blank">Open LLM Leaderboard</a></strong> — tracks, ranks, and evaluates open LLMs and chatbots across standardized benchmarks</li>
+          <li><strong><a href="https://huggingface.co/spaces/lmarena-ai/chatbot-arena" target="_blank">LM Arena</a></strong> — crowdsourced human preference rankings across LLMs on versatility, linguistic precision, and cultural context</li>
+        </ul>
+        <p>These leaderboards are the primary mechanism by which the open-source community competes with proprietary models and tracks progress across capability dimensions.</p>
+      </div>
+
+      <div class="tabpane">
+        <h3>Tools &amp; Chat Interface</h3>
+        <p>Beyond model hosting, Hugging Face provides:</p>
+        <ul>
+          <li><strong>Chat interface</strong> — chat with open-source models at <a href="https://huggingface.co/chat/" target="_blank">huggingface.co/chat</a></li>
+          <li><strong>Spaces</strong> — hosted ML demos and interactive apps (Gradio, Streamlit)</li>
+          <li><strong>Inference API</strong> — hosted inference for thousands of models without local setup</li>
+          <li><strong>Datasets</strong> — repository for training and evaluation datasets</li>
+          <li><strong>Transformers library</strong> — unified Python API for loading and running models</li>
+        </ul>
+        <div class="callout"><span class="ico">★</span><div>The <a href="transformers-library.html">Transformers library</a> is the primary way to load any Hugging Face model into Python code for local inference or fine-tuning.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="s2">
+  <div class="sec-head"><span class="idx">02</span><h2>Pretrained vs Fine-tuned Models</h2></div>
+  <div class="sec-body">
+    <table>
+      <thead><tr><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Pretrained</strong></td><td>Trained from scratch on large corpora by big companies with significant compute</td></tr>
+        <tr><td><strong>Fine-tuned</strong></td><td>Pretrained models further trained on a specific task or domain</td></tr>
+        <tr><td><strong>Distilled</strong></td><td>Compressed versions of larger "teacher" models, trained on the teacher's outputs rather than raw human data; designed to be faster and cheaper while retaining accuracy</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="s3">
+  <div class="sec-head"><span class="idx">03</span><h2>Leaderboards</h2></div>
+  <div class="sec-body">
+    <p>The <a href="https://huggingface.co/open-llm-leaderboard" target="_blank">Open LLM Leaderboard</a> tracks, ranks, and evaluates open LLMs across benchmarks. The <a href="https://huggingface.co/spaces/lmarena-ai/chatbot-arena" target="_blank">LM Arena</a> provides crowdsourced rankings across LLMs on versatility, linguistic precision, and cultural context.</p>
+  </div>
+</section>
+
+<section id="s4">
+  <div class="sec-head"><span class="idx">04</span><h2>Model Types</h2></div>
+  <div class="sec-body">
+    <table>
+      <thead><tr><th>Type</th><th>Training Data</th><th>Tradeoff</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Pretrained base</strong></td><td>Large raw corpora (text, code, web)</td><td>Highly capable but not instruction-following</td></tr>
+        <tr><td><strong>Instruction-tuned (IT)</strong></td><td>Base + supervised fine-tuning on instruction pairs</td><td>More usable; slightly reduced raw capability</td></tr>
+        <tr><td><strong>RLHF-aligned</strong></td><td>IT + reinforcement learning from human feedback</td><td>Safe and helpful; most widely deployed</td></tr>
+        <tr><td><strong>Fine-tuned</strong></td><td>Domain-specific task data</td><td>Specialized; may degrade general capability</td></tr>
+        <tr><td><strong>Distilled</strong></td><td>Larger teacher model's outputs</td><td>Much smaller/faster; retains most accuracy</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="s5">
+  <div class="sec-head"><span class="idx">05</span><h2>Notable Models</h2></div>
+  <div class="sec-body">
+    <div class="model-grid">
+      <div class="model-card"><code>openai/whisper-large-v3</code><div class="purpose">Automatic speech recognition</div></div>
+      <div class="model-card"><code>facebook/nllb-200-distilled-600M</code><div class="purpose">Machine translation (200 languages)</div></div>
+      <div class="model-card"><code>facebook/detr-resnet-50</code><div class="purpose">End-to-end object detection</div></div>
+      <div class="model-card"><code>Zigeng/SlimSAM-uniform-77</code><div class="purpose">Segmentation mask generation</div></div>
+      <div class="model-card"><code>Intel/dpt-hybrid-midas</code><div class="purpose">Depth estimation</div></div>
+      <div class="model-card"><code>Salesforce/blip-image-captioning-base</code><div class="purpose">Image captioning</div></div>
+      <div class="model-card"><code>Salesforce/blip-itm-base-coco</code><div class="purpose">Image-text matching/retrieval</div></div>
+      <div class="model-card"><code>laion/clap-htsat-unfused</code><div class="purpose">Zero-shot audio classification</div></div>
+      <div class="model-card"><code>sentence-transformers/all-MiniLM-L6-v2</code><div class="purpose">Sentence embeddings</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="k">Knowledge Vault</span>
+  <span>Related: <a href="sentence-embeddings.html">Sentence Embeddings</a> &middot; <a href="nlp.html">NLP</a> &middot; <a href="computer-vision.html">Computer Vision</a> &middot; <a href="multimodal-models.html">Multimodal Models</a></span>
+  <span>Updated May 2026</span>
+</footer>
+
+</div>
+<script>
+document.querySelectorAll("[data-tabs]").forEach(box=>{
+  const btns=box.querySelectorAll("button");
+  const panes=box.querySelectorAll(".tabpane");
+  btns.forEach(b=>b.addEventListener("click",()=>{
+    btns.forEach(x=>x.classList.remove("on"));
+    panes.forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");
+    panes[+b.dataset.t].classList.add("on");
+  }));
+});
+</script>
+</body>
+</html>

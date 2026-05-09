@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Network Visualization — Knowledge Vault</title>
+<style>
+:root{--ivory:#FAF9F5;--paper:#FFFFFF;--slate:#141413;--clay:#D97757;--clay-d:#B85C3E;--oat:#E3DACC;--olive:#788C5D;--g100:#F0EEE6;--g200:#E6E3DA;--g300:#D1CFC5;--g500:#87867F;--g700:#3D3D3A;--serif:ui-serif,Georgia,"Times New Roman",Times,serif;--sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;--mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms}nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}.sec-body ul{margin:0 0 16px;padding-left:20px}.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}a:hover{text-decoration-color:var(--clay)}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+.paper-ref{background:var(--paper);border:1.5px solid var(--g300);border-radius:8px;padding:12px 16px;margin:0 0 12px;font-size:14px;display:flex;gap:12px;align-items:flex-start}
+.paper-ref .pill{font-family:var(--mono);font-size:10px;background:var(--oat);border-radius:4px;padding:2px 8px;flex-shrink:0;color:var(--g700);margin-top:2px}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}footer a{color:var(--clay)}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+/* tab component */
+.tabbar{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap}
+.tabbar button{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:6px 14px;border:1.5px solid var(--g300);border-radius:999px;background:var(--paper);color:var(--g700);cursor:pointer;transition:all 120ms}
+.tabbar button.active{border-color:var(--slate);background:var(--slate);color:var(--paper)}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.callout{background:var(--g100);border-left:3px solid var(--clay);border-radius:0 6px 6px 0;padding:14px 18px;margin:0 0 20px;font-size:14px;color:var(--g700)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="masthead">
+  <div class="eyebrow">Knowledge Vault</div>
+  <h1>Network <em>Visualization</em></h1>
+  <p class="intro">Network visualization techniques help understand what a neural network has learned — which parts of the input drive its decisions. These tools are essential for debugging, interpretability, and building trust in model predictions.</p>
+  <nav class="toc">
+    <a href="#methods">Visualization Methods</a>
+    <a href="#vit">ViT Visualization</a>
+    <a href="#comparison">Method Comparison</a>
+    <a href="#papers">Key Papers</a>
+    <a href="#related">Related Topics</a>
+  </nav>
+</header>
+
+<section id="methods">
+  <div class="sec-head"><span class="idx">01</span><h2>Visualization Methods</h2></div>
+  <div class="sec-body">
+    <div class="tabbar">
+      <button class="active" onclick="showTab('saliency')">Saliency Maps</button>
+      <button onclick="showTab('cam')">CAM</button>
+      <button onclick="showTab('gradcam')">Grad-CAM</button>
+    </div>
+    <div id="saliency" class="tab-panel active">
+      <h3>Saliency Maps</h3>
+      <p><strong>Question:</strong> which pixels matter most for this specific prediction?</p>
+      <p><strong>Method:</strong> compute the gradient of the class score with respect to each input pixel:</p>
+      <ul>
+        <li>Large gradient → this pixel strongly influences the prediction</li>
+        <li>Small gradient → this pixel is mostly irrelevant</li>
+      </ul>
+      <p>Saliency maps produce a heatmap overlaid on the input image showing the most influential regions.</p>
+      <div class="callout">The gradients are often noisy, but they answer the basic question: which pixels would most change the class score if you perturb them?</div>
+    </div>
+    <div id="cam" class="tab-panel">
+      <h3>Class Activation Mapping (CAM)</h3>
+      <p><strong>Idea:</strong> weight the last convolutional feature maps by the class-specific classifier weights and sum them.</p>
+      <p>CAM produces class-specific heatmaps and allows:</p>
+      <ul>
+        <li>Identifying which image regions contribute most to a class prediction</li>
+        <li><strong>Weakly supervised localization</strong> — highlights where the object is without using bounding-box labels during training</li>
+        <li>Visualizing attention patterns without explicit attention mechanisms</li>
+      </ul>
+      <div class="callout"><strong>Limitation:</strong> requires a Global Average Pooling (GAP) layer immediately before the classifier — constrains architecture design.</div>
+    </div>
+    <div id="gradcam" class="tab-panel">
+      <h3>Grad-CAM</h3>
+      <p>Grad-CAM generalizes CAM to <strong>any CNN architecture</strong> without requiring GAP:</p>
+      <ul>
+        <li>Uses gradients flowing into the last convolutional layer to determine class-specific importance</li>
+        <li>Computes a weighted combination of feature maps using gradient-averaged weights</li>
+        <li>Produces coarse but semantically meaningful heatmaps</li>
+        <li>Works on any CNN — VGG, ResNet, DenseNet, etc.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="vit">
+  <div class="sec-head"><span class="idx">02</span><h2>ViT Feature Visualization</h2></div>
+  <div class="sec-body">
+    <p>Vision Transformers (ViTs) learn differently from CNNs — they use self-attention instead of convolutions.</p>
+    <h3>Step-by-step ViT process</h3>
+    <ol style="padding-left:20px;margin:0 0 16px">
+      <li>Split image into fixed-size patches (e.g., 16×16 pixels)</li>
+      <li>Turn patches into embedding vectors</li>
+      <li>Add positional encodings</li>
+      <li>Feed patches through Transformer encoder</li>
+      <li>Classification token (CLS) aggregates global information</li>
+    </ol>
+    <p>ViT attention maps can be visualized to show which patches each token attends to — often revealing object-centric attention patterns even without supervision.</p>
+  </div>
+</section>
+
+<section id="comparison">
+  <div class="sec-head"><span class="idx">03</span><h2>Method Comparison</h2></div>
+  <div class="sec-body">
+    <table>
+      <tr><th>Method</th><th>Requires</th><th>Output</th><th>Architecture constraint</th></tr>
+      <tr><td>Saliency map</td><td>Input gradient</td><td>Pixel-level heatmap</td><td>None</td></tr>
+      <tr><td>CAM</td><td>GAP + linear classifier</td><td>Coarse heatmap</td><td>GAP required</td></tr>
+      <tr><td>Grad-CAM</td><td>Gradients to conv layer</td><td>Coarse heatmap</td><td>None</td></tr>
+      <tr><td>ViT attention</td><td>Self-attention maps</td><td>Patch-level attention</td><td>Transformer only</td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="papers">
+  <div class="sec-head"><span class="idx">04</span><h2>Key Papers</h2></div>
+  <div class="sec-body">
+    <div class="paper-ref"><span class="pill">SALIENCY</span><div><a href="https://arxiv.org/pdf/1312.6034" target="_blank">Deep Inside Convolutional Networks: Visualising Image Classification Models and Saliency Maps</a> — the saliency-map reference point.</div></div>
+    <div class="paper-ref"><span class="pill">CAM</span><div><a href="https://arxiv.org/pdf/1512.04150" target="_blank">Learning Deep Features for Discriminative Localization</a> — the original CAM paper.</div></div>
+    <div class="paper-ref"><span class="pill">GRAD-CAM</span><div><a href="https://arxiv.org/pdf/1610.02391" target="_blank">Grad-CAM: Visual Explanations from Deep Networks via Gradient-Based Localization</a> — class-localization explanations for any architecture.</div></div>
+    <div class="paper-ref"><span class="pill">VIT</span><div><a href="https://arxiv.org/pdf/2106.01548" target="_blank">When Vision Transformers Outperform ResNets Without Pretraining or Strong Data Augmentations</a></div></div>
+  </div>
+</section>
+
+<section id="related">
+  <div class="sec-head"><span class="idx">05</span><h2>Related Topics</h2></div>
+  <div class="sec-body">
+    <ul>
+      <li><a href="convolutional-neural-networks.html">CNNs</a> — architectures being visualized</li>
+      <li><a href="attention-transformers.html">Attention & Transformers</a> — ViT attention visualization</li>
+      <li><a href="computer-vision.html">Computer Vision</a> — image classification tasks where visualization is applied</li>
+      <li><a href="neural-networks.html">Neural Networks</a> — gradient computation (backpropagation) underlies saliency maps</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <span class="k">Knowledge Vault</span>
+  <a href="INDEX.html">← All topics</a>
+</footer>
+</div>
+<script>
+function showTab(id){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tabbar button').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

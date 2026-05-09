@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MLOps — Knowledge Vault</title>
+<style>
+:root{--ivory:#FAF9F5;--paper:#FFFFFF;--slate:#141413;--clay:#D97757;--clay-d:#B85C3E;--oat:#E3DACC;--olive:#788C5D;--g100:#F0EEE6;--g200:#E6E3DA;--g300:#D1CFC5;--g500:#87867F;--g700:#3D3D3A;--serif:ui-serif,Georgia,"Times New Roman",Times,serif;--sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;--mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms}nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}.sec-body ul{margin:0 0 16px;padding-left:20px}.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}a:hover{text-decoration-color:var(--clay)}
+pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
+code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}pre code{background:none;padding:0;font-size:inherit}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}footer a{color:var(--clay)}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+.callout{background:var(--g100);border-left:3px solid var(--clay);border-radius:0 6px 6px 0;padding:14px 18px;margin:0 0 20px;font-size:14px;color:var(--g700)}
+/* lifecycle flowchart */
+.lifecycle{display:flex;align-items:center;gap:0;margin:0 0 28px;flex-wrap:wrap}
+.lc-stage{background:var(--paper);border:1.5px solid var(--g300);border-radius:10px;padding:16px 20px;flex:1;min-width:180px}
+.lc-stage .lc-num{font-family:var(--mono);font-size:10px;color:var(--clay);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.lc-stage .lc-title{font-family:var(--serif);font-size:17px;font-weight:500;color:var(--slate);margin-bottom:6px}
+.lc-stage .lc-desc{font-size:12.5px;color:var(--g500);line-height:1.5}
+.lc-arrow{font-size:20px;color:var(--clay);padding:0 8px;flex-shrink:0}
+@media(max-width:700px){.lifecycle{flex-direction:column}.lc-arrow{transform:rotate(90deg)}}
+/* tab component */
+.tabbar{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap}
+.tabbar button{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:6px 14px;border:1.5px solid var(--g300);border-radius:999px;background:var(--paper);color:var(--g700);cursor:pointer;transition:all 120ms}
+.tabbar button.active{border-color:var(--slate);background:var(--slate);color:var(--paper)}
+.tab-panel{display:none}.tab-panel.active{display:block}
+/* confusion matrix */
+.cm-wrap{display:inline-block;margin:0 0 20px}
+.cm-table{border-collapse:collapse}
+.cm-table td,.cm-table th{border:1.5px solid var(--g300);padding:10px 14px;text-align:center;font-size:13px}
+.cm-table .cm-header{background:var(--g100);font-family:var(--mono);font-size:11px;color:var(--g500)}
+.cm-table .cm-tp{background:#E8F4E8;color:#2D6A2D;font-weight:600}
+.cm-table .cm-tn{background:#E8F4E8;color:#2D6A2D;font-weight:600}
+.cm-table .cm-fp{background:#FFF0EC;color:#8B2A1A;font-weight:600}
+.cm-table .cm-fn{background:#FFF0EC;color:#8B2A1A;font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="masthead">
+  <div class="eyebrow">Knowledge Vault</div>
+  <h1>ML<em>Ops</em></h1>
+  <p class="intro">MLOps (Machine Learning Operations) provides the tools and principles to support the full ML project lifecycle in production. A model that performs well in the lab can degrade silently in the real world — MLOps provides the discipline to detect and respond to that.</p>
+  <nav class="toc">
+    <a href="#lifecycle">Lifecycle</a>
+    <a href="#drift">Data vs Concept Drift</a>
+    <a href="#monitoring">Monitoring</a>
+    <a href="#deployment">Deployment Strategies</a>
+    <a href="#metrics">Evaluation Metrics</a>
+    <a href="#related">Related Topics</a>
+  </nav>
+</header>
+
+<section id="lifecycle">
+  <div class="sec-head"><span class="idx">01</span><h2>ML Project Lifecycle</h2></div>
+  <div class="sec-body">
+    <p>Every ML project flows through four stages, with strong feedback loops — later stages frequently push work back to earlier ones.</p>
+    <div class="lifecycle">
+      <div class="lc-stage">
+        <div class="lc-num">Stage 01</div>
+        <div class="lc-title">Scoping</div>
+        <div class="lc-desc">Define the problem, metrics, and feasibility</div>
+      </div>
+      <div class="lc-arrow">→</div>
+      <div class="lc-stage">
+        <div class="lc-num">Stage 02</div>
+        <div class="lc-title">Data</div>
+        <div class="lc-desc">Define, label, and organize training data; establish HLP baseline</div>
+      </div>
+      <div class="lc-arrow">→</div>
+      <div class="lc-stage">
+        <div class="lc-num">Stage 03</div>
+        <div class="lc-title">Modeling</div>
+        <div class="lc-desc">Select and train model; perform error analysis</div>
+      </div>
+      <div class="lc-arrow">→</div>
+      <div class="lc-stage">
+        <div class="lc-num">Stage 04</div>
+        <div class="lc-title">Deployment</div>
+        <div class="lc-desc">Deploy to production; monitor and maintain system</div>
+      </div>
+    </div>
+    <div class="callout"><strong>Key insight:</strong> ML model code (X→Y) is only <strong>5–10%</strong> of total production ML code. The rest is infrastructure: data pipelines, monitoring, serving, config management.</div>
+
+    <h3>Model-Centric vs. Data-Centric AI</h3>
+    <table>
+      <tr><th>Approach</th><th>What you iterate on</th><th>Default for</th></tr>
+      <tr><td><strong>Model-centric</strong></td><td>Architecture, hyperparameters — dataset is fixed</td><td>Research / academic work</td></tr>
+      <tr><td><strong>Data-centric</strong></td><td>Data quality, consistency — architecture is fixed</td><td>Applied production work</td></tr>
+    </table>
+    <p>In practice, most production improvements come from data quality improvements, not model changes. Data-centric AI is increasingly the right default.</p>
+
+    <h3>Sanity Check Before Full Training</h3>
+    <p>Always overfit a tiny dataset first: speech recognition → a few audio/transcript pairs; image classification → 10–50 images per class. If the model can't overfit 5 examples, there is a bug before you waste compute on the full dataset.</p>
+  </div>
+</section>
+
+<section id="drift">
+  <div class="sec-head"><span class="idx">02</span><h2>Data Drift vs Concept Drift</h2></div>
+  <div class="sec-body">
+    <h3>Data Drift (the "x" changes)</h3>
+    <p>The input distribution shifts compared to training data — the task rules are the same, but inputs look different.</p>
+    <p><strong>Example:</strong> Speech recognition trained on studio audio encounters real-world users speaking into cheap phone microphones in noisy environments. The language hasn't changed, but the audio quality (input x) has drifted. Can be gradual (language evolves over years) or sudden.</p>
+
+    <h3>Concept Drift (the "x → y" mapping changes)</h3>
+    <p>The relationship between inputs and correct outputs changes — the meaning of the data shifts.</p>
+    <p><strong>Example:</strong> "That is sick!" meant "that person is ill" ten years ago; today it means "that is awesome." Same input (x), different correct output (y). <strong>Sudden shock:</strong> "Zoom" shifted from "go fast" to "video meeting" in 2020.</p>
+
+    <div class="callout"><strong>Operational distinction:</strong> data drift = inputs changed, task stayed the same. Concept drift = the correct interpretation changed too.</div>
+  </div>
+</section>
+
+<section id="monitoring">
+  <div class="sec-head"><span class="idx">03</span><h2>Model Monitoring in Production</h2></div>
+  <div class="sec-body">
+    <h3>Software Metrics</h3>
+    <table>
+      <tr><th>Metric</th><th>Description</th></tr>
+      <tr><td>Latency (inference time)</td><td>Milliseconds per prediction</td></tr>
+      <tr><td>Throughput (FPS/QPS)</td><td>Predictions processed per second</td></tr>
+      <tr><td>GPU/compute usage</td><td>Hardware utilization %</td></tr>
+      <tr><td>Memory &amp; server load</td><td>System health</td></tr>
+    </table>
+
+    <h3>Input Metrics (Watch for Data Drift)</h3>
+    <p>For a computer vision model: average image brightness (lightbulb burned out?), blurriness (camera bumped?), resolution changes (camera settings?), color distribution (product line switched?).</p>
+
+    <h3>Output Metrics (Watch the AI's Behavior)</h3>
+    <table>
+      <tr><th>Metric</th><th>What it signals</th></tr>
+      <tr><td>Average confidence score</td><td>Drop from 95% → 40% means model is struggling</td></tr>
+      <tr><td>Bounding boxes per image</td><td>Sudden spike → model is hallucinating</td></tr>
+      <tr><td>Null prediction (pass) rate</td><td>99% → 50% pass rate: something is wrong</td></tr>
+      <tr><td>Human override rate</td><td>How often humans correct the AI</td></tr>
+    </table>
+
+    <h3>Error Analysis Prioritization</h3>
+    <pre><code>Overall Impact = Gap to HLP × % of data</code></pre>
+    <p>Always weight by data frequency before prioritizing. A 4% accuracy gap on a slice that's only 4% of traffic contributes 0.16% impact — far less important than a 2% gap on a 30% slice.</p>
+  </div>
+</section>
+
+<section id="deployment">
+  <div class="sec-head"><span class="idx">04</span><h2>Deployment Strategies</h2></div>
+  <div class="sec-body">
+    <div class="tabbar">
+      <button class="active" onclick="showTab('shadow')">Shadow Mode</button>
+      <button onclick="showTab('canary')">Canary</button>
+      <button onclick="showTab('bluegreen')">Blue-Green</button>
+    </div>
+
+    <div id="shadow" class="tab-panel active">
+      <h3>Shadow Mode</h3>
+      <p>Before fully deploying a new model, run it in <strong>shadow mode</strong>:</p>
+      <ul>
+        <li>The ML system runs in parallel alongside the existing system (human or prior model)</li>
+        <li>The ML system's output is <strong>not used for any decisions</strong> during this phase</li>
+        <li>Both the human decision and the ML prediction are logged</li>
+        <li>You audit the disagreements to understand where the model fails before you trust it</li>
+      </ul>
+      <div class="callout">Shadow mode is the <strong>safest</strong> way to validate a new model in production conditions without risk.</div>
+    </div>
+
+    <div id="canary" class="tab-panel">
+      <h3>Canary Deployment</h3>
+      <p>Named after the "canary in a coal mine" safety practice:</p>
+      <ol style="padding-left:20px;margin:0 0 16px">
+        <li>Deploy new model to a small fraction of traffic (e.g., 5%)</li>
+        <li>Monitor closely for errors, regressions, or anomalies</li>
+        <li>If healthy → gradually ramp up (10% → 20% → 100%)</li>
+        <li>If unhealthy → immediately roll back</li>
+      </ol>
+      <div class="callout"><strong>Why it works:</strong> limits blast radius. If the new model is broken, only 5% of users are affected — not everyone.</div>
+    </div>
+
+    <div id="bluegreen" class="tab-panel">
+      <h3>Blue-Green Deployment</h3>
+      <p>Maintain two identical production environments:</p>
+      <ul>
+        <li><strong>Blue</strong> = current live (old) version</li>
+        <li><strong>Green</strong> = new version under test</li>
+        <li>A router splits traffic between them</li>
+        <li>Switch 100% to green when ready; roll back instantly by redirecting the router</li>
+      </ul>
+      <div class="callout">Key advantage: <strong>zero-downtime rollback</strong> — you never have to "undeploy" anything, just redirect the router. Rollback speed is often the difference between a contained bad release and a production incident.</div>
+    </div>
+  </div>
+</section>
+
+<section id="metrics">
+  <div class="sec-head"><span class="idx">05</span><h2>Evaluation Metrics</h2></div>
+  <div class="sec-body">
+    <h3>Confusion Matrix</h3>
+    <p>For binary classification (positive = defect found):</p>
+    <div class="cm-wrap">
+      <table class="cm-table">
+        <tr>
+          <td style="border:none;background:none"></td>
+          <th class="cm-header">Predicted Positive (y=1)</th>
+          <th class="cm-header">Predicted Negative (y=0)</th>
+        </tr>
+        <tr>
+          <th class="cm-header">Actually Positive (y=1)</th>
+          <td class="cm-tp">TP (True Positive)<br><span style="font-weight:400;font-size:11px">AI correct</span></td>
+          <td class="cm-fn">FN (False Negative)<br><span style="font-weight:400;font-size:11px">AI missed it</span></td>
+        </tr>
+        <tr>
+          <th class="cm-header">Actually Negative (y=0)</th>
+          <td class="cm-fp">FP (False Positive)<br><span style="font-weight:400;font-size:11px">False alarm</span></td>
+          <td class="cm-tn">TN (True Negative)<br><span style="font-weight:400;font-size:11px">AI correct</span></td>
+        </tr>
+      </table>
+    </div>
+    <div class="callout"><strong>Cheat code:</strong> read backwards — second word (Positive/Negative) = what the AI predicted; first word (True/False) = was the AI right?</div>
+
+    <h3>Precision and Recall</h3>
+    <pre><code>Precision = TP / (TP + FP)   # of positives predicted, how many were right?
+Recall    = TP / (TP + FN)   # of actual positives, how many did we catch?
+F1        = 2 · (Precision · Recall) / (Precision + Recall)</code></pre>
+
+    <p><strong>Precision–Recall tradeoff:</strong> tuning the model to be more sensitive (higher recall) also causes more false alarms (lower precision). You usually cannot maximize both simultaneously.</p>
+
+    <h3>Why Manufacturing Prefers High Recall</h3>
+    <table>
+      <tr><th>Error type</th><th>Cost</th></tr>
+      <tr><td>False Positive (flag clean phone)</td><td>Worker checks for 5 seconds → cheap</td></tr>
+      <tr><td>False Negative (ship defective phone)</td><td>Angry customer, returns, brand damage → expensive</td></tr>
+    </table>
+    <p>Manufacturing tolerates many false alarms (lower precision) to catch nearly every real defect (high recall). "Better safe than sorry."</p>
+  </div>
+</section>
+
+<section id="related">
+  <div class="sec-head"><span class="idx">06</span><h2>Related Topics</h2></div>
+  <div class="sec-body">
+    <ul>
+      <li><a href="computer-vision.html">Computer Vision</a> — vision models deployed in production (defect detection, QA)</li>
+      <li><a href="object-detection.html">Object Detection</a> — YOLO and other detectors monitored via these metrics</li>
+      <li><a href="probability-statistics.html">Probability & Statistics</a> — statistical foundations for evaluation metrics</li>
+      <li><a href="neural-networks.html">Neural Networks</a> — the models being monitored</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <span class="k">Knowledge Vault</span>
+  <a href="INDEX.html">← All topics</a>
+</footer>
+</div>
+<script>
+function showTab(id){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tabbar button').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

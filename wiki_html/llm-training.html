@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LLM Training — Knowledge Vault</title>
+<style>
+:root {
+  --ivory:#FAF9F5; --paper:#FFFFFF; --slate:#141413;
+  --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D;
+  --g100:#F0EEE6; --g200:#E6E3DA; --g300:#D1CFC5; --g500:#87867F; --g700:#3D3D3A;
+  --serif:ui-serif,Georgia,"Times New Roman",Times,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}
+h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms;display:inline-flex;align-items:center;gap:7px}
+nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}
+.sec-body ul,.sec-body ol{margin:0 0 16px;padding-left:20px}
+.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--clay)}
+pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
+code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}
+th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}
+td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}
+footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+
+/* 4-stage pipeline timeline */
+.pipeline{display:flex;flex-direction:column;gap:0;margin:24px 0}
+.pipe-stage{display:grid;grid-template-columns:140px 28px 1fr;gap:0 18px}
+.pipe-stage .when{text-align:right;font-family:var(--mono);font-size:12px;color:var(--g500);padding-top:6px}
+.pipe-stage .dot-col{display:flex;flex-direction:column;align-items:center}
+.pipe-stage .dot{width:16px;height:16px;border-radius:50%;background:var(--paper);border:3px solid var(--clay);margin-top:6px;flex-shrink:0;position:relative;z-index:1}
+.pipe-stage .dot.done{background:var(--olive);border-color:var(--olive)}
+.pipe-stage .line{width:2px;flex:1;background:var(--g300);margin:2px 0;min-height:20px}
+.pipe-stage:last-child .line{display:none}
+.pipe-stage .body{padding-bottom:32px}
+.pipe-stage .body h3{font-family:var(--serif);font-weight:500;font-size:18px;color:var(--slate);margin:0 0 6px}
+.pipe-stage .body .desc{font-size:14px;color:var(--g500);margin:0 0 10px;max-width:620px}
+.pipe-stage .tags{display:flex;gap:8px;flex-wrap:wrap}
+.pipe-stage .stag{font-family:var(--mono);font-size:11px;background:var(--g100);border:1px solid var(--g300);border-radius:6px;padding:3px 8px;color:var(--g700)}
+.pipe-stage .stag.clay{background:rgba(217,119,87,.1);border-color:var(--clay);color:var(--clay)}
+
+/* Tabs */
+.tabs{border:1.5px solid var(--g300);border-radius:10px;background:var(--paper);margin:20px 0;overflow:hidden}
+.tabbar{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--g300);background:var(--g100)}
+.tabbar button{appearance:none;border:none;background:none;font-family:var(--mono);font-size:12px;color:var(--g500);padding:10px 14px;cursor:pointer;border-right:1px solid var(--g300)}
+.tabbar button.on{background:var(--paper);color:var(--slate);border-bottom:2px solid var(--clay);margin-bottom:-1px}
+.tabpane{display:none;padding:20px 22px}
+.tabpane.on{display:block}
+.tabpane h4{font-family:var(--serif);font-size:17px;font-weight:500;color:var(--slate);margin:0 0 8px}
+.tabpane p{font-size:14.5px;margin:0 0 12px;color:var(--g700)}
+.tabpane ul,.tabpane ol{font-size:14.5px;padding-left:18px;margin:0 0 12px;color:var(--g700)}
+.tabpane li{margin-bottom:5px}
+
+.callout{display:flex;gap:12px;border:1.5px solid var(--oat);background:rgba(227,218,204,0.35);border-radius:10px;padding:14px 16px;margin:18px 0;font-size:14px}
+.callout .ico{color:var(--clay);font-weight:600;flex-shrink:0}
+
+/* RLHF components table */
+.comp-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+@media(max-width:600px){.comp-cards{grid-template-columns:1fr}}
+.comp-card{background:var(--paper);border:1.5px solid var(--g300);border-radius:10px;padding:16px}
+.comp-card .role{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--clay);margin-bottom:6px}
+.comp-card h4{font-family:var(--serif);font-size:16px;font-weight:500;color:var(--slate);margin:0 0 4px}
+.comp-card p{font-size:13px;color:var(--g700);margin:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <div class="eyebrow">Knowledge Vault</div>
+    <h1>LLM <em>Training</em> Pipeline</h1>
+    <p class="intro">Building a production-quality large language model involves four sequential stages: pre-training a base model on massive unlabeled corpora, supervised fine-tuning (SFT) to instill instruction-following behavior, reward modeling to capture human preferences, and reinforcement learning from human feedback (RLHF) with PPO to align the model's outputs with those preferences.</p>
+    <nav class="toc">
+      <a href="#pipeline">Four-Stage Pipeline</a>
+      <a href="#pretraining">Pre-Training</a>
+      <a href="#sft">Supervised Fine-Tuning</a>
+      <a href="#reward-modeling">Reward Modeling</a>
+      <a href="#rlhf">RLHF with PPO</a>
+      <a href="#inference">Inference</a>
+      <a href="#rules">Rules of Thumb</a>
+    </nav>
+  </header>
+
+  <section id="pipeline">
+    <div class="sec-head"><span class="idx">01</span><h2>The Four-Stage Pipeline</h2></div>
+    <div class="sec-body">
+      <p>Each stage builds directly on the previous one, transforming a next-token predictor into a safe, helpful assistant — the same recipe behind ChatGPT and similar models.</p>
+
+      <div class="pipeline">
+        <div class="pipe-stage">
+          <div class="when">Stage 1</div>
+          <div class="dot-col"><span class="dot done"></span><span class="line"></span></div>
+          <div class="body">
+            <h3>Pre-Training</h3>
+            <p class="desc">Next-token prediction on hundreds of billions of tokens. Produces a base model — powerful but not yet an assistant.</p>
+            <div class="tags"><span class="stag clay">Most compute</span><span class="stag">Months of training</span><span class="stag">Trillions of tokens</span></div>
+          </div>
+        </div>
+        <div class="pipe-stage">
+          <div class="when">Stage 2</div>
+          <div class="dot-col"><span class="dot"></span><span class="line"></span></div>
+          <div class="body">
+            <h3>Supervised Fine-Tuning</h3>
+            <p class="desc">Train on curated (instruction, response) pairs. Teaches the model to follow instructions rather than just complete text.</p>
+            <div class="tags"><span class="stag">Relatively cheap</span><span class="stag">Quality &gt; quantity</span><span class="stag">Hours of training</span></div>
+          </div>
+        </div>
+        <div class="pipe-stage">
+          <div class="when">Stage 3</div>
+          <div class="dot-col"><span class="dot"></span><span class="line"></span></div>
+          <div class="body">
+            <h3>Reward Modeling</h3>
+            <p class="desc">Train a model to score (prompt, completion) pairs with a scalar — higher is better from a human perspective.</p>
+            <div class="tags"><span class="stag">Pairwise preferences</span><span class="stag">Bradley-Terry model</span></div>
+          </div>
+        </div>
+        <div class="pipe-stage">
+          <div class="when">Stage 4</div>
+          <div class="dot-col"><span class="dot"></span><span class="line"></span></div>
+          <div class="body">
+            <h3>RLHF with PPO</h3>
+            <p class="desc">Use the reward model as a signal to align the policy via reinforcement learning. KL penalty prevents reward hacking.</p>
+            <div class="tags"><span class="stag clay">Final assistant model</span><span class="stag">Safety + alignment</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pretraining">
+    <div class="sec-head"><span class="idx">02</span><h2>Stage 1: Pre-Training</h2></div>
+    <div class="sec-body">
+      <p>Pre-training is the <strong>next-token prediction</strong> task: given a sequence of tokens, predict the next one. Run over hundreds of billions or trillions of tokens from diverse text corpora, this simple objective forces the model to internalize world knowledge, grammar, reasoning patterns, and factual associations.</p>
+
+      <div class="tabs" data-tabs>
+        <div class="tabbar">
+          <button class="on" data-t="0">Data Preparation</button>
+          <button data-t="1">Architecture</button>
+          <button data-t="2">Modern Enhancements</button>
+          <button data-t="3">Training Infrastructure</button>
+        </div>
+        <div class="tabpane on">
+          <h4>Data Preparation</h4>
+          <ul>
+            <li><strong>Corpus size:</strong> GPT-3 trained on ~500B tokens. Modern models use trillions.</li>
+            <li><strong>Batching:</strong> inputs are fixed-length windows slid across the text. Each row in a batch is a contiguous sequence; targets are the same sequence shifted one position right.</li>
+            <li><strong>Tokenization:</strong> a BPE (Byte Pair Encoding) tokenizer builds a vocabulary of ~50K–262K subword units. Unknown words are broken into sub-tokens — no OOV crashes.</li>
+          </ul>
+        </div>
+        <div class="tabpane">
+          <h4>Decoder-Only Transformer Architecture</h4>
+          <ol>
+            <li><strong>Token embedding</strong> — each token ID → dense vector (vocab × d_model table)</li>
+            <li><strong>Positional encoding</strong> — position information added to embeddings (RoPE in modern models)</li>
+            <li><strong>N × decoder blocks</strong> — masked multi-head self-attention + FFN + residual + norm</li>
+            <li><strong>Language model head</strong> — final linear projection to vocab logits, then softmax</li>
+          </ol>
+          <p><strong>Causal masking:</strong> the attention matrix is zeroed out above the diagonal so token t can only attend to tokens 1…t. This enables training on all positions simultaneously while preserving autoregressive semantics.</p>
+        </div>
+        <div class="tabpane">
+          <h4>Modern Architecture Enhancements</h4>
+          <table>
+            <thead><tr><th>Component</th><th>Original (2017)</th><th>Modern practice</th></tr></thead>
+            <tbody>
+              <tr><td>Normalization</td><td>Post-LayerNorm</td><td>Pre-RMSNorm</td></tr>
+              <tr><td>Positional encoding</td><td>Sinusoidal absolute</td><td>RoPE (relative, rotary)</td></tr>
+              <tr><td>Activation</td><td>ReLU</td><td>SwiGLU</td></tr>
+              <tr><td>Attention efficiency</td><td>Full MHA</td><td>GQA / MQA + KV cache</td></tr>
+              <tr><td>Scale efficiency</td><td>Dense FFN</td><td>MoE (optional)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="tabpane">
+          <h4>Training Infrastructure</h4>
+          <ul>
+            <li><strong>Mixed-precision training</strong> — forward/backward in FP16 or BF16; master weights in FP32; reduces VRAM 2× vs. pure FP32</li>
+            <li><strong>Gradient accumulation</strong> — simulate large batch sizes when memory is tight by accumulating gradients over N micro-batches before stepping</li>
+            <li><strong>Checkpointing</strong> — save model state periodically; allows resuming after interruption</li>
+            <li><strong>MoE layers</strong> — replace dense FFNs with many smaller expert FFNs; a learned router selects top-k experts per token</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="sft">
+    <div class="sec-head"><span class="idx">03</span><h2>Stage 2: Supervised Fine-Tuning</h2></div>
+    <div class="sec-body">
+      <p>SFT teaches the base model to <strong>follow instructions</strong> by training on curated examples of (instruction, response) pairs. The training objective is the same (next-token prediction) but the data distribution shifts from raw web text to structured human-written Q&amp;A.</p>
+
+      <h3>Instruction Dataset Format</h3>
+      <pre><code>&lt;|system|&gt;You are a helpful assistant.&lt;|end|&gt;
+&lt;|user|&gt;Explain gradient descent in one paragraph.&lt;|end|&gt;
+&lt;|assistant|&gt;Gradient descent is an iterative optimization algorithm...&lt;|end|&gt;</code></pre>
+      <p>Only the assistant response tokens contribute to the loss — the instruction prefix is used as context but not supervised.</p>
+
+      <table>
+        <thead><tr><th>Type</th><th>Data</th><th>Goal</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Classification fine-tuning</strong></td><td>labeled examples (text, label)</td><td>Spam detection, sentiment analysis</td></tr>
+          <tr><td><strong>Instruction fine-tuning</strong></td><td>(instruction, response) pairs</td><td>General assistant behavior</td></tr>
+          <tr><td><strong>Preference fine-tuning</strong></td><td>(prompt, chosen, rejected) triples</td><td>Align with human preferences (setup for RLHF)</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <span class="ico">!</span>
+        <div>SFT is relatively compute-cheap. A strong base model + small high-quality instruction dataset can yield a capable assistant model in hours. <strong>Quality beats quantity</strong> for SFT data.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="reward-modeling">
+    <div class="sec-head"><span class="idx">04</span><h2>Stage 3: Reward Modeling</h2></div>
+    <div class="sec-body">
+      <p>A reward model scores any (prompt, completion) pair with a scalar — higher is better from a human perspective. It is used in Stage 4 to provide a differentiable training signal for RLHF.</p>
+
+      <h3>Architecture</h3>
+      <p>The reward model is initialized from the SFT model with an additional <strong>value head</strong>: a linear layer on top of the final transformer hidden state that outputs a single scalar reward.</p>
+
+      <h3>Training: Pairwise Preferences</h3>
+      <p>Human annotators compare two model completions for the same prompt and pick the better one. This yields triples <code>(prompt, chosen, rejected)</code>.</p>
+      <p><strong>Bradley-Terry model:</strong></p>
+      <pre><code>P(A ≻ B) = σ(r(A) − r(B))</code></pre>
+      <p><strong>Training objective (margin ranking loss):</strong></p>
+      <pre><code>L = −log σ(r(chosen) − r(rejected))</code></pre>
+      <p>The reward model is trained to assign higher scores to chosen completions than rejected ones.</p>
+    </div>
+  </section>
+
+  <section id="rlhf">
+    <div class="sec-head"><span class="idx">05</span><h2>Stage 4: RLHF with PPO</h2></div>
+    <div class="sec-body">
+      <h3>The Four Components</h3>
+      <div class="comp-cards">
+        <div class="comp-card">
+          <div class="role">Active</div>
+          <h4>Policy Model</h4>
+          <p>The fine-tuned LLM being aligned; generates completions. Weights are updated during training.</p>
+        </div>
+        <div class="comp-card">
+          <div class="role">Frozen reference</div>
+          <h4>Reference Model</h4>
+          <p>Frozen copy of the SFT model; provides the KL anchor to prevent reward hacking.</p>
+        </div>
+        <div class="comp-card">
+          <div class="role">Frozen scorer</div>
+          <h4>Reward Model</h4>
+          <p>Frozen from Stage 3; scores completions with a scalar reward signal.</p>
+        </div>
+        <div class="comp-card">
+          <div class="role">Trained alongside</div>
+          <h4>Value Model</h4>
+          <p>Predicts expected future reward; used to compute advantages for PPO updates.</p>
+        </div>
+      </div>
+
+      <h3>PPO Training Loop</h3>
+      <ol>
+        <li>Sample a prompt from the dataset</li>
+        <li><strong>Policy model generates</strong> a completion (stochastic decoding)</li>
+        <li><strong>Reward model scores</strong> the completion → scalar reward <code>r</code></li>
+        <li><strong>KL penalty</strong> computed: <code>KL(policy || reference)</code></li>
+        <li><strong>Adjusted reward:</strong> <code>r_adjusted = r − β × KL</code></li>
+        <li><strong>PPO update:</strong> optimize the policy to maximize <code>r_adjusted</code> using clipped surrogate objective</li>
+      </ol>
+
+      <h3>KL Penalty — Why It Matters</h3>
+      <p>Without the KL penalty, the policy quickly learns to "game" the reward model — generating high-reward but incoherent or unsafe text (reward hacking). The KL term anchors the policy near the SFT model, ensuring it stays grammatically sensible.</p>
+
+      <h3>Proximal Policy Optimization (PPO)</h3>
+      <p>PPO prevents excessively large update steps via a <strong>clipped surrogate objective</strong>:</p>
+      <pre><code>L_CLIP = E[min(r_t(θ) · A_t, clip(r_t(θ), 1−ε, 1+ε) · A_t)]</code></pre>
+      <p>Where <code>r_t(θ)</code> = probability ratio (new / old policy), <code>A_t</code> = advantage estimate, <code>ε</code> = clip range (typically 0.1–0.2). Clipping prevents the ratio from going too far from 1 in either direction.</p>
+    </div>
+  </section>
+
+  <section id="inference">
+    <div class="sec-head"><span class="idx">06</span><h2>Autoregressive Inference</h2></div>
+    <div class="sec-body">
+      <p>At inference time, a trained LLM generates text token by token:</p>
+      <ol>
+        <li>Tokenize input prompt</li>
+        <li>Forward pass → logits for next token</li>
+        <li>Sample from logits (greedy, top-k, or nucleus sampling)</li>
+        <li>Append sampled token to context</li>
+        <li>Repeat until <code>&lt;EOS&gt;</code> token or max length</li>
+      </ol>
+      <p>The KV cache stores past K/V matrices so each step only processes the new token — O(N) per step instead of O(N²). See <a href="attention-transformers.html">Attention and Transformers</a> for KV cache mechanics.</p>
+    </div>
+  </section>
+
+  <section id="rules">
+    <div class="sec-head"><span class="idx">07</span><h2>Practical Rules of Thumb</h2></div>
+    <div class="sec-body">
+      <table>
+        <thead><tr><th>Question</th><th>Guidance</th></tr></thead>
+        <tbody>
+          <tr><td>How much pre-training data?</td><td>Hundreds of billions to trillions of tokens; more diverse data = better generalization</td></tr>
+          <tr><td>How much SFT data?</td><td>Quality >> quantity; thousands of high-quality examples often outperform millions of noisy ones</td></tr>
+          <tr><td>Fine-tune or prompt-engineer?</td><td>Fine-tune for consistent format/style changes; prompt-engineer for one-off tasks</td></tr>
+          <tr><td>Perplexity as eval?</td><td>Low perplexity ≠ good assistant; evaluate with downstream task accuracy or human preference</td></tr>
+          <tr><td>RLHF necessary?</td><td>RLHF dramatically improves safety and instruction-following; skip if building a base model only</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Related Topics</h3>
+      <ul>
+        <li><a href="attention-transformers.html">Attention and Transformers</a> — transformer internals: QKV, causal masking, RoPE, KV cache</li>
+        <li><a href="neural-networks.html">Neural Networks</a> — loss functions, backpropagation, gradient computation</li>
+        <li><a href="optimization.html">Optimization</a> — AdamW, learning rate schedules, weight decay</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <span class="k">Knowledge Vault</span>
+    <a href="INDEX.html">← All topics</a>
+  </footer>
+</div>
+<script>
+document.querySelectorAll("[data-tabs]").forEach(box => {
+  const btns = box.querySelectorAll("button");
+  const panes = box.querySelectorAll(".tabpane");
+  btns.forEach(b => b.addEventListener("click", () => {
+    btns.forEach(x => x.classList.remove("on"));
+    panes.forEach(x => x.classList.remove("on"));
+    b.classList.add("on");
+    panes[+b.dataset.t].classList.add("on");
+  }));
+});
+</script>
+</body>
+</html>

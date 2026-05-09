@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sentence Embeddings — Knowledge Vault</title>
+<style>
+:root{--ivory:#FAF9F5;--paper:#FFFFFF;--slate:#141413;--clay:#D97757;--clay-d:#B85C3E;--oat:#E3DACC;--olive:#788C5D;--g100:#F0EEE6;--g200:#E6E3DA;--g300:#D1CFC5;--g500:#87867F;--g700:#3D3D3A;--serif:ui-serif,Georgia,"Times New Roman",Times,serif;--sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;--mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}.intro a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms;display:inline-flex;align-items:center;gap:7px}nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}.sec-body ul{margin:0 0 16px;padding-left:20px}.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}a:hover{text-decoration-color:var(--clay)}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+/* vector space demo */
+.vec-demo{background:var(--paper);border:1.5px solid var(--g300);border-radius:14px;padding:24px;margin:0 0 24px}
+.vec-canvas{position:relative;height:220px;background:var(--g100);border-radius:8px;overflow:hidden;margin-bottom:16px}
+.vec-dot{position:absolute;width:10px;height:10px;border-radius:50%;transform:translate(-50%,-50%);transition:all 300ms ease}
+.vec-label{position:absolute;font-family:var(--mono);font-size:11px;color:var(--g700);white-space:nowrap;transform:translate(-50%,8px)}
+.vec-line{position:absolute;pointer-events:none}
+.vec-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--g700)}
+.vec-legend span{display:flex;align-items:center;gap:6px}
+.vec-legend .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="masthead">
+  <div class="eyebrow">Knowledge Vault</div>
+  <h1>Sentence <em>Embeddings</em></h1>
+  <p class="intro">Sentence embeddings are dense vector representations of text that capture semantic meaning. Similar sentences map to nearby vectors in the embedding space, enabling semantic search, clustering, and retrieval without keyword matching.</p>
+  <nav class="toc">
+    <a href="#model">Core Model</a>
+    <a href="#comparison">Model Comparison</a>
+    <a href="#distance">Distance Metrics</a>
+    <a href="#usecases">Use Cases</a>
+    <a href="#related">Related Topics</a>
+  </nav>
+</header>
+
+<section id="model">
+  <div class="sec-head"><span class="idx">01</span><h2>Core Model: all-MiniLM-L6-v2</h2></div>
+  <div class="sec-body">
+    <p><code>sentence-transformers/all-MiniLM-L6-v2</code> is the standard go-to sentence embedding model:</p>
+    <ul>
+      <li><strong>Architecture:</strong> based on the MiniLM family (distilled from larger BERT-like models)</li>
+      <li><strong>Output:</strong> 384-dimensional dense vector per sentence or short paragraph</li>
+      <li><strong>Fine-tuned for:</strong> sentence similarity and semantic search tasks</li>
+      <li><strong>Tradeoff:</strong> excellent accuracy-vs-speed balance, high throughput</li>
+    </ul>
+  </div>
+</section>
+
+<section id="comparison">
+  <div class="sec-head"><span class="idx">02</span><h2>Model Comparison</h2></div>
+  <div class="sec-body">
+    <table>
+      <tr><th>Model</th><th>Best for</th><th>Tradeoff</th></tr>
+      <tr><td><code>all-MiniLM-L6-v2</code></td><td>Fast, general-purpose embeddings</td><td>Lower accuracy than mpnet</td></tr>
+      <tr><td><code>all-mpnet-base-v2</code></td><td>Higher accuracy (semantic search, retrieval)</td><td>Slower, larger, more resources</td></tr>
+      <tr><td><code>paraphrase-multilingual-MiniLM-L12-v2</code></td><td>Multilingual embeddings</td><td>Slightly larger than L6</td></tr>
+      <tr><td><code>multi-qa-mpnet-base-cos-v1</code></td><td>Question-answering / retrieval-heavy tasks</td><td>More specialized</td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="distance">
+  <div class="sec-head"><span class="idx">03</span><h2>How Embedding Distance Works</h2></div>
+  <div class="sec-body">
+    <p>Two embeddings that are <strong>close</strong> in vector space have <strong>similar semantic meaning</strong>.</p>
+    <div class="vec-demo">
+      <div class="vec-canvas" id="vecCanvas"></div>
+      <div class="vec-legend">
+        <span><span class="dot" style="background:var(--clay)"></span>Similar pair</span>
+        <span><span class="dot" style="background:var(--olive)"></span>Another cluster</span>
+        <span><span class="dot" style="background:var(--g500)"></span>Distant sentence</span>
+      </div>
+    </div>
+    <p>Common similarity metrics:</p>
+    <ul>
+      <li><strong>Cosine similarity</strong> — angle between vectors (most common for sentence embeddings)</li>
+      <li><strong>Dot product</strong> — magnitude-aware similarity</li>
+      <li><strong>L2 / Euclidean distance</strong> — raw spatial distance</li>
+    </ul>
+  </div>
+</section>
+
+<section id="usecases">
+  <div class="sec-head"><span class="idx">04</span><h2>Use Cases</h2></div>
+  <div class="sec-body">
+    <ul>
+      <li><strong>Semantic search:</strong> find documents semantically similar to a query (not just keyword-matching)</li>
+      <li><strong>Clustering:</strong> group similar texts without labels</li>
+      <li><strong>Duplicate detection:</strong> find near-duplicate content</li>
+      <li><strong>Retrieval-Augmented Generation (RAG):</strong> retrieve relevant context for LLM prompts</li>
+    </ul>
+  </div>
+</section>
+
+<section id="related">
+  <div class="sec-head"><span class="idx">05</span><h2>Related Topics</h2></div>
+  <div class="sec-body">
+    <ul>
+      <li><a href="nlp.html">NLP</a> — text processing tasks</li>
+      <li><a href="multimodal-models.html">Multimodal Models</a> — contrastive learning creates similar embedding spaces for cross-modal similarity</li>
+      <li><a href="transformers-library.html">Transformers Library</a> — the library used to load embedding models</li>
+      <li><a href="hugging-face.html">Hugging Face</a> — hosting sentence embedding models</li>
+      <li><a href="rag.html">RAG</a> — sentence embeddings power vector retrieval in RAG pipelines</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <span class="k">Knowledge Vault</span>
+  <a href="INDEX.html">← All topics</a>
+</footer>
+</div>
+<script>
+(function(){
+  const canvas = document.getElementById('vecCanvas');
+  const W = canvas.offsetWidth || 600, H = 220;
+  const points = [
+    {x:.18,y:.35,c:'var(--clay)',label:'I love dogs'},
+    {x:.28,y:.25,c:'var(--clay)',label:'Puppies are great'},
+    {x:.22,y:.50,c:'var(--clay)',label:'Cats are cute'},
+    {x:.65,y:.30,c:'var(--olive)',label:'Sky is blue'},
+    {x:.75,y:.40,c:'var(--olive)',label:'The ocean is vast'},
+    {x:.82,y:.65,c:'var(--g500)',label:'Quantum physics'},
+  ];
+  points.forEach(p=>{
+    const dot = document.createElement('div');
+    dot.className='vec-dot';
+    dot.style.cssText=`left:${p.x*100}%;top:${p.y*100}%;background:${p.c}`;
+    canvas.appendChild(dot);
+    const lbl = document.createElement('div');
+    lbl.className='vec-label';
+    lbl.style.cssText=`left:${p.x*100}%;top:${p.y*100}%`;
+    lbl.textContent=p.label;
+    canvas.appendChild(lbl);
+  });
+})();
+</script>
+</body>
+</html>

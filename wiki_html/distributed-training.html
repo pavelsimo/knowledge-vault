@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Distributed Training — Knowledge Vault</title>
+<style>
+:root {
+  --ivory:#FAF9F5; --paper:#FFFFFF; --slate:#141413;
+  --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D;
+  --g100:#F0EEE6; --g200:#E6E3DA; --g300:#D1CFC5; --g500:#87867F; --g700:#3D3D3A;
+  --serif:ui-serif,Georgia,"Times New Roman",Times,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}
+h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms;display:inline-flex;align-items:center;gap:7px}
+nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}
+.sec-body ul,.sec-body ol{margin:0 0 16px;padding-left:20px}
+.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--clay)}
+pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
+code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}
+th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}
+td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+
+/* ── parallelism strategy cards (component 01 pattern) ── */
+.parallel-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:24px 0}
+@media(max-width:900px){.parallel-grid{grid-template-columns:1fr}}
+.par-card{background:var(--paper);border:1.5px solid var(--g300);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.par-card:hover{border-color:var(--clay)}
+.par-badge{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--clay)}
+.par-card h3{font-family:var(--serif);font-size:18px;font-weight:500;color:var(--slate);margin:0}
+.par-card p{font-size:13.5px;color:var(--g700);margin:0;line-height:1.55}
+.par-card ul{font-size:13px;color:var(--g700);padding-left:16px;margin:0}
+.par-card li{margin-bottom:5px}
+.par-card .par-note{font-family:var(--mono);font-size:11.5px;color:var(--g500);padding-top:8px;border-top:1px solid var(--g200)}
+
+/* ── metric cards ── */
+.metric-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:24px 0}
+@media(max-width:700px){.metric-row{grid-template-columns:1fr}}
+.metric-card{background:var(--paper);border:1.5px solid var(--g300);border-radius:10px;padding:18px}
+.metric-val{font-family:var(--serif);font-size:32px;font-weight:500;color:var(--slate)}
+.metric-unit{font-family:var(--mono);font-size:12px;color:var(--g500);margin-left:4px}
+.metric-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--g500);margin-top:4px}
+.metric-desc{font-size:13px;color:var(--g700);margin-top:8px}
+
+.callout{display:flex;gap:12px;border:1.5px solid var(--oat);background:rgba(227,218,204,.3);border-radius:10px;padding:14px 16px;margin:18px 0;font-size:14px;color:var(--g700)}
+.callout .ico{color:var(--clay);font-weight:700;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <div class="eyebrow">AI · Systems &amp; Infrastructure</div>
+  <h1><em>Distributed</em> training</h1>
+  <p class="intro">
+    As models grow beyond billions of parameters, training on a single GPU becomes impossible.
+    Distributed training splits computation, memory, and data across hundreds or thousands of GPUs.
+    This topic covers the key strategies, hardware constraints, and efficiency metrics for large-scale
+    model training.
+  </p>
+  <nav class="toc">
+    <a href="#why">Why Distribute</a>
+    <a href="#hardware">H100 Hardware</a>
+    <a href="#bandwidth">Bandwidth Hierarchy</a>
+    <a href="#strategies">Parallelism Strategies</a>
+    <a href="#metrics">Efficiency Metrics</a>
+    <a href="#tpu">TPUs</a>
+  </nav>
+</header>
+
+<!-- ── SECTION 1 ── -->
+<section id="why">
+  <div class="sec-head"><span class="idx">01</span><h2>Why distribute?</h2></div>
+  <div class="sec-body">
+    <table>
+      <thead>
+        <tr><th>Model size</th><th>Single GPU memory needed</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1B parameters</td><td>~8 GB</td></tr>
+        <tr><td>10B parameters</td><td>~80 GB</td></tr>
+        <tr><td>100B parameters</td><td>~800 GB minimum</td></tr>
+      </tbody>
+    </table>
+    <p>Memory per parameter with Adam optimizer:</p>
+    <ul>
+      <li><strong>Weight W[i]</strong> — the parameter itself</li>
+      <li><strong>Gradient dL/dW[i]</strong> — current direction</li>
+      <li><strong>First moment m[i]</strong> — momentum (direction on average)</li>
+      <li><strong>Second moment v[i]</strong> — how trustworthy that direction is</li>
+    </ul>
+    <p>At BF16/FP16: 2 bytes × 4 numbers = <strong>8 bytes per parameter</strong>. → 100B params = 800 GB minimum just for weights + optimizer states.</p>
+  </div>
+</section>
+
+<!-- ── SECTION 2 ── -->
+<section id="hardware">
+  <div class="sec-head"><span class="idx">02</span><h2>GPU hardware: NVIDIA H100</h2></div>
+  <div class="sec-body">
+    <div class="metric-row">
+      <div class="metric-card">
+        <div class="metric-val">80<span class="metric-unit">GB</span></div>
+        <div class="metric-label">HBM memory</div>
+        <div class="metric-desc">High-bandwidth memory on-chip</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val">3,352<span class="metric-unit">GB/s</span></div>
+        <div class="metric-label">Memory bandwidth</div>
+        <div class="metric-desc">Internal memory bandwidth</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val">132<span class="metric-unit">SMs</span></div>
+        <div class="metric-label">Streaming Multiprocessors</div>
+        <div class="metric-desc">Independent parallel compute units (144 total, 132 enabled after binning)</div>
+      </div>
+    </div>
+
+    <p>Each SM has:</p>
+    <ul>
+      <li><strong>128 FP32 cores</strong> (256 FLOPs/cycle) — scalar/vector math</li>
+      <li><strong>4 Tensor Cores</strong> (4,096 FLOPs/cycle) — matrix multiply-accumulate</li>
+      <li>Tensor Cores are <strong>16× faster</strong> than FP32 cores — keep operations in matrix form to use them</li>
+    </ul>
+
+    <div class="callout">
+      <span class="ico">★</span>
+      <div><strong>Yield and binning:</strong> chips have manufacturing defects; H100 has 144 SMs but only 132 enabled (disabled defective units). "Binning" = grading chips by quality after testing. Tensor Cores operate in mixed precision: inputs in FP16/BF16/FP8, accumulation in FP32.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 3 ── -->
+<section id="bandwidth">
+  <div class="sec-head"><span class="idx">03</span><h2>GPU cluster bandwidth hierarchy</h2></div>
+  <div class="sec-body">
+    <p>The Meta Llama 3 cluster architecture shows the real hierarchy:</p>
+    <table>
+      <thead>
+        <tr><th>Scale</th><th>Bandwidth</th><th>Technology</th><th>Example</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Inside 1 GPU</td><td><strong>3,352 GB/s</strong></td><td>HBM memory</td><td>On-chip, fastest</td></tr>
+        <tr><td>1 server (8 GPUs)</td><td>~900 GB/s</td><td>NVLink/NVSwitch</td><td>Between GPUs</td></tr>
+        <tr><td>1 rack (16 GPUs)</td><td>~900 GB/s</td><td>NVSwitch domain</td><td>Same rack</td></tr>
+        <tr><td>1 pod (3,072 GPUs)</td><td>~50 GB/s</td><td>InfiniBand/Ethernet</td><td>Across racks</td></tr>
+        <tr><td>Full cluster (24,576 GPUs)</td><td>&lt;50 GB/s</td><td>Cross-pod networking</td><td>Across pods</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Analogy:</strong> 1 GPU = talking to yourself; 8 GPUs = people in the same room; 3K GPUs = people across a city; 24K GPUs = people across continents on Zoom.</p>
+    <p>Communication becomes the bottleneck at scale — collective operations (all-reduce) dominate training time at pod scale.</p>
+  </div>
+</section>
+
+<!-- ── SECTION 4: Parallelism strategies ── -->
+<section id="strategies">
+  <div class="sec-head"><span class="idx">04</span><h2>Parallelism strategies</h2></div>
+  <div class="sec-body">
+    <div class="parallel-grid">
+      <div class="par-card">
+        <div class="par-badge">Data Parallelism</div>
+        <h3>DP / FSDP / ZeRO</h3>
+        <p>Same model on every GPU; each GPU processes a different mini-batch.</p>
+        <ul>
+          <li>Forward + backward pass independently on each GPU</li>
+          <li>Gradients synchronized (all-reduce) before optimizer step</li>
+          <li>Simple and effective when model fits in one GPU</li>
+        </ul>
+        <div class="par-note">ZeRO Stage 1: shard optimizer states. Stage 2: + gradients. Stage 3: + parameters.</div>
+      </div>
+      <div class="par-card">
+        <div class="par-badge">Tensor Parallelism</div>
+        <h3>TP</h3>
+        <p>Split individual weight matrices across multiple GPUs.</p>
+        <ul>
+          <li>Matrix multiply A × B is split: each GPU holds a shard</li>
+          <li>Requires synchronization (all-reduce) after each layer</li>
+          <li>Best within a single server (NVLink bandwidth)</li>
+        </ul>
+        <div class="par-note">Best used within a node. Cross-node TP is bandwidth-constrained.</div>
+      </div>
+      <div class="par-card">
+        <div class="par-badge">Pipeline Parallelism</div>
+        <h3>PP</h3>
+        <p>Split model layers across GPUs in stages. Microbatch scheduling keeps all stages busy.</p>
+        <ul>
+          <li>GPU 1: layers 1–N/4; GPU 2: N/4+1 to N/2; etc.</li>
+          <li>Forward left-to-right; backward right-to-left</li>
+          <li>More microbatches = smaller bubble = better MFU</li>
+        </ul>
+        <div class="par-note">4-way PP with 4 microbatches: ~57% MFU vs 25% naive.</div>
+      </div>
+    </div>
+
+    <h3>Context Parallelism (CP)</h3>
+    <p>For very long sequences (16K–128K tokens), split the sequence across GPUs:</p>
+    <ul>
+      <li>GPU 1: tokens 1 to L/2; GPU 2: tokens L/2+1 to L</li>
+      <li>Self-attention requires all tokens → GPUs exchange K and V matrices</li>
+      <li>Reduces attention computation per GPU; adds communication overhead</li>
+    </ul>
+    <p><a href="https://arxiv.org/pdf/2310.01889">Ring Attention with Blockwise Transformers for Near-Infinite Context</a></p>
+
+    <h3>Activation Checkpointing</h3>
+    <p>Saves only a subset of activations during the forward pass and recomputes the rest on-the-fly
+    during backprop. Trades extra compute (one extra partial forward pass) for large memory savings.
+    Enables training much deeper networks.</p>
+
+    <h3>ND Parallelism (Llama 3)</h3>
+    <p>Real large-scale training combines multiple strategies simultaneously:</p>
+    <ul>
+      <li>TP within a server (NVLink)</li>
+      <li>PP across servers</li>
+      <li>DP across pods</li>
+      <li>CP for long contexts</li>
+    </ul>
+    <p><a href="https://arxiv.org/pdf/2407.21783">The Llama 3 Herd of Models</a></p>
+  </div>
+</section>
+
+<!-- ── SECTION 5 ── -->
+<section id="metrics">
+  <div class="sec-head"><span class="idx">05</span><h2>Efficiency metrics</h2></div>
+  <div class="sec-body">
+    <h3>HFU — Hardware FLOPs Utilization</h3>
+    <pre>HFU = achieved FLOPs / theoretical peak FLOPs</pre>
+    <p>H100 theoretical: 989.4 TFLOPS/sec of 16-bit matrix multiplications. In practice, large matrix
+    multiply gets ~80% HFU. Ignores real overhead — too optimistic for actual training.</p>
+
+    <h3>MFU — Model FLOPs Utilization</h3>
+    <pre>MFU = theoretical model FLOPs per step / actual wall-clock FLOPs per step</pre>
+    <table>
+      <thead>
+        <tr><th>MFU</th><th>Rating</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>&gt; 40%</td><td>Excellent</td></tr>
+        <tr><td>30–40%</td><td>Good</td></tr>
+        <tr><td>&lt; 30%</td><td>Investigate bottlenecks</td></tr>
+      </tbody>
+    </table>
+    <p>Large-scale LLM training: typically 30–45%. <strong>Why MFU drops on newer GPUs:</strong> compute
+    grows faster than memory bandwidth. A100→H100 gave ~3.1× FLOPs but only ~2.1× memory bandwidth →
+    memory-bound bottleneck grows.</p>
+    <div class="callout">
+      <span class="ico">!</span>
+      <div><strong>Rule:</strong> optimize for MFU, not HFU. HFU is a theoretical ceiling; MFU measures what you actually get end-to-end.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 6 ── -->
+<section id="tpu">
+  <div class="sec-head"><span class="idx">06</span><h2>TPUs and related topics</h2></div>
+  <div class="sec-body">
+    <h3>Google TPUs</h3>
+    <ul>
+      <li>Custom ASICs optimized for matrix operations</li>
+      <li>Cannot purchase — only rent via Google Cloud</li>
+      <li>Less popular ecosystem than NVIDIA GPUs</li>
+      <li>NVIDIA and Google are the two leaders in AI training hardware</li>
+    </ul>
+
+    <h3>Related Topics</h3>
+    <ul>
+      <li><a href="gpu-cuda.html">gpu-cuda</a> — single-GPU hardware fundamentals (H100, tensor cores, compute capabilities)</li>
+      <li><a href="quantization.html">quantization</a> — quantization used alongside tensor parallelism for very large models</li>
+      <li><a href="attention-transformers.html">attention-transformers</a> — self-attention is quadratic in sequence length; context parallelism addresses this</li>
+      <li><a href="neural-networks.html">neural-networks</a> — backpropagation and activation memory</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <span class="k">Knowledge Vault</span>
+  <span>AI · Distributed Training</span>
+</footer>
+
+</div>
+</body>
+</html>

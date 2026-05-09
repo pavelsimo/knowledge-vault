@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ML Learning and Career Development — Knowledge Vault</title>
+<style>
+:root {
+  --ivory:#FAF9F5; --paper:#FFFFFF; --slate:#141413;
+  --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D;
+  --g100:#F0EEE6; --g200:#E6E3DA; --g300:#D1CFC5; --g500:#87867F; --g700:#3D3D3A;
+  --serif:ui-serif,Georgia,"Times New Roman",Times,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}
+h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+.intro a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms;display:inline-flex;align-items:center;gap:7px}
+nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}
+.sec-body ul,.sec-body ol{margin:0 0 16px;padding-left:20px}
+.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--clay)}
+pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
+code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}
+th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}
+td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+.tag{display:inline-flex;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--g300);color:var(--g500);background:var(--paper)}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}
+footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+
+/* ── milestone timeline ── */
+.timeline{position:relative;margin:24px 0;padding-left:32px}
+.timeline::before{content:"";position:absolute;left:9px;top:8px;bottom:8px;width:2px;background:var(--g300)}
+.milestone{position:relative;margin-bottom:28px}
+.milestone:last-child{margin-bottom:0}
+.milestone::before{content:"";position:absolute;left:-27px;top:6px;width:14px;height:14px;border-radius:50%;background:var(--paper);border:2px solid var(--g300)}
+.milestone.done::before{background:var(--clay);border-color:var(--clay)}
+.milestone.active::before{background:var(--paper);border-color:var(--clay);box-shadow:0 0 0 3px rgba(217,119,87,.2)}
+.ms-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--clay);margin-bottom:4px}
+.ms-title{font-family:var(--serif);font-size:18px;color:var(--slate);margin-bottom:6px}
+.ms-body{font-size:14px;color:var(--g700)}
+.ms-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+
+/* ── callout ── */
+.callout{display:flex;gap:12px;border:1.5px solid var(--oat);background:rgba(227,218,204,.35);border-radius:10px;padding:14px 16px;margin:18px 0;font-size:14px}
+.callout .ico{color:var(--clay);font-weight:600;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <div class="eyebrow">Career Development</div>
+  <h1>ML Learning &amp; <em>Careers</em></h1>
+  <p class="intro">Becoming an ML engineer is less about following a credential pipeline and more about building tight loops between intuition, implementation, feedback, and real problems. Use AI to accelerate understanding, not to bypass it.</p>
+  <nav class="toc">
+    <a href="#s1">What ML Engineers Do</a>
+    <a href="#s2">The Learning Loop</a>
+    <a href="#s3">Learning Path</a>
+    <a href="#s4">Career Strategy</a>
+    <a href="#s5">Core Thesis</a>
+  </nav>
+</header>
+
+<section id="s1">
+  <div class="sec-head"><span class="idx">01</span><h2>What an ML Engineer Actually Does</h2></div>
+  <div class="sec-body">
+    <table>
+      <thead><tr><th>Role</th><th>Focus</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Researcher</strong></td><td>Push the frontier — new architectures, training methods, capabilities</td></tr>
+        <tr><td><strong>Data Scientist</strong></td><td>Analyze data and answer business questions</td></tr>
+        <tr><td><strong>ML Engineer</strong></td><td>Make models work in production — the job is a blend of engineering and modeling</td></tr>
+      </tbody>
+    </table>
+    <p>The ML engineer role spans: model training and fine-tuning, data pipelines, deployment and monitoring, inference optimization, and integration into real applications. This is why the required skill stack spans both <a href="neural-networks.html">neural networks</a> and <a href="mlops.html">MLOps</a>.</p>
+  </div>
+</section>
+
+<section id="s2">
+  <div class="sec-head"><span class="idx">02</span><h2>The Learning Loop That Actually Works</h2></div>
+  <div class="sec-body">
+    <p>The strongest recurring pattern is not passive content consumption. It is an iterative loop:</p>
+    <ol>
+      <li>Pick a concrete thing to understand or build</li>
+      <li>Implement it</li>
+      <li>Debug it until it works</li>
+      <li>Ask for conceptual explanation</li>
+      <li>Ask for the intuition</li>
+      <li>Ask for the math intuition</li>
+      <li>Re-explain it in simpler terms until it truly clicks</li>
+    </ol>
+
+    <h3>Top-Down Learning</h3>
+    <p>The anti-pattern is spending years on prerequisites before touching the thing you actually care about.</p>
+    <div class="callout"><span class="ico">!</span><div><strong>The key distinction:</strong> <em>bad shortcut</em> = skip understanding. <em>Good shortcut</em> = reach understanding faster. The goal is to take shortcuts <strong>to the fundamentals</strong>, not around them.</div></div>
+    <p>The proposed alternative: start from the real target (e.g. diffusion models), ask what sub-concepts block understanding, drill down recursively only where needed, use AI to explain the missing pieces in progressively simpler language.</p>
+
+    <h3>Two-Pass Study Method</h3>
+    <table>
+      <thead><tr><th>First Pass</th><th>Second Pass</th></tr></thead>
+      <tbody>
+        <tr><td>Watch straight through</td><td>Pause often</td></tr>
+        <tr><td>Do not pause constantly</td><td>Rewrite notes in your own words</td></tr>
+        <tr><td>Build the mental scaffold first</td><td>Type all code manually</td></tr>
+        <tr><td>&mdash;</td><td>Break the code on purpose</td></tr>
+        <tr><td>&mdash;</td><td>Vary parameters and observe behavior</td></tr>
+      </tbody>
+    </table>
+    <p>The second pass is slower than passive watching, but it creates the internal model you need for real engineering.</p>
+  </div>
+</section>
+
+<section id="s3">
+  <div class="sec-head"><span class="idx">03</span><h2>Suggested Learning Path</h2></div>
+  <div class="sec-body">
+    <div class="timeline">
+      <div class="milestone done">
+        <div class="ms-label">Stage 1</div>
+        <div class="ms-title">Intuition First</div>
+        <div class="ms-body">
+          <p>Use 3Blue1Brown to build visual intuition for the core concepts before touching code. Cover: neural networks, gradient descent, backpropagation, transformers, attention, diffusion.</p>
+          <p>The goal is a <em>mental model</em> — not implementation yet. Visual intuition prevents the "black box" feeling that makes debugging impossible later.</p>
+        </div>
+        <div class="ms-tags">
+          <span class="tag">3Blue1Brown</span>
+          <span class="tag">Visual</span>
+          <span class="tag">No code</span>
+        </div>
+      </div>
+      <div class="milestone done">
+        <div class="ms-label">Stage 2</div>
+        <div class="ms-title">Implementation Second</div>
+        <div class="ms-body">
+          <p>Use Andrej Karpathy's material to build systems from scratch: <code>micrograd</code>, <code>makemore</code>, GPT, a tokenizer. Writing the components yourself removes the black-box feeling around modern ML.</p>
+          <p>This stage matters because you stop trusting that it works and start <em>knowing</em> why it works.</p>
+        </div>
+        <div class="ms-tags">
+          <span class="tag">Karpathy</span>
+          <span class="tag">From scratch</span>
+          <span class="tag">micrograd</span>
+          <span class="tag">GPT</span>
+        </div>
+      </div>
+      <div class="milestone active">
+        <div class="ms-label">Stage 3</div>
+        <div class="ms-title">Broader Context Third</div>
+        <div class="ms-body">
+          <p>After intuition and implementation, add broader context: how LLM training stacks fit together, where supervised fine-tuning and RL enter, how model behavior, failure modes, and tooling fit into the bigger system.</p>
+        </div>
+        <div class="ms-tags">
+          <span class="tag">SFT</span>
+          <span class="tag">RLHF</span>
+          <span class="tag">MLOps</span>
+          <span class="tag">Systems</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>Real Problems Beat Abstract Study</h3>
+    <p>Learning gets faster when the problem is real — the task decomposes naturally into sub-problems, feedback is immediate, pressure forces focus, and the knowledge has an obvious purpose. Startup work, integrations, demos, and customer-facing problems can compress learning faster than abstract exercises alone.</p>
+  </div>
+</section>
+
+<section id="s4">
+  <div class="sec-head"><span class="idx">04</span><h2>Career Strategy: Direct Evidence Beats Proxies</h2></div>
+  <div class="sec-body">
+    <p>Degrees, internships, and school prestige are all proxies for capability. They become less important when you can show direct proof.</p>
+    <div class="callout"><span class="ico">★</span><div><strong>The argument:</strong> A working demo and strong code can bypass weaker proxies when the buyer actually understands the work. Demos collapse uncertainty faster than credentials because they let the other side observe the actual work.</div></div>
+    <p><strong>The recommended strategy:</strong></p>
+    <ul>
+      <li>Build something understandable in seconds</li>
+      <li>Show it to decision-makers, not process gatekeepers</li>
+      <li>Use the demo to prove you can create value</li>
+    </ul>
+
+    <h3>High-Leverage Career Habits</h3>
+    <ul>
+      <li>Seek environments with strong code review culture</li>
+      <li>Ask <em>why</em> feedback is correct, not just what to change</li>
+      <li>Prefer real output over resume decoration</li>
+      <li>Stay close to people and teams with high standards</li>
+    </ul>
+    <p>The story here is not anti-learning or anti-mentorship. It is anti-passivity.</p>
+  </div>
+</section>
+
+<section id="s5">
+  <div class="sec-head"><span class="idx">05</span><h2>The Core Thesis</h2></div>
+  <div class="sec-body">
+    <p>AI changes the learning economics of ML:</p>
+    <ul>
+      <li>Foundational knowledge is easier to access</li>
+      <li>Debugging and explanation loops are faster</li>
+      <li>Implementation barriers are lower</li>
+    </ul>
+    <p>But the bottleneck does not disappear. It just moves to <strong>judgment</strong>:</p>
+    <ul>
+      <li>Noticing what you still do not understand</li>
+      <li>Verifying that your explanation is actually correct</li>
+      <li>Reading code carefully instead of "vibe learning"</li>
+    </ul>
+    <div class="callout"><span class="ico">!</span><div>The gap between people who use AI to accelerate understanding and those who use it to skip understanding will widen — not narrow — as AI tools become more capable.</div></div>
+  </div>
+</section>
+
+<footer>
+  <span class="k">Knowledge Vault</span>
+  <span>Related: <a href="ai-coding.html">AI Coding</a> &middot; <a href="attention-transformers.html">Attention &amp; Transformers</a> &middot; <a href="neural-networks.html">Neural Networks</a> &middot; <a href="mlops.html">MLOps</a></span>
+  <span>Updated May 2026</span>
+</footer>
+
+</div>
+</body>
+</html>

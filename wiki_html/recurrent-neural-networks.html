@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recurrent Neural Networks — Knowledge Vault</title>
+<style>
+:root {
+  --ivory:#FAF9F5; --paper:#FFFFFF; --slate:#141413;
+  --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D;
+  --g100:#F0EEE6; --g200:#E6E3DA; --g300:#D1CFC5; --g500:#87867F; --g700:#3D3D3A;
+  --serif:ui-serif,Georgia,"Times New Roman",Times,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}
+h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms;display:inline-flex;align-items:center;gap:7px}
+nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}
+.sec-body ul,.sec-body ol{margin:0 0 16px;padding-left:20px}
+.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--clay)}
+pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
+code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}
+th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}
+td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+
+/* ── tabs: Vanilla RNN vs LSTM vs GRU (component 14 pattern) ── */
+.tabs-widget{border:1.5px solid var(--g300);border-radius:12px;background:var(--paper);margin:24px 0;overflow:hidden}
+.tabbar{display:flex;border-bottom:1px solid var(--g300);background:var(--g100)}
+.tabbar button{appearance:none;border:none;background:none;font-family:var(--mono);font-size:12px;color:var(--g500);padding:11px 18px;cursor:pointer;border-right:1px solid var(--g300)}
+.tabbar button.on{background:var(--paper);color:var(--slate);border-bottom:2px solid var(--clay);margin-bottom:-1px;font-weight:600}
+.tab-pane{display:none;padding:22px 24px}
+.tab-pane.on{display:block}
+.tab-pane h4{font-family:var(--serif);font-size:18px;font-weight:500;color:var(--slate);margin:0 0 12px}
+.tab-pane p{font-size:14px;color:var(--g700);margin:0 0 12px;max-width:680px}
+.tab-pane ul,.tab-pane ol{font-size:14px;color:var(--g700);padding-left:18px;margin:0 0 12px}
+.tab-pane li{margin-bottom:6px}
+.tab-pane pre{font-size:12.5px;background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto}
+
+.callout{display:flex;gap:12px;border:1.5px solid var(--oat);background:rgba(227,218,204,.3);border-radius:10px;padding:14px 16px;margin:18px 0;font-size:14px;color:var(--g700)}
+.callout .ico{color:var(--clay);font-weight:700;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <div class="eyebrow">AI · Sequence Models</div>
+  <h1>Recurrent neural <em>networks</em></h1>
+  <p class="intro">
+    RNNs are neural networks designed for sequential data where the order of elements matters.
+    Unlike feedforward networks, RNNs maintain an internal <strong>hidden state</strong> that acts
+    as memory, allowing them to carry information across time steps.
+  </p>
+  <nav class="toc">
+    <a href="#vanilla">Vanilla RNN</a>
+    <a href="#modes">Sequence Modes</a>
+    <a href="#vanishing">Vanishing Gradients</a>
+    <a href="#architectures">RNN · LSTM · GRU</a>
+    <a href="#bottleneck">Encoder-Decoder</a>
+    <a href="#modern">Modern RNNs</a>
+  </nav>
+</header>
+
+<!-- ── SECTION 1 ── -->
+<section id="vanilla">
+  <div class="sec-head"><span class="idx">01</span><h2>Vanilla RNN (Elman RNN)</h2></div>
+  <div class="sec-body">
+    <p>The simplest RNN, named after Prof. Jeffrey Elman. The state consists of a single hidden vector h:</p>
+    <pre>hₜ = tanh(Whh · hₜ₋₁ + Wxh · xₜ)    ← hidden state update
+yₜ = Why · hₜ                          ← output (when needed)</pre>
+    <p>Three weight matrices: <code>Whh</code> (hidden-to-hidden), <code>Wxh</code> (input-to-hidden),
+    <code>Why</code> (hidden-to-output). The <strong>tanh</strong> activation squashes values to [-1, 1].</p>
+    <p>The <strong>hidden state</strong> is the internal memory of the RNN — it summarizes everything
+    the model has seen up to time t. The same weight matrix W is used at every time step — this is
+    what makes it "recurrent."</p>
+
+    <h3>Truncated Backpropagation Through Time (TBPTT)</h3>
+    <p>Full BPTT through very long sequences is computationally intractable. TBPTT processes in chunks:</p>
+    <ul>
+      <li>Carry hidden states forward through time forever (full sequence)</li>
+      <li>Only backpropagate for a smaller fixed number of steps</li>
+      <li>Breaks the sequence into windows; gradients don't flow further back than the window</li>
+    </ul>
+
+    <h3>CNN + RNN for image captioning</h3>
+    <pre>Image → CNN encoder → initial hidden state h₀
+h₀ → RNN: [START] → "straw" → "hat" → END → yₜ</pre>
+    <p>The CNN encodes visual features, initializes the RNN hidden state, and the RNN generates words autoregressively.</p>
+  </div>
+</section>
+
+<!-- ── SECTION 2 ── -->
+<section id="modes">
+  <div class="sec-head"><span class="idx">02</span><h2>Sequence processing modes</h2></div>
+  <div class="sec-body">
+    <p>RNNs can be configured for different input-output patterns:</p>
+    <table>
+      <thead>
+        <tr><th>Mode</th><th>Pattern</th><th>Example</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>One-to-one</strong></td><td>1 input → 1 output</td><td>Standard classification</td></tr>
+        <tr><td><strong>One-to-many</strong></td><td>1 input → sequence output</td><td>Image captioning: image → sentence</td></tr>
+        <tr><td><strong>Many-to-one</strong></td><td>Sequence input → 1 output</td><td>Sentiment: sentence → positive/negative</td></tr>
+        <tr><td><strong>Many-to-many (synced)</strong></td><td>Seq → seq (same length)</td><td>Video: each frame → action label</td></tr>
+        <tr><td><strong>Many-to-many (async)</strong></td><td>Seq → seq (different length)</td><td>Translation: English → French</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Applications</h3>
+    <ul>
+      <li>Language modeling (predict next word)</li>
+      <li>Machine translation (seq-to-seq)</li>
+      <li>Sentiment analysis</li>
+      <li>Time series prediction</li>
+      <li>Music generation</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ── SECTION 3 ── -->
+<section id="vanishing">
+  <div class="sec-head"><span class="idx">03</span><h2>Vanishing gradient problem</h2></div>
+  <div class="sec-body">
+    <p>When backpropagating through many time steps, the gradient is multiplied by the same weight
+    matrix repeatedly:</p>
+    <ul>
+      <li>If weights are slightly &lt; 1: gradients shrink exponentially → <strong>vanish</strong></li>
+      <li>If weights are slightly &gt; 1: gradients grow exponentially → <strong>explode</strong></li>
+    </ul>
+    <p>Result: vanilla RNNs effectively only remember ~10–20 steps back.</p>
+    <div class="callout">
+      <span class="ico">!</span>
+      <div>Gradient <strong>explosion</strong> is handled by gradient clipping. Gradient <strong>vanishing</strong> requires architectural solutions — that's where LSTM comes in.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 4: Tabs RNN / LSTM / GRU ── -->
+<section id="architectures">
+  <div class="sec-head"><span class="idx">04</span><h2>Vanilla RNN vs LSTM vs Modern RNNs</h2></div>
+  <div class="sec-body">
+    <div class="tabs-widget" data-tabs>
+      <div class="tabbar">
+        <button class="on" data-t="0">Vanilla RNN</button>
+        <button data-t="1">LSTM</button>
+        <button data-t="2">Modern (Mamba, RWKV)</button>
+      </div>
+
+      <div class="tab-pane on">
+        <h4>Vanilla RNN</h4>
+        <pre>hₜ = tanh(Whh · hₜ₋₁ + Wxh · xₜ)</pre>
+        <ul>
+          <li>Single hidden state stream</li>
+          <li>Simple and fast</li>
+          <li>Cannot handle long-range dependencies (vanishing gradients)</li>
+          <li>Effective memory: ~10–20 steps</li>
+        </ul>
+        <p><strong>Tradeoffs:</strong></p>
+        <ul>
+          <li>Unlimited context length in theory, but fails in practice</li>
+          <li>Cannot be parallelized — must process sequentially</li>
+          <li>Linear compute per step</li>
+        </ul>
+        <p><a href="https://crl.ucsd.edu/~elman/Papers/fsit.pdf">Finding Structure in Time (Elman, 1990)</a></p>
+      </div>
+
+      <div class="tab-pane">
+        <h4>LSTM — Long Short-Term Memory</h4>
+        <p>LSTMs address vanishing gradients with <strong>gates</strong> and a separate <strong>cell state</strong>:</p>
+        <ul>
+          <li><code>hₜ</code> — hidden state (short-term memory)</li>
+          <li><code>cₜ</code> — cell state (long-term memory, modified by gates)</li>
+        </ul>
+        <p><strong>The four gates:</strong></p>
+        <table>
+          <thead><tr><th>Gate</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Forget gate fₜ</strong></td><td>What to erase from cell state</td></tr>
+            <tr><td><strong>Input gate iₜ</strong></td><td>What new information to write</td></tr>
+            <tr><td><strong>Cell gate g̃ₜ</strong></td><td>Candidate values to add</td></tr>
+            <tr><td><strong>Output gate oₜ</strong></td><td>What part of cell state to expose</td></tr>
+          </tbody>
+        </table>
+        <pre>cₜ = f ⊙ cₜ₋₁ + i ⊙ g    ← cell state update (forget old, write new)
+hₜ = o ⊙ tanh(cₜ)         ← hidden state (what to expose)</pre>
+        <p>The cell state behaves like a <strong>highway</strong> — gradients can flow back without being
+        repeatedly multiplied, similar to ResNet skip connections.</p>
+        <p>If forget gate f = 1 and input gate i = 0, the cell state cₜ = cₜ₋₁ — information is preserved
+        indefinitely. LSTM doesn't <em>guarantee</em> no vanishing/exploding gradient, but provides an easier
+        path to learn long-distance dependencies.</p>
+        <p><a href="https://www.bioinf.jku.at/publications/older/2604.pdf">Long Short-Term Memory (Hochreiter &amp; Schmidhuber, 1997)</a></p>
+      </div>
+
+      <div class="tab-pane">
+        <h4>Modern RNN architectures (2023–present)</h4>
+        <p>Recent architectures revisit RNNs with significant improvements:</p>
+        <ul>
+          <li><strong>Mamba (2023)</strong> — selective state space model with input-dependent state transitions</li>
+          <li><strong>RWKV</strong> — recurrent model with transformer-level performance</li>
+          <li><strong>xLSTM</strong> — extended LSTM with improved scaling properties</li>
+        </ul>
+        <p><strong>Advantages over transformers:</strong></p>
+        <ul>
+          <li>Unlimited context length — major advantage (transformers are quadratic in sequence length)</li>
+          <li>Linear compute scaling with sequence length vs transformers' quadratic scaling</li>
+          <li>Actively competing with transformers for long-sequence tasks</li>
+        </ul>
+        <p>These architectures address the core limitation of old RNNs (sequential processing) while
+        maintaining the memory advantage (linear-time inference).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 5 ── -->
+<section id="bottleneck">
+  <div class="sec-head"><span class="idx">05</span><h2>Encoder-decoder bottleneck and attention</h2></div>
+  <div class="sec-body">
+    <p>Classical sequence-to-sequence RNNs compress the entire input into one final hidden state, then
+    ask the decoder to generate everything from that single vector:</p>
+    <pre>Input sequence → RNN encoder → final state c → RNN decoder → output sequence</pre>
+    <p>This works on short sequences, but creates an <strong>information bottleneck</strong> on long
+    inputs: the model must remember everything important in one fixed-size state.</p>
+
+    <h3>Attention as the fix</h3>
+    <p>The attention mechanism (now used in transformers) was originally developed to overcome this
+    RNN limitation in machine translation. Instead of one context vector:</p>
+    <ul>
+      <li>Encoder produces h₁, h₂, h₃, h₄ for all input tokens</li>
+      <li>At each decoder step, the context vector cₜ is a <strong>different weighted combination</strong> of all encoder states</li>
+      <li>The model "looks at" different parts of the input sequence at each output step</li>
+    </ul>
+    <p>See <a href="attention-transformers.html">attention-transformers</a> — the attention mechanism born from RNN limitations, now dominant.</p>
+  </div>
+</section>
+
+<!-- ── SECTION 6 ── -->
+<section id="modern">
+  <div class="sec-head"><span class="idx">06</span><h2>Historical context and related topics</h2></div>
+  <div class="sec-body">
+    <p>LSTMs saw enormous success in NLP before the transformer revolution (2017–2018). The key papers
+    in the RNN → attention → transformer lineage:</p>
+    <ul>
+      <li><a href="https://arxiv.org/pdf/1409.3215">Sequence to Sequence Learning with Neural Networks</a> — standard seq2seq paper</li>
+      <li>Bahdanau et al. 2015 — "Neural machine translation by jointly learning to align and translate" — introduced attention to RNNs</li>
+      <li>Vaswani et al. 2017 — "Attention Is All You Need" — replaced RNNs with pure self-attention</li>
+    </ul>
+
+    <h3>Related Topics</h3>
+    <ul>
+      <li><a href="neural-networks.html">neural-networks</a> — foundational concepts (backprop, loss functions)</li>
+      <li><a href="attention-transformers.html">attention-transformers</a> — attention mechanism born from RNN limitations; now dominant</li>
+      <li><a href="optimization.html">optimization</a> — training RNNs (gradient clipping for exploding gradients)</li>
+      <li><a href="nlp.html">nlp</a> — primary domain where RNNs were applied</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <span class="k">Knowledge Vault</span>
+  <span>AI · Recurrent Neural Networks</span>
+</footer>
+
+</div>
+<script>
+document.querySelectorAll("[data-tabs]").forEach(box => {
+  const btns = box.querySelectorAll("button");
+  const panes = box.querySelectorAll(".tab-pane");
+  btns.forEach(b => b.addEventListener("click", () => {
+    btns.forEach(x => x.classList.remove("on"));
+    panes.forEach(x => x.classList.remove("on"));
+    b.classList.add("on");
+    panes[+b.dataset.t].classList.add("on");
+  }));
+});
+</script>
+</body>
+</html>

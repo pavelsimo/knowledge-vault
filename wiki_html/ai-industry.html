@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Industry and Organizations — Knowledge Vault</title>
+<style>
+:root {
+  --ivory:#FAF9F5; --paper:#FFFFFF; --slate:#141413;
+  --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D;
+  --g100:#F0EEE6; --g200:#E6E3DA; --g300:#D1CFC5; --g500:#87867F; --g700:#3D3D3A;
+  --serif:ui-serif,Georgia,"Times New Roman",Times,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}
+h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+.intro a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms;display:inline-flex;align-items:center;gap:7px}
+nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}
+.sec-body ul,.sec-body ol{margin:0 0 16px;padding-left:20px}
+.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--clay)}
+pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
+code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}
+th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}
+td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+.tag{display:inline-flex;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--g300);color:var(--g500);background:var(--paper)}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}
+footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+
+/* ── side-by-side comparison ── */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
+@media(max-width:640px){.compare-grid{grid-template-columns:1fr}}
+.compare-col{background:var(--paper);border:1.5px solid var(--g300);border-radius:10px;overflow:hidden}
+.compare-col.highlight{border-color:var(--clay)}
+.compare-header{padding:14px 18px;border-bottom:1px solid var(--g300);background:var(--g100)}
+.compare-header.clay-bg{background:rgba(217,119,87,.08);border-bottom-color:rgba(217,119,87,.2)}
+.compare-header h4{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.08em;margin:0;color:var(--g700)}
+.compare-header h4.clay{color:var(--clay)}
+.compare-body{padding:16px 18px}
+.compare-body ul{margin:0;padding-left:18px;list-style:none}
+.compare-body ul li{margin-bottom:8px;font-size:14px;position:relative;padding-left:14px}
+.compare-body ul li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:2px;background:var(--g300)}
+.compare-col.highlight .compare-body ul li::before{background:var(--clay)}
+
+/* ── metric cards ── */
+.metric-band{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+@media(max-width:640px){.metric-band{grid-template-columns:repeat(2,1fr)}}
+.metric-card{background:var(--paper);border:1.5px solid var(--g300);border-radius:10px;padding:18px 20px}
+.metric-num{font-family:var(--serif);font-size:36px;font-weight:500;line-height:1;color:var(--slate);margin-bottom:6px}
+.metric-label{font-family:var(--sans);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)}
+.metric-sub{font-family:var(--mono);font-size:11px;color:var(--g500);margin-top:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <div class="eyebrow">AI Industry</div>
+  <h1>AI Industry &amp; <em>Organizations</em></h1>
+  <p class="intro">How leading AI companies are structured and what organizational patterns are emerging in the AI-native era. Primary case study: Moonshot AI (Kimi), a Chinese startup that reached a $16B valuation in three years with ~300 employees.</p>
+  <nav class="toc">
+    <a href="#s1">Moonshot AI Profile</a>
+    <a href="#s2">Hiring Philosophy</a>
+    <a href="#s3">Org Structure</a>
+    <a href="#s4">AI-Native Patterns</a>
+    <a href="#s5">Long-Context Research</a>
+  </nav>
+</header>
+
+<section id="s1">
+  <div class="sec-head"><span class="idx">01</span><h2>Moonshot AI (Kimi) — Profile</h2></div>
+  <div class="sec-body">
+    <div class="metric-band">
+      <div class="metric-card">
+        <div class="metric-num">$16B</div>
+        <div class="metric-label">Valuation</div>
+        <div class="metric-sub">RMB 120B, early 2026</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-num">~300</div>
+        <div class="metric-label">Employees</div>
+        <div class="metric-sub">Average age under 30</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-num">3 yrs</div>
+        <div class="metric-label">To $16B</div>
+        <div class="metric-sub">Founded ~2023, Tsinghua alumni</div>
+      </div>
+    </div>
+    <p>Founded by five co-founders from Tsinghua University, Moonshot AI built Kimi — a frontier-model company organized around a single high-stakes bet on model capability rather than traditional corporate departments.</p>
+    <p><strong>Strategy evolution:</strong> consumer chatbot → open-source models → agent products (Kimi Agent, Kimi Code, Kimi CLI).</p>
+
+    <h3>The DeepSeek Moment</h3>
+    <p>When DeepSeek launched in early 2025, it reshuffled the Chinese AI landscape:</p>
+    <ul>
+      <li>Growth team experienced an existential crisis: candidates asked "why Kimi over DeepSeek?"</li>
+      <li>Algorithm team reaction was <strong>excitement</strong>, not fear — DeepSeek proved a lower-cost, open-source path could earn global respect</li>
+      <li>Internal attitude: "DeepSeek saved us" — it clarified strategy and built internal cohesion</li>
+      <li>The company responded by narrowing focus to model quality above all else</li>
+    </ul>
+  </div>
+</section>
+
+<section id="s2">
+  <div class="sec-head"><span class="idx">02</span><h2>Hiring Philosophy: "Taste"</h2></div>
+  <div class="sec-body">
+    <p>Kimi's highest hiring standard is <strong>taste</strong> — an aesthetic and intellectual sense that is impossible to quantify but pervasive in the product, the naming conventions, the code.</p>
+    <ul>
+      <li>~80% of staff from China's elite 985/211 universities, but credentials are <em>not</em> the filter</li>
+      <li>Preferred candidates: early-stage startup founders, people who can "see through time"</li>
+      <li>50+ employees previously founded or joined startups</li>
+      <li>100+ hires in the past year came from peer referrals ("human-to-human transmission")</li>
+      <li>Kimi "likes hiring CEOs" — founder-like DNA is an operating assumption</li>
+    </ul>
+
+    <h3>Generalization Ability</h3>
+    <p>A key selection criterion: can this person adapt to a completely new domain?</p>
+    <div class="compare-grid">
+      <div class="compare-col">
+        <div class="compare-header"><h4>Traditional Big-Tech Hires</h4></div>
+        <div class="compare-body">
+          <ul>
+            <li>Specialized models — overfit to a particular KPI system</li>
+            <li>Fail to adapt when environment changes</li>
+            <li>Optimized for defined roles</li>
+            <li>Deep expertise in a narrow vertical</li>
+          </ul>
+        </div>
+      </div>
+      <div class="compare-col highlight">
+        <div class="compare-header clay-bg"><h4 class="clay">Kimi's Ideal Hires</h4></div>
+        <div class="compare-body">
+          <ul>
+            <li>Base models — learn basic rules then acquire transfer ability</li>
+            <li>Adapt through repeated self-play across domains</li>
+            <li>80%+ doing something different from prior job</li>
+            <li>Broad competence + founder-like ownership</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="s3">
+  <div class="sec-head"><span class="idx">03</span><h2>Organizational Structure</h2></div>
+  <div class="sec-body">
+    <p>Moonshot AI has deliberately "flattened" itself — what the article calls a "two-dimensional foil" from <em>The Three-Body Problem</em>: a weapon that collapses 3D space into 2D, eliminating depth.</p>
+    <ul>
+      <li><strong>No formal departments, no hierarchy, no titles, no OKRs, no KPIs</strong></li>
+      <li>Co-founders interface directly with ~40–50 employees each</li>
+      <li>Yang Zhilin's status message: <strong>"Communicate directly"</strong></li>
+      <li>Decision-making: anyone can be persuaded if the facts are clear enough — respect for objective reality over ego</li>
+    </ul>
+    <div class="compare-grid">
+      <div class="compare-col">
+        <div class="compare-header"><h4>Traditional Corporate Org</h4></div>
+        <div class="compare-body">
+          <ul>
+            <li>Vertical hierarchy with management layers</li>
+            <li>Horizontal departmental walls</li>
+            <li>OKRs and KPIs drive direction</li>
+            <li>Specialists in defined roles</li>
+            <li>Process-driven coordination</li>
+          </ul>
+        </div>
+      </div>
+      <div class="compare-col highlight">
+        <div class="compare-header clay-bg"><h4 class="clay">AI-Native Org (Kimi)</h4></div>
+        <div class="compare-body">
+          <ul>
+            <li>Flat — only "model" and "intelligence" face each other directly</li>
+            <li>No departmental walls; fluid project alignment</li>
+            <li>Direction set by model quality bar</li>
+            <li>Generalists with founder-like ownership</li>
+            <li>Trust through dense peer networks</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <p><strong>Tradeoff:</strong> Without top-down OKRs, some employees experience "weightlessness." Extreme flatness historically hits decision bottlenecks at ~500 people. The company acknowledges this risk.</p>
+  </div>
+</section>
+
+<section id="s4">
+  <div class="sec-head"><span class="idx">04</span><h2>Patterns in AI-Native Companies</h2></div>
+  <div class="sec-body">
+    <p>Employees increasingly prefer interacting with AI over humans (simpler, more reliable). Product managers run agent swarms — strategy agent, translation agent, competitor monitoring agent — compressing multi-day multi-person work into hours. The model is both the <strong>goal</strong> (what they're building) and the <strong>tool</strong> (how they work).</p>
+    <table>
+      <thead><tr><th>Pattern</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Flat hierarchy</strong></td><td>Few or no management layers; direct communication</td></tr>
+        <tr><td><strong>Agent-augmented work</strong></td><td>Individual contributors manage fleets of AI agents</td></tr>
+        <tr><td><strong>Generalization over specialization</strong></td><td>Cross-functional contributors over narrow specialists</td></tr>
+        <tr><td><strong>Model-as-product AND model-as-tool</strong></td><td>The same model being built is used internally</td></tr>
+        <tr><td><strong>Trust through dense peer networks</strong></td><td>Referral-heavy hiring builds implicit trust without process</td></tr>
+        <tr><td><strong>Anti-OKR</strong></td><td>Outcome ownership is personal, not managed via metric systems</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="s5">
+  <div class="sec-head"><span class="idx">05</span><h2>Long-Context Research: MoBA</h2></div>
+  <div class="sec-body">
+    <p>Kimi's engineers developed <strong>MoBA (Mixture of Block Attention)</strong> to enable 128K+ context (vs the 4K industry standard in 2023). Three retreats over ~18 months — the project was never killed.</p>
+    <table>
+      <thead><tr><th>Version</th><th>Outcome</th></tr></thead>
+      <tbody>
+        <tr><td><strong>MoBA v0.5</strong></td><td>Required rewriting the training framework mid-run — too costly, shelved</td></tr>
+        <tr><td><strong>MoBA v1</strong></td><td>Worked on small models, failed on large ones (loss spikes)</td></tr>
+        <tr><td><strong>MoBA v2</strong></td><td>Required a "saturation rescue" with experts from across the company; changed attention in final layers to fix long-summary tasks — succeeded</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <span class="k">Knowledge Vault</span>
+  <span>Related: <a href="ai-coding.html">AI Coding</a> &middot; <a href="attention-transformers.html">Attention &amp; Transformers</a> &middot; <a href="distributed-training.html">Distributed Training</a></span>
+  <span>Updated May 2026</span>
+</footer>
+
+</div>
+</body>
+</html>

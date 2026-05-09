@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Algorithmic Problem-Solving Patterns — Knowledge Vault</title>
+<style>
+:root {
+  --ivory:#FAF9F5; --paper:#FFFFFF; --slate:#141413;
+  --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D;
+  --g100:#F0EEE6; --g200:#E6E3DA; --g300:#D1CFC5; --g500:#87867F; --g700:#3D3D3A;
+  --serif:ui-serif,Georgia,"Times New Roman",Times,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}
+h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms;display:inline-flex;align-items:center;gap:7px}
+nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}
+.sec-body ul,.sec-body ol{margin:0 0 16px;padding-left:20px}
+.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--clay)}
+pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
+code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}
+th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}
+td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+
+/* Tabs */
+.tabs{border:1.5px solid var(--g300);border-radius:10px;background:var(--paper);margin:16px 0 8px;overflow:hidden}
+.tabbar{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--g300);background:var(--g100)}
+.tabbar button{appearance:none;border:none;background:none;font-family:var(--mono);font-size:12px;color:var(--g500);padding:10px 16px;cursor:pointer;border-right:1px solid var(--g300)}
+.tabbar button.on{background:var(--paper);color:var(--slate);border-bottom:2px solid var(--clay);margin-bottom:-1px}
+.tab-pane{display:none;padding:20px 22px;font-size:14px;color:var(--g700);line-height:1.7}
+.tab-pane.on{display:block}
+.tab-pane h4{font-family:var(--serif);font-weight:500;font-size:17px;color:var(--slate);margin:0 0 10px}
+.tab-pane ul{padding-left:20px;margin:0 0 12px}
+.tab-pane li{margin-bottom:5px}
+.tab-pane pre{margin:10px 0 0;font-size:12px}
+.callout{display:flex;gap:12px;border:1.5px solid var(--oat);background:rgba(227,218,204,0.35);border-radius:10px;padding:14px 16px;margin:18px 0;font-size:14px}
+.callout .ico{color:var(--clay);font-weight:600;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="masthead">
+  <div class="eyebrow">Knowledge Vault &mdash; Algorithms</div>
+  <h1>Five <em>patterns</em> that unlock most problems</h1>
+  <p class="intro">
+    Interview-style algorithm problems look infinite until you recognize that most of them collapse into a small number of reusable patterns. The goal is learning the invariants that tell you which tool to reach for: monotonicity for binary search, pointer movement rules, graph traversal templates, DP state transitions, and bit-level identities.
+  </p>
+  <nav class="toc">
+    <a href="#unifying">The Unifying Idea</a>
+    <a href="#binary-search">Binary Search</a>
+    <a href="#two-pointers">Two Pointers</a>
+    <a href="#graphs">Graph Patterns</a>
+    <a href="#dp">Dynamic Programming</a>
+    <a href="#bits">Bit Manipulation</a>
+    <a href="#cheatsheet">Cheat Sheet</a>
+  </nav>
+</header>
+
+<section id="unifying">
+  <div class="sec-head"><span class="idx">01</span><h2>The Unifying Idea</h2></div>
+  <div class="sec-body">
+    <p>The point of a pattern is not to avoid thinking. It is to narrow the search space of possible solutions.</p>
+    <p>When a problem feels hard, ask:</p>
+    <ul>
+      <li>Is there a <strong>monotone predicate</strong>? &rarr; binary search</li>
+      <li>Is there a <strong>left/right or slow/fast invariant</strong>? &rarr; two pointers</li>
+      <li>Is the structure a <strong>graph or grid connectivity problem</strong>? &rarr; DFS/BFS/Union-Find</li>
+      <li>Is the answer built from <strong>overlapping subproblems</strong>? &rarr; dynamic programming</li>
+      <li>Is the state naturally encoded as <strong>bits or sets</strong>? &rarr; bit manipulation</li>
+    </ul>
+  </div>
+</section>
+
+<section id="binary-search">
+  <div class="sec-head"><span class="idx">02</span><h2>Binary Search as Monotone Feasibility</h2></div>
+  <div class="sec-body">
+    <p>The cleanest abstraction is:</p>
+    <pre>Minimize k such that condition(k) is True</pre>
+    <p>That framing matters because the search space is often <strong>not</strong> a sorted array. It can be an answer range, a capacity range, or a threshold.</p>
+
+    <h3>Core Template</h3>
+    <pre>left, right = min_possible, max_possible
+while left &lt; right:
+    mid = left + (right - left) // 2
+    if condition(mid):
+        right = mid
+    else:
+        left = mid + 1
+return left</pre>
+
+    <p><strong>Invariants:</strong></p>
+    <ul>
+      <li>Boundaries must include all feasible answers</li>
+      <li><code>condition(mid)</code> must be monotone</li>
+      <li>After the loop, <code>left</code> is the smallest valid answer</li>
+    </ul>
+    <div class="callout">
+      <span class="ico">&#9654;</span>
+      <div>This is why "binary search on the answer" appears in problems like shipping capacity, split-array largest sum, and any setting where "if threshold m works, anything larger also works."</div>
+    </div>
+  </div>
+</section>
+
+<section id="two-pointers">
+  <div class="sec-head"><span class="idx">03</span><h2>Two-Pointer Families</h2></div>
+  <div class="sec-body">
+    <p>One invariant lets you discard large parts of the state space in linear time. Select a family to explore:</p>
+
+    <div class="tabs" data-tabs>
+      <div class="tabbar">
+        <button class="on" data-t="0">Opposite Ends</button>
+        <button data-t="1">Slow &amp; Fast</button>
+        <button data-t="2">Two Inputs</button>
+        <button data-t="3">Split &amp; Merge</button>
+      </div>
+      <div class="tab-pane on">
+        <h4>Opposite Ends</h4>
+        <p>Start at both ends and move inward when sorted order or symmetry tells you which side to discard.</p>
+        <ul>
+          <li>2-sum on sorted arrays</li>
+          <li>3-sum after sorting</li>
+          <li>Trapping rain water</li>
+          <li>Palindrome / reverse-string style scans</li>
+        </ul>
+      </div>
+      <div class="tab-pane">
+        <h4>Slow and Fast Pointers</h4>
+        <p>One pointer discovers information; the other pointer uses it.</p>
+        <ul>
+          <li>Linked-list cycle detection</li>
+          <li>Removing duplicates in-place</li>
+          <li>Sliding-window / caterpillar scans</li>
+          <li>Compression and overwrite-in-place problems</li>
+        </ul>
+      </div>
+      <div class="tab-pane">
+        <h4>Two Inputs, Two Cursors</h4>
+        <p>Maintain one pointer per array/string/list and merge or compare in linear time.</p>
+        <ul>
+          <li>Merging sorted arrays</li>
+          <li>Subsequence checks</li>
+          <li>Intersection problems</li>
+        </ul>
+      </div>
+      <div class="tab-pane">
+        <h4>Split Then Merge</h4>
+        <p>Divide the structure, solve pieces, then recombine with pointer logic.</p>
+        <ul>
+          <li>Merge-sort-style linked-list sorting</li>
+          <li>Partition / merge workflows</li>
+        </ul>
+      </div>
+    </div>
+
+    <p style="margin-top:12px">The real skill is defining the movement invariant clearly: what makes pointer <code>L</code> advance, what makes pointer <code>R</code> retreat, and what truth remains preserved after each move?</p>
+  </div>
+</section>
+
+<section id="graphs">
+  <div class="sec-head"><span class="idx">04</span><h2>Graph Patterns</h2></div>
+  <div class="sec-body">
+    <h3>Union-Find</h3>
+    <p>Reach for Union-Find when the problem is secretly about connected components, grouping / merging identities, or detecting a redundant edge. Typical question shape: "which nodes belong to the same set?"</p>
+
+    <h3>DFS</h3>
+    <p>DFS is the right default when you need to fully explore a component. Recurring sub-patterns:</p>
+    <ul>
+      <li><strong>Boundary DFS</strong> for "what is connected to the edge?"</li>
+      <li><strong>Island DFS</strong> for counting disconnected regions</li>
+      <li><strong>Cycle / safe-state DFS</strong> for recursive dependency graphs</li>
+    </ul>
+
+    <h3>BFS</h3>
+    <p>BFS dominates when the problem asks for shortest path in an unweighted graph, minimum number of steps, or how long until a process spreads everywhere. Multi-source BFS is especially important: initialize the queue with every valid source at once, then expand layer by layer.</p>
+
+    <h3>Bipartite / Coloring</h3>
+    <p>If the prompt asks whether nodes can be split into two groups with no conflicts inside a group, think 2-coloring via BFS/DFS — a contradiction appears if neighbors require the same color.</p>
+  </div>
+</section>
+
+<section id="dp">
+  <div class="sec-head"><span class="idx">05</span><h2>Dynamic Programming Patterns</h2></div>
+  <div class="sec-body">
+    <p>DP gets easier when you stop treating every problem as unique. The useful abstraction is: recognize which state-transition template this problem instantiates.</p>
+
+    <h3>Minimum / Maximum Path to a Target</h3>
+    <pre>dp[i] = best(dp[previous states]) + local_cost</pre>
+    <p>Typical use cases: minimum path sum, coin change, climbing-cost variants.</p>
+
+    <h3>Count Distinct Ways</h3>
+    <pre>dp[i] = sum(dp[previous states])</pre>
+    <p>Typical use cases: climbing stairs, unique paths, dice-roll counting.</p>
+
+    <h3>Other High-Frequency Families</h3>
+    <ul>
+      <li><strong>Merging intervals</strong></li>
+      <li><strong>DP on strings</strong></li>
+      <li><strong>Decision-making / choose-skip problems</strong></li>
+    </ul>
+    <p>Across all of them, the key questions are: what is the state? what smaller states transition into it? what are the base cases? do I want top-down memoized or bottom-up table?</p>
+  </div>
+</section>
+
+<section id="bits">
+  <div class="sec-head"><span class="idx">06</span><h2>Bit Manipulation</h2></div>
+  <div class="sec-body">
+    <p>Bit manipulation turns set membership and low-level state updates into constant-time operations.</p>
+
+    <h3>Core Operators</h3>
+    <table>
+      <thead><tr><th>Operator</th><th>Meaning</th><th>Common Use</th></tr></thead>
+      <tbody>
+        <tr><td><code>&amp;</code></td><td>AND</td><td>masking, testing bits</td></tr>
+        <tr><td><code>|</code></td><td>OR</td><td>setting bits</td></tr>
+        <tr><td><code>^</code></td><td>XOR</td><td>toggling, parity, swap tricks</td></tr>
+        <tr><td><code>~</code></td><td>NOT</td><td>inversion / masks</td></tr>
+        <tr><td><code>&lt;&lt;</code></td><td>left shift</td><td>multiply by powers of 2, build masks</td></tr>
+        <tr><td><code>&gt;&gt;</code></td><td>right shift</td><td>divide by powers of 2, extract bits</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Identities Worth Memorizing</h3>
+    <table>
+      <thead><tr><th>Expression</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>x &amp; (x - 1)</code></td><td>removes the lowest set bit</td></tr>
+        <tr><td><code>x &amp; -x</code></td><td>isolates the lowest set bit</td></tr>
+        <tr><td><code>x &amp;&amp; !(x &amp; (x - 1))</code></td><td>tests whether x is a power of two</td></tr>
+        <tr><td><code>num &amp; (1 &lt;&lt; i)</code></td><td>checks whether bit i is set</td></tr>
+      </tbody>
+    </table>
+
+    <p>Bits let you treat an integer as a compact set: union → <code>A | B</code>, intersection → <code>A &amp; B</code>, subtraction → <code>A &amp; ~B</code>. Useful for subset DP, state compression, flags, and parity problems.</p>
+  </div>
+</section>
+
+<section id="cheatsheet">
+  <div class="sec-head"><span class="idx">07</span><h2>Pattern Selection Cheat Sheet</h2></div>
+  <div class="sec-body">
+    <table>
+      <thead><tr><th>Signal in the Prompt</th><th>Likely Pattern</th></tr></thead>
+      <tbody>
+        <tr><td>"minimum feasible X", "at least", "capacity", "threshold"</td><td>Binary search on answer</td></tr>
+        <tr><td>sorted array + pair / triple / inward movement</td><td>Two pointers</td></tr>
+        <tr><td>islands, regions, reachability, shortest spread</td><td>DFS / BFS</td></tr>
+        <tr><td>repeated subproblems, count ways, min cost</td><td>DP</td></tr>
+        <tr><td>toggles, masks, subsets, powers of two</td><td>Bit manipulation</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Related Topics</h3>
+    <ul>
+      <li><a href="ai-coding.html">AI Coding</a> — pattern recognition matters more than brute-force prompting</li>
+      <li><a href="game-math.html">Game Math</a> — another example of small reusable primitives unlocking many problem types</li>
+      <li><a href="probability-statistics.html">Probability &amp; Statistics</a> — mathematical problem-solving foundation adjacent to algorithmic reasoning</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <span class="k">Knowledge Vault</span>
+  <span>Algorithmic Problem-Solving Patterns &mdash; 2026</span>
+</footer>
+</div>
+
+<script>
+document.querySelectorAll('[data-tabs]').forEach(box => {
+  const btns = box.querySelectorAll('button');
+  const panes = box.querySelectorAll('.tab-pane');
+  btns.forEach(b => b.addEventListener('click', () => {
+    btns.forEach(x => x.classList.remove('on'));
+    panes.forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    panes[+b.dataset.t].classList.add('on');
+  }));
+});
+</script>
+</body>
+</html>

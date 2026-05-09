@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Optimization — Knowledge Vault</title>
+<style>
+:root {
+  --ivory:#FAF9F5; --paper:#FFFFFF; --slate:#141413;
+  --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D;
+  --g100:#F0EEE6; --g200:#E6E3DA; --g300:#D1CFC5; --g500:#87867F; --g700:#3D3D3A;
+  --serif:ui-serif,Georgia,"Times New Roman",Times,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}
+h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms;display:inline-flex;align-items:center;gap:7px}
+nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}
+.sec-body ul,.sec-body ol{margin:0 0 16px;padding-left:20px}
+.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--clay)}
+pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
+code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}
+th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}
+td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}
+footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+
+/* Optimizer variant matrix */
+.opt-matrix{border:1.5px solid var(--g300);border-radius:12px;overflow:hidden;background:var(--paper);margin:20px 0}
+.opt-row{display:grid;grid-template-columns:160px 1fr 1fr 1fr 1fr;gap:0}
+@media(max-width:800px){.opt-row{grid-template-columns:120px 1fr 1fr;}.opt-cell.hide-sm{display:none}}
+.opt-row+.opt-row{border-top:1.5px solid var(--g300)}
+.opt-cell{padding:14px 16px;font-size:13px;color:var(--g700)}
+.opt-cell+.opt-cell{border-left:1px solid var(--g200)}
+.opt-head{background:var(--g100);font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);font-weight:600}
+.opt-name{font-family:var(--serif);font-size:15px;font-weight:500;color:var(--slate)}
+.opt-cell .badge{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:999px;border:1px solid var(--g300);color:var(--g500)}
+.opt-cell .badge.good{background:rgba(120,140,93,.12);border-color:var(--olive);color:var(--olive)}
+.opt-cell .badge.best{background:rgba(217,119,87,.12);border-color:var(--clay);color:var(--clay)}
+
+.callout{display:flex;gap:12px;border:1.5px solid var(--oat);background:rgba(227,218,204,0.35);border-radius:10px;padding:14px 16px;margin:18px 0;font-size:14px}
+.callout .ico{color:var(--clay);font-weight:600;flex-shrink:0}
+
+/* LR schedule visual */
+.lr-visual{background:var(--paper);border:1.5px solid var(--g300);border-radius:12px;padding:24px;margin:16px 0}
+.lr-visual h4{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--g500);margin:0 0 16px}
+.lr-curves{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+@media(max-width:700px){.lr-curves{grid-template-columns:1fr 1fr}}
+.lr-curve{text-align:center}
+.lr-curve svg{width:100%;max-width:110px;display:block;margin:0 auto}
+.lr-curve-name{font-size:11.5px;color:var(--slate);margin-top:6px;font-weight:500}
+.lr-curve-desc{font-size:11px;color:var(--g500);margin-top:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <div class="eyebrow">Knowledge Vault</div>
+    <h1>ML <em>Optimization</em></h1>
+    <p class="intro">Optimization in machine learning refers to the algorithms that iteratively adjust model weights to minimize the loss function. All modern deep learning optimizers are variants of stochastic gradient descent (SGD).</p>
+    <nav class="toc">
+      <a href="#gradient-descent">Gradient Descent</a>
+      <a href="#sgd">SGD and Variants</a>
+      <a href="#adam">Adam and AdamW</a>
+      <a href="#lr-schedules">LR Schedules</a>
+      <a href="#second-order">Second-Order Methods</a>
+      <a href="#optimizer-matrix">Optimizer Matrix</a>
+    </nav>
+  </header>
+
+  <section id="gradient-descent">
+    <div class="sec-head"><span class="idx">01</span><h2>Gradient Descent</h2></div>
+    <div class="sec-body">
+      <p><strong>Gradient descent</strong> follows the negative gradient of the loss to reach a minimum:</p>
+      <pre><code>w ← w - η · ∇L(w)</code></pre>
+      <p>Where <code>η</code> (eta) = <strong>learning rate</strong> — the step size. Too small: very slow convergence. Too large: overshoots, bounces around, diverges.</p>
+
+      <h3>Full Batch vs Stochastic</h3>
+      <p>Full batch gradient descent computes the gradient over ALL N examples each step — expensive when N is large.</p>
+      <p><strong>SGD</strong> computes the gradient on a <strong>random mini-batch</strong> each step (32/64/128 common):</p>
+      <pre><code>while True:
+    data_batch = sample_training_data(data, 256)
+    weights_grad = evaluate_gradient(loss_fun, data_batch, weights)
+    weights += -step_size * weights_grad</code></pre>
+      <p>The noise from random mini-batches can actually help escape poor local minima and improve generalization. All modern deep learning uses SGD variants.</p>
+    </div>
+  </section>
+
+  <section id="sgd">
+    <div class="sec-head"><span class="idx">02</span><h2>SGD and Variants</h2></div>
+    <div class="sec-body">
+      <h3>Problems with Vanilla SGD</h3>
+      <ol>
+        <li><strong>Slow progress on flat dimensions:</strong> oscillates rapidly along steep dimensions, crawls along shallow ones</li>
+        <li><strong>Getting stuck:</strong> zero gradient at saddle points causes convergence to stop</li>
+        <li><strong>Noisy updates:</strong> mini-batch gradients are noisy → messy, erratic optimization path</li>
+      </ol>
+
+      <h3>SGD with Momentum</h3>
+      <p>Momentum keeps a velocity that continues moving in the general direction of previous iterations:</p>
+      <pre><code>SGD:              x_{t+1} = x_t - α∇f(x_t)
+
+SGD + Momentum:   v_{t+1} = ρv_t + ∇f(x_t)
+                  x_{t+1} = x_t - αv_{t+1}</code></pre>
+      <p>Where ρ = "rho" (typically 0.9 or 0.99) gives the momentum; v = velocity (running mean of gradients). Benefits: builds speed along consistent directions, dampens oscillations, helps escape saddle points.</p>
+
+      <h3>RMSProp</h3>
+      <p>Proposed by Geoffrey Hinton. Maintains a per-parameter running average of squared gradients and normalizes the update by it. Adapts the effective learning rate per parameter — slows down where gradients are large, speeds up where they're small.</p>
+    </div>
+  </section>
+
+  <section id="adam">
+    <div class="sec-head"><span class="idx">03</span><h2>Adam and AdamW</h2></div>
+    <div class="sec-body">
+      <p>Adam = <strong>Momentum + RMSProp</strong>, with bias correction for the first few steps.</p>
+      <pre><code>m = β₁·m + (1-β₁)·grad          # first moment (momentum)
+v = β₂·v + (1-β₂)·grad²         # second moment (RMSProp)
+m_hat = m / (1 - β₁ᵗ)           # bias correction
+v_hat = v / (1 - β₂ᵗ)           # bias correction
+w = w - η · m_hat / (√v_hat + ε)</code></pre>
+      <ul>
+        <li><code>β₁ ≈ 0.9</code> — "where we were heading" (90% memory of past gradients)</li>
+        <li><code>β₂ ≈ 0.999</code> — squared gradient smoothing</li>
+        <li>Bias correction prevents underestimates in early training steps</li>
+        <li><strong>Most widely used optimizer in deep learning</strong></li>
+      </ul>
+
+      <div class="callout">
+        <span class="ico">★</span>
+        <div>Adam won the ICLR 2025 "Test of Time" award — "Adam revolutionized neural network training, enabling significantly faster convergence and more stable training across a wide variety of architectures and tasks." (Kingma &amp; Ba, 2015, 42K citations)</div>
+      </div>
+
+      <h3>AdamW — The Correct Weight Decay</h3>
+      <p>AdamW fixes a subtle bug in Adam: standard Adam applies weight decay <strong>inside</strong> the gradient update, which interacts with the momentum/RMS scaling and distorts it.</p>
+      <table>
+        <thead><tr><th>Optimizer</th><th>Weight Decay Application</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Adam</strong></td><td>Applied inside gradient (distorted by moment estimates)</td></tr>
+          <tr><td><strong>AdamW</strong></td><td>Applied outside gradient (clean, correct L2 regularization)</td></tr>
+        </tbody>
+      </table>
+      <pre><code># AdamW adds this step after the Adam update:
+w ← w - η · λ · w    # pure weight decay, independent of gradients</code></pre>
+      <p>AdamW is the <strong>preferred optimizer</strong> for training transformers and large models. In practice, AdamW with cosine decay + warmup is the standard recipe.</p>
+    </div>
+  </section>
+
+  <section id="lr-schedules">
+    <div class="sec-head"><span class="idx">04</span><h2>Learning Rate Schedules</h2></div>
+    <div class="sec-body">
+      <p>The learning rate doesn't have to be constant. Common strategies:</p>
+
+      <div class="lr-visual">
+        <h4>Common LR Schedule Shapes</h4>
+        <div class="lr-curves">
+          <div class="lr-curve">
+            <svg viewBox="0 0 100 70">
+              <polyline points="0,10 40,10 40,40 80,40 80,60 100,60" fill="none" stroke="var(--clay)" stroke-width="2.5" stroke-linejoin="round"/>
+              <line x1="0" y1="65" x2="100" y2="65" stroke="var(--g300)" stroke-width="1"/>
+            </svg>
+            <div class="lr-curve-name">Step Decay</div>
+            <div class="lr-curve-desc">Reduce by ×0.1 every N epochs</div>
+          </div>
+          <div class="lr-curve">
+            <svg viewBox="0 0 100 70">
+              <path d="M0,10 Q50,10 100,60" fill="none" stroke="var(--clay)" stroke-width="2.5"/>
+              <line x1="0" y1="65" x2="100" y2="65" stroke="var(--g300)" stroke-width="1"/>
+            </svg>
+            <div class="lr-curve-name">Cosine Annealing</div>
+            <div class="lr-curve-desc">Smooth cosine reduction</div>
+          </div>
+          <div class="lr-curve">
+            <svg viewBox="0 0 100 70">
+              <polyline points="0,65 20,10 100,60" fill="none" stroke="var(--clay)" stroke-width="2.5" stroke-linejoin="round"/>
+              <line x1="0" y1="65" x2="100" y2="65" stroke="var(--g300)" stroke-width="1"/>
+            </svg>
+            <div class="lr-curve-name">Warm-up + Decay</div>
+            <div class="lr-curve-desc">Transformer standard</div>
+          </div>
+          <div class="lr-curve">
+            <svg viewBox="0 0 100 70">
+              <path d="M0,40 Q12,10 25,40 Q37,60 50,40 Q62,10 75,40 Q87,60 100,40" fill="none" stroke="var(--clay)" stroke-width="2.5"/>
+              <line x1="0" y1="65" x2="100" y2="65" stroke="var(--g300)" stroke-width="1"/>
+            </svg>
+            <div class="lr-curve-name">Cyclical LR</div>
+            <div class="lr-curve-desc">Oscillate to escape minima</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="second-order">
+    <div class="sec-head"><span class="idx">05</span><h2>Second-Order Optimization</h2></div>
+    <div class="sec-body">
+      <p>Second-order methods (e.g., Newton's Method) use the <strong>Hessian</strong> (curvature information) to jump directly to the minimum in fewer steps with no learning rate tuning needed.</p>
+
+      <h3>Why We Don't Use It in Deep Learning</h3>
+      <ul>
+        <li>The Hessian is an N×N matrix where N = number of parameters</li>
+        <li>100K parameters → 10¹⁰ elements in the Hessian</li>
+        <li>GPT-3: 175B parameters → Hessian is astronomically large</li>
+        <li>Computing, storing, and inverting it is completely infeasible</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="optimizer-matrix">
+    <div class="sec-head"><span class="idx">06</span><h2>Optimizer Comparison Matrix</h2></div>
+    <div class="sec-body">
+      <p>A structured comparison of all optimizers across key properties. Click to highlight a row.</p>
+
+      <div class="opt-matrix" id="optMatrix">
+        <div class="opt-row">
+          <div class="opt-cell opt-head">Optimizer</div>
+          <div class="opt-cell opt-head">Analogy</div>
+          <div class="opt-cell opt-head">Adaptive LR?</div>
+          <div class="opt-cell opt-head hide-sm">Weight Decay</div>
+          <div class="opt-cell opt-head hide-sm">Best For</div>
+        </div>
+        <div class="opt-row" data-opt="sgd">
+          <div class="opt-cell opt-name">SGD</div>
+          <div class="opt-cell">Reacts immediately to new gradient</div>
+          <div class="opt-cell"><span class="badge">No</span></div>
+          <div class="opt-cell hide-sm">Manual L2</div>
+          <div class="opt-cell hide-sm">Simple tasks, with careful tuning</div>
+        </div>
+        <div class="opt-row" data-opt="momentum">
+          <div class="opt-cell opt-name">Momentum</div>
+          <div class="opt-cell">Remembers past gradients (builds velocity)</div>
+          <div class="opt-cell"><span class="badge">No</span></div>
+          <div class="opt-cell hide-sm">Manual L2</div>
+          <div class="opt-cell hide-sm">Can outperform Adam with tuning</div>
+        </div>
+        <div class="opt-row" data-opt="rmsprop">
+          <div class="opt-cell opt-name">RMSProp</div>
+          <div class="opt-cell">Slows down when gradients become too large</div>
+          <div class="opt-cell"><span class="badge good">Per-param</span></div>
+          <div class="opt-cell hide-sm">Manual L2</div>
+          <div class="opt-cell hide-sm">RNNs, non-stationary objectives</div>
+        </div>
+        <div class="opt-row" data-opt="adam">
+          <div class="opt-cell opt-name">Adam</div>
+          <div class="opt-cell">Combines memory + per-parameter scaling</div>
+          <div class="opt-cell"><span class="badge good">Per-param</span></div>
+          <div class="opt-cell hide-sm">Coupled (distorted)</div>
+          <div class="opt-cell hide-sm">Most deep learning tasks</div>
+        </div>
+        <div class="opt-row" data-opt="adamw">
+          <div class="opt-cell opt-name">AdamW</div>
+          <div class="opt-cell">Adam with correct weight decay</div>
+          <div class="opt-cell"><span class="badge good">Per-param</span></div>
+          <div class="opt-cell hide-sm"><span class="badge best">Decoupled</span></div>
+          <div class="opt-cell hide-sm"><span class="badge best">Transformers &amp; LLMs</span></div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <span class="ico">!</span>
+        <div><strong>Practical advice (CS231N):</strong> Adam(W) is a good default in many cases — it often works fine even with a constant learning rate. SGD + Momentum can outperform Adam but requires more tuning. In practice, <strong>AdamW + cosine decay + warmup</strong> is the standard recipe for transformer training.</div>
+      </div>
+
+      <h3>Related Topics</h3>
+      <ul>
+        <li><a href="neural-networks.html">Neural Networks</a> — loss functions that optimizers minimize</li>
+        <li><a href="attention-transformers.html">Attention and Transformers</a> — transformers use AdamW with warm-up scheduling</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <span class="k">Knowledge Vault</span>
+    <a href="INDEX.html">← All topics</a>
+  </footer>
+</div>
+<script>
+// Highlight clicked optimizer row
+document.querySelectorAll('#optMatrix [data-opt]').forEach(row => {
+  row.addEventListener('click', () => {
+    document.querySelectorAll('#optMatrix [data-opt]').forEach(r => r.style.background = '');
+    row.style.background = 'rgba(217,119,87,0.07)';
+  });
+});
+</script>
+</body>
+</html>

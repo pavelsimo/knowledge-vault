@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenUSD — Knowledge Vault</title>
+<style>
+:root {
+  --ivory:#FAF9F5; --paper:#FFFFFF; --slate:#141413;
+  --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D;
+  --g100:#F0EEE6; --g200:#E6E3DA; --g300:#D1CFC5; --g500:#87867F; --g700:#3D3D3A;
+  --serif:ui-serif,Georgia,"Times New Roman",Times,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}
+h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+.intro a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms;display:inline-flex;align-items:center;gap:7px}
+nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}
+.sec-body ul,.sec-body ol{margin:0 0 16px;padding-left:20px}
+.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--clay)}
+pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
+code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}
+th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}
+td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+.tag{display:inline-flex;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--g300);color:var(--g500);background:var(--paper)}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}
+footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+
+/* tabs component */
+.tabs{border:1.5px solid var(--g300);border-radius:10px;background:var(--paper);margin:20px 0;overflow:hidden}
+.tabbar{display:flex;border-bottom:1px solid var(--g300);background:var(--g100);flex-wrap:wrap}
+.tabbar button{appearance:none;border:none;background:none;font-family:var(--mono);font-size:12px;color:var(--g500);padding:10px 16px;cursor:pointer;border-right:1px solid var(--g300)}
+.tabbar button.on{background:var(--paper);color:var(--slate);border-bottom:2px solid var(--clay);margin-bottom:-1px}
+.tab-pane{display:none;padding:20px 22px;font-size:14px;color:var(--g700);line-height:1.65}
+.tab-pane.on{display:block}
+.tab-pane h4{font-family:var(--serif);font-weight:500;font-size:17px;color:var(--slate);margin:0 0 10px}
+.tab-pane p{margin:0 0 10px}
+.tab-pane ul{padding-left:18px;margin:0 0 12px}
+.tab-pane li{margin-bottom:5px}
+.tab-pane pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 14px;font-family:var(--mono);font-size:12.5px;overflow-x:auto}
+.tab-pane table{border-collapse:collapse;width:100%;margin:0 0 12px}
+.tab-pane th{background:var(--g100);font-family:var(--mono);font-size:11px;text-align:left;padding:7px 10px;border-bottom:1.5px solid var(--g300)}
+.tab-pane td{padding:7px 10px;border-bottom:1px solid var(--g200);font-size:13.5px}
+
+/* composition arc flowchart */
+.flow-box{background:var(--paper);border:1.5px solid var(--g300);border-radius:12px;padding:24px;overflow-x:auto;margin:20px 0}
+.flow-box svg{display:block;width:100%;height:auto}
+</style>
+</head>
+<body><div class="wrap">
+  <header class="masthead">
+    <div class="eyebrow">Knowledge Vault</div>
+    <h1>Open<em>USD</em></h1>
+    <p class="intro">Universal Scene Description — the scene description and composition system at the core of modern Omniverse workflows. Not just a 3D file format, but a layered data model for building, composing, querying, and exchanging complex scenes across tools while preserving hierarchy, metadata, overrides, and non-destructive collaboration.</p>
+    <nav class="toc">
+      <a href="#mental-model">Mental Model</a>
+      <a href="#building-blocks">Building Blocks</a>
+      <a href="#composition">Composition</a>
+      <a href="#ecosystem">Ecosystem</a>
+      <a href="#related">Related Topics</a>
+    </nav>
+  </header>
+
+  <section id="mental-model">
+    <div class="sec-head"><span class="idx">01</span><h2>Core Mental Model</h2></div>
+    <div class="sec-body">
+      <p>The key concept is the <strong>stage</strong>: the composed scenegraph you work with at runtime. A stage may be assembled from many layers and files, but applications traverse it as one coherent hierarchy of prims and properties.</p>
+
+      <pre>from pxr import Usd, UsdGeom
+
+stage = Usd.Stage.CreateNew("assets/first_stage.usda")
+UsdGeom.Cube.Define(stage, "/cube")
+stage.Save()
+
+stage = Usd.Stage.Open("assets/first_stage.usda")
+for prim in stage.Traverse():
+    print(prim)</pre>
+
+      <p>That distinction matters because most real USD workflows are about composition, not isolated files. A stage assembles many contributing layers at runtime — each layer adds opinions that resolve to a final composed result.</p>
+
+      <div class="tabs" data-tabs>
+        <div class="tabbar">
+          <button class="on" data-t="0">Stages</button>
+          <button data-t="1">Prims</button>
+          <button data-t="2">Schemas</button>
+        </div>
+        <div class="tab-pane on">
+          <h4>Stages — The Runtime View</h4>
+          <p>A stage is the composed runtime view built from one or more contributing layers. You open, traverse, and query a stage — you do not directly manipulate layers at runtime.</p>
+          <pre>stage = Usd.Stage.Open("scene.usda")
+for prim in stage.Traverse():
+    print(prim.GetPath(), prim.GetTypeName())</pre>
+          <p>Key stage operations: <code>CreateNew</code>, <code>Open</code>, <code>Traverse</code>, <code>GetPrimAtPath</code>, <code>GetDefaultPrim</code>, <code>Save</code>.</p>
+        </div>
+        <div class="tab-pane">
+          <h4>Prims — The Scenegraph Nodes</h4>
+          <p>Prims are the fundamental building blocks of a USD scene. Every node in the scenegraph is a prim.</p>
+          <ul>
+            <li><strong>Geometry prims</strong>: Mesh, Cube, Sphere, Cylinder — actual shape data</li>
+            <li><strong>Transform prims</strong>: Xform — position, rotation, scale containers</li>
+            <li><strong>Scope prims</strong>: grouping containers with no transform of their own</li>
+            <li><strong>Material prims</strong>: UsdShade containers for surface appearance</li>
+            <li><strong>Light prims</strong>: UsdLux types for illumination</li>
+          </ul>
+          <pre>cube = UsdGeom.Cube.Define(stage, "/World/Geometry/cube")
+xform = UsdGeom.Xform.Define(stage, "/World")
+scope = UsdGeom.Scope.Define(stage, "/World/Geometry")</pre>
+        </div>
+        <div class="tab-pane">
+          <h4>Schemas — Typed Contracts</h4>
+          <p>Schemas are standard contracts that define what a prim is or what APIs apply to it. They provide:</p>
+          <ul>
+            <li>A known set of attributes with types and default values</li>
+            <li>Semantic meaning recognized across tools</li>
+            <li>API schemas that can apply to any prim regardless of type</li>
+          </ul>
+          <table>
+            <thead><tr><th>Schema family</th><th>Purpose</th></tr></thead>
+            <tbody>
+              <tr><td><code>UsdGeom</code></td><td>Geometry types: Mesh, Cube, Sphere, Camera, Xform</td></tr>
+              <tr><td><code>UsdShade</code></td><td>Materials, shaders, and surface binding</td></tr>
+              <tr><td><code>UsdLux</code></td><td>Lighting: DistantLight, SphereLight, RectLight</td></tr>
+              <tr><td><code>UsdPhysics</code></td><td>Rigid bodies, joints, collision shapes</td></tr>
+              <tr><td>Custom</td><td>User-defined metadata attributes</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="building-blocks">
+    <div class="sec-head"><span class="idx">02</span><h2>Building Blocks</h2></div>
+    <div class="sec-body">
+      <ul>
+        <li><strong>Prims:</strong> the scenegraph nodes that represent geometry, transforms, lights, materials, scopes, and more</li>
+        <li><strong>Attributes:</strong> typed values on prims, including time-sampled data for animation</li>
+        <li><strong>Relationships:</strong> links between prims, used for bindings, collections, and non-destructive connectivity</li>
+        <li><strong>Schemas:</strong> standard contracts that define what a prim is or what APIs apply to it</li>
+      </ul>
+      <h3>File Encodings</h3>
+      <table>
+        <thead><tr><th>Extension</th><th>Use</th></tr></thead>
+        <tbody>
+          <tr><td><code>.usd</code></td><td>General container, ASCII or binary</td></tr>
+          <tr><td><code>.usda</code></td><td>Human-readable text format</td></tr>
+          <tr><td><code>.usdc</code></td><td>Compact binary crate format (fast I/O)</td></tr>
+          <tr><td><code>.usdz</code></td><td>Packaged distribution archive (self-contained)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="composition">
+    <div class="sec-head"><span class="idx">03</span><h2>Composition and Value Resolution</h2></div>
+    <div class="sec-body">
+      <p>OpenUSD is designed around layered opinions. The composition arc is the mechanism by which multiple layers, references, and inheritance contribute to the final composed stage:</p>
+
+      <div class="flow-box">
+        <svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#87867F"/>
+            </marker>
+          </defs>
+
+          <!-- Source opinion boxes -->
+          <rect x="20" y="20" width="130" height="48" rx="8" fill="#FAF9F5" stroke="#D1CFC5" stroke-width="1.5"/>
+          <text x="85" y="39" text-anchor="middle" font-family="ui-monospace,monospace" font-size="11" fill="#141413" font-weight="600">Local opinions</text>
+          <text x="85" y="55" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9.5" fill="#87867F">strongest / highest</text>
+
+          <rect x="20" y="92" width="130" height="48" rx="8" fill="#FAF9F5" stroke="#D1CFC5" stroke-width="1.5"/>
+          <text x="85" y="111" text-anchor="middle" font-family="ui-monospace,monospace" font-size="11" fill="#141413" font-weight="600">References</text>
+          <text x="85" y="127" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9.5" fill="#87867F">external layer arcs</text>
+
+          <rect x="20" y="164" width="130" height="48" rx="8" fill="#FAF9F5" stroke="#D1CFC5" stroke-width="1.5"/>
+          <text x="85" y="183" text-anchor="middle" font-family="ui-monospace,monospace" font-size="11" fill="#141413" font-weight="600">Inherits / class</text>
+          <text x="85" y="199" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9.5" fill="#87867F">weakest / lowest</text>
+
+          <!-- Value Resolution box -->
+          <rect x="240" y="76" width="160" height="96" rx="10" fill="#D97757" fill-opacity="0.1" stroke="#D97757" stroke-width="1.5"/>
+          <text x="320" y="106" text-anchor="middle" font-family="ui-serif,Georgia,serif" font-size="14" fill="#141413" font-weight="500">Value</text>
+          <text x="320" y="124" text-anchor="middle" font-family="ui-serif,Georgia,serif" font-size="14" fill="#141413" font-weight="500">Resolution</text>
+          <text x="320" y="146" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9.5" fill="#87867F">LIVRPS ordering</text>
+
+          <!-- Composed Stage output -->
+          <rect x="500" y="88" width="180" height="72" rx="10" fill="#141413"/>
+          <text x="590" y="117" text-anchor="middle" font-family="ui-serif,Georgia,serif" font-size="14" fill="#FAF9F5" font-weight="500">Composed Stage</text>
+          <text x="590" y="137" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9.5" fill="#D97757">final property values</text>
+          <text x="590" y="152" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9.5" fill="#87867F">traverse as one tree</text>
+
+          <!-- Arrows -->
+          <path d="M150 44 L240 108" stroke="#87867F" stroke-width="1.5" fill="none" marker-end="url(#arr2)"/>
+          <path d="M150 116 L240 124" stroke="#87867F" stroke-width="1.5" fill="none" marker-end="url(#arr2)"/>
+          <path d="M150 188 L240 140" stroke="#87867F" stroke-width="1.5" fill="none" marker-end="url(#arr2)"/>
+          <path d="M400 124 L500 124" stroke="#D97757" stroke-width="1.5" fill="none" marker-end="url(#arr2)"/>
+
+          <!-- def / over / class labels -->
+          <text x="430" y="32" text-anchor="middle" font-family="ui-monospace,monospace" font-size="10.5" fill="#141413" font-weight="600">Specifier keywords</text>
+          <rect x="340" y="42" width="50" height="22" rx="4" fill="#F0EEE6" stroke="#D1CFC5" stroke-width="1"/>
+          <text x="365" y="57" text-anchor="middle" font-family="ui-monospace,monospace" font-size="11" fill="#D97757">def</text>
+          <rect x="400" y="42" width="50" height="22" rx="4" fill="#F0EEE6" stroke="#D1CFC5" stroke-width="1"/>
+          <text x="425" y="57" text-anchor="middle" font-family="ui-monospace,monospace" font-size="11" fill="#787878">over</text>
+          <rect x="460" y="42" width="50" height="22" rx="4" fill="#F0EEE6" stroke="#D1CFC5" stroke-width="1"/>
+          <text x="485" y="57" text-anchor="middle" font-family="ui-monospace,monospace" font-size="11" fill="#788C5D">class</text>
+        </svg>
+      </div>
+
+      <ul>
+        <li><code>def</code> defines a prim in a layer</li>
+        <li><code>over</code> overrides existing authored data (non-destructive)</li>
+        <li><code>class</code> provides reusable inherited defaults</li>
+      </ul>
+      <p>That lets multiple teams contribute to one asset or environment without destructive merges. The final value for a property comes from <strong>value resolution</strong>, which evaluates all applicable layers in priority order (LIVRPS: Local, Inherits, VariantSets, References, Payloads, Specializes).</p>
+    </div>
+  </section>
+
+  <section id="ecosystem">
+    <div class="sec-head"><span class="idx">04</span><h2>Why It Became a Hub Format</h2></div>
+    <div class="sec-body">
+      <p>The practical advantage of OpenUSD is ecosystem reach: it acts as shared 3D infrastructure across DCC tools, CAD/BIM pipelines, renderers, and simulation platforms.</p>
+      <p>When many tools can exchange structured scene data instead of flattened exports, collaboration gets cheaper and less lossy. Key integrations:</p>
+      <ul>
+        <li>DCC tools: Maya, Houdini, Blender, Cinema 4D</li>
+        <li>Game engines: Unreal Engine, Unity</li>
+        <li>CAD/BIM: Revit, SolidWorks, Civil 3D</li>
+        <li>Renderers: Arnold, RenderMan, Hydra-compatible renderers</li>
+        <li>Simulation: Omniverse / Isaac Sim, robotics platforms</li>
+        <li>Apple ecosystem: iOS AR QuickLook, Reality Composer</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="related">
+    <div class="sec-head"><span class="idx">05</span><h2>Related Topics</h2></div>
+    <div class="sec-body">
+      <ul>
+        <li><a href="omniverse.html">Omniverse</a> — Omniverse uses OpenUSD as its native scene layer</li>
+        <li><a href="digital-twins.html">Digital Twins</a> — digital twins depend on OpenUSD to unify many data sources</li>
+        <li><a href="physical-ai.html">Physical AI</a> — USD-based simulation environments for robot training</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer><span class="k">Knowledge Vault</span><a href="INDEX.html">← All topics</a></footer>
+</div>
+<script>
+document.querySelectorAll("[data-tabs]").forEach(box => {
+  const btns = box.querySelectorAll("button");
+  const panes = box.querySelectorAll(".tab-pane");
+  btns.forEach(b => b.addEventListener("click", () => {
+    btns.forEach(x => x.classList.remove("on"));
+    panes.forEach(x => x.classList.remove("on"));
+    b.classList.add("on");
+    panes[+b.dataset.t].classList.add("on");
+  }));
+});
+</script>
+</body>
+</html>

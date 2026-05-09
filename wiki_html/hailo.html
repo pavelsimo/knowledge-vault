@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hailo AI Accelerator — Knowledge Vault</title>
+<style>
+:root {
+  --ivory:#FAF9F5; --paper:#FFFFFF; --slate:#141413;
+  --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D;
+  --g100:#F0EEE6; --g200:#E6E3DA; --g300:#D1CFC5; --g500:#87867F; --g700:#3D3D3A;
+  --serif:ui-serif,Georgia,"Times New Roman",Times,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}
+h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+.intro a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms;display:inline-flex;align-items:center;gap:7px}
+nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}
+.sec-body ul,.sec-body ol{margin:0 0 16px;padding-left:20px}
+.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--clay)}
+pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
+code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}
+th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}
+td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+.tag{display:inline-flex;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--g300);color:var(--g500);background:var(--paper)}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}
+footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+
+/* tabs component */
+.tabs{border:1.5px solid var(--g300);border-radius:10px;background:var(--paper);margin:20px 0;overflow:hidden}
+.tabbar{display:flex;border-bottom:1px solid var(--g300);background:var(--g100)}
+.tabbar button{appearance:none;border:none;background:none;font-family:var(--mono);font-size:12px;color:var(--g500);padding:10px 18px;cursor:pointer;border-right:1px solid var(--g300)}
+.tabbar button.on{background:var(--paper);color:var(--slate);border-bottom:2px solid var(--clay);margin-bottom:-1px}
+.tab-pane{display:none;padding:20px 22px;font-size:14px;color:var(--g700);line-height:1.65}
+.tab-pane.on{display:block}
+.tab-pane h4{font-family:var(--serif);font-weight:500;font-size:17px;color:var(--slate);margin:0 0 12px}
+.tab-pane p{margin:0 0 10px}
+.tab-pane ul{padding-left:18px;margin:0 0 12px}
+.tab-pane li{margin-bottom:5px}
+.tab-pane pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 14px;font-family:var(--mono);font-size:12.5px;overflow-x:auto;margin:0 0 12px}
+.tab-pane code{font-family:var(--mono);font-size:.87em;background:var(--g100);padding:2px 5px;border-radius:3px}
+.callout{display:flex;gap:12px;border:1.5px solid var(--oat);background:rgba(227,218,204,0.35);border-radius:10px;padding:14px 16px;margin:16px 0;font-size:14px}
+.callout .ico{color:var(--clay);font-weight:600;flex-shrink:0}
+
+/* pipeline flowchart */
+.flow-box{background:var(--paper);border:1.5px solid var(--g300);border-radius:12px;padding:24px;overflow-x:auto;margin:20px 0}
+.flow-box svg{display:block;width:100%;height:auto}
+</style>
+</head>
+<body><div class="wrap">
+  <header class="masthead">
+    <div class="eyebrow">Knowledge Vault</div>
+    <h1>Hailo <em>AI Accelerator</em></h1>
+    <p class="intro">The Hailo-8 is a dedicated AI inference accelerator chip for edge deployment, offering high-throughput neural network inference at low power. Setup spans two machines: a client (ARM/Raspberry Pi running inference via HailoRT) and a server (x86_64 running the Dataflow Compiler to compile ONNX models into <code>.hef</code> files).</p>
+    <nav class="toc">
+      <a href="#architecture">Architecture</a>
+      <a href="#setup">Setup Walkthrough</a>
+      <a href="#concepts">Key Concepts</a>
+      <a href="#related">Related Topics</a>
+    </nav>
+  </header>
+
+  <section id="architecture">
+    <div class="sec-head"><span class="idx">01</span><h2>Architecture Overview</h2></div>
+    <div class="sec-body">
+      <table>
+        <thead><tr><th>Component</th><th>Role</th><th>Host</th></tr></thead>
+        <tbody>
+          <tr><td><strong>HailoRT</strong></td><td>Runtime library + PCIe driver for inference</td><td>ARM64 (e.g. Raspberry Pi)</td></tr>
+          <tr><td><strong>Hailo Dataflow Compiler (DFC)</strong></td><td>Compiles ONNX → <code>.hef</code> for Hailo-8</td><td>x86_64 Ubuntu</td></tr>
+          <tr><td><strong>Hailo Model Zoo</strong></td><td>Pre-built model configs (YAML + <code>.alls</code>)</td><td>x86_64 Ubuntu</td></tr>
+          <tr><td><strong><code>.hef</code> file</strong></td><td>Compiled hardware-executable model</td><td>Deployed to client</td></tr>
+        </tbody>
+      </table>
+      <p>The <code>.hef</code> (Hailo Executable Format) is the compiled artifact produced by the Dataflow Compiler and loaded by HailoRT at inference time. The split architecture means the heavy compilation work (which requires a calibration dataset and x86 tools) happens once on a development machine; the resulting <code>.hef</code> is then deployed to the edge device.</p>
+
+      <div class="flow-box">
+        <svg viewBox="0 0 700 140" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrH" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#87867F"/>
+            </marker>
+          </defs>
+
+          <!-- ONNX model -->
+          <rect x="20" y="44" width="110" height="52" rx="8" fill="#F0EEE6" stroke="#D1CFC5" stroke-width="1.5"/>
+          <text x="75" y="65" text-anchor="middle" font-family="ui-monospace,monospace" font-size="11" fill="#141413" font-weight="600">ONNX Model</text>
+          <text x="75" y="82" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9.5" fill="#87867F">best.onnx</text>
+
+          <!-- DFC + Calibration -->
+          <rect x="180" y="20" width="150" height="100" rx="8" fill="#FAF9F5" stroke="#D97757" stroke-width="1.5"/>
+          <text x="255" y="50" text-anchor="middle" font-family="ui-monospace,monospace" font-size="11" fill="#D97757" font-weight="600">Dataflow</text>
+          <text x="255" y="66" text-anchor="middle" font-family="ui-monospace,monospace" font-size="11" fill="#D97757" font-weight="600">Compiler</text>
+          <text x="255" y="85" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9.5" fill="#87867F">x86_64 Ubuntu</text>
+          <text x="255" y="101" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9.5" fill="#87867F">hailomz compile</text>
+
+          <!-- Calib images -->
+          <rect x="180" y="130" width="150" height="0" rx="0"/>
+          <text x="255" y="132" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9" fill="#87867F">+ 1024 calib images (PTQ)</text>
+
+          <!-- HEF file -->
+          <rect x="390" y="44" width="110" height="52" rx="8" fill="#E3DACC" stroke="#D97757" stroke-width="1.5"/>
+          <text x="445" y="65" text-anchor="middle" font-family="ui-monospace,monospace" font-size="11" fill="#141413" font-weight="600">.hef file</text>
+          <text x="445" y="82" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9.5" fill="#87867F">compiled artifact</text>
+
+          <!-- HailoRT inference -->
+          <rect x="560" y="44" width="120" height="52" rx="8" fill="#141413"/>
+          <text x="620" y="63" text-anchor="middle" font-family="ui-monospace,monospace" font-size="11" fill="#FAF9F5" font-weight="600">HailoRT</text>
+          <text x="620" y="79" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9.5" fill="#D97757">inference</text>
+          <text x="620" y="92" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9" fill="#87867F">ARM64 / Pi</text>
+
+          <!-- Arrows -->
+          <path d="M130 70 L180 70" stroke="#87867F" stroke-width="1.5" fill="none" marker-end="url(#arrH)"/>
+          <path d="M330 70 L390 70" stroke="#D97757" stroke-width="1.5" fill="none" marker-end="url(#arrH)"/>
+          <path d="M500 70 L560 70" stroke="#87867F" stroke-width="1.5" fill="none" marker-end="url(#arrH)"/>
+
+          <!-- Labels above arrows -->
+          <text x="152" y="62" text-anchor="middle" font-family="ui-monospace,monospace" font-size="8.5" fill="#87867F">input</text>
+          <text x="360" y="62" text-anchor="middle" font-family="ui-monospace,monospace" font-size="8.5" fill="#D97757">output</text>
+          <text x="528" y="62" text-anchor="middle" font-family="ui-monospace,monospace" font-size="8.5" fill="#87867F">deploy</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section id="setup">
+    <div class="sec-head"><span class="idx">02</span><h2>Setup Walkthrough</h2></div>
+    <div class="sec-body">
+      <div class="tabs" data-tabs>
+        <div class="tabbar">
+          <button class="on" data-t="0">Client Setup (ARM64)</button>
+          <button data-t="1">Server: Compile</button>
+          <button data-t="2">Fix Common Issues</button>
+        </div>
+
+        <div class="tab-pane on">
+          <h4>HailoRT — Client Installation (ARM64 / Raspberry Pi)</h4>
+          <p><strong>Prerequisites:</strong> Ubuntu ARM64 with Hailo-8 over PCIe, Python 3.12. Download packages from the Hailo Developer Zone.</p>
+          <pre>export HAILO_VERSION=4.23.0
+export HAILO_ARCH=$(dpkg --print-architecture)
+
+sudo dpkg --install \
+  hailort_${HAILO_VERSION}_${HAILO_ARCH}.deb \
+  hailort-pcie-driver_${HAILO_VERSION}_all.deb
+
+pip install hailort-${HAILO_VERSION}-cp312-cp312-linux_aarch64.whl
+pip install -r requirements.txt</pre>
+          <div class="callout">
+            <span class="ico">!</span>
+            <div>After installation, fix the PCIe descriptor page size — the default (16384) exceeds the hardware maximum (4096) and causes runtime errors. See the "Fix Common Issues" tab.</div>
+          </div>
+        </div>
+
+        <div class="tab-pane">
+          <h4>Dataflow Compiler — Compile ONNX to .hef (x86_64)</h4>
+          <p><strong>Prerequisites:</strong> Ubuntu x86_64, Python 3.10, at least 1024 calibration images for post-training quantization.</p>
+          <pre>sudo apt-get install -y cmake python3.10 python3.12-venv python3.10-dev \
+  python3-tk graphviz libgraphviz-dev pkg-config
+
+python3.10 -m venv .venv
+source .venv/bin/activate
+
+pip install hailo_dataflow_compiler-3.33.1-py3-none-linux_x86_64.whl
+pip install hailo_model_zoo-2.18.0-py3-none-any.whl</pre>
+          <p>Once the environment is ready, compile your ONNX model:</p>
+          <pre>hailomz compile \
+  --ckpt best.onnx \
+  --hw-arch hailo8 \
+  --classes 3 \
+  --calib-path /path/to/calibration/images/ \
+  --yaml .venv/lib/python3.10/site-packages/hailo_model_zoo/cfg/networks/yolo26n.yaml</pre>
+        </div>
+
+        <div class="tab-pane">
+          <h4>Fix: PCIe Descriptor Page Size</h4>
+          <p>The default descriptor page size (16384) exceeds the hardware maximum (4096), causing runtime errors. Fix and persist:</p>
+          <pre>sudo modprobe -r hailo_pci
+sudo modprobe hailo_pci force_desc_page_size=4096
+echo "options hailo_pci force_desc_page_size=4096" | sudo tee /etc/modprobe.d/hailo_pci.conf</pre>
+          <h4>Fix: Calibration Images (EXIF / Colorspace Issues)</h4>
+          <p>Some images fail calibration due to EXIF orientation metadata or non-RGB colorspaces. Strip and normalize:</p>
+          <pre>mkdir -p /tmp/hailo_calib_clean
+find ./train/images/ -type f | while read -r f; do
+  base="$(basename "${f%.*}")"
+  convert "$f" -auto-orient -strip -alpha off -colorspace sRGB \
+    "/tmp/hailo_calib_clean/${base}.jpg"
+done</pre>
+          <p>Then point <code>--calib-path</code> to <code>/tmp/hailo_calib_clean/</code> instead of the raw training images.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="concepts">
+    <div class="sec-head"><span class="idx">03</span><h2>Key Concepts</h2></div>
+    <div class="sec-body">
+      <table>
+        <thead><tr><th>Concept</th><th>Explanation</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Post-training quantization (PTQ)</strong></td><td>The Hailo DFC quantizes the model during compilation using calibration images to minimize accuracy loss. At least 1024 images required — more is better for representing distribution diversity.</td></tr>
+          <tr><td><strong><code>.alls</code> config</strong></td><td>Controls compilation parameters (e.g. <code>calib-size</code>). Found under <code>hailo_model_zoo/cfg/alls/</code>. Edit to tune quantization behavior per model.</td></tr>
+          <tr><td><strong><code>hailomz</code> CLI</strong></td><td>CLI entry point for the Hailo Model Zoo; wraps DFC with model-specific YAML configs. Handles the full compile-optimize-quantize pipeline in one command.</td></tr>
+          <tr><td><strong>HailoRT Python bindings</strong></td><td>Allow inference calls directly from Python on the client device. Loads the <code>.hef</code>, manages input/output buffers, and returns predictions.</td></tr>
+          <tr><td><strong><code>.hef</code> format</strong></td><td>Hailo Executable Format — the compiled, quantized, chip-optimized model. Analogous to a compiled binary; not human-readable. Must be recompiled for different Hailo chip variants.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="related">
+    <div class="sec-head"><span class="idx">04</span><h2>Related Topics</h2></div>
+    <div class="sec-body">
+      <ul>
+        <li><a href="physical-ai.html">Physical AI</a> — Hailo-8 is commonly used in edge robotics and Physical AI deployment pipelines</li>
+        <li><a href="robot-learning.html">Robot Learning</a> — inference acceleration is key for real-time robot perception at 20–100Hz</li>
+        <li><a href="mlops.html">MLOps</a> — model compilation and deployment is part of the production ML lifecycle</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer><span class="k">Knowledge Vault</span><a href="INDEX.html">← All topics</a></footer>
+</div>
+<script>
+document.querySelectorAll("[data-tabs]").forEach(box => {
+  const btns = box.querySelectorAll("button");
+  const panes = box.querySelectorAll(".tab-pane");
+  btns.forEach(b => b.addEventListener("click", () => {
+    btns.forEach(x => x.classList.remove("on"));
+    panes.forEach(x => x.classList.remove("on"));
+    b.classList.add("on");
+    panes[+b.dataset.t].classList.add("on");
+  }));
+});
+</script>
+</body>
+</html>

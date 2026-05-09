@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Computer Vision — Knowledge Vault</title>
+<style>
+:root {
+  --ivory:#FAF9F5; --paper:#FFFFFF; --slate:#141413;
+  --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D;
+  --g100:#F0EEE6; --g200:#E6E3DA; --g300:#D1CFC5; --g500:#87867F; --g700:#3D3D3A;
+  --serif:ui-serif,Georgia,"Times New Roman",Times,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}
+h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+.intro a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms;display:inline-flex;align-items:center;gap:7px}
+nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}
+.sec-body ul,.sec-body ol{margin:0 0 16px;padding-left:20px}
+.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--clay)}
+pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
+code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}
+th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}
+td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+.tag{display:inline-flex;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--g300);color:var(--g500);background:var(--paper)}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}
+footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+
+/* ── Comparison grid component ── */
+.cmp-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin:24px 0}
+@media(max-width:900px){.cmp-grid{grid-template-columns:1fr}}
+.cmp-card{background:var(--paper);border:1.5px solid var(--g300);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:16px}
+.cmp-card-head h4{font-family:var(--serif);font-weight:500;font-size:18px;color:var(--slate);margin:0 0 4px}
+.cmp-card-head .num{display:inline-block;font-family:var(--mono);font-size:11px;background:var(--oat);color:var(--slate);padding:2px 7px;border-radius:6px;margin-right:6px;vertical-align:2px}
+.cmp-card-head p{font-size:13px;color:var(--g500);margin:0}
+.tradeoffs{border:1.5px solid var(--g300);border-radius:8px;overflow:hidden;font-size:13px}
+.tradeoffs .row{display:grid;grid-template-columns:1fr 1fr}
+.tradeoffs .row+.row{border-top:1.5px solid var(--g300)}
+.tradeoffs .cell{padding:9px 12px}
+.tradeoffs .cell:first-child{border-right:1.5px solid var(--g300)}
+.tradeoffs .head{background:var(--g100);font-weight:600;color:var(--slate);font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+.tradeoffs .pro::before,.tradeoffs .con::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:7px;vertical-align:2px}
+.tradeoffs .pro::before{background:var(--olive)}
+.tradeoffs .con::before{background:var(--clay)}
+</style>
+</head>
+<body><div class="wrap">
+  <header class="masthead">
+    <div class="eyebrow">Knowledge Vault</div>
+    <h1>Computer <em>Vision</em></h1>
+    <p class="intro">Teaching machines to interpret and understand images and video — from basic image classification to complex segmentation and 3D understanding. This topic synthesizes content from Stanford CS231N and Hugging Face applied examples.</p>
+    <nav class="toc">
+      <a href="#classification">Image Classification</a>
+      <a href="#distance">Distance Metrics</a>
+      <a href="#linear">Linear Classifier</a>
+      <a href="#segmentation">Segmentation Masks</a>
+      <a href="#depth">Depth Estimation</a>
+      <a href="#related">Related Topics</a>
+    </nav>
+  </header>
+
+  <section id="classification">
+    <div class="sec-head"><span class="idx">01</span><h2>Image Classification</h2></div>
+    <div class="sec-body">
+      <p>Image classification assigns a single label from a fixed set of categories to an image (e.g., "cat" or "dog").</p>
+
+      <h3>The Semantic Gap</h3>
+      <p>The core problem: an image is a tensor of integers between [0, 255]. A cat photo is stored as an 800 × 600 × 3 array of numbers — the computer sees nothing but those numbers. A human looking at the same photo instantly recognizes a cat. This gap between the human semantic understanding and the machine's pixel representation is the central challenge of computer vision.</p>
+      <p>The difficulty is not just "pixels are low-level." Even for the same object, almost every pixel can change under viewpoint shifts, lighting changes, background clutter, occlusion, or deformation. Humans treat those as nuisance factors; a vision model has to learn that invariance from data.</p>
+
+      <h3>Why It's Hard: The Challenges</h3>
+      <table>
+        <thead><tr><th>Challenge</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Semantic gap</strong></td><td>Humans understand meaning; machines see raw pixel values (an 800×600×3 tensor)</td></tr>
+          <tr><td><strong>Viewpoint variation</strong></td><td>Camera movement changes ALL pixels, even for the same object</td></tr>
+          <tr><td><strong>Illumination</strong></td><td>RGB pixel values are a function of surface material, color, AND light source</td></tr>
+          <tr><td><strong>Background clutter</strong></td><td>Other objects in the background make it harder to see the target object</td></tr>
+          <tr><td><strong>Occlusion</strong></td><td>Part of the object is hidden</td></tr>
+          <tr><td><strong>Deformation</strong></td><td>Object appears in unusual shapes or poses</td></tr>
+          <tr><td><strong>Intra-class variation</strong></td><td>Objects in the same category can look very different</td></tr>
+          <tr><td><strong>Context</strong></td><td>Surroundings influence how an object is recognized</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Two Approaches Compared</h3>
+      <div class="cmp-grid">
+        <div class="cmp-card">
+          <div class="cmp-card-head">
+            <h4><span class="num">01</span>Algorithmic (hand-crafted)</h4>
+            <p>Detect edges → corners → combine into rules</p>
+          </div>
+          <div class="tradeoffs">
+            <div class="row head"><div class="cell">Pro</div><div class="cell">Con</div></div>
+            <div class="row"><div class="cell pro">Explainable, deterministic</div><div class="cell con">Doesn't scale to new classes</div></div>
+            <div class="row"><div class="cell pro">No training data needed</div><div class="cell con">Rules too simple for real variation</div></div>
+          </div>
+        </div>
+        <div class="cmp-card">
+          <div class="cmp-card-head">
+            <h4><span class="num">02</span>Data-driven (ML)</h4>
+            <p>Learn features automatically from labeled examples</p>
+          </div>
+          <div class="tradeoffs">
+            <div class="row head"><div class="cell">Pro</div><div class="cell">Con</div></div>
+            <div class="row"><div class="cell pro">Learns invariances automatically</div><div class="cell con">Requires large labeled datasets</div></div>
+            <div class="row"><div class="cell pro">Generalizes to new classes</div><div class="cell con">Less interpretable</div></div>
+          </div>
+        </div>
+        <div class="cmp-card">
+          <div class="cmp-card-head">
+            <h4><span class="num">03</span>Foundation of deep learning</h4>
+            <p>Modern CNNs and ViTs are data-driven at scale</p>
+          </div>
+          <div class="tradeoffs">
+            <div class="row head"><div class="cell">Pro</div><div class="cell">Con</div></div>
+            <div class="row"><div class="cell pro">State-of-the-art accuracy</div><div class="cell con">Huge compute requirements</div></div>
+            <div class="row"><div class="cell pro">Transfer learning reduces cost</div><div class="cell con">Distribution shift sensitivity</div></div>
+          </div>
+        </div>
+      </div>
+
+      <pre><code>def train(images, labels):
+    # Machine learning!
+    return model
+
+def predict(model, test_images):
+    # Use model to predict labels
+    return test_labels</code></pre>
+    </div>
+  </section>
+
+  <section id="distance">
+    <div class="sec-head"><span class="idx">02</span><h2>Distance Metrics</h2></div>
+    <div class="sec-body">
+      <p>Used in K-Nearest Neighbors (KNN) classification for image comparison:</p>
+      <ul>
+        <li><strong>L1 distance (Manhattan):</strong> sum of absolute pixel differences</li>
+        <li><strong>L2 distance (Euclidean):</strong> square root of sum of squared differences</li>
+      </ul>
+      <h3>KNN Classifier</h3>
+      <ul>
+        <li>Finds K closest training images to a test image</li>
+        <li>Assigns the majority class label among those K neighbors</li>
+        <li>Training: O(1) — just store data</li>
+        <li>Prediction: O(n) — must compare against all training examples</li>
+        <li><strong>Not used in practice</strong> for images: too slow at inference, distance metrics behave poorly in high-dimensional pixel space</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="linear">
+    <div class="sec-head"><span class="idx">03</span><h2>Linear Classifier</h2></div>
+    <div class="sec-body">
+      <p>A linear classifier makes predictions using: <code>f(x; W) = Wx + b</code></p>
+      <ul>
+        <li><code>x</code> = image flattened into a vector (e.g., 32×32×3 = 3072 numbers)</li>
+        <li><code>W</code> = weight matrix (learned parameters)</li>
+        <li><code>b</code> = bias vector</li>
+        <li>Output = score for each class</li>
+      </ul>
+      <p><strong>Geometric interpretation:</strong> each row of W acts as a class template; the dot product measures how similar the image is to that template.</p>
+      <p><strong>Hard cases for linear classifiers:</strong> non-linear decision boundaries, circular data, multimodal class distributions — solved by stacking layers into neural networks.</p>
+    </div>
+  </section>
+
+  <section id="segmentation">
+    <div class="sec-head"><span class="idx">04</span><h2>Segmentation Mask Generation</h2></div>
+    <div class="sec-body">
+      <p>Pixel-accurate object outlining without necessarily identifying the class (class-agnostic segmentation).</p>
+      <ul>
+        <li><strong>Model:</strong> <code>Zigeng/SlimSAM-uniform-77</code> (based on Segment Anything Model)</li>
+        <li>SAM outputs <strong>3 candidate masks</strong> per prompt</li>
+        <li>Can be prompted with a single point, bounding box, or text</li>
+        <li>Paper: <a href="https://arxiv.org/pdf/2312.05284">0.1% Data Makes Segment Anything Slim</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="depth">
+    <div class="sec-head"><span class="idx">05</span><h2>Depth Estimation</h2></div>
+    <div class="sec-body">
+      <p>Estimating the distance of objects in an image from the camera — common in autonomous driving and robotics.</p>
+      <ul>
+        <li><strong>Model:</strong> <code>Intel/dpt-hybrid-midas</code></li>
+        <li><strong>DPT</strong> = Dense Prediction Transformer</li>
+        <li>Paper: <a href="https://arxiv.org/pdf/2103.13413">Vision Transformers for Dense Prediction</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="related">
+    <div class="sec-head"><span class="idx">06</span><h2>Related Topics</h2></div>
+    <div class="sec-body">
+      <ul>
+        <li><a href="object-detection.html">Object Detection</a> — detecting and localizing multiple objects in an image</li>
+        <li><a href="convolutional-neural-networks.html">Convolutional Neural Networks</a> — the dominant architecture for vision</li>
+        <li><a href="multimodal-models.html">Multimodal Models</a> — models combining vision with text</li>
+        <li><a href="neural-networks.html">Neural Networks</a> — foundational building blocks</li>
+        <li><a href="attention-transformers.html">Attention &amp; Transformers</a> — ViT: transformers applied to vision</li>
+        <li><a href="hugging-face.html">Hugging Face</a> — pretrained models for vision tasks</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer><span class="k">Knowledge Vault</span><a href="INDEX.html">← All topics</a></footer>
+</div></body>
+</html>

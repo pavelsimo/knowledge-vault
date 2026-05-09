@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI-Assisted Development — Knowledge Vault</title>
+<style>
+:root {
+  --ivory:#FAF9F5; --paper:#FFFFFF; --slate:#141413;
+  --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D;
+  --g100:#F0EEE6; --g200:#E6E3DA; --g300:#D1CFC5; --g500:#87867F; --g700:#3D3D3A;
+  --serif:ui-serif,Georgia,"Times New Roman",Times,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}
+h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+.intro a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms;display:inline-flex;align-items:center;gap:7px}
+nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}
+.sec-body ul,.sec-body ol{margin:0 0 16px;padding-left:20px}
+.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--clay)}
+pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
+code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}
+th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}
+td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+.tag{display:inline-flex;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--g300);color:var(--g500);background:var(--paper)}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}
+footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+
+/* ── tabs component ── */
+.tabs{border:1.5px solid var(--g300);border-radius:10px;background:var(--paper);margin:20px 0;overflow:hidden}
+.tabbar{display:flex;border-bottom:1px solid var(--g300);background:var(--g100)}
+.tabbar button{appearance:none;border:none;background:none;font-family:var(--mono);font-size:12px;color:var(--g500);padding:10px 16px;cursor:pointer;border-right:1px solid var(--g300);transition:color 100ms}
+.tabbar button.on{background:var(--paper);color:var(--slate);border-bottom:2px solid var(--clay);margin-bottom:-1px}
+.tabbar button:hover:not(.on){color:var(--g700)}
+.tabpane{display:none;padding:22px 24px}
+.tabpane.on{display:block}
+.callout{display:flex;gap:12px;border:1.5px solid var(--oat);background:rgba(227,218,204,.35);border-radius:10px;padding:14px 16px;margin:18px 0;font-size:14px}
+.callout .ico{color:var(--clay);font-weight:600;flex-shrink:0}
+.tldr{border:1.5px solid var(--g300);border-left:3px solid var(--clay);border-radius:10px;background:var(--paper);padding:16px 18px;margin:20px 0}
+.tldr b{color:var(--slate)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <div class="eyebrow">AI Engineering</div>
+  <h1>AI-Assisted <em>Development</em></h1>
+  <p class="intro">The practice of using LLM-powered coding agents to accelerate software implementation while maintaining engineering ownership. AI amplifies your judgment — it does not replace it.</p>
+  <nav class="toc">
+    <a href="#s1">Productivity Trap</a>
+    <a href="#s2">The Flip</a>
+    <a href="#s3">5 Core Practices</a>
+    <a href="#s4">Anti-Patterns</a>
+    <a href="#s5">Agent Modes</a>
+  </nav>
+</header>
+
+<section id="s1">
+  <div class="sec-head"><span class="idx">01</span><h2>The Productivity Trap</h2></div>
+  <div class="sec-body">
+    <p>A randomized controlled trial found that experienced developers were <strong>19% slower</strong> with AI coding tools — yet believed they were <strong>20% faster</strong>. That is a ~40-point perception gap. The tools are not the problem; the practices around them are.</p>
+    <p>The biggest risk of AI coding tools is not bad code — it is <strong>false confidence</strong>.</p>
+    <table>
+      <thead><tr><th>Mode</th><th>Description</th><th>When to Use</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Pure vibe coding</strong></td><td>The AI writes. Nobody checks.</td><td>Throwaway prototypes, weekend experiments</td></tr>
+        <tr><td><strong>AI-assisted development</strong></td><td>The AI drafts. You architect and verify. Spec-driven, test-first.</td><td>Production code</td></tr>
+      </tbody>
+    </table>
+    <div class="callout"><span class="ico">!</span><div><strong>Security warning:</strong> 45% of AI-generated code fails security tests. AI co-authored code had 2.74x higher security vulnerability rates across 470 analyzed PRs. Pure vibe coding is catastrophic for production.</div></div>
+  </div>
+</section>
+
+<section id="s2">
+  <div class="sec-head"><span class="idx">02</span><h2>The Mental Model Shift: The Flip</h2></div>
+  <div class="sec-body">
+    <p>In traditional development, the time split is roughly 70% translating ideas into syntax and 30% thinking. AI-assisted development flips this entirely.</p>
+    <table>
+      <thead><tr><th>Traditional</th><th>AI-Assisted</th></tr></thead>
+      <tbody>
+        <tr><td>70% syntax and implementation (you are the typist)</td><td>30% syntax and implementation</td></tr>
+        <tr><td>30% thinking and verification</td><td>70% thinking, verification, reviewing AI output</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Your role does not shrink. It changes.</strong> AI does not reduce your cognitive load — it redirects it toward the work that matters most. You become the architect, not the typist.</p>
+  </div>
+</section>
+
+<section id="s3">
+  <div class="sec-head"><span class="idx">03</span><h2>The 5 Core Practices</h2></div>
+  <div class="sec-body">
+    <div class="tabs" data-tabs>
+      <div class="tabbar">
+        <button class="on" data-t="0">Spec First</button>
+        <button data-t="1">Context Engineering</button>
+        <button data-t="2">Plan-Execute-Verify</button>
+        <button data-t="3">Testing</button>
+        <button data-t="4">Security</button>
+      </div>
+      <div class="tabpane on">
+        <h3>1. Spec Before You Prompt</h3>
+        <p>The single biggest mistake is prompting too early. A 15-line spec outperforms an open-ended prompt every time.</p>
+        <table>
+          <thead><tr><th>Pillar</th><th>Contents</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Intent</strong></td><td>What are we building? Why does it matter?</td></tr>
+            <tr><td><strong>Constraints</strong></td><td>Tech stack choices, architectural patterns, what NOT to do</td></tr>
+            <tr><td><strong>Acceptance Criteria</strong></td><td>Testable conditions, edge cases, definition of done</td></tr>
+          </tbody>
+        </table>
+        <div class="callout"><span class="ico">★</span><div>Tip: have the AI <strong>interview you</strong> first. Let it probe requirements and surface tradeoffs. Then start a fresh session to execute against the resulting spec. This forces clean context focused entirely on implementation.</div></div>
+      </div>
+      <div class="tabpane">
+        <h3>2. Context Engineering &gt; Prompt Engineering</h3>
+        <p>The quality of information available to the AI matters more than how cleverly you phrase your request. Context engineering is designing <em>what information is available</em> to the AI at any moment.</p>
+        <table>
+          <thead><tr><th>Prompt Engineering</th><th>Context Engineering</th></tr></thead>
+          <tbody>
+            <tr><td>"Let me rephrase this more cleverly..."</td><td>Fresh sessions per task</td></tr>
+            <tr><td>Focuses on how you ask</td><td>Load context just in time</td></tr>
+            <tr><td>Diminishing returns</td><td>Only what AI can't infer</td></tr>
+            <tr><td>Controls what you say</td><td>Controls what the AI sees</td></tr>
+          </tbody>
+        </table>
+        <ul>
+          <li><strong>Start fresh sessions for new tasks</strong> — stale prior-feature context pollutes new implementations</li>
+          <li><strong>Just-in-time context retrieval</strong> — load files on demand via grep/file references, not by pre-loading the whole codebase</li>
+          <li><strong>Keep context files focused</strong> on project conventions, naming patterns, unwritten team rules, security requirements</li>
+        </ul>
+      </div>
+      <div class="tabpane">
+        <h3>3. Plan → Execute → Verify Loop</h3>
+        <p>The cycle runs continuously: Plan → Execute → Verify → back to Plan.</p>
+        <ol>
+          <li><strong>Plan</strong> — define the goal and constraints for this one step; ask the AI to reason through the approach before writing any code</li>
+          <li><strong>Execute</strong> — AI generates code, tests, or docs</li>
+          <li><strong>Verify</strong> — review diffs, run tests, give specific actionable feedback</li>
+        </ol>
+        <div class="callout"><span class="ico">!</span><div><strong>The 80/20 Wall:</strong> AI handles the first 80% of a project well, then stalls on edge cases and integration. Decompose aggressively — small tasks keep each interaction in the AI's zone of competence.</div></div>
+        <p>Between iterations: break complex tasks into atomic pieces. Small, verifiable steps beat massive one-shot prompts every time.</p>
+      </div>
+      <div class="tabpane">
+        <h3>4. Testing Is the Foundation</h3>
+        <p>Without tests, AI output is unverifiable. The agent may claim something works without running it. Any new change can silently break an unrelated feature.</p>
+        <p><strong>Test-first development with agents:</strong></p>
+        <ol>
+          <li>Write (or have AI write) the tests</li>
+          <li>Review them — confirm they represent correct intent</li>
+          <li>Confirm they fail</li>
+          <li>Let the agent implement code to make them pass</li>
+        </ol>
+      </div>
+      <div class="tabpane">
+        <h3>5. Security and Review Are Non-Negotiable</h3>
+        <p>40% of AI code completion suggestions were insecure in security-sensitive scenarios. One platform's missing row-level security exposed 170+ production apps.</p>
+        <p><strong>Supply chain attack via hallucinated packages — three-stage flow:</strong></p>
+        <ol>
+          <li><strong>AI Suggests</strong> — AI generates code with a package that doesn't exist on any registry</li>
+          <li><strong>Attacker Registers</strong> — An attacker registers it on npm/PyPI with malicious code. 20% of AI-suggested packages don't exist.</li>
+          <li><strong>Compromised</strong> — Developer installs without checking. Malicious code runs in the codebase.</li>
+        </ol>
+        <p><strong>Three defenses:</strong></p>
+        <ul>
+          <li><strong>Security-first context</strong> — include "always use parameterized queries, never hardcode secrets" in your project context</li>
+          <li><strong>Self-reflection loops</strong> — prompt the agent to review its own output for vulnerabilities before you do</li>
+          <li><strong>Supply chain vigilance</strong> — verify every dependency; use lockfiles with hash pinning</li>
+        </ul>
+        <div class="callout"><span class="ico">★</span><div><strong>Golden rule:</strong> don't commit code you can't explain to someone else.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="s4">
+  <div class="sec-head"><span class="idx">04</span><h2>Anti-Patterns to Avoid</h2></div>
+  <div class="sec-body">
+    <table>
+      <thead><tr><th>Anti-pattern</th><th>What Happens</th><th>Fix</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Endless error loop</strong></td><td>AI "fixes" a bug by introducing another</td><td>Stop. Read the code. Diagnose root cause. Give precise problem description.</td></tr>
+        <tr><td><strong>Comprehension gap</strong></td><td>Shipping code you don't understand</td><td>If you can't explain it, don't merge it.</td></tr>
+        <tr><td><strong>Session drift</strong></td><td>Long sessions accumulate stale context; AI loses coherence</td><td>Start fresh; carry spec + decisions, not conversation history.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="s5">
+  <div class="sec-head"><span class="idx">05</span><h2>Agent Modes</h2></div>
+  <div class="sec-body">
+    <p>The trust gradient runs from maximum safety to maximum speed. Match the trust level to the task — start safe, dial up as confidence grows.</p>
+    <table>
+      <thead><tr><th>Mode</th><th>Behavior</th><th>When to Use</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Plan</strong></td><td>Read-only; cannot write or execute; explores and thinks first</td><td>Safest. Scout the codebase before committing to any changes.</td></tr>
+        <tr><td><strong>Default</strong></td><td>Preview every change; approve each action; full control</td><td>Recommended starting point for most tasks.</td></tr>
+        <tr><td><strong>Accept Edits</strong></td><td>File edits auto-approved; shell commands still ask</td><td>Confident code changes and trusted refactoring.</td></tr>
+        <tr><td><strong>Auto Approve</strong></td><td>Everything runs; no confirmations</td><td>Formatting, docs, linters only. Low-risk, well-defined tasks.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <span class="k">Knowledge Vault</span>
+  <span>Related: <a href="mlops.html">MLOps</a> &middot; <a href="rag.html">RAG</a> &middot; <a href="attention-transformers.html">Attention &amp; Transformers</a></span>
+  <span>Updated May 2026</span>
+</footer>
+
+</div>
+<script>
+document.querySelectorAll("[data-tabs]").forEach(box=>{
+  const btns=box.querySelectorAll("button");
+  const panes=box.querySelectorAll(".tabpane");
+  btns.forEach(b=>b.addEventListener("click",()=>{
+    btns.forEach(x=>x.classList.remove("on"));
+    panes.forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");
+    panes[+b.dataset.t].classList.add("on");
+  }));
+});
+</script>
+</body>
+</html>

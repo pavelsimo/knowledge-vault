@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Probability and Statistics — Knowledge Vault</title>
+<style>
+:root {
+  --ivory:#FAF9F5; --paper:#FFFFFF; --slate:#141413;
+  --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D;
+  --g100:#F0EEE6; --g200:#E6E3DA; --g300:#D1CFC5; --g500:#87867F; --g700:#3D3D3A;
+  --serif:ui-serif,Georgia,"Times New Roman",Times,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}
+h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms;display:inline-flex;align-items:center;gap:7px}
+nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}
+.sec-body ul,.sec-body ol{margin:0 0 16px;padding-left:20px}
+.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--clay)}
+pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
+code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}
+th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}
+td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+
+/* Ring / tabs component */
+.tabs{border:1.5px solid var(--g300);border-radius:10px;background:var(--paper);margin:16px 0 8px;overflow:hidden}
+.tabbar{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--g300);background:var(--g100)}
+.tabbar button{appearance:none;border:none;background:none;font-family:var(--mono);font-size:12px;color:var(--g500);padding:10px 16px;cursor:pointer;border-right:1px solid var(--g300)}
+.tabbar button.on{background:var(--paper);color:var(--slate);border-bottom:2px solid var(--clay);margin-bottom:-1px}
+.tab-pane{display:none;padding:20px 22px;font-size:14px;color:var(--g700);line-height:1.7}
+.tab-pane.on{display:block}
+.tab-pane h4{font-family:var(--serif);font-weight:500;font-size:17px;color:var(--slate);margin:0 0 10px}
+.tab-pane ul{padding-left:20px;margin:0 0 12px}
+.tab-pane li{margin-bottom:5px}
+.tab-pane pre{margin:10px 0 0;font-size:12px}
+.callout{display:flex;gap:12px;border:1.5px solid var(--oat);background:rgba(227,218,204,0.35);border-radius:10px;padding:14px 16px;margin:18px 0;font-size:14px}
+.callout .ico{color:var(--clay);font-weight:600;flex-shrink:0}
+
+/* Probability ring diagram */
+.ring-demo{border:1.5px solid var(--g300);border-radius:14px;background:var(--paper);padding:24px;margin:24px 0 8px;display:grid;grid-template-columns:260px 1fr;gap:28px;align-items:start}
+@media(max-width:680px){.ring-demo{grid-template-columns:1fr}}
+.ring-detail{font-size:13.5px;line-height:1.7}
+.ring-detail h4{font-family:var(--serif);font-weight:500;font-size:17px;color:var(--slate);margin:0 0 8px}
+.ring-detail p{color:var(--g700);margin:0 0 10px}
+.seg-key{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:13px;cursor:pointer}
+.seg-key .dot{width:12px;height:12px;border-radius:999px;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="masthead">
+  <div class="eyebrow">Knowledge Vault &mdash; Probability &amp; Statistics</div>
+  <h1>The mathematics of <em>uncertainty</em></h1>
+  <p class="intro">
+    Probability theory provides the mathematical underpinning for machine learning, Bayesian reasoning, and statistical modeling. This page covers foundations from the Stanford CS109 course: sample spaces, Bayes' theorem, random variables, expectation, and the log-space tricks that make computation tractable.
+  </p>
+  <nav class="toc">
+    <a href="#foundations">Foundations</a>
+    <a href="#bayes">Bayes' Theorem</a>
+    <a href="#joint">Joint Distributions</a>
+    <a href="#random-vars">Random Variables</a>
+    <a href="#covariance">Covariance</a>
+    <a href="#log-tricks">Log Tricks</a>
+  </nav>
+</header>
+
+<section id="foundations">
+  <div class="sec-head"><span class="idx">01</span><h2>Foundations</h2></div>
+  <div class="sec-body">
+    <!-- Interactive probability ring -->
+    <div class="ring-demo">
+      <svg id="probRing" viewBox="0 0 240 240" style="display:block;width:100%;max-width:260px"></svg>
+      <div class="ring-detail" id="ringDetail">
+        <h4>Probability Concepts</h4>
+        <p>Click a segment to explore the concept.</p>
+        <div class="seg-key" data-seg="0"><span class="dot" style="background:#D97757"></span> Sample Space</div>
+        <div class="seg-key" data-seg="1"><span class="dot" style="background:#788C5D"></span> Events</div>
+        <div class="seg-key" data-seg="2"><span class="dot" style="background:#6A8CAF"></span> Independence</div>
+        <div class="seg-key" data-seg="3"><span class="dot" style="background:#C2A83E"></span> Conditional Probability</div>
+        <div id="ringDesc" style="margin-top:12px;padding:12px;background:var(--g100);border-radius:8px;font-size:13px;display:none"></div>
+      </div>
+    </div>
+
+    <h3>Sample Space and Events</h3>
+    <ul>
+      <li>A <strong>sample space</strong> is the set of all possible outcomes of an experiment</li>
+      <li>An <strong>event</strong> is a subset of the sample space</li>
+      <li><strong>Probability</strong> assigns a number in [0, 1] to each event</li>
+    </ul>
+
+    <h3>Independence</h3>
+    <p>Two events A and B are <strong>independent</strong> if knowing one gives no information about the other:</p>
+    <pre>P(A ∩ B) = P(A) · P(B)</pre>
+    <p><strong>Example (two dice):</strong></p>
+    <ul>
+      <li>Events "X₁ = 1" and "S = 7" <strong>are independent</strong> (P(S=7|X₁=1) = 1/6 = P(S=7))</li>
+      <li>Events "X₁ = 1" and "S = 5" <strong>are NOT independent</strong> (P(S=5|X₁=1) &ne; P(S=5))</li>
+      <li>Therefore X₁ and S as random variables are <strong>dependent</strong> — independence must hold for all values</li>
+    </ul>
+
+    <h3>Conditional Probability</h3>
+    <pre>P(A | B) = P(A ∩ B) / P(B)</pre>
+  </div>
+</section>
+
+<section id="bayes">
+  <div class="sec-head"><span class="idx">02</span><h2>Bayes' Theorem</h2></div>
+  <div class="sec-body">
+    <p>Bayes' theorem updates a belief (prior) given new evidence:</p>
+    <pre>P(H | E) = P(E | H) · P(H) / P(E)</pre>
+
+    <div class="tabs" data-tabs>
+      <div class="tabbar">
+        <button class="on" data-t="0">Components</button>
+        <button data-t="1">Denominator Tricks</button>
+        <button data-t="2">Bayesian Updating</button>
+      </div>
+      <div class="tab-pane on">
+        <h4>The Four Components</h4>
+        <ul>
+          <li><strong>P(H)</strong> — prior: your belief before seeing evidence</li>
+          <li><strong>P(E | H)</strong> — likelihood: probability of evidence given hypothesis</li>
+          <li><strong>P(H | E)</strong> — posterior: updated belief after seeing evidence</li>
+          <li><strong>P(E)</strong> — normalizing constant (often hard to compute directly)</li>
+        </ul>
+      </div>
+      <div class="tab-pane">
+        <h4>Two Tricks for the Denominator</h4>
+        <ul>
+          <li><strong>Ratio formulation</strong> — reformulate as a ratio problem to avoid computing P(E) directly</li>
+          <li><strong>Law of total probability</strong> — expand P(E) = &sum; P(E|H&#x1D522;)&middot;P(H&#x1D522;) over all hypotheses</li>
+        </ul>
+      </div>
+      <div class="tab-pane">
+        <h4>Bayesian Updating</h4>
+        <p>A <strong>belief is not a single number — it is a distribution</strong> over all possible values. As you observe evidence, you update this distribution:</p>
+        <ul>
+          <li>Prior distribution &rarr; observe evidence &rarr; posterior distribution</li>
+          <li>If someone asks "what is your belief?" &rarr; give a distribution, not a point estimate</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="joint">
+  <div class="sec-head"><span class="idx">03</span><h2>Joint Distributions and Marginalization</h2></div>
+  <div class="sec-body">
+    <h3>Joint Distributions</h3>
+    <p>A <strong>joint distribution</strong> P(X, Y) describes the probability of all combinations of two variables:</p>
+    <ul>
+      <li>From a joint distribution, you can derive marginals and conditionals</li>
+      <li><strong>Independence:</strong> P(X, Y) = P(X) &middot; P(Y) for all values (plot looks like a rectangular grid)</li>
+      <li><strong>Dependence:</strong> the plot shows non-rectangular structure</li>
+    </ul>
+
+    <h3>Marginalization</h3>
+    <p>Marginalization sums out a variable to get the <strong>marginal probability</strong>:</p>
+    <pre>P(A) = &sum; P(A, B=b) over all values of B</pre>
+    <p>Historical note: called "marginal" because these totals were written in the margins of probability tables.</p>
+  </div>
+</section>
+
+<section id="random-vars">
+  <div class="sec-head"><span class="idx">04</span><h2>Random Variables</h2></div>
+  <div class="sec-body">
+    <p>A random variable is a function from outcomes to numbers:</p>
+    <ul>
+      <li><strong>Discrete</strong> random variable: finite or countably infinite range</li>
+      <li><strong>Continuous</strong> random variable: uncountably infinite range (described by a PDF)</li>
+    </ul>
+
+    <h3>Expectation and Variance</h3>
+    <pre>E[X] = &sum; x &middot; P(X = x)
+Var(X) = E[(X &minus; E[X])&sup2;]</pre>
+  </div>
+</section>
+
+<section id="covariance">
+  <div class="sec-head"><span class="idx">05</span><h2>Covariance</h2></div>
+  <div class="sec-body">
+    <p>Covariance measures the linear relationship between two random variables X and Y:</p>
+    <pre>Cov(X, Y) = E[(X &minus; E[X])(Y &minus; E[Y])]</pre>
+    <ul>
+      <li><strong>Positive covariance:</strong> when X is high, Y tends to be high (move together)</li>
+      <li><strong>Negative covariance:</strong> when X is high, Y tends to be low (move opposite)</li>
+      <li><strong>Zero covariance:</strong> no linear relationship</li>
+    </ul>
+    <div class="callout">
+      <span class="ico">&#9654;</span>
+      <div><strong>Intuition:</strong> for a data point above the mean in both X and Y, the product of deviations is positive &rarr; contributes positively to covariance.</div>
+    </div>
+  </div>
+</section>
+
+<section id="log-tricks">
+  <div class="sec-head"><span class="idx">06</span><h2>Logarithm Tricks in Probability</h2></div>
+  <div class="sec-body">
+    <p>Working in log-space is common when:</p>
+    <ul>
+      <li>Products of many small probabilities underflow to zero</li>
+      <li>Log turns products into sums: <code>log(P(A)&middot;P(B)) = log P(A) + log P(B)</code></li>
+      <li>Log is monotone, so argmax is preserved</li>
+    </ul>
+
+    <h3>Related Topics</h3>
+    <ul>
+      <li><a href="neural-networks.html">Neural Networks</a> — loss functions and cross-entropy use probability concepts</li>
+      <li><a href="mlops.html">MLOps</a> — evaluation metrics like precision/recall are based on probability</li>
+      <li><a href="optimization.html">Optimization</a> — gradient descent and stochastic methods have probabilistic interpretations</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <span class="k">Knowledge Vault</span>
+  <span>Probability and Statistics &mdash; Stanford CS109 &mdash; 2026</span>
+</footer>
+</div>
+
+<script>
+// Ring diagram
+const SEGS = [
+  { color: '#D97757', label: 'Sample Space', desc: '<strong>Sample Space</strong>: The set S of all possible outcomes. Every event is a subset of S. When rolling a die, S = {1, 2, 3, 4, 5, 6}. Probability is a measure on subsets of S.' },
+  { color: '#788C5D', label: 'Events', desc: '<strong>Events</strong>: A subset A ⊆ S. P(A) ∈ [0,1]. The impossible event ∅ has probability 0. The certain event S has probability 1. Union, intersection, and complement are the core set operations.' },
+  { color: '#6A8CAF', label: 'Independence', desc: '<strong>Independence</strong>: A and B are independent if P(A ∩ B) = P(A)·P(B). For random variables, this must hold for <em>all</em> value pairs — one pair being independent does not make the variables independent.' },
+  { color: '#C2A83E', label: 'Conditional Probability', desc: '<strong>Conditional Probability</strong>: P(A|B) = P(A∩B) / P(B). Read as "probability of A given B." This is the foundation of Bayes\' theorem and the engine of Bayesian updating.' }
+];
+
+const CX = 120, CY = 120, R = 90, R2 = 55;
+const svg = document.getElementById('probRing');
+const desc = document.getElementById('ringDesc');
+let activeIdx = -1;
+
+function arcPath(startAngle, endAngle, r) {
+  const s = startAngle * Math.PI / 180;
+  const e = endAngle * Math.PI / 180;
+  const x1 = CX + r * Math.cos(s), y1 = CY + r * Math.sin(s);
+  const x2 = CX + r * Math.cos(e), y2 = CY + r * Math.sin(e);
+  const large = (endAngle - startAngle) > 180 ? 1 : 0;
+  return `M ${CX} ${CY} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} Z`;
+}
+
+function renderRing(active) {
+  const n = SEGS.length;
+  const gap = 2;
+  let markup = '';
+  SEGS.forEach((seg, i) => {
+    const start = i * (360 / n) + gap / 2;
+    const end = (i + 1) * (360 / n) - gap / 2;
+    const isActive = i === active;
+    const midAngle = ((start + end) / 2) * Math.PI / 180;
+    const tx = CX + (R + 14) * Math.cos(midAngle);
+    const ty = CY + (R + 14) * Math.sin(midAngle);
+    markup += `<path d="${arcPath(start, end, isActive ? R + 6 : R)}" fill="${seg.color}" opacity="${isActive ? 1 : 0.6}" style="cursor:pointer" data-seg="${i}"/>`;
+    markup += `<text x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-family="var(--mono)" font-size="9" fill="var(--g700)">${i + 1}</text>`;
+  });
+  markup += `<circle cx="${CX}" cy="${CY}" r="${R2}" fill="var(--ivory)" stroke="var(--g300)" stroke-width="1.5"/>`;
+  markup += `<text x="${CX}" y="${CY - 6}" text-anchor="middle" dominant-baseline="middle" font-family="var(--serif)" font-size="13" fill="var(--slate)">P</text>`;
+  markup += `<text x="${CX}" y="${CY + 10}" text-anchor="middle" dominant-baseline="middle" font-family="var(--mono)" font-size="10" fill="var(--g500)">concepts</text>`;
+  svg.innerHTML = markup;
+
+  svg.querySelectorAll('path[data-seg]').forEach(el => {
+    el.addEventListener('click', () => {
+      const idx = +el.dataset.seg;
+      if (activeIdx === idx) { activeIdx = -1; desc.style.display = 'none'; renderRing(-1); }
+      else { activeIdx = idx; desc.innerHTML = SEGS[idx].desc; desc.style.display = 'block'; renderRing(idx); }
+    });
+  });
+}
+
+document.querySelectorAll('.seg-key').forEach(el => {
+  el.addEventListener('click', () => {
+    const idx = +el.dataset.seg;
+    if (activeIdx === idx) { activeIdx = -1; desc.style.display = 'none'; renderRing(-1); }
+    else { activeIdx = idx; desc.innerHTML = SEGS[idx].desc; desc.style.display = 'block'; renderRing(idx); }
+  });
+});
+
+document.querySelectorAll('[data-tabs]').forEach(box => {
+  const btns = box.querySelectorAll('button');
+  const panes = box.querySelectorAll('.tab-pane');
+  btns.forEach(b => b.addEventListener('click', () => {
+    btns.forEach(x => x.classList.remove('on'));
+    panes.forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    panes[+b.dataset.t].classList.add('on');
+  }));
+});
+
+renderRing(-1);
+</script>
+</body>
+</html>

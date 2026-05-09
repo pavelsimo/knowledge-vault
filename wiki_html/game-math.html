@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Game Math — Knowledge Vault</title>
+<style>
+:root {
+  --ivory:#FAF9F5; --paper:#FFFFFF; --slate:#141413;
+  --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D;
+  --g100:#F0EEE6; --g200:#E6E3DA; --g300:#D1CFC5; --g500:#87867F; --g700:#3D3D3A;
+  --serif:ui-serif,Georgia,"Times New Roman",Times,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}
+h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+.intro a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms;display:inline-flex;align-items:center;gap:7px}
+nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}
+.sec-body ul,.sec-body ol{margin:0 0 16px;padding-left:20px}
+.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--clay)}
+pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
+code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}
+th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}
+td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+.tag{display:inline-flex;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--g300);color:var(--g500);background:var(--paper)}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}
+footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+
+/* Unit circle demo */
+.demo-box{border:1.5px solid var(--g300);border-radius:14px;background:var(--paper);padding:24px;margin:24px 0 8px;display:grid;grid-template-columns:280px 1fr;gap:28px;align-items:center}
+@media(max-width:680px){.demo-box{grid-template-columns:1fr}}
+svg.ucircle{display:block;width:100%;max-width:280px}
+.uc-controls{font-size:13px}
+.uc-row{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.uc-row label{font-family:var(--mono);font-size:11px;color:var(--g500);width:52px}
+.uc-row .val{font-family:var(--mono);font-size:12px;color:var(--slate);width:52px}
+.uc-row input[type=range]{flex:1;accent-color:var(--clay)}
+.uc-readout{border-top:1px solid var(--g300);padding-top:14px;margin-top:4px;font-size:13px;line-height:1.8}
+.uc-readout b{color:var(--slate)}
+.uc-readout code{font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="masthead">
+  <div class="eyebrow">Knowledge Vault &mdash; Game Math</div>
+  <h1>The geometry hiding inside <em>game</em> math</h1>
+  <p class="intro">
+    Game math is the layer between raw code and spatial intuition. The most useful pieces are not advanced theorems but a handful of geometric primitives that appear everywhere: the unit circle, sine/cosine, dot products, direction vectors, projections, and <code>atan2</code>.
+  </p>
+  <nav class="toc">
+    <a href="#unit-circle">Unit Circle</a>
+    <a href="#direction">Direction Vectors</a>
+    <a href="#dot-product">Dot Product</a>
+    <a href="#practical">Practical Uses</a>
+    <a href="#why">Why This Matters</a>
+  </nav>
+</header>
+
+<section id="unit-circle">
+  <div class="sec-head"><span class="idx">01</span><h2>Unit Circle Mental Model</h2></div>
+  <div class="sec-body">
+    <p>The simplest useful fact in game math is that a point on the unit circle is:</p>
+    <pre>P = (cos θ, sin θ)</pre>
+    <p>Because the circle radius is 1, <code>cos(θ)</code> is the x-coordinate and <code>sin(θ)</code> is the y-coordinate. That makes trig much less mystical. On the unit circle, sine and cosine are not abstract ratios anymore — they are just coordinates.</p>
+
+    <!-- Interactive unit circle -->
+    <div class="demo-box">
+      <svg class="ucircle" id="ucSvg" viewBox="0 0 240 240"></svg>
+      <div class="uc-controls">
+        <div class="uc-row">
+          <label>angle</label>
+          <input id="thetaSlider" type="range" min="0" max="360" value="45">
+          <span class="val" id="thetaVal">45°</span>
+        </div>
+        <div class="uc-readout" id="ucReadout"></div>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--g500)">Drag the slider to rotate the point around the unit circle. Watch cos and sin update as live x/y coordinates.</p>
+  </div>
+</section>
+
+<section id="direction">
+  <div class="sec-head"><span class="idx">02</span><h2>Angles and Direction Vectors</h2></div>
+  <div class="sec-body">
+    <p>Once you have the unit-circle view, direction vectors become trivial:</p>
+    <pre>direction = (cos θ, sin θ)</pre>
+    <p>This is why trig shows up constantly in gameplay code:</p>
+    <ul>
+      <li>player movement</li>
+      <li>aiming</li>
+      <li>orbiting cameras</li>
+      <li>projectile motion</li>
+      <li>steering behaviors</li>
+    </ul>
+    <p>Going the other way is just as important. <code>atan2</code> is the practical inverse because it handles quadrants correctly and returns the signed angle of a direction vector:</p>
+    <pre>θ = atan2(y, x)</pre>
+  </div>
+</section>
+
+<section id="dot-product">
+  <div class="sec-head"><span class="idx">03</span><h2>Dot Product Intuition</h2></div>
+  <div class="sec-body">
+    <p>For two normalized vectors <code>â</code> and <code>b̂</code>:</p>
+    <pre>dot(â, b̂) = cos(θ)</pre>
+    <p>That one identity explains most common uses:</p>
+    <ul>
+      <li><code>1</code> means same direction</li>
+      <li><code>0</code> means perpendicular</li>
+      <li><code>-1</code> means opposite directions</li>
+    </ul>
+    <p>If only one vector is normalized, the dot product becomes the signed projection length:</p>
+    <pre>dot(a, b̂) = |a| cos(θ)</pre>
+    <p>So the dot product is not "just another formula." It is a fast way to ask: how much of vector <code>a</code> points along vector <code>b</code>?</p>
+    <p>That identity is why the dot product shows up everywhere in gameplay code: facing checks, FOV tests, projections, steering, and lighting all reduce to measuring alignment.</p>
+  </div>
+</section>
+
+<section id="practical">
+  <div class="sec-head"><span class="idx">04</span><h2>Practical Uses in Games</h2></div>
+  <div class="sec-body">
+    <h3>Facing / Field-of-View Checks</h3>
+    <p>The classic FOV test:</p>
+    <pre>dot(forward̂, toTarget̂) &gt; cos(fov / 2)</pre>
+    <p>This avoids expensive angle comparisons and works directly on vectors.</p>
+
+    <h3>Movement and Rotation</h3>
+    <ul>
+      <li>Use <code>(cos θ, sin θ)</code> to move something in the direction it is facing</li>
+      <li>Use <code>atan2</code> to rotate a character or camera toward a target</li>
+      <li>Use the dot product to determine whether something is in front of or behind another object</li>
+    </ul>
+
+    <h3>Projection</h3>
+    <p>Projection logic is everywhere:</p>
+    <ul>
+      <li>velocity along a surface</li>
+      <li>input along a forward axis</li>
+      <li>camera-relative movement</li>
+      <li>light and normal interactions in shading</li>
+    </ul>
+  </div>
+</section>
+
+<section id="why">
+  <div class="sec-head"><span class="idx">05</span><h2>Why This Matters</h2></div>
+  <div class="sec-body">
+    <p>A lot of graphics and gameplay code gets simpler once you stop memorizing formulas and start treating vectors geometrically:</p>
+    <ul>
+      <li>sine/cosine give coordinates on the circle</li>
+      <li>dot product measures alignment</li>
+      <li><code>atan2</code> converts vectors back into angles</li>
+    </ul>
+    <p>That is enough to unlock a surprising amount of real game code.</p>
+
+    <h3>Related Topics</h3>
+    <ul>
+      <li><a href="shaders.html">Shaders</a> — fragment and vertex code constantly use trig, projections, and vector math</li>
+      <li><a href="3d-vision.html">3D Vision</a> — geometric representations and camera reasoning build on the same vector foundations</li>
+      <li><a href="open-usd.html">OpenUSD</a> — 3D scenes, transforms, and composed hierarchies rely on the same spatial math</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <span class="k">Knowledge Vault</span>
+  <span>Game Math &mdash; 2026</span>
+</footer>
+</div>
+
+<script>
+const CX = 120, CY = 120, R = 88;
+const svg = document.getElementById('ucSvg');
+const slider = document.getElementById('thetaSlider');
+const thetaVal = document.getElementById('thetaVal');
+const readout = document.getElementById('ucReadout');
+
+function pt(deg) {
+  const rad = (deg - 90) * Math.PI / 180; // -90 so 0° is right
+  // standard math: 0° = right, angle goes counter-clockwise in math, but we use CSS convention
+  const r2 = deg * Math.PI / 180;
+  return [CX + R * Math.cos(r2 - Math.PI/2), CY + R * Math.sin(r2 - Math.PI/2)];
+}
+
+function render(deg) {
+  const rad = deg * Math.PI / 180;
+  const cosv = Math.cos(rad);
+  const sinv = Math.sin(rad);
+  // screen coords: x goes right, y goes down; we want standard math coords
+  const px = CX + R * cosv;
+  const py = CY - R * sinv; // flip y for screen
+
+  let markup = '';
+  // axes
+  markup += `<line x1="${CX}" y1="16" x2="${CX}" y2="${CY*2-16}" stroke="var(--g300)" stroke-width="1"/>`;
+  markup += `<line x1="16" y1="${CY}" x2="${CX*2-16}" y2="${CY}" stroke="var(--g300)" stroke-width="1"/>`;
+  // unit circle
+  markup += `<circle cx="${CX}" cy="${CY}" r="${R}" fill="none" stroke="var(--g300)" stroke-width="1.5"/>`;
+  // arc
+  const largeArc = deg > 180 ? 1 : 0;
+  const arcX = CX + R;
+  const arcY = CY;
+  markup += `<path d="M ${arcX} ${arcY} A ${R} ${R} 0 ${largeArc} 0 ${px.toFixed(1)} ${py.toFixed(1)}" fill="none" stroke="var(--oat)" stroke-width="2"/>`;
+  // cos line (x projection)
+  markup += `<line x1="${CX}" y1="${py.toFixed(1)}" x2="${px.toFixed(1)}" y2="${py.toFixed(1)}" stroke="var(--olive)" stroke-width="2" stroke-dasharray="4 3"/>`;
+  // sin line (y projection)
+  markup += `<line x1="${px.toFixed(1)}" y1="${CY}" x2="${px.toFixed(1)}" y2="${py.toFixed(1)}" stroke="var(--clay)" stroke-width="2" stroke-dasharray="4 3"/>`;
+  // radius line
+  markup += `<line x1="${CX}" y1="${CY}" x2="${px.toFixed(1)}" y2="${py.toFixed(1)}" stroke="var(--slate)" stroke-width="1.5"/>`;
+  // point
+  markup += `<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="7" fill="var(--clay)" stroke="white" stroke-width="2"/>`;
+  // labels
+  markup += `<text x="${CX+4}" y="14" font-family="var(--mono)" font-size="9" fill="var(--g500)">y</text>`;
+  markup += `<text x="${CX*2-14}" y="${CY+12}" font-family="var(--mono)" font-size="9" fill="var(--g500)">x</text>`;
+  markup += `<text x="${(CX+px)/2-16}" y="${py-6}" font-family="var(--mono)" font-size="9" fill="var(--olive)">cos</text>`;
+  markup += `<text x="${px+5}" y="${(CY+py)/2+4}" font-family="var(--mono)" font-size="9" fill="var(--clay)">sin</text>`;
+
+  svg.innerHTML = markup;
+
+  readout.innerHTML = `
+    <div><b>angle θ</b> = ${deg}°</div>
+    <div><b style="color:var(--olive)">cos(θ)</b> = x = <code>${cosv.toFixed(4)}</code></div>
+    <div><b style="color:var(--clay)">sin(θ)</b> = y = <code>${sinv.toFixed(4)}</code></div>
+    <div style="margin-top:8px;font-size:12px;color:var(--g500)">point P = (${cosv.toFixed(3)}, ${sinv.toFixed(3)})</div>
+  `;
+  thetaVal.textContent = deg + '°';
+}
+
+slider.addEventListener('input', () => render(+slider.value));
+render(45);
+</script>
+</body>
+</html>

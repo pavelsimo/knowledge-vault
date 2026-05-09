@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convolutional Neural Networks — Knowledge Vault</title>
+<style>
+:root {
+  --ivory:#FAF9F5; --paper:#FFFFFF; --slate:#141413;
+  --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D;
+  --g100:#F0EEE6; --g200:#E6E3DA; --g300:#D1CFC5; --g500:#87867F; --g700:#3D3D3A;
+  --serif:ui-serif,Georgia,"Times New Roman",Times,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}
+h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms;display:inline-flex;align-items:center;gap:7px}
+nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}
+.sec-body ul,.sec-body ol{margin:0 0 16px;padding-left:20px}
+.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--clay)}
+pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
+code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}
+th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}
+td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}
+footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+
+/* ── Pipeline flowchart (component 13 adapted) ── */
+.flow-wrap{border:1.5px solid var(--g300);border-radius:14px;background:var(--paper);padding:24px;overflow-x:auto;margin:24px 0 8px}
+svg.cnn-flow{display:block;width:100%;max-width:780px;margin:0 auto;height:auto}
+.cnn-flow text{font-family:var(--mono);font-size:11px;fill:var(--slate)}
+.cnn-flow .sub{font-size:9px;fill:var(--g500)}
+.cnn-flow .node rect{fill:var(--paper);stroke:var(--g300);stroke-width:1.5}
+.cnn-flow .node.conv rect{fill:rgba(217,119,87,0.08);stroke:var(--clay)}
+.cnn-flow .node.pool rect{fill:rgba(120,140,93,0.10);stroke:var(--olive)}
+.cnn-flow .node.fc rect{fill:rgba(135,134,127,0.10);stroke:var(--g500)}
+.cnn-flow .node.out rect{fill:rgba(120,140,93,0.15);stroke:var(--olive);rx:20}
+.cnn-flow .edge{stroke:var(--g500);stroke-width:1.5;fill:none;marker-end:url(#arr)}
+
+.legend-row{display:flex;flex-wrap:wrap;gap:16px;margin-top:12px;font-size:12px;color:var(--g700)}
+.legend-row span{display:inline-flex;align-items:center;gap:7px}
+.lchip{width:20px;height:12px;border-radius:3px;border:1.5px solid}
+</style>
+</head>
+<body><div class="wrap">
+  <header class="masthead">
+    <div class="eyebrow">Knowledge Vault</div>
+    <h1>Convolutional <em>Neural Networks</em></h1>
+    <p class="intro">CNNs are the dominant architecture for visual processing. Instead of looking at the entire image at once, CNNs use small filters that slide across the image, detecting local patterns with vastly fewer parameters than fully-connected layers.</p>
+    <nav class="toc">
+      <a href="#why">Why CNNs?</a>
+      <a href="#pipeline">Pipeline</a>
+      <a href="#conv">Convolution</a>
+      <a href="#vgg">VGGNet</a>
+      <a href="#norm">Normalization</a>
+      <a href="#activations">Activations</a>
+      <a href="#resnet">ResNet</a>
+      <a href="#ilsvrc">ILSVRC Progress</a>
+      <a href="#related">Related Topics</a>
+    </nav>
+  </header>
+
+  <section id="why">
+    <div class="sec-head"><span class="idx">01</span><h2>Why CNNs?</h2></div>
+    <div class="sec-body">
+      <p>A fully-connected layer on an image flattens the entire image (e.g., 32×32×3 = 3072 inputs), connecting every pixel to every neuron — a huge number of parameters that ignores spatial structure.</p>
+      <p>A convolutional layer uses small <strong>filters</strong> (e.g., 3×3 or 5×5) that slide across the image. Each filter detects one type of local feature (edge, corner, texture). Parameters are <strong>shared</strong> across all positions, producing vastly fewer parameters. The output is a <strong>feature map</strong> — one channel per filter.</p>
+      <blockquote style="border-left:3px solid var(--clay);padding:8px 16px;margin:12px 0;color:var(--g700);font-style:italic">"Convolutional" comes from the mathematical convolution operation — folding two functions together.</blockquote>
+    </div>
+  </section>
+
+  <section id="pipeline">
+    <div class="sec-head"><span class="idx">02</span><h2>CNN Pipeline</h2></div>
+    <div class="sec-body">
+      <p>A typical CNN follows the pattern: <code>Input → [Conv → ReLU]* → Pool → [FC]* → Softmax</code></p>
+      <div class="flow-wrap">
+        <svg class="cnn-flow" viewBox="0 0 760 120">
+          <defs>
+            <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#87867F"/>
+            </marker>
+          </defs>
+          <!-- edges -->
+          <path class="edge" d="M78,60 L108,60"/>
+          <path class="edge" d="M218,60 L248,60"/>
+          <path class="edge" d="M358,60 L388,60"/>
+          <path class="edge" d="M468,60 L498,60"/>
+          <path class="edge" d="M578,60 L608,60"/>
+          <path class="edge" d="M688,60 L718,60"/>
+
+          <!-- Input -->
+          <g class="node">
+            <rect x="8" y="40" width="70" height="40" rx="6"/>
+            <text x="43" y="57" text-anchor="middle">Input</text>
+            <text class="sub" x="43" y="70" text-anchor="middle">3×224×224</text>
+          </g>
+          <!-- Conv -->
+          <g class="node conv">
+            <rect x="108" y="30" width="110" height="60" rx="6"/>
+            <text x="163" y="54" text-anchor="middle">Conv Layer</text>
+            <text class="sub" x="163" y="67" text-anchor="middle">filter 3×3, stride 1</text>
+            <text class="sub" x="163" y="79" text-anchor="middle">feature maps</text>
+          </g>
+          <!-- ReLU -->
+          <g class="node conv">
+            <rect x="248" y="40" width="110" height="40" rx="6"/>
+            <text x="303" y="57" text-anchor="middle">ReLU</text>
+            <text class="sub" x="303" y="70" text-anchor="middle">non-linearity</text>
+          </g>
+          <!-- Pool -->
+          <g class="node pool">
+            <rect x="388" y="40" width="80" height="40" rx="6"/>
+            <text x="428" y="57" text-anchor="middle">MaxPool</text>
+            <text class="sub" x="428" y="70" text-anchor="middle">2×2, stride 2</text>
+          </g>
+          <!-- FC -->
+          <g class="node fc">
+            <rect x="498" y="40" width="80" height="40" rx="6"/>
+            <text x="538" y="57" text-anchor="middle">FC Layer</text>
+            <text class="sub" x="538" y="70" text-anchor="middle">4096 units</text>
+          </g>
+          <!-- FC2 -->
+          <g class="node fc">
+            <rect x="608" y="40" width="80" height="40" rx="6"/>
+            <text x="648" y="57" text-anchor="middle">FC Layer</text>
+            <text class="sub" x="648" y="70" text-anchor="middle">4096 units</text>
+          </g>
+          <!-- Softmax -->
+          <g class="node out">
+            <rect x="718" y="40" width="34" height="40" rx="20"/>
+            <text x="735" y="63" text-anchor="middle">∑</text>
+          </g>
+        </svg>
+      </div>
+      <div class="legend-row">
+        <span><i class="lchip" style="background:rgba(217,119,87,0.08);border-color:var(--clay)"></i> Conv/ReLU</span>
+        <span><i class="lchip" style="background:rgba(120,140,93,0.10);border-color:var(--olive)"></i> Pooling</span>
+        <span><i class="lchip" style="background:rgba(135,134,127,0.10);border-color:var(--g500)"></i> Fully Connected</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="conv">
+    <div class="sec-head"><span class="idx">03</span><h2>Convolution Layer: Dimensions</h2></div>
+    <div class="sec-body">
+      <pre><code>Input:   3 × 32 × 32
+Filters: 6 filters, each 3 × 5 × 5
+Output:  6 × 28 × 28  (one activation map per filter, stacked)</code></pre>
+      <p>The filter's depth must match the input's depth (3 channels). The output is a 6 × 28 × 28 volume — 6 activation maps, each 28 × 28.</p>
+      <p><strong>Spatial dimension formula:</strong></p>
+      <ul>
+        <li>Input: W × W; Filter: K × K, stride S, padding P</li>
+        <li>Output: <code>(W − K + 2P) / S + 1</code></li>
+      </ul>
+      <p><strong>Example computation:</strong> input 3 × 32 × 32, 10 filters 5 × 5, stride 1, pad 2: output size 10 × 32 × 32, parameters = 10 × (3 × 5 × 5 + 1) = 760, multiply-add ops ≈ 768K.</p>
+
+      <h3>Pooling Layers</h3>
+      <p>Pooling reduces spatial dimensions. Standard max pooling: input C × H × W, output C × H' × W' where H' = (H − K) / S + 1. No learnable parameters. Common setting: K=2, S=2 → 2× spatial downsampling.</p>
+
+      <h3>Fully Connected Layers</h3>
+      <p>After the convolutional body, a fully connected layer flattens the feature volume (e.g., 32×32×3 → 3072×1) and applies a weight matrix W. Each row of W represents one class template.</p>
+    </div>
+  </section>
+
+  <section id="vgg">
+    <div class="sec-head"><span class="idx">04</span><h2>VGGNet: Why 3×3 Filters?</h2></div>
+    <div class="sec-body">
+      <p><a href="https://arxiv.org/pdf/1409.1556">VGGNet</a> uses stacked 3×3 conv layers exclusively:</p>
+      <ul>
+        <li><strong>Effective receptive field:</strong> 3 stacked 3×3 conv layers have the same receptive field as one 7×7 layer</li>
+        <li><strong>Fewer parameters:</strong> 3 × (3² × C²) = 27C² vs. one 7² × C² = 49C² — 45% fewer parameters for same C channels</li>
+        <li><strong>More non-linearities:</strong> 3 activation functions vs. 1 → more expressive capacity</li>
+      </ul>
+      <p>VGG16 and VGG19 are the most common variants (16 or 19 weight layers). Both significantly outperform AlexNet on ImageNet.</p>
+    </div>
+  </section>
+
+  <section id="norm">
+    <div class="sec-head"><span class="idx">05</span><h2>Normalization &amp; Regularization</h2></div>
+    <div class="sec-body">
+      <h3>Batch Normalization</h3>
+      <p>Normalizes activations within a mini-batch to mean 0, variance 1, then learns scale (γ) and shift (β). Stabilizes training, acts as a regularizer, and enables training of much deeper networks. Applied after the linear/conv layer, before the activation.</p>
+
+      <h3>Layer Normalization</h3>
+      <p>LayerNorm normalizes across the feature dimension (not the batch dimension): <code>y = γ(x − μ) / σ + β</code>. Preferred in transformers because it doesn't depend on batch size.</p>
+
+      <h3>Dropout</h3>
+      <p>Randomly zeros out neurons during training with probability p (typically 0.5). Forces the network to learn redundant representations and prevents co-adaptation. At inference, all neurons are active but outputs are scaled.</p>
+
+      <h3>Data Augmentation</h3>
+      <p>Training images are randomly transformed: horizontal flips, random crops, color jitter, random scaling. At test time, multiple augmented views are averaged (TTA).</p>
+    </div>
+  </section>
+
+  <section id="activations">
+    <div class="sec-head"><span class="idx">06</span><h2>Activation Functions</h2></div>
+    <div class="sec-body">
+      <p>Without activation functions, a stack of convolutional layers collapses to a single linear operation. Activations add non-linearity:</p>
+      <table>
+        <thead><tr><th>Activation</th><th>Formula</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><strong>ReLU</strong></td><td><code>max(0, x)</code></td><td>Standard for CNNs; fast, sparse</td></tr>
+          <tr><td><strong>Leaky ReLU</strong></td><td><code>max(0.1x, x)</code></td><td>Allows small negative values; fixes dying neuron problem</td></tr>
+          <tr><td><strong>ELU</strong></td><td>exponential negative region</td><td>Smooth negative region</td></tr>
+          <tr><td><strong>GeLU</strong></td><td><code>x · Φ(x)</code></td><td>Main activation in transformers today</td></tr>
+          <tr><td><strong>Sigmoid</strong></td><td><code>1/(1+e⁻ˣ)</code></td><td>Squashes to [0,1]; vanishing gradient at saturation</td></tr>
+          <tr><td><strong>Tanh</strong></td><td><code>(eˣ−e⁻ˣ)/(eˣ+e⁻ˣ)</code></td><td>Squashes to [-1,1]; used in RNNs</td></tr>
+          <tr><td><strong>SiLU / Swish</strong></td><td><code>x · σ(x)</code></td><td>Smooth, gated variant</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Weight Initialization</h3>
+      <p>Improper initialization causes vanishing or exploding activations. Solutions:</p>
+      <ul>
+        <li><strong>Xavier/Glorot initialization</strong> — for tanh/sigmoid activations</li>
+        <li><strong>He/Kaiming initialization</strong> — for ReLU activations (accounts for ~50% of neurons being zeroed). Paper: <a href="https://arxiv.org/pdf/1502.01852">Delving Deep into Rectifiers</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="resnet">
+    <div class="sec-head"><span class="idx">07</span><h2>ResNet: Residual Networks</h2></div>
+    <div class="sec-body">
+      <p>Deep networks suffer from <em>degradation</em> — more layers can lead to worse training performance. <a href="https://arxiv.org/pdf/1512.03385">ResNet</a> solves this with <strong>skip connections</strong>:</p>
+      <pre><code>output = F(x) + x</code></pre>
+      <p>Each block only needs to learn what <strong>changed</strong> (the residual), not everything from scratch. Gradients flow directly back through skip connections eliminating the vanishing gradient problem. This enables training of networks with hundreds of layers — ResNet-152 surpassed human-level performance on ImageNet in 2015.</p>
+
+      <h3>Transfer Learning</h3>
+      <p>Pretrained CNNs (ResNet, VGG, EfficientNet) trained on ImageNet are reused for new tasks by freezing earlier layers (general features: edges, textures) and fine-tuning later layers on new task-specific data. Dramatically reduces training data and compute needed.</p>
+    </div>
+  </section>
+
+  <section id="ilsvrc">
+    <div class="sec-head"><span class="idx">08</span><h2>ILSVRC Progress (2010–2017)</h2></div>
+    <div class="sec-body">
+      <p>The ImageNet Large Scale Visual Recognition Challenge drove the deep learning revolution:</p>
+      <table>
+        <thead><tr><th>Year</th><th>Model</th><th>Team</th><th>Top-5 Error</th></tr></thead>
+        <tbody>
+          <tr><td>2010</td><td>—</td><td>Lin et al.</td><td>28.2%</td></tr>
+          <tr><td>2011</td><td>—</td><td>Sanchez &amp; Perronnin</td><td>25.8%</td></tr>
+          <tr><td>2012</td><td><strong>AlexNet</strong></td><td>Krizhevsky, Sutskever, Hinton</td><td><strong>16.4%</strong> ← breakthrough</td></tr>
+          <tr><td>2013</td><td>ZF Net</td><td>Zeiler &amp; Fergus</td><td>11.7%</td></tr>
+          <tr><td>2014</td><td>VGG</td><td>Simonyan &amp; Zisserman</td><td>7.3%</td></tr>
+          <tr><td>2014</td><td>GoogLeNet</td><td>Szegedy et al.</td><td>6.7%</td></tr>
+          <tr><td>2015</td><td><strong>ResNet</strong></td><td>He et al.</td><td><strong>3.6%</strong></td></tr>
+          <tr><td>2016</td><td>—</td><td>Shao et al.</td><td>3.0%</td></tr>
+          <tr><td>2017</td><td>SENet</td><td>Hu et al.</td><td>2.3%</td></tr>
+          <tr><td>—</td><td>Human</td><td>Russakovsky et al.</td><td>5.1%</td></tr>
+        </tbody>
+      </table>
+      <p>AlexNet (8 layers) in 2012 cut the error rate nearly in half — the event that launched the modern deep learning era. ResNet (152 layers) surpassed human-level performance in 2015.</p>
+    </div>
+  </section>
+
+  <section id="related">
+    <div class="sec-head"><span class="idx">09</span><h2>Related Topics</h2></div>
+    <div class="sec-body">
+      <ul>
+        <li><a href="neural-networks.html">Neural Networks</a> — loss functions, regularization, backpropagation</li>
+        <li><a href="optimization.html">Optimization</a> — SGD, Adam, and other optimizers used to train CNNs</li>
+        <li><a href="computer-vision.html">Computer Vision</a> — tasks CNNs are applied to</li>
+        <li><a href="object-detection.html">Object Detection</a> — CNN-based detection architectures (RCNN, YOLO)</li>
+        <li><a href="attention-transformers.html">Attention &amp; Transformers</a> — ViT: replacing convolutions with attention</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer><span class="k">Knowledge Vault</span><a href="INDEX.html">← All topics</a></footer>
+</div></body>
+</html>

@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>System Design — Knowledge Vault</title>
+<style>
+:root {
+  --ivory:#FAF9F5; --paper:#FFFFFF; --slate:#141413;
+  --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D;
+  --g100:#F0EEE6; --g200:#E6E3DA; --g300:#D1CFC5; --g500:#87867F; --g700:#3D3D3A;
+  --serif:ui-serif,Georgia,"Times New Roman",Times,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}
+h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms;display:inline-flex;align-items:center;gap:7px}
+nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}
+.sec-body ul,.sec-body ol{margin:0 0 16px;padding-left:20px}
+.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--clay)}
+pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
+code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}
+th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}
+td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+
+/* Flowchart */
+.flowchart{margin:20px 0;overflow-x:auto}
+.flowchart svg{display:block;width:100%;max-width:720px}
+.fc-box{fill:var(--paper);stroke:var(--g300);stroke-width:1.5;rx:6;ry:6}
+.fc-box-c{fill:var(--g100);stroke:var(--g300);stroke-width:1.5;rx:6;ry:6}
+.fc-diamond{fill:rgba(217,119,87,0.12);stroke:var(--clay);stroke-width:1.5}
+.fc-txt{font-family:var(--sans);font-size:12px;fill:var(--slate);text-anchor:middle;dominant-baseline:middle}
+.fc-lbl{font-family:var(--mono);font-size:10px;fill:var(--g500);text-anchor:middle}
+.fc-arrow{stroke:var(--g500);stroke-width:1.5;fill:none;marker-end:url(#arr)}
+.callout{display:flex;gap:12px;border:1.5px solid var(--oat);background:rgba(227,218,204,0.35);border-radius:10px;padding:14px 16px;margin:18px 0;font-size:14px}
+.callout .ico{color:var(--clay);font-weight:600;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="masthead">
+  <div class="eyebrow">Knowledge Vault &mdash; System Design</div>
+  <h1>Building systems that <em>scale</em></h1>
+  <p class="intro">
+    System design is the process of defining the architecture, interfaces, and data for a system that satisfies specific requirements. Good decisions made early are hard to reverse — poor ones compound as systems grow. This page covers networking, databases, distributed patterns, and classic interview case studies.
+  </p>
+  <nav class="toc">
+    <a href="#networking">Networking</a>
+    <a href="#databases">Databases</a>
+    <a href="#distributed">Distributed Architecture</a>
+    <a href="#patterns">Advanced Patterns</a>
+    <a href="#cases">Case Studies</a>
+  </nav>
+</header>
+
+<section id="networking">
+  <div class="sec-head"><span class="idx">01</span><h2>Chapter I: Networking Fundamentals</h2></div>
+  <div class="sec-body">
+    <h3>IP Addressing</h3>
+    <table>
+      <thead><tr><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Public</strong></td><td>One address for the whole network (assigned by ISP to router)</td></tr>
+        <tr><td><strong>Private</strong></td><td>Unique per device within the local network</td></tr>
+        <tr><td><strong>Static</strong></td><td>Manually assigned, does not change — used for servers, geo-location services</td></tr>
+        <tr><td><strong>Dynamic</strong></td><td>Assigned by DHCP; changes over time — common for consumer devices</td></tr>
+      </tbody>
+    </table>
+
+    <h3>OSI Model</h3>
+    <table>
+      <thead><tr><th>Layer</th><th>Name</th><th>Responsibility</th></tr></thead>
+      <tbody>
+        <tr><td>7</td><td><strong>Application</strong></td><td>User-facing protocols: HTTP, SMTP, FTP</td></tr>
+        <tr><td>6</td><td><strong>Presentation</strong></td><td>Translation, encryption/decryption, compression</td></tr>
+        <tr><td>5</td><td><strong>Session</strong></td><td>Opens/closes communication sessions; synchronizes data</td></tr>
+        <tr><td>4</td><td><strong>Transport</strong></td><td>End-to-end delivery; breaks data into segments</td></tr>
+        <tr><td>3</td><td><strong>Network</strong></td><td>Routing packets across networks; finds best path</td></tr>
+        <tr><td>2</td><td><strong>Data Link</strong></td><td>Transfer between devices on the same network; packets → frames</td></tr>
+        <tr><td>1</td><td><strong>Physical</strong></td><td>Physical cables, switches; data → bit stream</td></tr>
+      </tbody>
+    </table>
+
+    <h3>TCP vs UDP</h3>
+    <table>
+      <thead><tr><th>Feature</th><th>TCP</th><th>UDP</th></tr></thead>
+      <tbody>
+        <tr><td>Connection</td><td>Connection-oriented (handshake required)</td><td>Connectionless</td></tr>
+        <tr><td>Reliability</td><td>Guaranteed delivery and ordering</td><td>Best effort; no delivery guarantee</td></tr>
+        <tr><td>Speed</td><td>Slower (acks and retransmissions overhead)</td><td>Faster</td></tr>
+        <tr><td>Use cases</td><td>File transfer, web pages, email</td><td>Streaming, gaming, DNS, video calls</td></tr>
+      </tbody>
+    </table>
+
+    <h3>DNS Resolution Flow</h3>
+    <!-- SVG flowchart for DNS -->
+    <div class="flowchart">
+      <svg viewBox="0 0 720 180" xmlns="http://www.w3.org/2000/svg">
+        <defs><marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--g500)"/></marker></defs>
+        <!-- nodes -->
+        <rect class="fc-box" x="10" y="70" width="100" height="40"/>
+        <text class="fc-txt" x="60" y="90">Client</text>
+        <rect class="fc-box-c" x="150" y="70" width="120" height="40"/>
+        <text class="fc-txt" x="210" y="90">DNS Resolver</text>
+        <rect class="fc-box" x="320" y="10" width="110" height="40"/>
+        <text class="fc-txt" x="375" y="30">Root Server</text>
+        <rect class="fc-box" x="320" y="70" width="110" height="40"/>
+        <text class="fc-txt" x="375" y="90">TLD Server</text>
+        <rect class="fc-box" x="320" y="130" width="110" height="40"/>
+        <text class="fc-txt" x="375" y="150">Auth. Server</text>
+        <!-- arrows -->
+        <line class="fc-arrow" x1="110" y1="90" x2="148" y2="90"/>
+        <line class="fc-arrow" x1="270" y1="80" x2="318" y2="35"/>
+        <line class="fc-arrow" x1="270" y1="90" x2="318" y2="90"/>
+        <line class="fc-arrow" x1="270" y1="100" x2="318" y2="145"/>
+        <line class="fc-arrow" x1="430" y1="90" x2="640" y2="90"/>
+        <rect class="fc-box-c" x="540" y="70" width="110" height="40"/>
+        <text class="fc-txt" x="595" y="90">IP Address</text>
+        <line class="fc-arrow" x1="480" y1="90" x2="538" y2="90"/>
+        <line class="fc-arrow" x1="650" y1="90" x2="700" y2="90"/>
+        <text class="fc-txt" style="fill:var(--clay)" x="595" y="120" font-size="10">returned to client</text>
+      </svg>
+    </div>
+
+    <h3>Load Balancing</h3>
+    <p>A load balancer distributes incoming traffic across multiple servers. <strong>Layer 4</strong> routes based on IP/ports; <strong>Layer 7</strong> routes based on HTTP headers, URLs, cookies — enabling content-aware routing.</p>
+    <p><strong>Algorithms:</strong> Round Robin, Least Connections, IP Hash, Weighted Round Robin.</p>
+
+    <h3>Caching Write Strategies</h3>
+    <table>
+      <thead><tr><th>Strategy</th><th>How it works</th><th>Tradeoff</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Write-through</strong></td><td>Data written to cache and storage simultaneously</td><td>Consistent but adds write latency</td></tr>
+        <tr><td><strong>Write-around</strong></td><td>Client writes directly to storage, bypasses cache</td><td>Clean cache; cold for new writes</td></tr>
+        <tr><td><strong>Write-back</strong></td><td>Client writes to cache only; async flush to storage</td><td>Fast writes; risk of data loss</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Availability SLA Nines</h3>
+    <table>
+      <thead><tr><th>SLA</th><th>Downtime per year</th></tr></thead>
+      <tbody>
+        <tr><td>99% (two nines)</td><td>~87.6 hours</td></tr>
+        <tr><td>99.9% (three nines)</td><td>~8.76 hours</td></tr>
+        <tr><td>99.99% (four nines)</td><td>~52.6 minutes</td></tr>
+        <tr><td>99.999% (five nines)</td><td>~5.26 minutes</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="databases">
+  <div class="sec-head"><span class="idx">02</span><h2>Chapter II: Databases</h2></div>
+  <div class="sec-body">
+    <h3>SQL vs NoSQL</h3>
+    <table>
+      <thead><tr><th>Property</th><th>SQL</th><th>NoSQL</th></tr></thead>
+      <tbody>
+        <tr><td>Data model</td><td>Rigid schema (tables, rows, columns)</td><td>Flexible (document, key-value, graph, column)</td></tr>
+        <tr><td>Consistency</td><td>ACID by default</td><td>BASE by default (eventually consistent)</td></tr>
+        <tr><td>Scalability</td><td>Vertical (primarily)</td><td>Horizontal</td></tr>
+        <tr><td>Best for</td><td>Financial systems, complex queries</td><td>High-throughput, unstructured data</td></tr>
+      </tbody>
+    </table>
+
+    <h3>CAP Theorem</h3>
+    <p>In a distributed system, you can only guarantee two of three properties simultaneously: <strong>Consistency</strong> (every read returns the most recent write), <strong>Availability</strong> (every request gets a response), and <strong>Partition Tolerance</strong> (system continues operating despite network splits).</p>
+    <p>In practice, network partitions are unavoidable, so the real choice is <strong>CP vs AP</strong>. Examples: HBase/MongoDB (CP), Cassandra/CouchDB (AP).</p>
+
+    <h3>PACELC Extension</h3>
+    <pre>If (Partition):
+    choose between Availability (A) vs Consistency (C)
+Else (normal operation):
+    choose between Latency (L) vs Consistency (C)</pre>
+
+    <h3>Consistent Hashing</h3>
+    <p>Both nodes and keys are mapped to positions on a hash ring. Each key is owned by the nearest node clockwise on the ring. Adding or removing a node only affects the keys in that node's immediate range — minimizing reshuffling. Used in Redis Cluster, Memcached, and distributed databases.</p>
+
+    <h3>Two-Phase Commit (2PC)</h3>
+    <p><strong>Phase 1 — Prepare:</strong> Coordinator sends Prepare to all participant nodes. Each node locks resources and replies Ack.</p>
+    <p><strong>Phase 2 — Commit:</strong> Once all nodes are prepared, Coordinator broadcasts Commit. If any node fails to prepare → Coordinator sends Abort.</p>
+    <div class="callout">
+      <span class="ico">!</span>
+      <div><strong>Limitation:</strong> 2PC is blocking — if the coordinator crashes after prepare but before commit, participants hold locks indefinitely until recovery.</div>
+    </div>
+  </div>
+</section>
+
+<section id="distributed">
+  <div class="sec-head"><span class="idx">03</span><h2>Chapter III: Distributed Architecture</h2></div>
+  <div class="sec-body">
+    <h3>N-Tier Architecture</h3>
+    <pre>Clients (browser, mobile)
+  → Internet
+    → Load Balancer
+      → Web Servers (tier 1: presentation)
+        → Load Balancer
+          → API Servers (tier 2: business logic)
+            → Load Balancer
+              → DB Servers (tier 3: data)</pre>
+
+    <h3>Monoliths vs Microservices</h3>
+    <table>
+      <thead><tr><th>Property</th><th>Monolith</th><th>Microservices</th></tr></thead>
+      <tbody>
+        <tr><td>Deployment</td><td>Single deployable unit</td><td>Each service deploys independently</td></tr>
+        <tr><td>Scaling</td><td>Scale the whole application</td><td>Scale individual services</td></tr>
+        <tr><td>Failures</td><td>One bug can affect the whole system</td><td>Failures are isolated to a service</td></tr>
+        <tr><td>Communication</td><td>In-process function calls</td><td>Network calls (REST, gRPC, message queues)</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <span class="ico">&#9654;</span>
+      <div>Start with a monolith. Decompose into services only when team size, deployment frequency, or scaling requirements justify the operational overhead.</div>
+    </div>
+
+    <h3>REST vs GraphQL vs gRPC</h3>
+    <table>
+      <thead><tr><th>Feature</th><th>REST</th><th>GraphQL</th><th>gRPC</th></tr></thead>
+      <tbody>
+        <tr><td>Protocol</td><td>HTTP/1.1</td><td>HTTP/1.1 or HTTP/2</td><td>HTTP/2</td></tr>
+        <tr><td>Format</td><td>JSON/XML</td><td>JSON</td><td>Protocol Buffers (binary)</td></tr>
+        <tr><td>Overfetching</td><td>Common</td><td>None (client specifies fields)</td><td>None</td></tr>
+        <tr><td>Best for</td><td>Public APIs, simple CRUD</td><td>Complex queries, mobile clients</td><td>Internal microservices, streaming</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="patterns">
+  <div class="sec-head"><span class="idx">04</span><h2>Chapter IV: Advanced Patterns</h2></div>
+  <div class="sec-body">
+    <h3>Circuit Breaker</h3>
+    <p>Prevents cascading failures when a downstream service is unavailable:</p>
+    <ul>
+      <li><strong>Closed:</strong> requests flow normally; failures are counted</li>
+      <li><strong>Open:</strong> after failure threshold exceeded, all requests fail fast — circuit "trips"</li>
+      <li><strong>Half-Open:</strong> after a timeout, one trial request is allowed; if it succeeds, circuit closes</li>
+    </ul>
+
+    <h3>Rate Limiting Algorithms</h3>
+    <ul>
+      <li><strong>Token bucket:</strong> each client gets tokens that refill at a fixed rate — allows short bursts</li>
+      <li><strong>Leaky bucket:</strong> requests queue and are processed at a constant rate — no bursts, smooth flow</li>
+      <li><strong>Fixed window counter:</strong> count requests per fixed window — simple but vulnerable to boundary bursts</li>
+      <li><strong>Sliding window:</strong> smoother version of fixed window using rolling counts</li>
+    </ul>
+
+    <h3>SLA, SLO, SLI</h3>
+    <table>
+      <thead><tr><th>Term</th><th>Definition</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><strong>SLI</strong></td><td>A measurable metric</td><td>99.95% of requests return in &lt; 200ms</td></tr>
+        <tr><td><strong>SLO</strong></td><td>Target for an SLI</td><td>We commit to 99.9% availability monthly</td></tr>
+        <tr><td><strong>SLA</strong></td><td>Contract with customer specifying SLOs + penalties</td><td>"If uptime &lt; 99.9%, credits are issued"</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Virtual Machines vs Containers</h3>
+    <table>
+      <thead><tr><th>Property</th><th>Virtual Machine</th><th>Container</th></tr></thead>
+      <tbody>
+        <tr><td>Isolation</td><td>Full OS isolation (hypervisor)</td><td>Process-level isolation (shared kernel)</td></tr>
+        <tr><td>Startup time</td><td>Minutes</td><td>Seconds</td></tr>
+        <tr><td>Size</td><td>GBs (includes full OS)</td><td>MBs (only app + dependencies)</td></tr>
+        <tr><td>Best for</td><td>Strong isolation, legacy apps</td><td>Microservices, CI/CD, cloud-native</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="cases">
+  <div class="sec-head"><span class="idx">05</span><h2>Chapter V: Interview Case Studies</h2></div>
+  <div class="sec-body">
+    <h3>URL Shortener</h3>
+    <ul>
+      <li>Short code generation: hash the URL (MD5/SHA256, take first 7 chars) or Base62-encoded auto-increment ID</li>
+      <li>Storage: key-value store (Redis + persistent DB) — the mapping is a simple lookup</li>
+      <li>Redirect: 301 (permanent, client caches) vs 302 (temporary, every request hits server)</li>
+      <li>Scale reads with CDN/cache; writes are infrequent</li>
+    </ul>
+
+    <h3>WhatsApp / Chat System</h3>
+    <ul>
+      <li>Use WebSockets for persistent bidirectional connections between clients and servers</li>
+      <li>Message queues (Kafka) to buffer messages between chat servers</li>
+      <li>Fan-out for group chats: message broker distributes to each recipient's message queue</li>
+      <li>Push notifications via APNs (iOS) / FCM (Android) for offline users</li>
+      <li>Store messages in Cassandra (high write throughput, time-ordered reads per conversation)</li>
+    </ul>
+
+    <h3>Twitter / Social Feed Fan-out</h3>
+    <ul>
+      <li><strong>Push (fan-out on write):</strong> on post, write tweet to every follower's timeline cache — fast reads, expensive writes for users with millions of followers</li>
+      <li><strong>Pull (fan-out on read):</strong> on timeline load, query and merge tweets from all followed users — expensive reads, cheap writes</li>
+      <li><strong>Hybrid:</strong> push for normal users; pull for celebrity accounts (too many followers to push to)</li>
+    </ul>
+
+    <h3>Uber / Ride Sharing</h3>
+    <ul>
+      <li><strong>Location tracking:</strong> WebSockets (push model) from drivers → servers continuously</li>
+      <li><strong>Ride matching:</strong> geohashing for fast proximity lookup; quadtree in Redis for range queries</li>
+      <li><strong>Race conditions:</strong> mutex around ride matching logic; all actions transactional</li>
+      <li><strong>Scale:</strong> Kafka for notifications, consistent hashing for data partitioning, read replicas for databases</li>
+    </ul>
+
+    <h3>Related Topics</h3>
+    <ul>
+      <li><a href="distributed-training.html">Distributed Training</a> — distributed systems applied to ML training</li>
+      <li><a href="mlops.html">MLOps</a> — deploying ML models in production with the same reliability principles</li>
+      <li><a href="rag.html">RAG</a> — retrieval-augmented systems require caching, vector search, and API design</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <span class="k">Knowledge Vault</span>
+  <span>System Design &mdash; 2026</span>
+</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3D Vision — Knowledge Vault</title>
+<style>
+:root {
+  --ivory:#FAF9F5; --paper:#FFFFFF; --slate:#141413;
+  --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D;
+  --g100:#F0EEE6; --g200:#E6E3DA; --g300:#D1CFC5; --g500:#87867F; --g700:#3D3D3A;
+  --serif:ui-serif,Georgia,"Times New Roman",Times,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}
+h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms;display:inline-flex;align-items:center;gap:7px}
+nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}
+.sec-body ul,.sec-body ol{margin:0 0 16px;padding-left:20px}
+.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--clay)}
+pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
+code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}
+th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}
+td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}
+footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+
+/* ── Representations ring (component 15 adapted) ── */
+.ring-demo{border:1.5px solid var(--g300);border-radius:14px;background:var(--paper);padding:24px;margin:24px 0 12px;display:grid;grid-template-columns:280px 1fr;gap:28px;align-items:center}
+@media(max-width:760px){.ring-demo{grid-template-columns:1fr}}
+svg.rep-ring{display:block;width:100%;max-width:280px}
+.ring-detail h4{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:0 0 6px}
+.ring-detail .meta{font-family:var(--mono);font-size:11px;color:var(--g500);margin-bottom:10px}
+.ring-detail p{font-size:14px;color:var(--g700);margin:0 0 10px}
+.ring-hint{font-size:12px;color:var(--g500);margin-bottom:10px}
+
+/* ── Side-by-side (NeRF vs Gaussian) ── */
+.cmp-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin:24px 0}
+@media(max-width:800px){.cmp-grid{grid-template-columns:1fr}}
+.cmp-card{background:var(--paper);border:1.5px solid var(--g300);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.cmp-card-head h4{font-family:var(--serif);font-weight:500;font-size:17px;color:var(--slate);margin:0 0 4px}
+.cmp-card-head .badge{display:inline-block;font-family:var(--mono);font-size:11px;background:var(--oat);color:var(--slate);padding:2px 8px;border-radius:6px;margin-right:6px}
+.cmp-card-head p{font-size:13px;color:var(--g500);margin:0}
+.prop-list{list-style:none;padding:0;margin:0}
+.prop-list li{display:flex;gap:8px;font-size:13px;padding:6px 0;border-bottom:1px solid var(--g200)}
+.prop-list li:last-child{border-bottom:none}
+.prop-list .lbl{font-family:var(--mono);font-size:10.5px;color:var(--g500);min-width:72px;flex-shrink:0;padding-top:1px}
+</style>
+</head>
+<body><div class="wrap">
+  <header class="masthead">
+    <div class="eyebrow">Knowledge Vault</div>
+    <h1>3D <em>Vision</em></h1>
+    <p class="intro">Representing, understanding, and generating 3D geometry and scenes. Unlike 2D images, 3D data comes in many representations — point clouds, meshes, voxels, and neural implicit functions — critical for robotics, autonomous driving, AR/VR, and 3D content creation.</p>
+    <nav class="toc">
+      <a href="#representations">Representations</a>
+      <a href="#explicit">Explicit Reps</a>
+      <a href="#implicit">Implicit Reps</a>
+      <a href="#nerf">NeRF</a>
+      <a href="#gaussian">Gaussian Splatting</a>
+      <a href="#element">Element Structure</a>
+      <a href="#datasets">Datasets</a>
+      <a href="#related">Related Topics</a>
+    </nav>
+  </header>
+
+  <section id="representations">
+    <div class="sec-head"><span class="idx">01</span><h2>Shape Representation Considerations</h2></div>
+    <div class="sec-body">
+      <p>Any 3D shape representation must address five concerns:</p>
+      <ol>
+        <li><strong>Storage</strong> — how is it stored in computer memory?</li>
+        <li><strong>Creation</strong> — what input metaphors allow authoring new shapes?</li>
+        <li><strong>Operations</strong> — what editing operations are natural? (simplification, smoothing, filtering, repairing)</li>
+        <li><strong>Rendering</strong> — how does it render? (rasterization, ray tracing, neural rendering)</li>
+        <li><strong>Animation</strong> — can it be animated? How?</li>
+      </ol>
+      <p>There are two broad families: <strong>explicit</strong> (surface directly represented) and <strong>implicit</strong> (surface defined as level-set of a function).</p>
+
+      <div class="ring-demo">
+        <svg class="rep-ring" id="repRing" viewBox="0 0 280 280"></svg>
+        <div class="ring-detail">
+          <div class="ring-hint">Click a segment to explore each representation</div>
+          <h4 id="rd-title">Point Clouds</h4>
+          <div class="meta" id="rd-meta">explicit · direct geometry</div>
+          <p id="rd-body">A set of 3D points (x, y, z) sampled from a surface with no connectivity information. Captured by depth cameras, LiDAR, and Structure-from-Motion. Requires permutation-invariant networks like PointNet.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="explicit">
+    <div class="sec-head"><span class="idx">02</span><h2>Explicit Representations</h2></div>
+    <div class="sec-body">
+      <p>Easy to sample points on the surface; harder to test if a point is inside or outside.</p>
+
+      <h3>Point Clouds</h3>
+      <p>A set of 3D points (x, y, z) sampled from a surface with no connectivity information. Captured by depth cameras, LiDAR, Structure-from-Motion.</p>
+      <p><strong>PointNet</strong> — first deep network to operate directly on point clouds. Applies shared MLP to each point independently, then global max-pooling aggregates all points into one descriptor. Achieves permutation invariance by design. Paper: <a href="https://arxiv.org/pdf/1612.00593">PointNet</a></p>
+      <p><strong>Graph Neural Networks on Point Clouds:</strong> Dynamic edge convolution builds a graph between nearby points and applies graph convolution — captures local structure better than PointNet. Paper: <a href="https://arxiv.org/pdf/1801.07829">Dynamic Graph CNN</a></p>
+
+      <h3>Polygon Meshes</h3>
+      <p>Vertices + edges + faces (triangles/quads). Used in 3D modeling (Blender, Maya), game engines, rendering. Operations include subdivision, simplification, and regularization.</p>
+
+      <h3>Parametric Representations</h3>
+      <p>Surfaces defined by mathematical parameters (u, v) coordinates. Examples: Bezier curves, B-splines, NURBS. A torus is defined analytically as <code>f(u,v) = ((2 + cos u)cos v, (2 + cos u)sin v, sin u)</code> — sampling is easy; testing inside/outside requires solving the equation.</p>
+    </div>
+  </section>
+
+  <section id="implicit">
+    <div class="sec-head"><span class="idx">03</span><h2>Implicit Representations</h2></div>
+    <div class="sec-body">
+      <p>Easy to test inside/outside; harder to sample points on the surface.</p>
+
+      <h3>Occupancy Networks</h3>
+      <p>Learn a function f(x, z) → [0, 1] that outputs "is this 3D point x inside the object?" Paper: <a href="https://arxiv.org/pdf/1812.03828">Occupancy Networks</a></p>
+
+      <h3>Signed Distance Functions (SDF)</h3>
+      <p>Learn a function f(x) → ℝ that outputs the signed distance to the nearest surface (negative inside, positive outside, zero on surface). Paper: <a href="https://arxiv.org/pdf/1901.05103">DeepSDF</a></p>
+
+      <h3>Voxel Grids</h3>
+      <p>3D analog of pixels: regular cubic grid. Memory scales as O(N³) — expensive at high resolution. <strong>OctNet</strong> uses an octree structure to allocate more resolution near surfaces, saving memory. Paper: <a href="https://arxiv.org/pdf/1611.05009">OctNet</a></p>
+    </div>
+  </section>
+
+  <section id="nerf">
+    <div class="sec-head"><span class="idx">04</span><h2>Neural Radiance Fields (NeRF)</h2></div>
+    <div class="sec-body">
+      <p>NeRF represents a 3D scene as a continuous function:</p>
+      <pre><code>(x, y, z, θ, φ) → (RGB color, density σ)</code></pre>
+      <p>Where (x, y, z) is a 3D point and (θ, φ) is viewing direction.</p>
+      <p><strong>Rendering:</strong> shoot camera rays into the scene → sample N points along each ray → query the network for (color, density) at each point → integrate via volume rendering to get pixel color.</p>
+      <p><strong>Training:</strong> minimize the difference between rendered images and real training photos. NeRF memorizes a specific scene (not a general model).</p>
+      <p><strong>Limitations:</strong> slow rendering (seconds per frame), per-scene optimization. Paper: <a href="https://arxiv.org/pdf/2003.08934">NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis</a></p>
+    </div>
+  </section>
+
+  <section id="gaussian">
+    <div class="sec-head"><span class="idx">05</span><h2>3D Gaussian Splatting</h2></div>
+    <div class="sec-body">
+      <p>Represents a scene as a set of <strong>3D Gaussian blobs</strong> (soft 3D pixels) instead of a neural network. Each Gaussian has position (x, y, z), size + shape (anisotropic covariance matrix), color (RGB), opacity (α), and view-dependent shading.</p>
+
+      <div class="cmp-grid">
+        <div class="cmp-card">
+          <div class="cmp-card-head">
+            <h4><span class="badge">NeRF</span>Neural Radiance Field</h4>
+            <p>MLP-based implicit scene representation</p>
+          </div>
+          <ul class="prop-list">
+            <li><span class="lbl">rendering</span>Volume ray marching — seconds per frame</li>
+            <li><span class="lbl">training</span>Slow per-scene optimization</li>
+            <li><span class="lbl">editing</span>Hard — no explicit geometry</li>
+            <li><span class="lbl">quality</span>High-quality novel views</li>
+          </ul>
+        </div>
+        <div class="cmp-card">
+          <div class="cmp-card-head">
+            <h4><span class="badge">3DGS</span>Gaussian Splatting</h4>
+            <p>Explicit Gaussian blob scene representation</p>
+          </div>
+          <ul class="prop-list">
+            <li><span class="lbl">rendering</span>GPU rasterization — real-time (60+ fps)</li>
+            <li><span class="lbl">training</span>Faster — initialize from SfM point cloud</li>
+            <li><span class="lbl">editing</span>Easier — explicit Gaussian parameters</li>
+            <li><span class="lbl">quality</span>Comparable or better than NeRF</li>
+          </ul>
+        </div>
+      </div>
+
+      <p><strong>Rendering:</strong> project ("splat") Gaussians onto the 2D screen → blend via GPU rasterization → <strong>real-time rendering</strong>.</p>
+      <p>Paper: <a href="https://arxiv.org/pdf/2308.04079">3D Gaussian Splatting for Real-Time Radiance Field Rendering</a></p>
+    </div>
+  </section>
+
+  <section id="element">
+    <div class="sec-head"><span class="idx">06</span><h2>Representing Element Structure</h2></div>
+    <div class="sec-body">
+      <table>
+        <thead><tr><th>Representation</th><th>Properties</th><th>Tradeoffs</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Segmented Geometry</strong></td><td>Object split into labeled parts</td><td>Simple to construct; atomic integrity not guaranteed</td></tr>
+          <tr><td><strong>Part Sets</strong></td><td>Unordered collection of geometry pieces</td><td>Flexible; no relationship structure</td></tr>
+          <tr><td><strong>Relationship Graphs</strong></td><td>Nodes = parts, edges = spatial relationships</td><td>Captures spatial constraints</td></tr>
+          <tr><td><strong>Hierarchies</strong></td><td>Tree structure (e.g., base → seat → legs)</td><td>Models natural parent-child structure</td></tr>
+          <tr><td><strong>Programs</strong></td><td>Code that generates the shape</td><td>Most expressive; hardest to get training data</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="datasets">
+    <div class="sec-head"><span class="idx">07</span><h2>3D Datasets</h2></div>
+    <div class="sec-body">
+      <table>
+        <thead><tr><th>Dataset</th><th>Content</th><th>Scale</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://shape.cs.princeton.edu/benchmark/">Princeton Shape Benchmark</a></td><td>3D CAD models in 182 categories</td><td>1,814 models</td></tr>
+          <tr><td><a href="https://arxiv.org/pdf/1512.03012">ShapeNet</a></td><td>3D CAD models</td><td>55 categories</td></tr>
+          <tr><td><a href="https://arxiv.org/pdf/2212.08051">Objaverse</a></td><td>Annotated 3D objects</td><td>800K objects</td></tr>
+          <tr><td><a href="https://arxiv.org/pdf/2307.05663">Objaverse-XL</a></td><td>3D objects</td><td>10M+ objects</td></tr>
+          <tr><td><a href="https://arxiv.org/pdf/1702.04405">ScanNet</a></td><td>Indoor 3D scenes (RGB-D)</td><td>~1500 scans</td></tr>
+          <tr><td><a href="https://arxiv.org/pdf/2308.11417">ScanNet++</a></td><td>High-fidelity indoor scenes</td><td>Detailed</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="related">
+    <div class="sec-head"><span class="idx">08</span><h2>Related Topics</h2></div>
+    <div class="sec-body">
+      <ul>
+        <li><a href="computer-vision.html">Computer Vision</a> — 2D vision foundation for 3D understanding</li>
+        <li><a href="attention-transformers.html">Attention &amp; Transformers</a> — ViT and transformers applied to 3D point clouds</li>
+        <li><a href="generative-models.html">Generative Models</a> — NeRF as a neural implicit model; 3D-GANs</li>
+        <li><a href="robot-learning.html">Robot Learning</a> — robots need 3D scene understanding for manipulation</li>
+        <li><a href="convolutional-neural-networks.html">Convolutional Neural Networks</a> — multi-view 3D approaches use 2D CNNs</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer><span class="k">Knowledge Vault</span><a href="INDEX.html">← All topics</a></footer>
+</div>
+
+<script>
+// ── Clickable representation ring ──
+const REPS = [
+  { id:"pc",    label:"Point\nClouds",    color:"#D97757", type:"explicit", title:"Point Clouds",          meta:"explicit · direct geometry",    body:"A set of 3D points (x, y, z) sampled from a surface with no connectivity information. Captured by depth cameras, LiDAR, and Structure-from-Motion. Requires permutation-invariant networks like PointNet." },
+  { id:"mesh",  label:"Polygon\nMeshes",  color:"#788C5D", type:"explicit", title:"Polygon Meshes",         meta:"explicit · vertices + faces",   body:"Vertices + edges + faces (triangles/quads). Used in 3D modeling tools (Blender, Maya), game engines, and rendering pipelines. Supports subdivision, simplification, and regularization." },
+  { id:"param", label:"Parametric",       color:"#6A8CAF", type:"explicit", title:"Parametric Surfaces",    meta:"explicit · mathematical",       body:"Surfaces defined by mathematical parameters (u, v) coordinates. Examples: Bezier curves, B-splines, NURBS. Easy to sample; testing inside/outside requires solving the equation." },
+  { id:"vox",   label:"Voxel\nGrids",     color:"#C2A83E", type:"hybrid",   title:"Voxel Grids",            meta:"hybrid · regular cubic grid",   body:"3D analog of pixels: regular cubic grid. Memory scales as O(N³). OctNet uses an octree to allocate more resolution near surfaces, saving memory." },
+  { id:"occ",   label:"Occupancy\nNets",  color:"#B04A3F", type:"implicit", title:"Occupancy Networks",     meta:"implicit · learned function",   body:"Learn a function f(x, z) → [0, 1] that outputs 'is this 3D point x inside the object?'. The surface is the 0.5-level set." },
+  { id:"sdf",   label:"SDF",              color:"#87867F", type:"implicit", title:"Signed Distance Functions", meta:"implicit · distance field",  body:"Learn a function f(x) → ℝ that outputs the signed distance to the nearest surface. Negative inside, positive outside, zero on surface." },
+  { id:"nerf",  label:"NeRF",             color:"#3D6E6E", type:"implicit", title:"Neural Radiance Fields",  meta:"implicit · neural rendering",  body:"MLP-based implicit scene representation. Maps (x,y,z,θ,φ) → (RGB, density). Slow rendering (seconds/frame) but high-quality novel views." },
+  { id:"gs",    label:"Gaussian\nSplats", color:"#A67C52", type:"explicit", title:"3D Gaussian Splatting",   meta:"explicit · gaussian blobs",    body:"Represents a scene as 3D Gaussian blobs. Real-time GPU rasterization rendering. Faster training than NeRF, easier to edit and compress." },
+];
+
+const CX = 140, CY = 140, R = 100, RIN = 64;
+const TAU = Math.PI * 2;
+const N = REPS.length;
+const svg = document.getElementById("repRing");
+
+const rdTitle = document.getElementById("rd-title");
+const rdMeta  = document.getElementById("rd-meta");
+const rdBody  = document.getElementById("rd-body");
+
+function pt(r, t) {
+  return [CX + r * Math.sin(t * TAU), CY - r * Math.cos(t * TAU)];
+}
+
+function arcPath(r, t0, t1) {
+  const [x0,y0] = pt(r, t0), [x1,y1] = pt(r, t1);
+  const d = t1 - t0;
+  const large = d > 0.5 ? 1 : 0;
+  return `M${x0} ${y0} A${r} ${r} 0 ${large} 1 ${x1} ${y1}`;
+}
+
+function slice(i, active) {
+  const t0 = i / N, t1 = (i + 1) / N;
+  const tMid = (t0 + t1) / 2;
+  const rep = REPS[i];
+  const rOut = active ? R + 8 : R;
+  const rIn  = RIN;
+
+  const outerPath = arcPath(rOut, t0, t1);
+  const innerPath = arcPath(rIn, t1, t0);
+  const [ox0, oy0] = pt(rOut, t0), [ix0, iy0] = pt(rIn, t0);
+  const [ox1, oy1] = pt(rOut, t1), [ix1, iy1] = pt(rIn, t1);
+
+  const [tx, ty] = pt((rOut + rIn) / 2, tMid);
+
+  const lineBreak = rep.label.includes('\n');
+  const lines = rep.label.split('\n');
+
+  let labelHtml = '';
+  if (lines.length === 1) {
+    labelHtml = `<text x="${tx}" y="${ty + 4}" text-anchor="middle" style="font-family:var(--mono);font-size:9px;fill:white;font-weight:600;pointer-events:none">${lines[0]}</text>`;
+  } else {
+    labelHtml = `<text x="${tx}" y="${ty - 2}" text-anchor="middle" style="font-family:var(--mono);font-size:8px;fill:white;font-weight:600;pointer-events:none">${lines[0]}</text><text x="${tx}" y="${ty + 9}" text-anchor="middle" style="font-family:var(--mono);font-size:8px;fill:white;font-weight:600;pointer-events:none">${lines[1]}</text>`;
+  }
+
+  return `<g class="rep-seg" data-i="${i}" style="cursor:pointer;transition:opacity 150ms" ${active ? '' : 'opacity="0.85"'}>
+    <path d="${outerPath} L${ix1} ${iy1} ${innerPath} L${ox0} ${oy0} Z"
+      fill="${rep.color}" stroke="white" stroke-width="2"/>
+    ${labelHtml}
+  </g>`;
+}
+
+let active = 0;
+
+function render() {
+  let inner = '<circle cx="140" cy="140" r="60" fill="white" stroke="var(--g300)" stroke-width="1.5"/>';
+  const typeLbl = REPS[active].type;
+  inner += `<text x="140" y="136" text-anchor="middle" style="font-family:var(--mono);font-size:10px;fill:var(--g500)">${typeLbl}</text>`;
+  inner += `<text x="140" y="150" text-anchor="middle" style="font-family:var(--serif);font-size:12px;fill:var(--slate)">repr.</text>`;
+  for (let i = 0; i < N; i++) inner += slice(i, i === active);
+  svg.innerHTML = inner;
+
+  svg.querySelectorAll(".rep-seg").forEach(el => {
+    el.addEventListener("click", () => {
+      active = +el.dataset.i;
+      const rep = REPS[active];
+      rdTitle.textContent = rep.title;
+      rdMeta.textContent = rep.meta;
+      rdBody.textContent = rep.body;
+      render();
+    });
+  });
+}
+
+render();
+</script>
+</body>
+</html>

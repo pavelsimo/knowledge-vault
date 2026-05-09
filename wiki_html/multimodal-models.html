@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multimodal Models — Knowledge Vault</title>
+<style>
+:root {
+  --ivory:#FAF9F5; --paper:#FFFFFF; --slate:#141413;
+  --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D;
+  --g100:#F0EEE6; --g200:#E6E3DA; --g300:#D1CFC5; --g500:#87867F; --g700:#3D3D3A;
+  --serif:ui-serif,Georgia,"Times New Roman",Times,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}
+h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+.intro a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms;display:inline-flex;align-items:center;gap:7px}
+nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}
+.sec-body ul,.sec-body ol{margin:0 0 16px;padding-left:20px}
+.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--clay)}
+pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
+code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}
+th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}
+td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+.tag{display:inline-flex;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--g300);color:var(--g500);background:var(--paper)}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}
+footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+
+/* ── tabs (component 14 pattern) ── */
+.tabs-widget{border:1.5px solid var(--g300);border-radius:12px;background:var(--paper);margin:24px 0;overflow:hidden}
+.tabbar{display:flex;border-bottom:1px solid var(--g300);background:var(--g100)}
+.tabbar button{appearance:none;border:none;background:none;font-family:var(--mono);font-size:12px;color:var(--g500);padding:11px 18px;cursor:pointer;border-right:1px solid var(--g300);transition:color 100ms}
+.tabbar button.on{background:var(--paper);color:var(--slate);border-bottom:2px solid var(--clay);margin-bottom:-1px;font-weight:600}
+.tab-pane{display:none;padding:22px 24px}
+.tab-pane.on{display:block}
+.tab-pane h4{font-family:var(--serif);font-size:17px;font-weight:500;color:var(--slate);margin:0 0 10px}
+.tab-pane p{font-size:14px;color:var(--g700);margin:0 0 12px;max-width:680px}
+.tab-pane ul{font-size:14px;color:var(--g700);padding-left:18px;margin:0 0 12px}
+.tab-pane li{margin-bottom:6px}
+.callout{display:flex;gap:12px;border:1.5px solid var(--oat);background:rgba(227,218,204,.3);border-radius:10px;padding:14px 16px;margin:16px 0;font-size:14px;color:var(--g700)}
+.callout .ico{color:var(--clay);font-weight:700;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <div class="eyebrow">AI · Vision &amp; Language</div>
+  <h1>Multimodal <em>models</em></h1>
+  <p class="intro">
+    Multimodal models are AI systems that accept and relate more than one type of data — such as
+    images and text, or audio and text — within a single model. They power tasks like image
+    captioning, visual Q&amp;A, and zero-shot image classification.
+  </p>
+  <nav class="toc">
+    <a href="#what">What is Multimodal</a>
+    <a href="#foundation">Foundation Models</a>
+    <a href="#clip">CLIP Pretraining</a>
+    <a href="#tasks">Tasks &amp; Models</a>
+    <a href="#contrastive">Contrastive Learning</a>
+    <a href="#grounding">Grounding</a>
+    <a href="#hallucination">Hallucination</a>
+  </nav>
+</header>
+
+<!-- ── SECTION 1 ── -->
+<section id="what">
+  <div class="sec-head"><span class="idx">01</span><h2>What makes a model multimodal</h2></div>
+  <div class="sec-body">
+    <p>A model is <strong>multimodal</strong> when it takes more than one type of input and can
+    reason across them jointly. The important shift is architectural: modalities are no longer
+    handled as separate silos.</p>
+
+    <div class="tabs-widget" data-tabs>
+      <div class="tabbar">
+        <button class="on" data-t="0">Image + Text</button>
+        <button data-t="1">Audio + Text</button>
+        <button data-t="2">Joint Embedding</button>
+      </div>
+
+      <div class="tab-pane on">
+        <h4>Image-text tasks</h4>
+        <p>The most common multimodal combination. Applications include:</p>
+        <ul>
+          <li><strong>Visual Q&amp;A</strong> — image + question → text answer</li>
+          <li><strong>Image captioning</strong> — image → natural language description</li>
+          <li><strong>Image-text retrieval</strong> — find the image that best matches a query</li>
+          <li><strong>Zero-shot classification</strong> — use text labels instead of trained classes</li>
+        </ul>
+        <p>Key models: BLIP (<code>Salesforce/blip-image-captioning-base</code>), LLaVA, GPT-4V, Claude 3, Gemini.</p>
+      </div>
+
+      <div class="tab-pane">
+        <h4>Audio-text tasks</h4>
+        <p>CLAP extends the CLIP idea to audio: learn a shared audio-text embedding space via
+        contrastive learning, enabling zero-shot audio classification with arbitrary user-supplied labels.</p>
+        <ul>
+          <li><strong>Zero-shot audio classification</strong> — audio + text labels → class score</li>
+          <li><strong>Audio-text retrieval</strong> — match audio to descriptions</li>
+          <li><strong>Model:</strong> <code>laion/clap-htsat-unfused</code></li>
+        </ul>
+        <p>See <a href="audio-processing.html">audio-processing</a> for details on CLAP mechanics.</p>
+      </div>
+
+      <div class="tab-pane">
+        <h4>Shared embedding spaces</h4>
+        <p>The core insight behind CLIP and CLAP: if you train image and text encoders with a
+        contrastive loss, you get a joint space where <em>similarity = semantic alignment</em>.</p>
+        <ul>
+          <li>Image encoder maps image → vector</li>
+          <li>Text encoder maps text → vector</li>
+          <li>Matched pairs are pulled together; mismatched pairs pushed apart</li>
+          <li>At inference: compare any image to any text — no fine-tuning needed</li>
+        </ul>
+        <div class="callout">
+          <span class="ico">★</span>
+          <div>This shared-space idea is what makes retrieval, matching, and zero-shot transfer feel
+          like one family of tasks instead of separate pipelines.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 2 ── -->
+<section id="foundation">
+  <div class="sec-head"><span class="idx">02</span><h2>From specialized models to foundation models</h2></div>
+  <div class="sec-body">
+    <p>Older vision systems were usually one-model-per-task: a classifier for classification, a
+    captioning model for captioning, a detector for detection. The newer pattern is:</p>
+    <ol>
+      <li>Pretrain a large shared encoder or encoder-decoder on broad multimodal data</li>
+      <li>Learn a joint representation space or a general instruction-following interface</li>
+      <li>Adapt that foundation model to many tasks with prompts, small fine-tunes, or in-context examples</li>
+    </ol>
+    <p>This shift reduces per-task data collection and lets one model transfer knowledge across tasks.
+    Modern multimodal systems are usually <strong>foundation models</strong>: pretrain once on large
+    image-text or audio-text corpora, then adapt the same model to many downstream tasks.</p>
+  </div>
+</section>
+
+<!-- ── SECTION 3 ── -->
+<section id="clip">
+  <div class="sec-head"><span class="idx">03</span><h2>CLIP-style vision-language pretraining</h2></div>
+  <div class="sec-body">
+    <p>CLIP-style models learn a shared embedding space for images and text via contrastive loss:</p>
+    <ul>
+      <li>Image encoder maps image → vector</li>
+      <li>Text encoder maps caption / label / prompt → vector</li>
+      <li>Contrastive loss pulls matched image-text pairs <strong>together</strong></li>
+      <li>Unmatched pairs are pushed <strong>apart</strong></li>
+    </ul>
+    <p>This makes <strong>zero-shot classification</strong> possible: embed candidate text labels like
+    "a photo of a golden retriever" and choose whichever text is closest to the image embedding.</p>
+    <h3>Key paper</h3>
+    <p><a href="https://arxiv.org/pdf/2103.00020">Learning Transferable Visual Models From Natural Language Supervision (CLIP)</a>
+    — the paper that made zero-shot vision-language transfer mainstream.</p>
+  </div>
+</section>
+
+<!-- ── SECTION 4 ── -->
+<section id="tasks">
+  <div class="sec-head"><span class="idx">04</span><h2>Common tasks and key models</h2></div>
+  <div class="sec-body">
+    <table>
+      <thead>
+        <tr><th>Task</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Image captioning</strong></td><td>Generate a natural language description of an image</td></tr>
+        <tr><td><strong>Image-text matching (ITM)</strong></td><td>Score how well an image and text description match</td></tr>
+        <tr><td><strong>Visual Q&amp;A</strong></td><td>Answer a question about an image</td></tr>
+        <tr><td><strong>Zero-shot image classification</strong></td><td>Classify an image using text labels, no task-specific training</td></tr>
+        <tr><td><strong>Zero-shot audio classification</strong></td><td>Classify audio using text labels (see <a href="audio-processing.html">audio-processing</a>)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>BLIP (Bootstrapping Language-Image Pretraining)</h3>
+    <p>Salesforce's BLIP models handle multiple image-language tasks:</p>
+    <ul>
+      <li><strong>Image-Text Matching:</strong> <code>Salesforce/blip-itm-base-coco</code> — scores image-sentence alignment; used for image retrieval</li>
+      <li><strong>Image Captioning:</strong> <code>Salesforce/blip-image-captioning-base</code> — generates natural language descriptions</li>
+    </ul>
+    <p><a href="https://arxiv.org/pdf/2201.12086">BLIP: Bootstrapping Language-Image Pre-training</a></p>
+
+    <h3>CLAP (Contrastive Language-Audio Pretraining)</h3>
+    <ul>
+      <li><strong>Model:</strong> <code>laion/clap-htsat-unfused</code></li>
+      <li>Learns a shared audio-text embedding space via contrastive learning</li>
+      <li>Enables zero-shot audio classification with arbitrary user-supplied labels</li>
+    </ul>
+    <p><a href="https://arxiv.org/pdf/2211.06687">CLAP: Learning Audio Concepts from Natural Language Supervision</a></p>
+  </div>
+</section>
+
+<!-- ── SECTION 5 ── -->
+<section id="contrastive">
+  <div class="sec-head"><span class="idx">05</span><h2>Contrastive learning principle</h2></div>
+  <div class="sec-body">
+    <p>The contrastive pretraining approach used in both CLIP (vision-language) and CLAP (audio-language):</p>
+    <ol>
+      <li>Collect matched pairs: (image/audio, text description)</li>
+      <li>Train the model to pull matched-pair embeddings <strong>closer</strong> in vector space</li>
+      <li>Train the model to push mismatched-pair embeddings <strong>further apart</strong></li>
+      <li>Result: a joint embedding space where similarity = semantic alignment</li>
+    </ol>
+    <p>At inference time, you can compare any image/audio against any text description — no fine-tuning
+    required. See <a href="self-supervised-learning.html">self-supervised-learning</a> for SimCLR and
+    InfoNCE loss mechanics.</p>
+  </div>
+</section>
+
+<!-- ── SECTION 6 ── -->
+<section id="grounding">
+  <div class="sec-head"><span class="idx">06</span><h2>Grounding and structured understanding</h2></div>
+  <div class="sec-body">
+    <p>From raw captioning, richer representations emerged:</p>
+    <ul>
+      <li><strong>Dense captioning</strong> — caption local regions, not just the whole image</li>
+      <li><strong>Scene graphs</strong> — represent objects, attributes, and relationships explicitly</li>
+      <li><strong>Grounded generation</strong> — force the model to point to evidence in the image while generating text</li>
+    </ul>
+    <p>A strong multimodal system does not have to be a single monolithic network. In practice, you can chain:</p>
+    <ul>
+      <li>A vision-language model for broad understanding</li>
+      <li>Specialized detectors or segmenters for precise grounding</li>
+      <li>A language model for reasoning or label expansion</li>
+      <li>Verifiers to catch hallucinations before the final answer reaches the user</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ── SECTION 7 ── -->
+<section id="hallucination">
+  <div class="sec-head"><span class="idx">07</span><h2>Failure mode: hallucination</h2></div>
+  <div class="sec-body">
+    <p>Multimodal models inherit the same core problem as language models: they can generate plausible
+    statements not fully supported by the image.</p>
+    <h3>Common failure patterns</h3>
+    <ul>
+      <li>Mentioning objects that are typical for a scene but absent in this image</li>
+      <li>Confusing relationships or actions</li>
+      <li>Over-committing when evidence is weak</li>
+    </ul>
+    <p>Grounding, pointing, verification models, and specialist sub-models reduce this, but do not
+    eliminate it.</p>
+
+    <h3>Related Topics</h3>
+    <ul>
+      <li><a href="computer-vision.html">computer-vision</a> — vision-only models and tasks</li>
+      <li><a href="audio-processing.html">audio-processing</a> — audio-only models and tasks (ASR, TTS, CLAP)</li>
+      <li><a href="sentence-embeddings.html">sentence-embeddings</a> — embedding spaces and similarity search</li>
+      <li><a href="attention-transformers.html">attention-transformers</a> — architectural foundation for most multimodal models</li>
+      <li><a href="ai-model-architectures.html">ai-model-architectures</a> — VLM pipeline overview</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <span class="k">Knowledge Vault</span>
+  <span>AI · Multimodal Models</span>
+</footer>
+
+</div>
+<script>
+document.querySelectorAll("[data-tabs]").forEach(box => {
+  const btns = box.querySelectorAll("button");
+  const panes = box.querySelectorAll(".tab-pane");
+  btns.forEach(b => b.addEventListener("click", () => {
+    btns.forEach(x => x.classList.remove("on"));
+    panes.forEach(x => x.classList.remove("on"));
+    b.classList.add("on");
+    panes[+b.dataset.t].classList.add("on");
+  }));
+});
+</script>
+</body>
+</html>

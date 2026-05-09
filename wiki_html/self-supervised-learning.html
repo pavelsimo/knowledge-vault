@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Self-Supervised Learning — Knowledge Vault</title>
+<style>
+:root {
+  --ivory:#FAF9F5; --paper:#FFFFFF; --slate:#141413;
+  --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D;
+  --g100:#F0EEE6; --g200:#E6E3DA; --g300:#D1CFC5; --g500:#87867F; --g700:#3D3D3A;
+  --serif:ui-serif,Georgia,"Times New Roman",Times,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}
+h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms;display:inline-flex;align-items:center;gap:7px}
+nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+section{margin-top:72px;scroll-margin-top:28px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
+.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
+.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
+.sec-body p{margin:0 0 16px}
+.sec-body ul,.sec-body ol{margin:0 0 16px;padding-left:20px}
+.sec-body li{margin-bottom:6px}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--clay)}
+pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
+code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+table{border-collapse:collapse;width:100%;margin:0 0 20px}
+th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}
+td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}
+@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
+
+/* ── pretext task comparison cards (component 01 pattern) ── */
+.pretext-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:24px 0}
+@media(max-width:900px){.pretext-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.pretext-grid{grid-template-columns:1fr}}
+.pt-card{background:var(--paper);border:1.5px solid var(--g300);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.pt-card:hover{border-color:var(--clay)}
+.pt-num{font-family:var(--mono);font-size:11px;color:var(--clay);font-weight:600}
+.pt-card h4{font-family:var(--serif);font-size:16px;font-weight:500;color:var(--slate);margin:0}
+.pt-card p{font-size:13px;color:var(--g700);margin:0;line-height:1.55}
+.pt-card .pt-paper{font-family:var(--mono);font-size:11px;color:var(--g500);margin-top:auto}
+
+/* ── tabs for contrastive vs masked ── */
+.tabs-widget{border:1.5px solid var(--g300);border-radius:12px;background:var(--paper);margin:24px 0;overflow:hidden}
+.tabbar{display:flex;border-bottom:1px solid var(--g300);background:var(--g100)}
+.tabbar button{appearance:none;border:none;background:none;font-family:var(--mono);font-size:12px;color:var(--g500);padding:11px 18px;cursor:pointer;border-right:1px solid var(--g300)}
+.tabbar button.on{background:var(--paper);color:var(--slate);border-bottom:2px solid var(--clay);margin-bottom:-1px;font-weight:600}
+.tab-pane{display:none;padding:22px 24px}
+.tab-pane.on{display:block}
+.tab-pane h4{font-family:var(--serif);font-size:17px;font-weight:500;color:var(--slate);margin:0 0 10px}
+.tab-pane p{font-size:14px;color:var(--g700);margin:0 0 12px;max-width:680px}
+.tab-pane ul{font-size:14px;color:var(--g700);padding-left:18px;margin:0 0 12px}
+.tab-pane li{margin-bottom:6px}
+
+.callout{display:flex;gap:12px;border:1.5px solid var(--oat);background:rgba(227,218,204,.3);border-radius:10px;padding:14px 16px;margin:18px 0;font-size:14px;color:var(--g700)}
+.callout .ico{color:var(--clay);font-weight:700;flex-shrink:0}
+.insight{border-left:4px solid var(--clay);background:var(--paper);border-radius:0 10px 10px 0;padding:18px 22px;margin:24px 0}
+.insight p{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--slate);margin:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <div class="eyebrow">AI · Representation Learning</div>
+  <h1>Self-<em>supervised</em> learning</h1>
+  <p class="intro">
+    Self-supervised learning trains neural networks on unlabeled data by auto-generating supervision
+    signals from the data itself. The model first solves a "pretext task" which forces it to learn
+    rich, transferable visual representations — then fine-tunes on small labeled datasets for the real task.
+  </p>
+  <nav class="toc">
+    <a href="#why">Why SSL</a>
+    <a href="#paradigms">Paradigms</a>
+    <a href="#pretext">Pretext Tasks</a>
+    <a href="#contrastive">Contrastive Learning</a>
+    <a href="#mae">MAE</a>
+    <a href="#dino">DINO &amp; DINOv2</a>
+  </nav>
+</header>
+
+<!-- ── SECTION 1 ── -->
+<section id="why">
+  <div class="sec-head"><span class="idx">01</span><h2>Why self-supervised learning</h2></div>
+  <div class="sec-body">
+    <p>Supervised learning requires massive labeled datasets — expensive, incomplete, and task-specific.
+    Self-supervised learning asks: <strong>can the model learn useful representations from raw data alone?</strong></p>
+    <ul>
+      <li>No human annotation required</li>
+      <li>The data supervises itself via transformations you control</li>
+      <li>Learn representations that transfer broadly to many downstream tasks</li>
+    </ul>
+    <p>The practical payoff is strongest in the <strong>low-label regime</strong>. Pretrain once on
+    large unlabeled corpora, then fine-tune on 1%, 10%, or full labels for a downstream task. As
+    labeled data grows, supervised learning catches up — but SSL remains a powerful initializer and
+    often wins when annotations are scarce or expensive.</p>
+  </div>
+</section>
+
+<!-- ── SECTION 2 ── -->
+<section id="paradigms">
+  <div class="sec-head"><span class="idx">02</span><h2>Learning paradigms</h2></div>
+  <div class="sec-body">
+    <table>
+      <thead>
+        <tr><th>Paradigm</th><th>Labels</th><th>Objective</th><th>Example</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Supervised</strong></td><td>All labeled</td><td>Task loss (cross-entropy)</td><td>ImageNet classification</td></tr>
+        <tr><td><strong>Unsupervised</strong></td><td>None</td><td>Structure (clustering, density)</td><td>K-means, PCA</td></tr>
+        <tr><td><strong>Self-supervised</strong></td><td>None (auto-generated)</td><td>Pretext task loss</td><td>Predict rotation, masked patches</td></tr>
+        <tr><td><strong>Semi-supervised</strong></td><td>Some labeled + many unlabeled</td><td>Task + auxiliary loss</td><td>SSL pretraining + fine-tune on few labels</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ── SECTION 3: Pretext tasks ── -->
+<section id="pretext">
+  <div class="sec-head"><span class="idx">03</span><h2>Pretext tasks</h2></div>
+  <div class="sec-body">
+    <p>A pretext task is a made-up task used as an "excuse" to force the network to learn useful visual
+    structure. The real goal is always good representations, not solving the pretext task.</p>
+
+    <div class="pretext-grid">
+      <div class="pt-card">
+        <div class="pt-num">01</div>
+        <h4>Predict Image Rotations</h4>
+        <p>Train to recognize 0°, 90°, 180°, 270° rotations. To predict rotation, the model must understand object orientation and semantics.</p>
+        <div class="pt-paper">Gidaris et al., 2018</div>
+      </div>
+      <div class="pt-card">
+        <div class="pt-num">02</div>
+        <h4>Relative Patch Position</h4>
+        <p>Sample two patches; predict their spatial relationship (above, below-left, etc.). Forces learning of object parts and spatial layout.</p>
+        <div class="pt-paper">Doersch et al., 2015</div>
+      </div>
+      <div class="pt-card">
+        <div class="pt-num">03</div>
+        <h4>Jigsaw Puzzles</h4>
+        <p>Shuffle image patches and predict the correct permutation. Forces learning of object parts, spatial layout, and global structure.</p>
+        <div class="pt-paper">Noroozi &amp; Favaro, 2016</div>
+      </div>
+      <div class="pt-card">
+        <div class="pt-num">04</div>
+        <h4>Image Inpainting</h4>
+        <p>Mask a region and train to predict the missing pixels from context. Requires scene semantics and object appearance understanding.</p>
+        <div class="pt-paper">Pathak et al., 2016</div>
+      </div>
+      <div class="pt-card">
+        <div class="pt-num">05</div>
+        <h4>Colorization</h4>
+        <p>Train on grayscale images to predict color channels. Forces the model to understand what objects look like — you can't color a banana without knowing it's a banana.</p>
+        <div class="pt-paper">Zhang et al., 2016</div>
+      </div>
+      <div class="pt-card">
+        <div class="pt-num">06</div>
+        <h4>Video Colorization → Tracking</h4>
+        <p>Colorize grayscale video consistently over time. To maintain consistent colors, the model must track objects frame-to-frame — learning tracking without tracking labels.</p>
+        <div class="pt-paper">Vondrick et al., 2018</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 4: Contrastive Learning ── -->
+<section id="contrastive">
+  <div class="sec-head"><span class="idx">04</span><h2>Contrastive representation learning</h2></div>
+  <div class="sec-body">
+    <p>Contrastive learning trains a model to:</p>
+    <ul>
+      <li>Pull representations of <strong>the same object</strong> (different augmentations) <strong>together</strong></li>
+      <li>Push representations of <strong>different objects</strong> <strong>apart</strong></li>
+    </ul>
+    <p><strong>Key concept — invariance:</strong> the model learns which transformations should NOT change
+    the identity of an image (crops, color shifts, rotations, blur → still the same cat).</p>
+
+    <div class="tabs-widget" data-tabs>
+      <div class="tabbar">
+        <button class="on" data-t="0">SimCLR</button>
+        <button data-t="1">MoCo</button>
+        <button data-t="2">InfoNCE Loss</button>
+      </div>
+
+      <div class="tab-pane on">
+        <h4>SimCLR — Simple Contrastive Learning of Visual Representations</h4>
+        <ol style="font-size:14px;color:var(--g700);padding-left:18px;margin:0 0 12px">
+          <li>Sample a minibatch of N images from dataset</li>
+          <li>Apply two augmentation functions t, t' to each image → N pairs</li>
+          <li>Encode with shared encoder f(·) → representations h, h⁺</li>
+          <li>Project to latent space with projection head g(·) → z, z⁺</li>
+          <li>Compute <strong>InfoNCE loss</strong> using all other 2(N−1) examples as negatives</li>
+        </ol>
+        <p>Key: use ALL non-positive samples in the batch as negatives — as N grows the contrastive task gets harder and representations get richer.</p>
+        <p><a href="https://arxiv.org/pdf/2002.05709">A Simple Framework for Contrastive Learning of Visual Representations</a></p>
+      </div>
+
+      <div class="tab-pane">
+        <h4>MoCo — Momentum Contrast</h4>
+        <p>MoCo decouples the number of negatives from the batch size using:</p>
+        <ul>
+          <li>A <strong>memory queue</strong> of past encoded keys (many negatives without giant batches)</li>
+          <li>A <strong>momentum encoder</strong> (slowly updated copy of the online encoder) for stable key representations</li>
+        </ul>
+        <p>This allows large-scale contrastive learning on hardware that can't fit huge batches.</p>
+        <p><a href="https://arxiv.org/pdf/2003.04297">Improved Baselines with Momentum Contrastive Learning (MoCo v2)</a></p>
+      </div>
+
+      <div class="tab-pane">
+        <h4>InfoNCE Loss</h4>
+        <p>Derived from mutual information maximization. Given a query q and its positive key k⁺ among N-1 negative keys:</p>
+        <pre>L = -log [exp(q·k⁺/τ) / Σ exp(q·kᵢ/τ)]</pre>
+        <p>τ (temperature) controls the sharpness of the distribution. Lower τ → more focused learning on hard negatives.</p>
+        <p>After pretraining, the learned representation is used for labeled tasks:</p>
+        <pre>Dataset → Encoder → Representation → FC layer → Labels
+          (frozen or fine-tuned)  (trained)</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 5: MAE ── -->
+<section id="mae">
+  <div class="sec-head"><span class="idx">05</span><h2>Masked Autoencoder (MAE)</h2></div>
+  <div class="sec-body">
+    <p>Mask 50–75% of image patches (at random) and train a ViT to reconstruct the missing patches
+    from visible patches only. The high masking ratio forces the model to understand global image
+    structure, not just fill in local texture.</p>
+    <h3>Architecture</h3>
+    <ul>
+      <li><strong>Encoder:</strong> processes only visible (unmasked) patches — sees far fewer tokens than full image</li>
+      <li><strong>Decoder:</strong> merges encoder outputs with learned mask tokens (placed in previously masked positions), adds positional encodings, uses transformer blocks followed by linear projection for pixel reconstruction</li>
+      <li>The decoder is <strong>not used post-training</strong> — only the encoder is fine-tuned downstream</li>
+      <li>The asymmetric design means encoder and decoder can be designed independently (unlike U-Net)</li>
+    </ul>
+    <div class="callout">
+      <span class="ico">★</span>
+      <div>No labels — fully self-supervised. Strong results that match or exceed supervised pretraining.</div>
+    </div>
+    <p><a href="https://arxiv.org/pdf/2111.06377">Masked Autoencoders Are Scalable Vision Learners</a></p>
+  </div>
+</section>
+
+<!-- ── SECTION 6: DINO ── -->
+<section id="dino">
+  <div class="sec-head"><span class="idx">06</span><h2>DINO and DINOv2</h2></div>
+  <div class="sec-body">
+    <h3>DINO — self-distillation without labels</h3>
+    <ul>
+      <li><strong>Student network:</strong> processes local crops → makes predictions</li>
+      <li><strong>Teacher network:</strong> processes global view → provides targets (EMA of student)</li>
+      <li>No explicit negatives; no contrastive loss; just consistency between views</li>
+    </ul>
+    <p>DINO produces strongly <strong>object-centric</strong> attention maps — the model learns to
+    separate foreground from background without any supervision.</p>
+    <p><a href="https://arxiv.org/pdf/2104.14294">Emerging Properties in Self-Supervised Vision Transformers</a></p>
+
+    <h3>DINOv2</h3>
+    <p>Scales DINO with curated data (hundreds of millions of images), larger ViT backbones, and
+    better training recipes. Produces a <strong>general-purpose vision encoder</strong> that works
+    out-of-the-box for classification, segmentation, depth estimation, and retrieval.</p>
+    <p><a href="https://hal.science/hal-04376640v2/file/CVPR_2023_dinov2%20%284%29.pdf">DINOv2: Emergent Abilities in Self-Supervised Vision Transformers</a></p>
+
+    <div class="insight">
+      <p>"Supervised learning: 'Here is the answer, memorize it.' Contrastive self-supervised learning: 'Figure out what stays the same when I mess with the input.'"</p>
+    </div>
+
+    <h3>Related Topics</h3>
+    <ul>
+      <li><a href="attention-transformers.html">attention-transformers</a> — ViT backbone in MAE, DINO, DINOv2</li>
+      <li><a href="generative-models.html">generative-models</a> — autoencoders and VAEs as related self-supervised approaches</li>
+      <li><a href="multimodal-models.html">multimodal-models</a> — CLIP/CLAP also use contrastive learning</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <span class="k">Knowledge Vault</span>
+  <span>AI · Self-Supervised Learning</span>
+</footer>
+
+</div>
+<script>
+document.querySelectorAll("[data-tabs]").forEach(box => {
+  const btns = box.querySelectorAll("button");
+  const panes = box.querySelectorAll(".tab-pane");
+  btns.forEach(b => b.addEventListener("click", () => {
+    btns.forEach(x => x.classList.remove("on"));
+    panes.forEach(x => x.classList.remove("on"));
+    b.classList.add("on");
+    panes[+b.dataset.t].classList.add("on");
+  }));
+});
+</script>
+</body>
+</html>
