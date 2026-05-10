@@ -6,6 +6,7 @@ A personal knowledge base about Pavel personal interests.
 ## How It's Organized
 - raw/ contains unprocessed source material. Never modify these files.
 - wiki/ contains the organized wiki. AI maintains this entirely.
+- wiki_html/ contains the HTML-rendered version of the wiki. AI maintains this entirely; never edit manually.
 - outputs/ contains generated reports, answers, and analyses.
 
 ## Wiki Rules
@@ -19,20 +20,16 @@ A personal knowledge base about Pavel personal interests.
 - When a paper is referenced, try your best to include a suitable supporting image or figure
 
 ## HTML Wiki Rules
-- A parallel HTML version of the wiki lives in wiki_html/; never edit it manually
-- Every wiki/<topic>.md gets a matching wiki_html/<topic>.html
-- wiki_html/INDEX.html is the main entry point, mirroring wiki/INDEX.md
-- Internal [[topic-name]] links become relative `<a href="topic-name.html">` links
-- Every HTML file MUST follow ONLY the design system defined in DESIGN.md at the repo root
-- Read DESIGN.md before generating any HTML — all colors, fonts, spacing, and component styles come exclusively from its YAML tokens
-- Before building each page, read wiki_html/components/CATALOG.md and pick any components whose patterns fit the topic; adapt their structure and scripts — do NOT copy whole files, only the relevant patterns, restyled with DESIGN.md tokens
-- The 20 component source files live in wiki_html/components/ and are the ONLY approved source of interactive patterns
+- A parallel HTML version of the wiki lives in `wiki_html/`; never edit it manually
+- Every `wiki/<topic>.md` gets a matching `wiki_html/<topic>.html`
+- `wiki_html/INDEX.html` is the main hub page, mirroring `wiki/INDEX.md`
+- Internal `[[topic-name]]` links become `<a href="topic-name.html">` relative links
+- Every HTML file must follow only the design tokens in `DESIGN.md` at the repo root — read it before generating any HTML
 - Each HTML file is self-contained: inline all CSS, no external stylesheets or JS frameworks
-- Page structure per topic file:
-  1. `<header class="masthead">` — eyebrow "Knowledge Vault", serif h1 with italic `<em>` on a key word, intro paragraph from the wiki summary, `<nav class="toc">` pills linking to each H2 section
-  2. One `<section>` per H2 in the wiki source, with `.sec-head` (`.idx` number + h2 text)
-  3. `<footer>` with a link back to INDEX.html
-- INDEX.html: masthead title "Knowledge *Vault*", topic cards grouped by Pavel's interests, each topic as `a.card` linking to `<topic>.html`
+- Before building a page, read `wiki_html/components/CATALOG.md` and pick components whose patterns fit the content; adapt their structure and styles using DESIGN.md tokens — do not copy whole files
+- Page structure: masthead (eyebrow + serif h1 with italic `<em>` on a key word + intro paragraph + toc pills) → one `<section>` per H2 → footer with link back to INDEX.html
+- Always end with a "Related Topics" section linking to other wiki pages
+- For style and markup reference, read existing pages in `wiki_html/` — they are the canonical examples of correct output
 
 ## Change Log Rules
 - wiki/LOG.md tracks every change made to the raw/ directory; never edit it manually
