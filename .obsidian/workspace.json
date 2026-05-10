@@ -186,6 +186,8 @@
   },
   "active": "33a5399dfe9f3bb8",
   "lastOpenFiles": [
+    "CHANGELOG.md",
+    "CHANGELOG.md.tmp.189023.7367b5da4305",
     "README.md",
     "README.md.tmp.189023.b7b721a30b18",
     "AGENTS.md",
@@ -221,7 +223,6 @@
     "wiki/llm-training.md",
     "wiki/LOG.md",
     "Untitled.md",
-    "raw/08-llm-from-scratch-with-python-freecodecamp/LLM from Scratch.md.tmp.62271.1777843513021",
     "raw/00-clippings/WTF is a World Model.md",
     "raw/00-clippings/images/7ac0df510673acd75eb81320ed5d9db1_MD5.jpg",
     "raw/00-clippings/images/4f9e0db192c8568bd87f12c6b98a83de_MD5.jpg",
@@ -230,7 +231,6 @@
     "raw/00-clippings/images/e13b9d5a23ece061afb3e2cc796335cb_MD5.jpg",
     "raw/00-clippings/images/fc441d82174d757b44445eec7cee4257_MD5.jpg",
     "raw/00-clippings/images/33abb7f255ddf690b062f88bea8d2ea1_MD5.jpg",
-    "wiki/ai-industry.md",
     "outputs/slides/system-design/images/b38b3b649fc9226886dfd674842f42e4_MD5.png"
   ]
 }
