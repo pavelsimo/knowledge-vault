@@ -49,7 +49,7 @@ a.card.hidden{display:none}
 <header class="masthead">
   <div class="eyebrow">Knowledge Vault</div>
   <h1>Knowledge <em>Vault</em></h1>
-  <p class="intro">45 topics across machine learning, computer vision, robotics, mathematics, and systems — organized as a personal reference for deep technical work.</p>
+  <p class="intro">54 topics across machine learning, computer vision, robotics, mathematics, and systems — organized as a personal reference for deep technical work.</p>
   <nav class="toc">
     <a href="#llm">LLMs &amp; Language</a>
     <a href="#cv">Computer Vision</a>
@@ -66,7 +66,7 @@ a.card.hidden{display:none}
 
 <!-- ① LLMs & Language -->
 <div class="group" id="llm">
-  <div class="group-head"><span class="idx">01</span><h2>LLMs &amp; Language</h2><span class="count">10 topics</span></div>
+  <div class="group-head"><span class="idx">01</span><h2>LLMs &amp; Language</h2><span class="count">12 topics</span></div>
   <div class="card-grid">
 
     <a class="card" href="attention-transformers.html" data-title="attention transformers self-attention multi-head kv caching vit">
@@ -153,6 +153,23 @@ a.card.hidden{display:none}
       </div>
     </a>
 
+    <a class="card" href="llm-from-scratch.html" data-title="llm from scratch pytorch bigram tokenization logits loss generation">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="14" width="44" height="36" rx="4" stroke="#D97757" stroke-width="2" fill="none"/>
+          <circle cx="22" cy="26" r="4" fill="#D97757" fill-opacity=".4"/>
+          <circle cx="32" cy="26" r="4" fill="#D97757" fill-opacity=".6"/>
+          <circle cx="42" cy="26" r="4" fill="#D97757" fill-opacity=".8"/>
+          <line x1="18" y1="40" x2="46" y2="40" stroke="#D97757" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">LLM from Scratch</div>
+        <div class="card-desc">PyTorch tensors, character tokenization, bigram models, logits, loss, and generation</div>
+        <div class="card-file">llm-from-scratch.html</div>
+      </div>
+    </a>
+
     <a class="card" href="gemma-4.html" data-title="gemma 4 moe dense interleaving attention k=v p-rope vision encoder audio">
       <div class="card-thumb">
         <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -182,6 +199,28 @@ a.card.hidden{display:none}
         <div class="card-title">AI Agents</div>
         <div class="card-desc">Claude sub-agents vs agent teams: orchestration patterns, context-centric design</div>
         <div class="card-file">ai-agents.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="agent-harness.html" data-title="agent harness orchestration loop tools memory state guardrails workflows verification">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="12" y="12" width="40" height="40" rx="6" stroke="#D97757" stroke-width="2" fill="#D97757" fill-opacity=".08"/>
+          <circle cx="32" cy="32" r="7" fill="#D97757" fill-opacity=".6"/>
+          <circle cx="20" cy="20" r="4" fill="#D97757" fill-opacity=".3"/>
+          <circle cx="44" cy="20" r="4" fill="#D97757" fill-opacity=".3"/>
+          <circle cx="20" cy="44" r="4" fill="#D97757" fill-opacity=".3"/>
+          <circle cx="44" cy="44" r="4" fill="#D97757" fill-opacity=".3"/>
+          <line x1="25" y1="25" x2="29" y2="29" stroke="#D97757" stroke-width="1.5"/>
+          <line x1="39" y1="25" x2="35" y2="29" stroke="#D97757" stroke-width="1.5"/>
+          <line x1="25" y1="39" x2="29" y2="35" stroke="#D97757" stroke-width="1.5"/>
+          <line x1="39" y1="39" x2="35" y2="35" stroke="#D97757" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Agent Harness</div>
+        <div class="card-desc">Orchestration loops, tools, memory, state, guardrails, dynamic workflows, and verification</div>
+        <div class="card-file">agent-harness.html</div>
       </div>
     </a>
 
@@ -411,7 +450,7 @@ a.card.hidden{display:none}
 
 <!-- ③ Deep Learning Foundations -->
 <div class="group" id="dl">
-  <div class="group-head"><span class="idx">03</span><h2>Deep Learning Foundations</h2><span class="count">7 topics</span></div>
+  <div class="group-head"><span class="idx">03</span><h2>Deep Learning Foundations</h2><span class="count">8 topics</span></div>
   <div class="card-grid">
 
     <a class="card" href="neural-networks.html" data-title="neural networks loss functions softmax regularization backpropagation gradients">
@@ -539,6 +578,25 @@ a.card.hidden{display:none}
       </div>
     </a>
 
+    <a class="card" href="ai-infrastructure.html" data-title="ai infrastructure agentic ai cpu accelerators memory low-latency always-on">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="18" width="44" height="28" rx="5" stroke="#D97757" stroke-width="2" fill="none"/>
+          <rect x="18" y="26" width="10" height="12" rx="2" fill="#D97757" fill-opacity=".5"/>
+          <rect x="34" y="26" width="12" height="12" rx="2" fill="#788C5D" fill-opacity=".5"/>
+          <line x1="10" y1="32" x2="4" y2="32" stroke="#D97757" stroke-width="2"/>
+          <line x1="54" y1="32" x2="60" y2="32" stroke="#D97757" stroke-width="2"/>
+          <line x1="32" y1="18" x2="32" y2="10" stroke="#D97757" stroke-width="2"/>
+          <line x1="32" y1="46" x2="32" y2="54" stroke="#D97757" stroke-width="2"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">AI Infrastructure</div>
+        <div class="card-desc">CPUs, accelerators, memory, low-latency orchestration, and always-on agentic workloads</div>
+        <div class="card-file">ai-infrastructure.html</div>
+      </div>
+    </a>
+
   </div>
 </div>
 
@@ -631,7 +689,7 @@ a.card.hidden{display:none}
 
 <!-- ⑤ Tools & Practice -->
 <div class="group" id="tools">
-  <div class="group-head"><span class="idx">05</span><h2>Tools &amp; Practice</h2><span class="count">6 topics</span></div>
+  <div class="group-head"><span class="idx">05</span><h2>Tools &amp; Practice</h2><span class="count">11 topics</span></div>
   <div class="card-grid">
 
     <a class="card" href="hugging-face.html" data-title="hugging face model hub tasks leaderboards open-source ecosystem">
@@ -698,6 +756,85 @@ a.card.hidden{display:none}
       </div>
     </a>
 
+    <a class="card" href="codex-workflows.html" data-title="codex workflows durable threads steering queuing automations goals side panel memory">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="16" width="44" height="32" rx="5" stroke="#D97757" stroke-width="2" fill="none"/>
+          <rect x="16" y="24" width="16" height="6" rx="3" fill="#D97757" fill-opacity=".4"/>
+          <rect x="16" y="34" width="26" height="6" rx="3" fill="#D97757" fill-opacity=".6"/>
+          <circle cx="48" cy="20" r="4" fill="#D97757" fill-opacity=".7"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Codex Workflows</div>
+        <div class="card-desc">Durable threads, steering, queuing, automations, goals, side-panel review, shared memory</div>
+        <div class="card-file">codex-workflows.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="docling.html" data-title="docling document conversion extraction ocr tables content layers provenance chunking rag">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 10 H40 L50 20 V54 H18 Z" stroke="#D97757" stroke-width="2" fill="#D97757" fill-opacity=".08"/>
+          <path d="M40 10 V20 H50" stroke="#D97757" stroke-width="2"/>
+          <line x1="24" y1="30" x2="44" y2="30" stroke="#D97757" stroke-width="2" stroke-linecap="round"/>
+          <line x1="24" y1="38" x2="40" y2="38" stroke="#D97757" stroke-width="2" stroke-linecap="round"/>
+          <line x1="24" y1="46" x2="34" y2="46" stroke="#D97757" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Docling</div>
+        <div class="card-desc">Local OCR, table extraction, content layers, provenance, chunking, and RAG exports</div>
+        <div class="card-file">docling.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="databricks-bundles.html" data-title="databricks bundles declarative automation ci cd jobs pipelines mlflow">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="32,10 52,20 32,30 12,20" fill="#D97757" fill-opacity=".25" stroke="#D97757" stroke-width="1.5"/>
+          <polygon points="12,30 32,40 52,30" stroke="#D97757" stroke-width="1.5" fill="none"/>
+          <polygon points="12,40 32,50 52,40" stroke="#D97757" stroke-width="1.5" fill="none"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Databricks Bundles</div>
+        <div class="card-desc">Source-controlled jobs, pipelines, tests, model resources, and CI/CD deployment</div>
+        <div class="card-file">databricks-bundles.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="excalidraw-rendering.html" data-title="excalidraw rendering mcp headless chromium png svg diagram automation">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="14" width="44" height="36" rx="5" stroke="#D97757" stroke-width="2" fill="none"/>
+          <circle cx="22" cy="28" r="5" fill="#D97757" fill-opacity=".4"/>
+          <rect x="34" y="23" width="12" height="10" rx="2" fill="#788C5D" fill-opacity=".5"/>
+          <path d="M20 42 C28 36 36 48 46 40" stroke="#D97757" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Excalidraw Rendering</div>
+        <div class="card-desc">Local MCP rendering with headless Chromium, PNG/SVG export, and diagram automation</div>
+        <div class="card-file">excalidraw-rendering.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="tmux.html" data-title="tmux terminal multiplexer sessions windows panes copy mode agent workflows">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="14" width="44" height="36" rx="4" stroke="#D97757" stroke-width="2" fill="none"/>
+          <polyline points="18,26 24,32 18,38" stroke="#D97757" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="30" y1="38" x2="44" y2="38" stroke="#D97757" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Tmux</div>
+        <div class="card-desc">Sessions, windows, panes, copy mode, configuration, and agent workflow usage</div>
+        <div class="card-file">tmux.html</div>
+      </div>
+    </a>
+
     <a class="card" href="ml-learning-careers.html" data-title="ml learning careers active learning ai-assisted study implementation demo-driven">
       <div class="card-thumb">
         <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -736,7 +873,7 @@ a.card.hidden{display:none}
 
 <!-- ⑥ Math & Computer Science -->
 <div class="group" id="math">
-  <div class="group-head"><span class="idx">06</span><h2>Math &amp; Computer Science</h2><span class="count">5 topics</span></div>
+  <div class="group-head"><span class="idx">06</span><h2>Math &amp; Computer Science</h2><span class="count">6 topics</span></div>
   <div class="card-grid">
 
     <a class="card" href="algorithms-patterns.html" data-title="algorithms patterns binary search two pointers graph traversals dp bit tricks">
@@ -812,6 +949,22 @@ a.card.hidden{display:none}
       </div>
     </a>
 
+    <a class="card" href="display-resolutions.html" data-title="display resolutions monitor sd hd qhd 4k 8k pixels graphics">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="12" width="48" height="34" rx="4" stroke="#D97757" stroke-width="2" fill="none"/>
+          <rect x="16" y="20" width="32" height="18" rx="2" fill="#D97757" fill-opacity=".18"/>
+          <line x1="24" y1="54" x2="40" y2="54" stroke="#D97757" stroke-width="2" stroke-linecap="round"/>
+          <line x1="32" y1="46" x2="32" y2="54" stroke="#D97757" stroke-width="2"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Display Resolutions</div>
+        <div class="card-desc">SD, HD, QHD, 4K, 8K, pixel counts, and practical graphics implications</div>
+        <div class="card-file">display-resolutions.html</div>
+      </div>
+    </a>
+
     <a class="card" href="game-math.html" data-title="game math unit circle sin cos dot product projections atan2 fov">
       <div class="card-thumb">
         <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -874,7 +1027,7 @@ a.card.hidden{display:none}
 
 <footer>
   <span class="k">Knowledge Vault</span>
-  <span style="font-family:var(--mono);font-size:11px">45 topics</span>
+  <span style="font-family:var(--mono);font-size:11px">54 topics</span>
 </footer>
 </div>
 <script>
