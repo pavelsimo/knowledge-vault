@@ -1,0 +1,112 @@
+---
+title: "bassimeledath/excalidraw-render-mcp: MCP server for headless Excalidraw diagram rendering. Renders locally — no data sent to third-party servers."
+source: "https://github.com/bassimeledath/excalidraw-render-mcp"
+author:
+published:
+created: 2026-05-30
+description: "MCP server for headless Excalidraw diagram rendering. Renders locally — no data sent to third-party servers. - bassimeledath/excalidraw-render-mcp"
+tags:
+  - "clippings"
+---
+## excalidraw-render
+
+Headless Excalidraw diagram renderer for **Claude Code CLI** and other MCP clients. Renders hand-drawn diagrams as PNG or SVG — diagrams are rendered locally, not on Excalidraw's servers.
+
+Uses headless Chromium (via [agent-browser](https://github.com/vercel-labs/agent-browser)) to render diagrams server-side. First render takes ~3s (browser launch + CDN import), subsequent renders ~60ms.
+
+## How it works
+
+[![[raw/00-clippings/images/bb7c9504f31ad49fe33f07bfecb314a3_MD5.png]]](https://github.com/bassimeledath/excalidraw-render-mcp/blob/main/architecture.png)
+
+1. A headless Chromium browser is launched as a singleton
+2. The browser navigates to [esm.sh](https://esm.sh/) and dynamically imports `@excalidraw/excalidraw`
+3. Elements are converted via `convertToExcalidrawElements()` and rendered to SVG via `exportToSvg()`
+4. For PNG: Playwright takes an element-level screenshot of the SVG. For SVG: the markup is serialized directly to file.
+5. The browser stays alive for subsequent renders (~60ms each)
+
+## Install
+
+### One command (npm)
+
+```
+# Claude Code
+claude mcp add --scope user --transport stdio excalidraw -- npx -y excalidraw-render
+
+# Or with any MCP client
+npx -y excalidraw-render
+```
+
+### From source
+
+```
+git clone https://github.com/bassimeledath/excalidraw-render.git
+cd excalidraw-render
+npm install
+npm run build
+
+# Add to Claude Code
+claude mcp add --scope user --transport stdio excalidraw -- node /absolute/path/to/excalidraw-render/dist/index.js
+```
+
+### Claude Desktop / other clients
+
+Add to your MCP config:
+
+```
+{
+  "mcpServers": {
+    "excalidraw": {
+      "command": "npx",
+      "args": ["-y", "excalidraw-render"]
+    }
+  }
+}
+```
+
+## Tools
+
+| Tool | Description |
+| --- | --- |
+| `excalidraw_read_me` | Returns the Excalidraw element format reference (color palettes, element types, examples). Call once before drawing. |
+| `create_excalidraw_diagram` | Renders an Excalidraw element JSON array to a PNG or SVG file. Returns the file path. |
+
+## Usage
+
+After installing, ask Claude to draw:
+
+- "Draw an architecture diagram showing a FastAPI server connected to Redis and Gemini"
+- "Create an Excalidraw diagram of the git branching model"
+- "Sketch a flowchart for user authentication"
+
+Claude will call `excalidraw_read_me` to learn the element format, then `create_excalidraw_diagram` with the element JSON. The file is saved to disk and the path is returned.
+
+### create\_excalidraw\_diagram parameters
+
+| Parameter | Type | Required | Description |
+| --- | --- | --- | --- |
+| `elements` | string | yes | JSON array of Excalidraw elements (see format reference from `excalidraw_read_me`) |
+| `outputPath` | string | no | Absolute path for the output file. Defaults to a temp file. |
+| `format` | string | no | `"png"` (default) or `"svg"`. SVG outputs vector graphics that scale to any size without quality loss. |
+
+## Privacy
+
+Diagrams are rendered locally in a headless Chromium instance on your machine, not on Excalidraw's servers. The only network request is fetching the Excalidraw JavaScript library from esm.sh at startup — no diagram content is sent to third-party servers.
+
+## Requirements
+
+- Node.js 18+
+- Chromium is installed automatically via `agent-browser install` (runs as a postinstall hook)
+
+## Credits & Inspiration
+
+This project was inspired by [excalidraw-mcp-app](https://github.com/antonpk1/excalidraw-mcp-app) by Anton Pk, which renders interactive Excalidraw diagrams inside Claude Desktop using MCP Apps (`ui://` resources). It's a great tool if you're using Claude Desktop with a browser surface.
+
+**excalidraw-render** takes a different approach for a different use case:
+
+|  | excalidraw-mcp-app | excalidraw-render |
+| --- | --- | --- |
+| **Target** | Claude Desktop (browser) | Claude Code CLI (terminal) |
+| **Rendering** | Client-side in browser UI | Server-side headless Chromium |
+| **Output** | Interactive SVG in chat | PNG or SVG file on disk |
+| **Dependencies** | React, MCP Apps ext | agent-browser, Playwright |
+| **Privacy** | Renders in client app | Fully local, no data sent externally |
