@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "pages:prepare": "node scripts/prepare-pages-artifact.js",
     "slides": "node scripts/wiki-to-slides.js",
     "slides:all": "node scripts/wiki-to-slides.js --all",
     "slides:clean": "rm -rf outputs/slides"

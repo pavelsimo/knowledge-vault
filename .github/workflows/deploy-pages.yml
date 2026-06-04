@@ -5,6 +5,10 @@ on:
     branches: [main]
     paths:
       - "wiki_html/**"
+      - "raw/**"
+      - "scripts/prepare-pages-artifact.js"
+      - "package.json"
+      - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 
 permissions:
@@ -25,11 +29,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
       - uses: actions/configure-pages@v5
+
+      - name: Prepare Pages artifact
+        run: npm run pages:prepare
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: wiki_html
+          path: .pages-artifact
 
       - id: deployment
         uses: actions/deploy-pages@v4
