@@ -22,13 +22,13 @@ A personal knowledge base about Pavel personal interests.
 ## HTML Wiki Rules
 - A parallel HTML version of the wiki lives in `wiki_html/`; never edit it manually
 - Every `wiki/<topic>.md` gets a matching `wiki_html/<topic>.html`
-- `wiki_html/INDEX.html` is the main hub page, mirroring `wiki/INDEX.md`
+- `wiki_html/index.html` is the main hub page, mirroring `wiki/INDEX.md`
 - Internal `[[topic-name]]` links become `<a href="topic-name.html">` relative links
 - Every HTML file must follow only the design tokens in `DESIGN.md` at the repo root — read it before generating any HTML
 - Each HTML file is self-contained: inline all CSS, no external stylesheets or JS frameworks
 - Before building a page, read `wiki_html/components/CATALOG.md` and pick components whose patterns fit the content; adapt their structure and styles using DESIGN.md tokens — do not copy whole files
-- Page structure: visible top "Back to index" link to `INDEX.html` → masthead (eyebrow + serif h1 with italic `<em>` on a key word + intro paragraph + toc pills) → one `<section>` per H2 → footer with link back to INDEX.html
-- Every topic HTML page must include an immediately visible back button/link near the top of the page pointing to `INDEX.html`, so readers do not need to scroll to the footer to return to the hub
+- Page structure: visible top "Back to index" link to `index.html` → masthead (eyebrow + serif h1 with italic `<em>` on a key word + intro paragraph + toc pills) → one `<section>` per H2 → footer with link back to `index.html`
+- Every topic HTML page must include an immediately visible back button/link near the top of the page pointing to `index.html`, so readers do not need to scroll to the footer to return to the hub
 - When the matching `wiki/<topic>.md` references raw-source images or figures, carry over a selected set of the most explanatory figures into the HTML page near the relevant section, with meaningful `alt` text and captions; avoid dumping every screenshot, but do not omit diagrams that materially clarify the concept
 - Raw-source figures may use `../raw/...` in source HTML so local repo browsing works; GitHub Pages deployment must run the artifact-prep step, which copies only referenced images into `.pages-artifact/assets/raw/` and rewrites those image `src` values to `assets/raw/...` for the published site
 - Always end with a "Related Topics" section linking to other wiki pages

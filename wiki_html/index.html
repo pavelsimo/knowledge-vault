@@ -1,9 +1,1061 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="refresh" content="0; url=INDEX.html">
-<link rel="canonical" href="INDEX.html">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Knowledge Vault</title>
+<style>
+:root{--ivory:#FAF9F5;--paper:#FFFFFF;--slate:#141413;--clay:#D97757;--clay-d:#B85C3E;--oat:#E3DACC;--olive:#788C5D;--g100:#F0EEE6;--g200:#E6E3DA;--g300:#D1CFC5;--g500:#87867F;--g700:#3D3D3A;--serif:ui-serif,Georgia,"Times New Roman",Times,serif;--sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;--mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
+header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}h1 em{font-style:italic;color:var(--clay)}
+.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
+nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms}nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
+a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}a:hover{text-decoration-color:var(--clay)}
+/* section headings */
+.group{margin-top:72px;scroll-margin-top:28px}
+.group-head{display:flex;align-items:baseline;gap:16px;margin-bottom:24px;border-bottom:1.5px solid var(--g300);padding-bottom:14px}
+.group-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
+.group-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
+.group-head .count{font-family:var(--mono);font-size:12px;color:var(--g500);margin-left:auto}
+/* card grid */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(316px,1fr));gap:20px}
+a.card{display:block;background:var(--paper);border:1.5px solid var(--g300);border-radius:14px;overflow:hidden;text-decoration:none;color:inherit;transition:border-color 150ms,box-shadow 150ms,transform 150ms}
+a.card:hover{border-color:var(--slate);box-shadow:0 10px 30px rgba(20,20,19,.10);transform:translateY(-3px)}
+a.card:hover .card-thumb{background:var(--oat)}
+.card-thumb{height:132px;background:var(--g100);display:flex;align-items:center;justify-content:center;transition:background 150ms;overflow:hidden}
+.card-thumb svg{width:64px;height:64px;opacity:.55}
+.card-body{padding:18px 20px 20px}
+.card-title{font-family:var(--serif);font-size:19px;font-weight:500;color:var(--slate);line-height:1.22;letter-spacing:-.008em;margin-bottom:6px}
+.card-desc{font-size:13.5px;color:var(--g700);line-height:1.5;margin-bottom:10px}
+.card-file{font-family:var(--mono);font-size:11px;color:var(--g500)}
+/* footer */
+footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}
+@media(max-width:640px){.wrap{padding:0 16px 80px}}
+/* search */
+.search-bar{margin-top:28px}
+.search-bar input{width:100%;max-width:520px;padding:10px 16px;border:1.5px solid var(--g300);border-radius:999px;font-size:14px;font-family:var(--sans);background:var(--paper);color:var(--slate);outline:none;transition:border-color 120ms}
+.search-bar input:focus{border-color:var(--clay)}
+.search-bar input::placeholder{color:var(--g500)}
+a.card.hidden{display:none}
+</style>
 </head>
-<body></body>
+<body>
+<div class="wrap">
+<header class="masthead">
+  <div class="eyebrow">Knowledge Vault</div>
+  <h1>Knowledge <em>Vault</em></h1>
+  <p class="intro">55 topics across machine learning, computer vision, robotics, mathematics, and systems — organized as a personal reference for deep technical work.</p>
+  <nav class="toc">
+    <a href="#llm">LLMs &amp; Language</a>
+    <a href="#cv">Computer Vision</a>
+    <a href="#dl">Deep Learning</a>
+    <a href="#robotics">Robotics &amp; Simulation</a>
+    <a href="#tools">Tools &amp; Practice</a>
+    <a href="#math">Math &amp; CS</a>
+    <a href="#industry">Industry</a>
+  </nav>
+  <div class="search-bar">
+    <input type="search" id="search" placeholder="Filter topics…" oninput="filterCards(this.value)">
+  </div>
+</header>
+
+<!-- ① LLMs & Language -->
+<div class="group" id="llm">
+  <div class="group-head"><span class="idx">01</span><h2>LLMs &amp; Language</h2><span class="count">12 topics</span></div>
+  <div class="card-grid">
+
+    <a class="card" href="attention-transformers.html" data-title="attention transformers self-attention multi-head kv caching vit">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="32" cy="32" r="20" stroke="#D97757" stroke-width="2"/>
+          <circle cx="32" cy="12" r="4" fill="#D97757" fill-opacity=".5"/>
+          <circle cx="32" cy="52" r="4" fill="#D97757" fill-opacity=".5"/>
+          <circle cx="12" cy="32" r="4" fill="#D97757" fill-opacity=".5"/>
+          <circle cx="52" cy="32" r="4" fill="#D97757" fill-opacity=".5"/>
+          <line x1="32" y1="16" x2="32" y2="48" stroke="#D97757" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <line x1="16" y1="32" x2="48" y2="32" stroke="#D97757" stroke-width="1.5" stroke-dasharray="3 3"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Attention &amp; Transformers</div>
+        <div class="card-desc">Self-attention, cross-attention, multi-head attention, ViT, KV caching, TTFT</div>
+        <div class="card-file">attention-transformers.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="nlp.html" data-title="nlp text generation translation summarization tokenization">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="12" y="18" width="40" height="6" rx="3" fill="#D97757" fill-opacity=".4"/>
+          <rect x="12" y="29" width="32" height="6" rx="3" fill="#D97757" fill-opacity=".6"/>
+          <rect x="12" y="40" width="24" height="6" rx="3" fill="#D97757" fill-opacity=".8"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">NLP</div>
+        <div class="card-desc">Text generation, translation, summarization, tokenization concepts</div>
+        <div class="card-file">nlp.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="sentence-embeddings.html" data-title="sentence embeddings semantic search vector spaces all-minilm">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="24" r="5" fill="#D97757" fill-opacity=".7"/>
+          <circle cx="44" cy="20" r="5" fill="#D97757" fill-opacity=".5"/>
+          <circle cx="36" cy="42" r="5" fill="#D97757" fill-opacity=".6"/>
+          <circle cx="18" cy="44" r="5" fill="#D97757" fill-opacity=".4"/>
+          <line x1="20" y1="24" x2="44" y2="20" stroke="#D97757" stroke-width="1.5" stroke-opacity=".4"/>
+          <line x1="44" y1="20" x2="36" y2="42" stroke="#D97757" stroke-width="1.5" stroke-opacity=".4"/>
+          <line x1="20" y1="24" x2="18" y2="44" stroke="#D97757" stroke-width="1.5" stroke-opacity=".4"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Sentence Embeddings</div>
+        <div class="card-desc">all-MiniLM-L6-v2, semantic search, vector spaces, cosine similarity</div>
+        <div class="card-file">sentence-embeddings.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="rag.html" data-title="rag retrieval augmented generation naive hyde graph hybrid agentic corrective">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="24" width="16" height="16" rx="4" fill="#D97757" fill-opacity=".5"/>
+          <rect x="24" y="16" width="16" height="16" rx="4" fill="#D97757" fill-opacity=".3"/>
+          <rect x="40" y="24" width="16" height="16" rx="4" fill="#D97757" fill-opacity=".7"/>
+          <line x1="24" y1="32" x2="24" y2="32" stroke="#D97757" stroke-width="2"/>
+          <polyline points="24,32 32,32 40,32" stroke="#D97757" stroke-width="1.5" fill="none"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">RAG</div>
+        <div class="card-desc">Ingestion, retrieval quality, evaluation, and architectures from naive to agentic RAG</div>
+        <div class="card-file">rag.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="llm-training.html" data-title="llm training pre-training sft supervised fine-tuning rlhf ppo reward modeling">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 44 L20 28 L28 36 L36 20 L44 30 L52 16" stroke="#D97757" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <circle cx="52" cy="16" r="3" fill="#D97757"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">LLM Training</div>
+        <div class="card-desc">Pre-training, supervised fine-tuning (SFT), reward modeling, RLHF with PPO</div>
+        <div class="card-file">llm-training.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="llm-from-scratch.html" data-title="llm from scratch pytorch bigram tokenization logits loss generation">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="14" width="44" height="36" rx="4" stroke="#D97757" stroke-width="2" fill="none"/>
+          <circle cx="22" cy="26" r="4" fill="#D97757" fill-opacity=".4"/>
+          <circle cx="32" cy="26" r="4" fill="#D97757" fill-opacity=".6"/>
+          <circle cx="42" cy="26" r="4" fill="#D97757" fill-opacity=".8"/>
+          <line x1="18" y1="40" x2="46" y2="40" stroke="#D97757" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">LLM from Scratch</div>
+        <div class="card-desc">PyTorch tensors, character tokenization, bigram models, logits, loss, and generation</div>
+        <div class="card-file">llm-from-scratch.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="gemma-4.html" data-title="gemma 4 moe dense interleaving attention k=v p-rope vision encoder audio">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="32,10 52,22 52,42 32,54 12,42 12,22" stroke="#D97757" stroke-width="2" fill="#D97757" fill-opacity=".1"/>
+          <polygon points="32,20 44,27 44,37 32,44 20,37 20,27" fill="#D97757" fill-opacity=".3"/>
+          <circle cx="32" cy="32" r="5" fill="#D97757" fill-opacity=".7"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Gemma 4</div>
+        <div class="card-desc">Dense/MoE variants, interleaving attention, K=V, p-RoPE, vision and audio encoders</div>
+        <div class="card-file">gemma-4.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="ai-agents.html" data-title="ai agents claude sub-agents orchestration context multi-agent systems">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="32" cy="22" r="8" fill="#D97757" fill-opacity=".6"/>
+          <circle cx="16" cy="44" r="6" fill="#D97757" fill-opacity=".4"/>
+          <circle cx="48" cy="44" r="6" fill="#D97757" fill-opacity=".4"/>
+          <line x1="26" y1="28" x2="20" y2="38" stroke="#D97757" stroke-width="1.5"/>
+          <line x1="38" y1="28" x2="44" y2="38" stroke="#D97757" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">AI Agents</div>
+        <div class="card-desc">Workflows vs agents, orchestration patterns, context-centric design, and tool interfaces</div>
+        <div class="card-file">ai-agents.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="agent-harness.html" data-title="agent harness orchestration loop tools memory state guardrails workflows verification">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="12" y="12" width="40" height="40" rx="6" stroke="#D97757" stroke-width="2" fill="#D97757" fill-opacity=".08"/>
+          <circle cx="32" cy="32" r="7" fill="#D97757" fill-opacity=".6"/>
+          <circle cx="20" cy="20" r="4" fill="#D97757" fill-opacity=".3"/>
+          <circle cx="44" cy="20" r="4" fill="#D97757" fill-opacity=".3"/>
+          <circle cx="20" cy="44" r="4" fill="#D97757" fill-opacity=".3"/>
+          <circle cx="44" cy="44" r="4" fill="#D97757" fill-opacity=".3"/>
+          <line x1="25" y1="25" x2="29" y2="29" stroke="#D97757" stroke-width="1.5"/>
+          <line x1="39" y1="25" x2="35" y2="29" stroke="#D97757" stroke-width="1.5"/>
+          <line x1="25" y1="39" x2="29" y2="35" stroke="#D97757" stroke-width="1.5"/>
+          <line x1="39" y1="39" x2="35" y2="35" stroke="#D97757" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Agent Harness</div>
+        <div class="card-desc">Orchestration loops, tools, memory, state, guardrails, dynamic workflows, and verification</div>
+        <div class="card-file">agent-harness.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="ai-model-architectures.html" data-title="ai model architectures llm lcm lam moe vlm slm mlm sam">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="10" width="20" height="12" rx="3" fill="#D97757" fill-opacity=".5"/>
+          <rect x="34" y="10" width="20" height="12" rx="3" fill="#D97757" fill-opacity=".3"/>
+          <rect x="10" y="26" width="20" height="12" rx="3" fill="#D97757" fill-opacity=".4"/>
+          <rect x="34" y="26" width="20" height="12" rx="3" fill="#D97757" fill-opacity=".6"/>
+          <rect x="10" y="42" width="20" height="12" rx="3" fill="#D97757" fill-opacity=".7"/>
+          <rect x="34" y="42" width="20" height="12" rx="3" fill="#D97757" fill-opacity=".2"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">AI Model Architectures</div>
+        <div class="card-desc">Eight specialized types: LLM, LCM, LAM, MoE, VLM, SLM, MLM, SAM — selection guide</div>
+        <div class="card-file">ai-model-architectures.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="quantization.html" data-title="quantization symmetric asymmetric block perplexity gguf bitsandbytes">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="12" y="44" width="8" height="12" rx="2" fill="#D97757" fill-opacity=".3"/>
+          <rect x="24" y="34" width="8" height="22" rx="2" fill="#D97757" fill-opacity=".5"/>
+          <rect x="36" y="22" width="8" height="34" rx="2" fill="#D97757" fill-opacity=".7"/>
+          <rect x="48" y="14" width="8" height="42" rx="2" fill="#D97757" fill-opacity=".9"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Quantization</div>
+        <div class="card-desc">Symmetric/asymmetric, block quantization, perplexity benchmarks, speed tradeoffs</div>
+        <div class="card-file">quantization.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="distributed-training.html" data-title="distributed training data tensor pipeline context parallelism fsdp zero mfu">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="8" width="20" height="20" rx="4" fill="#D97757" fill-opacity=".4"/>
+          <rect x="36" y="8" width="20" height="20" rx="4" fill="#D97757" fill-opacity=".4"/>
+          <rect x="8" y="36" width="20" height="20" rx="4" fill="#D97757" fill-opacity=".4"/>
+          <rect x="36" y="36" width="20" height="20" rx="4" fill="#D97757" fill-opacity=".4"/>
+          <line x1="28" y1="18" x2="36" y2="18" stroke="#D97757" stroke-width="1.5"/>
+          <line x1="28" y1="46" x2="36" y2="46" stroke="#D97757" stroke-width="1.5"/>
+          <line x1="18" y1="28" x2="18" y2="36" stroke="#D97757" stroke-width="1.5"/>
+          <line x1="46" y1="28" x2="46" y2="36" stroke="#D97757" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Distributed Training</div>
+        <div class="card-desc">Data/tensor/pipeline/context parallelism, FSDP/ZeRO, MFU, activation checkpointing</div>
+        <div class="card-file">distributed-training.html</div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<!-- ② Computer Vision -->
+<div class="group" id="cv">
+  <div class="group-head"><span class="idx">02</span><h2>Computer Vision</h2><span class="count">10 topics</span></div>
+  <div class="card-grid">
+
+    <a class="card" href="computer-vision.html" data-title="computer vision image classification knn distance metrics linear classifiers">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="14" width="48" height="36" rx="4" stroke="#D97757" stroke-width="2"/>
+          <circle cx="32" cy="32" r="10" fill="#D97757" fill-opacity=".3"/>
+          <circle cx="32" cy="32" r="4" fill="#D97757" fill-opacity=".7"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Computer Vision</div>
+        <div class="card-desc">Image classification challenges, KNN, distance metrics, linear classifiers, CIFAR</div>
+        <div class="card-file">computer-vision.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="convolutional-neural-networks.html" data-title="cnn convolutional neural networks filters pooling batch norm resnet activation">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="6" y="14" width="14" height="36" rx="3" fill="#D97757" fill-opacity=".4"/>
+          <rect x="24" y="20" width="14" height="24" rx="3" fill="#D97757" fill-opacity=".6"/>
+          <rect x="44" y="24" width="14" height="16" rx="3" fill="#D97757" fill-opacity=".8"/>
+          <line x1="20" y1="32" x2="24" y2="32" stroke="#D97757" stroke-width="1.5"/>
+          <line x1="38" y1="32" x2="44" y2="32" stroke="#D97757" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Convolutional Neural Networks</div>
+        <div class="card-desc">Filters, pooling, batch norm, activation functions, ResNet, weight initialization</div>
+        <div class="card-file">convolutional-neural-networks.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="object-detection.html" data-title="object detection rcnn yolo ssd detr anchor boxes single two-stage">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="14" width="48" height="36" rx="4" stroke="#D97757" stroke-width="2" fill="none"/>
+          <rect x="16" y="22" width="14" height="12" rx="2" stroke="#D97757" stroke-width="1.5" fill="#D97757" fill-opacity=".2"/>
+          <rect x="36" y="26" width="12" height="10" rx="2" stroke="#D97757" stroke-width="1.5" fill="#D97757" fill-opacity=".2"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Object Detection</div>
+        <div class="card-desc">RCNN, YOLO, SSD, DETR, anchor boxes, single vs two-stage detectors</div>
+        <div class="card-file">object-detection.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="semantic-segmentation.html" data-title="semantic segmentation instance u-net mask rcnn iou miou unpooling">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="14" width="22" height="16" rx="3" fill="#D97757" fill-opacity=".6"/>
+          <rect x="34" y="14" width="22" height="16" rx="3" fill="#788C5D" fill-opacity=".5"/>
+          <rect x="8" y="34" width="22" height="16" rx="3" fill="#788C5D" fill-opacity=".4"/>
+          <rect x="34" y="34" width="22" height="16" rx="3" fill="#D97757" fill-opacity=".3"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Semantic Segmentation</div>
+        <div class="card-desc">U-Net, unpooling, Mask R-CNN, IoU/mIoU — pixel-level classification</div>
+        <div class="card-file">semantic-segmentation.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="network-visualization.html" data-title="network visualization saliency maps cam grad-cam vit attention interpretability">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="heatmap" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#D97757" stop-opacity=".9"/>
+              <stop offset="60%" stop-color="#D97757" stop-opacity=".3"/>
+              <stop offset="100%" stop-color="#D97757" stop-opacity=".05"/>
+            </radialGradient>
+          </defs>
+          <rect x="8" y="14" width="48" height="36" rx="4" fill="none" stroke="#D97757" stroke-width="1.5"/>
+          <ellipse cx="32" cy="32" rx="16" ry="12" fill="url(#heatmap)"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Network Visualization</div>
+        <div class="card-desc">Saliency maps, CAM, Grad-CAM, ViT attention — interpretability of deep networks</div>
+        <div class="card-file">network-visualization.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="video-understanding.html" data-title="video understanding classification 3d cnns two-stream temporal action">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="6" y="18" width="36" height="28" rx="4" stroke="#D97757" stroke-width="2" fill="none"/>
+          <polygon points="22,25 22,39 36,32" fill="#D97757" fill-opacity=".6"/>
+          <rect x="46" y="22" width="12" height="6" rx="2" fill="#D97757" fill-opacity=".4"/>
+          <rect x="46" y="36" width="12" height="6" rx="2" fill="#D97757" fill-opacity=".6"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Video Understanding</div>
+        <div class="card-desc">Video classification, 3D CNNs, two-stream networks, temporal action localization</div>
+        <div class="card-file">video-understanding.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="3d-vision.html" data-title="3d vision shape representations pointnet nerf gaussian splatting datasets">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="32,10 54,26 46,46 18,46 10,26" stroke="#D97757" stroke-width="2" fill="#D97757" fill-opacity=".1"/>
+          <polygon points="32,18 46,28 40,40 24,40 18,28" fill="#D97757" fill-opacity=".3"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">3D Vision</div>
+        <div class="card-desc">3D shape representations, PointNet, NeRF, Gaussian Splatting, 3D datasets</div>
+        <div class="card-file">3d-vision.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="multimodal-models.html" data-title="multimodal models blip clap image-text retrieval captioning visual qa">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="14" width="20" height="20" rx="4" fill="#D97757" fill-opacity=".4"/>
+          <rect x="8" y="38" width="20" height="12" rx="3" fill="#788C5D" fill-opacity=".4"/>
+          <rect x="36" y="14" width="20" height="32" rx="4" fill="#D97757" fill-opacity=".6"/>
+          <line x1="28" y1="26" x2="36" y2="26" stroke="#D97757" stroke-width="1.5" stroke-dasharray="3 3"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Multimodal Models</div>
+        <div class="card-desc">BLIP, CLAP, image-text retrieval, image captioning, visual question answering</div>
+        <div class="card-file">multimodal-models.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="self-supervised-learning.html" data-title="self-supervised learning pretext tasks contrastive simclr moco dino mae">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="22" cy="32" r="12" stroke="#D97757" stroke-width="2" fill="#D97757" fill-opacity=".1"/>
+          <circle cx="42" cy="32" r="12" stroke="#788C5D" stroke-width="2" fill="#788C5D" fill-opacity=".1"/>
+          <ellipse cx="32" cy="32" rx="6" ry="10" fill="#D97757" fill-opacity=".3"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Self-Supervised Learning</div>
+        <div class="card-desc">Pretext tasks, contrastive learning (SimCLR, MoCo, DINO), MAE — learning without labels</div>
+        <div class="card-file">self-supervised-learning.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="human-centered-ai.html" data-title="human centered ai bias safety privacy augmentation human values">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="32" cy="22" r="10" stroke="#D97757" stroke-width="2" fill="#D97757" fill-opacity=".1"/>
+          <path d="M14 52 Q14 36 32 36 Q50 36 50 52" stroke="#D97757" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Human-Centered AI</div>
+        <div class="card-desc">Perception limits, bias, privacy, augmentation — designing AI around human values</div>
+        <div class="card-file">human-centered-ai.html</div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<!-- ③ Deep Learning Foundations -->
+<div class="group" id="dl">
+  <div class="group-head"><span class="idx">03</span><h2>Deep Learning Foundations</h2><span class="count">8 topics</span></div>
+  <div class="card-grid">
+
+    <a class="card" href="neural-networks.html" data-title="neural networks loss functions softmax regularization backpropagation gradients">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="22" r="5" fill="#D97757" fill-opacity=".5"/>
+          <circle cx="12" cy="42" r="5" fill="#D97757" fill-opacity=".5"/>
+          <circle cx="32" cy="16" r="5" fill="#D97757" fill-opacity=".6"/>
+          <circle cx="32" cy="32" r="5" fill="#D97757" fill-opacity=".6"/>
+          <circle cx="32" cy="48" r="5" fill="#D97757" fill-opacity=".6"/>
+          <circle cx="52" cy="32" r="5" fill="#D97757" fill-opacity=".8"/>
+          <line x1="17" y1="22" x2="27" y2="16" stroke="#D97757" stroke-width="1" stroke-opacity=".4"/>
+          <line x1="17" y1="22" x2="27" y2="32" stroke="#D97757" stroke-width="1" stroke-opacity=".4"/>
+          <line x1="17" y1="22" x2="27" y2="48" stroke="#D97757" stroke-width="1" stroke-opacity=".4"/>
+          <line x1="17" y1="42" x2="27" y2="16" stroke="#D97757" stroke-width="1" stroke-opacity=".4"/>
+          <line x1="17" y1="42" x2="27" y2="32" stroke="#D97757" stroke-width="1" stroke-opacity=".4"/>
+          <line x1="17" y1="42" x2="27" y2="48" stroke="#D97757" stroke-width="1" stroke-opacity=".4"/>
+          <line x1="37" y1="16" x2="47" y2="32" stroke="#D97757" stroke-width="1" stroke-opacity=".4"/>
+          <line x1="37" y1="32" x2="47" y2="32" stroke="#D97757" stroke-width="1" stroke-opacity=".4"/>
+          <line x1="37" y1="48" x2="47" y2="32" stroke="#D97757" stroke-width="1" stroke-opacity=".4"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Neural Networks</div>
+        <div class="card-desc">Loss functions, softmax, regularization, backpropagation, gradient computation</div>
+        <div class="card-file">neural-networks.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="optimization.html" data-title="optimization sgd momentum rmsprop adam adamw learning rate schedules">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 52 Q16 40 24 36 Q32 32 40 22 Q48 12 56 10" stroke="#D97757" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <circle cx="40" cy="22" r="4" fill="#D97757" fill-opacity=".7"/>
+          <path d="M40 22 L44 34 L36 34 Z" fill="#D97757" fill-opacity=".4"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Optimization</div>
+        <div class="card-desc">SGD, Momentum, RMSProp, Adam, AdamW, learning rate schedules</div>
+        <div class="card-file">optimization.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="recurrent-neural-networks.html" data-title="rnn recurrent neural networks lstm gru vanishing gradients sequence modeling">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="22" y="22" width="20" height="20" rx="4" fill="#D97757" fill-opacity=".5"/>
+          <line x1="8" y1="32" x2="22" y2="32" stroke="#D97757" stroke-width="2"/>
+          <line x1="42" y1="32" x2="56" y2="32" stroke="#D97757" stroke-width="2"/>
+          <path d="M32 22 Q44 14 44 32 Q44 46 32 42" stroke="#D97757" stroke-width="1.5" fill="none" stroke-dasharray="3 2"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Recurrent Neural Networks</div>
+        <div class="card-desc">Vanilla RNN, LSTM, GRU, vanishing gradients, sequence modeling</div>
+        <div class="card-file">recurrent-neural-networks.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="generative-models.html" data-title="generative models autoencoder vae gan diffusion rectified flow latent dit">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="32" cy="32" r="18" stroke="#D97757" stroke-width="2" fill="none" stroke-dasharray="5 3"/>
+          <circle cx="32" cy="32" r="10" fill="#D97757" fill-opacity=".2"/>
+          <circle cx="32" cy="32" r="4" fill="#D97757" fill-opacity=".7"/>
+          <line x1="32" y1="14" x2="32" y2="24" stroke="#D97757" stroke-width="1.5"/>
+          <line x1="32" y1="40" x2="32" y2="50" stroke="#D97757" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Generative Models</div>
+        <div class="card-desc">Autoencoders, VAEs, GANs, diffusion models, rectified flow, latent diffusion, DiT</div>
+        <div class="card-file">generative-models.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="audio-processing.html" data-title="audio processing sampling rate asr tts whisper clap zero-shot classification">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="12" y1="32" x2="12" y2="32" stroke="#D97757" stroke-width="3" stroke-linecap="round"/>
+          <line x1="18" y1="26" x2="18" y2="38" stroke="#D97757" stroke-width="3" stroke-linecap="round" stroke-opacity=".9"/>
+          <line x1="24" y1="20" x2="24" y2="44" stroke="#D97757" stroke-width="3" stroke-linecap="round" stroke-opacity=".8"/>
+          <line x1="30" y1="16" x2="30" y2="48" stroke="#D97757" stroke-width="3" stroke-linecap="round" stroke-opacity=".9"/>
+          <line x1="36" y1="22" x2="36" y2="42" stroke="#D97757" stroke-width="3" stroke-linecap="round" stroke-opacity=".7"/>
+          <line x1="42" y1="28" x2="42" y2="36" stroke="#D97757" stroke-width="3" stroke-linecap="round" stroke-opacity=".6"/>
+          <line x1="48" y1="30" x2="48" y2="34" stroke="#D97757" stroke-width="3" stroke-linecap="round" stroke-opacity=".5"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Audio Processing</div>
+        <div class="card-desc">Sampling rates, ASR (Whisper), TTS, zero-shot audio classification (CLAP)</div>
+        <div class="card-file">audio-processing.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="probability-statistics.html" data-title="probability statistics bayes theorem random variables covariance cs109">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 48 Q20 48 20 32 Q20 16 32 16 Q44 16 44 32 Q44 48 56 48" stroke="#D97757" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <line x1="8" y1="48" x2="56" y2="48" stroke="#D97757" stroke-width="1.5" stroke-opacity=".3"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Probability &amp; Statistics</div>
+        <div class="card-desc">Stanford CS109: probability theory, Bayes' theorem, random variables, covariance</div>
+        <div class="card-file">probability-statistics.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="gpu-cuda.html" data-title="gpu cuda compute capabilities vram math llm memory quantization kernels">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="14" width="44" height="36" rx="6" stroke="#D97757" stroke-width="2" fill="none"/>
+          <rect x="18" y="22" width="10" height="10" rx="2" fill="#D97757" fill-opacity=".5"/>
+          <rect x="32" y="22" width="10" height="10" rx="2" fill="#D97757" fill-opacity=".5"/>
+          <rect x="18" y="36" width="10" height="6" rx="2" fill="#D97757" fill-opacity=".3"/>
+          <rect x="32" y="36" width="10" height="6" rx="2" fill="#D97757" fill-opacity=".3"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">GPU &amp; CUDA</div>
+        <div class="card-desc">Compute capabilities, CUDA kernels, VRAM math for LLMs, GPU tier list</div>
+        <div class="card-file">gpu-cuda.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="ai-infrastructure.html" data-title="ai infrastructure agentic ai cpu accelerators memory low-latency always-on">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="18" width="44" height="28" rx="5" stroke="#D97757" stroke-width="2" fill="none"/>
+          <rect x="18" y="26" width="10" height="12" rx="2" fill="#D97757" fill-opacity=".5"/>
+          <rect x="34" y="26" width="12" height="12" rx="2" fill="#788C5D" fill-opacity=".5"/>
+          <line x1="10" y1="32" x2="4" y2="32" stroke="#D97757" stroke-width="2"/>
+          <line x1="54" y1="32" x2="60" y2="32" stroke="#D97757" stroke-width="2"/>
+          <line x1="32" y1="18" x2="32" y2="10" stroke="#D97757" stroke-width="2"/>
+          <line x1="32" y1="46" x2="32" y2="54" stroke="#D97757" stroke-width="2"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">AI Infrastructure</div>
+        <div class="card-desc">CPUs, accelerators, memory, low-latency orchestration, and always-on agentic workloads</div>
+        <div class="card-file">ai-infrastructure.html</div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<!-- ④ Robotics & Simulation -->
+<div class="group" id="robotics">
+  <div class="group-head"><span class="idx">04</span><h2>Robotics &amp; Simulation</h2><span class="count">5 topics</span></div>
+  <div class="card-grid">
+
+    <a class="card" href="physical-ai.html" data-title="physical ai simulation world models synthetic data robot foundation models">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="10" width="24" height="20" rx="4" stroke="#D97757" stroke-width="2" fill="#D97757" fill-opacity=".1"/>
+          <rect x="16" y="30" width="32" height="24" rx="4" stroke="#D97757" stroke-width="2" fill="#D97757" fill-opacity=".1"/>
+          <line x1="28" y1="30" x2="28" y2="54" stroke="#D97757" stroke-width="1.5" stroke-dasharray="3 2"/>
+          <line x1="36" y1="30" x2="36" y2="54" stroke="#D97757" stroke-width="1.5" stroke-dasharray="3 2"/>
+          <circle cx="32" cy="20" r="5" fill="#D97757" fill-opacity=".6"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Physical AI</div>
+        <div class="card-desc">Simulation-first development, world models, synthetic data, robot foundation models</div>
+        <div class="card-file">physical-ai.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="robot-learning.html" data-title="robot learning rl imitation diffusion policy rt-2 gr00t foundation models">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="32" cy="18" r="8" stroke="#D97757" stroke-width="2" fill="none"/>
+          <rect x="22" y="26" width="20" height="22" rx="4" stroke="#D97757" stroke-width="2" fill="none"/>
+          <line x1="12" y1="34" x2="22" y2="34" stroke="#D97757" stroke-width="2" stroke-linecap="round"/>
+          <line x1="42" y1="34" x2="52" y2="34" stroke="#D97757" stroke-width="2" stroke-linecap="round"/>
+          <line x1="24" y1="48" x2="20" y2="58" stroke="#D97757" stroke-width="2" stroke-linecap="round"/>
+          <line x1="40" y1="48" x2="44" y2="58" stroke="#D97757" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Robot Learning</div>
+        <div class="card-desc">RL, imitation learning, diffusion policy, robotic foundation models (RT-2, π₀, GR00T)</div>
+        <div class="card-file">robot-learning.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="digital-twins.html" data-title="digital twins live virtual replicas simulation operations optimization">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="18" width="20" height="28" rx="4" stroke="#D97757" stroke-width="2" fill="#D97757" fill-opacity=".1"/>
+          <rect x="36" y="18" width="20" height="28" rx="4" stroke="#D97757" stroke-width="2" stroke-dasharray="4 2" fill="none"/>
+          <line x1="28" y1="32" x2="36" y2="32" stroke="#D97757" stroke-width="1.5" stroke-dasharray="3 2"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Digital Twins</div>
+        <div class="card-desc">Live virtual replicas for planning, simulation, operations, and optimization</div>
+        <div class="card-file">digital-twins.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="open-usd.html" data-title="openusd scene representation stages prims composition schemas interoperability">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="32,10 54,22 54,42 32,54 10,42 10,22" stroke="#D97757" stroke-width="2" fill="#D97757" fill-opacity=".08"/>
+          <polygon points="32,20 46,28 46,36 32,44 18,36 18,28" stroke="#D97757" stroke-width="1.5" fill="#D97757" fill-opacity=".15"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">OpenUSD</div>
+        <div class="card-desc">Scene representation: stages, prims, composition, schemas, and ecosystem interoperability</div>
+        <div class="card-file">open-usd.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="omniverse.html" data-title="omniverse nvidia openusd simulation apps industrial workflows virtual environments">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="32" cy="32" r="22" stroke="#D97757" stroke-width="2" fill="none"/>
+          <ellipse cx="32" cy="32" rx="22" ry="10" stroke="#D97757" stroke-width="1.5" stroke-dasharray="4 2" fill="none"/>
+          <line x1="32" y1="10" x2="32" y2="54" stroke="#D97757" stroke-width="1.5" stroke-dasharray="4 2"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Omniverse</div>
+        <div class="card-desc">NVIDIA's OpenUSD-native platform for simulation apps, industrial workflows, virtual environments</div>
+        <div class="card-file">omniverse.html</div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<!-- ⑤ Tools & Practice -->
+<div class="group" id="tools">
+  <div class="group-head"><span class="idx">05</span><h2>Tools &amp; Practice</h2><span class="count">12 topics</span></div>
+  <div class="card-grid">
+
+    <a class="card" href="hugging-face.html" data-title="hugging face model hub tasks leaderboards open-source ecosystem">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="32" cy="26" r="14" fill="#D97757" fill-opacity=".15" stroke="#D97757" stroke-width="2"/>
+          <circle cx="26" cy="22" r="3" fill="#D97757" fill-opacity=".8"/>
+          <circle cx="38" cy="22" r="3" fill="#D97757" fill-opacity=".8"/>
+          <path d="M24 32 Q32 40 40 32" stroke="#D97757" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <line x1="22" y1="40" x2="18" y2="52" stroke="#D97757" stroke-width="2" stroke-linecap="round"/>
+          <line x1="42" y1="40" x2="46" y2="52" stroke="#D97757" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Hugging Face</div>
+        <div class="card-desc">Model hub, tasks, leaderboards, and the open-source AI model ecosystem</div>
+        <div class="card-file">hugging-face.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="transformers-library.html" data-title="transformers library pipeline api model loading safetensors tokenizers">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="14" width="44" height="10" rx="3" fill="#D97757" fill-opacity=".5"/>
+          <rect x="10" y="28" width="44" height="10" rx="3" fill="#D97757" fill-opacity=".4"/>
+          <rect x="10" y="42" width="44" height="10" rx="3" fill="#D97757" fill-opacity=".3"/>
+          <circle cx="16" cy="19" r="3" fill="#D97757" fill-opacity=".9"/>
+          <circle cx="16" cy="33" r="3" fill="#D97757" fill-opacity=".9"/>
+          <circle cx="16" cy="47" r="3" fill="#D97757" fill-opacity=".9"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Transformers Library</div>
+        <div class="card-desc">Pipeline API, model loading, safetensors, tokenizers — the core Hugging Face library</div>
+        <div class="card-file">transformers-library.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="mlops.html" data-title="mlops data drift concept drift monitoring deployment strategies canary blue-green">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 32 L22 32 L26 22 L30 44 L34 28 L38 36 L42 32 L52 32" stroke="#D97757" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">MLOps</div>
+        <div class="card-desc">Data drift, concept drift, model monitoring, canary/blue-green deployment, precision/recall</div>
+        <div class="card-file">mlops.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="ai-coding.html" data-title="ai coding vibe coding context engineering plan execute verify security">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="14" width="44" height="36" rx="4" stroke="#D97757" stroke-width="2" fill="none"/>
+          <polyline points="20,28 26,34 20,40" stroke="#D97757" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="30" y1="40" x2="44" y2="40" stroke="#D97757" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">AI Coding</div>
+        <div class="card-desc">Vibe coding, context engineering, Plan→Execute→Verify, security risks, effective prompting</div>
+        <div class="card-file">ai-coding.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="codex-workflows.html" data-title="codex workflows durable threads steering queuing automations goals side panel memory">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="16" width="44" height="32" rx="5" stroke="#D97757" stroke-width="2" fill="none"/>
+          <rect x="16" y="24" width="16" height="6" rx="3" fill="#D97757" fill-opacity=".4"/>
+          <rect x="16" y="34" width="26" height="6" rx="3" fill="#D97757" fill-opacity=".6"/>
+          <circle cx="48" cy="20" r="4" fill="#D97757" fill-opacity=".7"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Codex Workflows</div>
+        <div class="card-desc">Durable threads, steering, queuing, automations, goals, side-panel review, shared memory</div>
+        <div class="card-file">codex-workflows.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="desktop-ai-automation.html" data-title="desktop ai automation claude cowork files connectors scheduled workflows dispatch review artifacts">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="14" width="44" height="32" rx="5" stroke="#D97757" stroke-width="2" fill="none"/>
+          <rect x="18" y="22" width="28" height="6" rx="3" fill="#D97757" fill-opacity=".4"/>
+          <rect x="18" y="32" width="18" height="6" rx="3" fill="#788C5D" fill-opacity=".5"/>
+          <path d="M28 50 H36" stroke="#D97757" stroke-width="2" stroke-linecap="round"/>
+          <path d="M32 46 V50" stroke="#D97757" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="48" cy="18" r="4" fill="#D97757" fill-opacity=".7"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Desktop AI Automation</div>
+        <div class="card-desc">Scoped folder access, connectors, scheduled workflows, dispatch, and reviewable artifacts</div>
+        <div class="card-file">desktop-ai-automation.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="docling.html" data-title="docling document conversion extraction ocr tables content layers provenance chunking rag">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 10 H40 L50 20 V54 H18 Z" stroke="#D97757" stroke-width="2" fill="#D97757" fill-opacity=".08"/>
+          <path d="M40 10 V20 H50" stroke="#D97757" stroke-width="2"/>
+          <line x1="24" y1="30" x2="44" y2="30" stroke="#D97757" stroke-width="2" stroke-linecap="round"/>
+          <line x1="24" y1="38" x2="40" y2="38" stroke="#D97757" stroke-width="2" stroke-linecap="round"/>
+          <line x1="24" y1="46" x2="34" y2="46" stroke="#D97757" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Docling</div>
+        <div class="card-desc">Local OCR, table extraction, content layers, provenance, chunking, and RAG exports</div>
+        <div class="card-file">docling.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="databricks-bundles.html" data-title="databricks bundles declarative automation ci cd jobs pipelines mlflow">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="32,10 52,20 32,30 12,20" fill="#D97757" fill-opacity=".25" stroke="#D97757" stroke-width="1.5"/>
+          <polygon points="12,30 32,40 52,30" stroke="#D97757" stroke-width="1.5" fill="none"/>
+          <polygon points="12,40 32,50 52,40" stroke="#D97757" stroke-width="1.5" fill="none"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Databricks Bundles</div>
+        <div class="card-desc">Source-controlled jobs, pipelines, tests, model resources, and CI/CD deployment</div>
+        <div class="card-file">databricks-bundles.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="excalidraw-rendering.html" data-title="excalidraw rendering mcp headless chromium png svg diagram automation">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="14" width="44" height="36" rx="5" stroke="#D97757" stroke-width="2" fill="none"/>
+          <circle cx="22" cy="28" r="5" fill="#D97757" fill-opacity=".4"/>
+          <rect x="34" y="23" width="12" height="10" rx="2" fill="#788C5D" fill-opacity=".5"/>
+          <path d="M20 42 C28 36 36 48 46 40" stroke="#D97757" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Excalidraw Rendering</div>
+        <div class="card-desc">Local MCP rendering with headless Chromium, PNG/SVG export, and diagram automation</div>
+        <div class="card-file">excalidraw-rendering.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="tmux.html" data-title="tmux terminal multiplexer sessions windows panes copy mode agent workflows">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="14" width="44" height="36" rx="4" stroke="#D97757" stroke-width="2" fill="none"/>
+          <polyline points="18,26 24,32 18,38" stroke="#D97757" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="30" y1="38" x2="44" y2="38" stroke="#D97757" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Tmux</div>
+        <div class="card-desc">Sessions, windows, panes, copy mode, configuration, and agent workflow usage</div>
+        <div class="card-file">tmux.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="ml-learning-careers.html" data-title="ml learning careers active learning ai-assisted study implementation demo-driven">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 10 L54 22 L54 34 L32 46 L10 34 L10 22 Z" stroke="#D97757" stroke-width="2" fill="#D97757" fill-opacity=".08"/>
+          <path d="M32 20 L46 28 L46 36 L32 44" stroke="#D97757" stroke-width="1.5" fill="none"/>
+          <circle cx="32" cy="32" r="5" fill="#D97757" fill-opacity=".6"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">ML Learning &amp; Careers</div>
+        <div class="card-desc">Active learning, AI-assisted study loops, implementation-first practice, demo-driven career strategy</div>
+        <div class="card-file">ml-learning-careers.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="hailo.html" data-title="hailo edge ai accelerator hailort dataflow compiler onnx hef pcie">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="14" y="14" width="36" height="36" rx="6" stroke="#D97757" stroke-width="2" fill="none"/>
+          <rect x="22" y="22" width="20" height="20" rx="3" fill="#D97757" fill-opacity=".3"/>
+          <line x1="14" y1="32" x2="6" y2="32" stroke="#D97757" stroke-width="2"/>
+          <line x1="50" y1="32" x2="58" y2="32" stroke="#D97757" stroke-width="2"/>
+          <line x1="32" y1="14" x2="32" y2="6" stroke="#D97757" stroke-width="2"/>
+          <line x1="32" y1="50" x2="32" y2="58" stroke="#D97757" stroke-width="2"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Hailo</div>
+        <div class="card-desc">Hailo-8 edge AI accelerator: HailoRT setup, Dataflow Compiler, ONNX→HEF compilation</div>
+        <div class="card-file">hailo.html</div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<!-- ⑥ Math & Computer Science -->
+<div class="group" id="math">
+  <div class="group-head"><span class="idx">06</span><h2>Math &amp; Computer Science</h2><span class="count">6 topics</span></div>
+  <div class="card-grid">
+
+    <a class="card" href="algorithms-patterns.html" data-title="algorithms patterns binary search two pointers graph traversals dp bit tricks">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="32" y1="10" x2="32" y2="20" stroke="#D97757" stroke-width="2"/>
+          <circle cx="32" cy="24" r="4" stroke="#D97757" stroke-width="2" fill="none"/>
+          <line x1="28" y1="28" x2="20" y2="36" stroke="#D97757" stroke-width="2"/>
+          <line x1="36" y1="28" x2="44" y2="36" stroke="#D97757" stroke-width="2"/>
+          <circle cx="20" cy="40" r="4" stroke="#D97757" stroke-width="2" fill="none"/>
+          <circle cx="44" cy="40" r="4" stroke="#D97757" stroke-width="2" fill="none"/>
+          <line x1="16" y1="44" x2="10" y2="52" stroke="#D97757" stroke-width="1.5"/>
+          <line x1="24" y1="44" x2="28" y2="52" stroke="#D97757" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Algorithms &amp; Patterns</div>
+        <div class="card-desc">Binary search on answers, two pointers, graph traversals, DP families, bit tricks</div>
+        <div class="card-file">algorithms-patterns.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="quantum-computing.html" data-title="quantum computing qubits superposition entanglement gates quantum advantage">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="32" cy="32" r="20" stroke="#D97757" stroke-width="2" fill="none"/>
+          <ellipse cx="32" cy="32" rx="20" ry="8" stroke="#D97757" stroke-width="1.5" stroke-dasharray="4 2" fill="none"/>
+          <ellipse cx="32" cy="32" rx="8" ry="20" stroke="#D97757" stroke-width="1.5" stroke-dasharray="4 2" fill="none"/>
+          <circle cx="32" cy="32" r="3" fill="#D97757" fill-opacity=".8"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Quantum Computing</div>
+        <div class="card-desc">Qubits, superposition, entanglement, gates, and quantum advantage basics</div>
+        <div class="card-file">quantum-computing.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="system-design.html" data-title="system design osi model cdn caching sharding cap theorem microservices uber netflix">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="32" cy="20" r="6" stroke="#D97757" stroke-width="2" fill="none"/>
+          <circle cx="16" cy="44" r="6" stroke="#D97757" stroke-width="2" fill="none"/>
+          <circle cx="48" cy="44" r="6" stroke="#D97757" stroke-width="2" fill="none"/>
+          <line x1="27" y1="25" x2="20" y2="38" stroke="#D97757" stroke-width="1.5"/>
+          <line x1="37" y1="25" x2="43" y2="38" stroke="#D97757" stroke-width="1.5"/>
+          <line x1="22" y1="44" x2="42" y2="44" stroke="#D97757" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">System Design</div>
+        <div class="card-desc">OSI model, CDN, caching, sharding, CAP theorem, microservices — Uber, Netflix, WhatsApp</div>
+        <div class="card-file">system-design.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="shaders.html" data-title="shaders gpu shader programming vertex pixel glsl hlsl vfx gpgpu">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="shadergrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#D97757" stop-opacity=".8"/>
+              <stop offset="100%" stop-color="#788C5D" stop-opacity=".6"/>
+            </linearGradient>
+          </defs>
+          <polygon points="32,10 56,50 8,50" fill="url(#shadergrad)" opacity=".6"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Shaders</div>
+        <div class="card-desc">Vertex/pixel shaders, GLSL/HLSL, GPU parallelism, VFX techniques, GPGPU</div>
+        <div class="card-file">shaders.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="display-resolutions.html" data-title="display resolutions monitor sd hd qhd 4k 8k pixels graphics">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="12" width="48" height="34" rx="4" stroke="#D97757" stroke-width="2" fill="none"/>
+          <rect x="16" y="20" width="32" height="18" rx="2" fill="#D97757" fill-opacity=".18"/>
+          <line x1="24" y1="54" x2="40" y2="54" stroke="#D97757" stroke-width="2" stroke-linecap="round"/>
+          <line x1="32" y1="46" x2="32" y2="54" stroke="#D97757" stroke-width="2"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Display Resolutions</div>
+        <div class="card-desc">SD, HD, QHD, 4K, 8K, pixel counts, and practical graphics implications</div>
+        <div class="card-file">display-resolutions.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="game-math.html" data-title="game math unit circle sin cos dot product projections atan2 fov">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="32" cy="32" r="18" stroke="#D97757" stroke-width="1.5" fill="none"/>
+          <line x1="14" y1="32" x2="50" y2="32" stroke="#D97757" stroke-width="1.5" stroke-opacity=".4"/>
+          <line x1="32" y1="14" x2="32" y2="50" stroke="#D97757" stroke-width="1.5" stroke-opacity=".4"/>
+          <line x1="32" y1="32" x2="46" y2="20" stroke="#D97757" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="46" cy="20" r="3" fill="#D97757" fill-opacity=".8"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Game Math</div>
+        <div class="card-desc">Unit circle, sin/cos, dot product, projections, atan2, and field-of-view checks</div>
+        <div class="card-file">game-math.html</div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<!-- ⑦ Industry -->
+<div class="group" id="industry">
+  <div class="group-head"><span class="idx">07</span><h2>Industry</h2><span class="count">2 topics</span></div>
+  <div class="card-grid">
+
+    <a class="card" href="ai-industry.html" data-title="ai industry moonshot ai kimi flat hierarchies agent swarms generalization hiring">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="32" width="12" height="22" rx="2" fill="#D97757" fill-opacity=".4"/>
+          <rect x="26" y="22" width="12" height="32" rx="2" fill="#D97757" fill-opacity=".6"/>
+          <rect x="42" y="14" width="12" height="40" rx="2" fill="#D97757" fill-opacity=".8"/>
+          <line x1="10" y1="10" x2="54" y2="10" stroke="#D97757" stroke-width="1.5" stroke-dasharray="3 3" stroke-opacity=".4"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">AI Industry</div>
+        <div class="card-desc">AI-native organizations: Moonshot AI (Kimi), flat hierarchies, agent swarms, generalization hiring</div>
+        <div class="card-file">ai-industry.html</div>
+      </div>
+    </a>
+
+    <a class="card" href="china-development-economics.html" data-title="china development economics central-local governance tax reform land finance industrial policy urbanization">
+      <div class="card-thumb">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 50 Q16 44 24 36 Q32 28 40 26 Q48 24 56 18" stroke="#D97757" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <circle cx="24" cy="36" r="3" fill="#D97757" fill-opacity=".6"/>
+          <circle cx="40" cy="26" r="3" fill="#D97757" fill-opacity=".6"/>
+          <circle cx="56" cy="18" r="3" fill="#D97757" fill-opacity=".8"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-title">China Development Economics</div>
+        <div class="card-desc">Central-local governance, tax reform, land finance, industrial policy, urbanization, dual circulation</div>
+        <div class="card-file">china-development-economics.html</div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<footer>
+  <span class="k">Knowledge Vault</span>
+  <span style="font-family:var(--mono);font-size:11px">55 topics</span>
+</footer>
+</div>
+<script>
+function filterCards(q){
+  const s = q.toLowerCase().trim();
+  document.querySelectorAll('a.card').forEach(c=>{
+    const t = (c.dataset.title||'') + ' ' + (c.querySelector('.card-title')?.textContent||'') + ' ' + (c.querySelector('.card-desc')?.textContent||'');
+    c.classList.toggle('hidden', s.length > 0 && !t.toLowerCase().includes(s));
+  });
+}
+</script>
+</body>
 </html>

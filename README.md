@@ -31,7 +31,7 @@ images/       # Shared image assets
 
 `wiki/INDEX.md` lists every topic with a one-line description. Each topic file starts with a summary paragraph and links to related topics using `[[topic-name]]` syntax. Research papers are cited as clickable markdown links.
 
-The HTML wiki at `wiki_html/INDEX.html` mirrors the Markdown wiki with self-contained, dependency-free HTML pages styled according to `DESIGN.md`.
+The HTML wiki at `wiki_html/index.html` mirrors the Markdown wiki with self-contained, dependency-free HTML pages styled according to `DESIGN.md`.
 
 ## Key Files
 

@@ -10,7 +10,7 @@
 </style>
 </head>
 <body><div class="wrap">
-<a class="back-link" href="INDEX.html">← Back to index</a>
+<a class="back-link" href="index.html">← Back to index</a>
 <header class="masthead"><div class="eyebrow">Diagram Tools</div><h1>Excalidraw <em>rendering</em></h1><p class="intro">Local PNG/SVG rendering for Excalidraw diagrams through an MCP server, headless Chromium, and agent-friendly output paths.</p><nav class="toc"><a href="#works">How It Works</a><a href="#install">Install</a><a href="#privacy">Privacy</a><a href="#uses">Vault Uses</a><a href="#related">Related</a></nav></header>
 <section id="works"><div class="sec-head"><span class="idx">01</span><h2>How It Works</h2></div><div class="sec-body"><p>The server exposes tools for reading the Excalidraw element format and rendering element JSON to PNG or SVG.</p><pre><code>agent prompt
 -&gt; Excalidraw element JSON
@@ -22,5 +22,5 @@
 <section id="privacy"><div class="sec-head"><span class="idx">03</span><h2>Privacy and Tradeoffs</h2></div><div class="sec-body"><table><thead><tr><th>Approach</th><th>Strength</th><th>Tradeoff</th></tr></thead><tbody><tr><td>excalidraw-render</td><td>CLI-friendly PNG/SVG output, local rendering</td><td>No interactive browser UI</td></tr><tr><td>Excalidraw MCP app</td><td>Interactive desktop surface</td><td>More UI-oriented</td></tr><tr><td>Manual export</td><td>Human-friendly editing</td><td>Breaks automation loop</td></tr></tbody></table><p>Diagram content stays local. The renderer fetches the Excalidraw library at startup, then converts diagrams locally in headless Chromium.</p></div></section>
 <section id="uses"><div class="sec-head"><span class="idx">04</span><h2>Vault Use Cases</h2></div><div class="sec-body"><ul><li>Rendering system-design diagrams from local <code>.excalidraw</code> files.</li><li>Generating architecture diagrams during AI coding sessions.</li><li>Keeping visual documentation inside local artifact workflows.</li><li>Giving agent harnesses a diagram output path they can verify.</li></ul></div></section>
 <section id="related"><div class="sec-head"><span class="idx">05</span><h2>Related Topics</h2></div><div class="sec-body"><p><a href="system-design.html">System Design</a> · <a href="ai-coding.html">AI Coding</a> · <a href="codex-workflows.html">Codex Workflows</a> · <a href="agent-harness.html">Agent Harness</a> · <a href="computer-vision.html">Computer Vision</a></p></div></section>
-<footer><span class="k">Knowledge Vault</span><a href="INDEX.html">Back to index</a></footer>
+<footer><span class="k">Knowledge Vault</span><a href="index.html">Back to index</a></footer>
 </div></body></html>

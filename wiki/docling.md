@@ -2,13 +2,13 @@ Docling is a local document-conversion and extraction toolkit for turning PDFs, 
 
 ## Sources
 
-- [[raw/00-clippings/How do I set up a complete multi-format document processing pipeline using Docling that handles technical PDFs, HTML files, images, videos, audio, codebases, and schematics, and exports everything to organized agent-friendly markdown files.md|raw/00-clippings/How do I set up a complete multi-format document processing pipeline using Docling that handles technical PDFs, HTML files, images, videos, audio, codebases, and schematics, and exports everything to organized agent-friendly markdown files.md]]
+- [[raw/00-clippings/docling-multiformat-pipeline.md|raw/00-clippings/docling-multiformat-pipeline.md]]
 - [[raw/00-clippings/How do you use HybridChunker in Docling, including saving and reloading the converted document.md|raw/00-clippings/How do you use HybridChunker in Docling, including saving and reloading the converted document.md]]
-- [[raw/00-clippings/How can I find page numbers and bounding box information for content in a chunk produced by the hybrid chunker, and what is the structure of the doc_items list within a chunk.md|raw/00-clippings/How can I find page numbers and bounding box information for content in a chunk produced by the hybrid chunker, and what is the structure of the doc_items list within a chunk.md]]
+- [[raw/00-clippings/docling-hybrid-chunker-provenance.md|raw/00-clippings/docling-hybrid-chunker-provenance.md]]
 - [[raw/00-clippings/Content Layers.md|raw/00-clippings/Content Layers.md]]
 - [[raw/00-clippings/How can you make Docling readunderstand images embedded in a DOCX file, and what is the correct code to use the VlmPipeline for this purpose.md|raw/00-clippings/How can you make Docling readunderstand images embedded in a DOCX file, and what is the correct code to use the VlmPipeline for this purpose.md]]
 - [[raw/00-clippings/What is the best practice for processing a mixed PDF (digital + scanned pages) containing sensitive financial data in Docling, given no GPU and limited cost.md|raw/00-clippings/What is the best practice for processing a mixed PDF (digital + scanned pages) containing sensitive financial data in Docling, given no GPU and limited cost.md]]
-- [[raw/00-clippings/How can a student build a local, open-source LLM-based system to extract and analyze technical PDF documents (PMSIDC) and generate instrumentation datasheets, using Python on a PC with limited resources.md|raw/00-clippings/How can a student build a local, open-source LLM-based system to extract and analyze technical PDF documents (PMSIDC) and generate instrumentation datasheets, using Python on a PC with limited resources.md]]
+- [[raw/00-clippings/local-llm-pdf-datasheet-extraction.md|raw/00-clippings/local-llm-pdf-datasheet-extraction.md]]
 
 ## Pipeline Shape
 

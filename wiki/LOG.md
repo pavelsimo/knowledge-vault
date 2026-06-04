@@ -4,6 +4,9 @@ This file records every change made to the `raw/` directory. It is maintained ex
 
 | Date | Action | Source Path | Type | Summary |
 |------|--------|-------------|------|---------|
+| 2026-06-04 | updated | raw/00-clippings/local-llm-pdf-datasheet-extraction.md | clipping | Renamed the local LLM PDF datasheet extraction clipping to a shorter Windows-compatible path without changing its content. |
+| 2026-06-04 | updated | raw/00-clippings/docling-hybrid-chunker-provenance.md | clipping | Renamed the Docling HybridChunker provenance clipping to a shorter Windows-compatible path without changing its content. |
+| 2026-06-04 | updated | raw/00-clippings/docling-multiformat-pipeline.md | clipping | Renamed the Docling multi-format pipeline clipping to a shorter Windows-compatible path without changing its content. |
 | 2026-06-04 | added | raw/00-clippings/Building Effective AI Agents.md | clipping | Anthropic engineering guidance on simple agentic systems, workflow patterns, autonomous agents, and tool interface design. |
 | 2026-06-04 | added | raw/00-clippings/How to Use Claude Cowork to Automate Your Entire Day (Full Course).md | clipping | Social clipping describing Claude Cowork-style desktop automation for files, connectors, scheduled routines, and dispatch workflows. |
 | 2026-06-04 | added | raw/00-clippings/Introduction to LLM RAG - Retrieval Augmented Generation Explained.md | clipping | Weaviate introduction to RAG architecture, ingestion, inference, advanced retrieval techniques, evaluation, and references. |
