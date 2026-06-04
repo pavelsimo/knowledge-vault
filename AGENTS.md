@@ -27,7 +27,8 @@ A personal knowledge base about Pavel personal interests.
 - Every HTML file must follow only the design tokens in `DESIGN.md` at the repo root — read it before generating any HTML
 - Each HTML file is self-contained: inline all CSS, no external stylesheets or JS frameworks
 - Before building a page, read `wiki_html/components/CATALOG.md` and pick components whose patterns fit the content; adapt their structure and styles using DESIGN.md tokens — do not copy whole files
-- Page structure: masthead (eyebrow + serif h1 with italic `<em>` on a key word + intro paragraph + toc pills) → one `<section>` per H2 → footer with link back to INDEX.html
+- Page structure: visible top "Back to index" link to `INDEX.html` → masthead (eyebrow + serif h1 with italic `<em>` on a key word + intro paragraph + toc pills) → one `<section>` per H2 → footer with link back to INDEX.html
+- Every topic HTML page must include an immediately visible back button/link near the top of the page pointing to `INDEX.html`, so readers do not need to scroll to the footer to return to the hub
 - Always end with a "Related Topics" section linking to other wiki pages
 - For style and markup reference, read existing pages in `wiki_html/` — they are the canonical examples of correct output
 

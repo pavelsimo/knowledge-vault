@@ -17,7 +17,7 @@
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
 .wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
-header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
+.back-link{display:inline-flex;align-items:center;gap:6px;margin-top:24px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;background:var(--paper);font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g700);text-decoration:none;transition:border-color 120ms,color 120ms}.back-link:hover{border-color:var(--slate);color:var(--slate)}header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
 .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}
 .eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
 h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}
@@ -70,6 +70,7 @@ footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offse
 </head>
 <body>
 <div class="wrap">
+<a class="back-link" href="INDEX.html">← Back to index</a>
 
 <header class="masthead">
   <div class="eyebrow">Open Source AI</div>
