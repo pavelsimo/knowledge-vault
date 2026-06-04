@@ -112,7 +112,7 @@ The relationship between inputs and correct outputs changes — the meaning of t
 - **Gradual:** natural evolution of language or user behavior over time
 - **Sudden shock:** overnight disruption (e.g., "Zoom" shifting from "go fast" to "video meeting" in 2020)
 
-![MLOps distinguishes changing inputs from changing input-to-label meaning.](../raw/04-machine-learning-engineering-for-production-mlops/images/Pasted%20image%20202602271112907.png)
+![MLOps distinguishes changing inputs from changing input-to-label meaning.](../raw/04-machine-learning-engineering-for-production-mlops/images/Pasted%20image%2020260227112907.png)
 
 *This is the operational distinction that matters: data drift means the inputs changed but the task stayed the same; concept drift means the correct interpretation changed too.*
 

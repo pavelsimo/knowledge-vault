@@ -29,6 +29,7 @@ A personal knowledge base about Pavel personal interests.
 - Before building a page, read `wiki_html/components/CATALOG.md` and pick components whose patterns fit the content; adapt their structure and styles using DESIGN.md tokens — do not copy whole files
 - Page structure: visible top "Back to index" link to `INDEX.html` → masthead (eyebrow + serif h1 with italic `<em>` on a key word + intro paragraph + toc pills) → one `<section>` per H2 → footer with link back to INDEX.html
 - Every topic HTML page must include an immediately visible back button/link near the top of the page pointing to `INDEX.html`, so readers do not need to scroll to the footer to return to the hub
+- When the matching `wiki/<topic>.md` references raw-source images or figures, carry over a selected set of the most explanatory figures into the HTML page near the relevant section, with meaningful `alt` text and captions; avoid dumping every screenshot, but do not omit diagrams that materially clarify the concept
 - Always end with a "Related Topics" section linking to other wiki pages
 - For style and markup reference, read existing pages in `wiki_html/` — they are the canonical examples of correct output
 

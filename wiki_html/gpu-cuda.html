@@ -25,7 +25,7 @@ a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}a
 pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
 code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}pre code{background:none;padding:0;font-size:inherit}
 table{border-collapse:collapse;width:100%;margin:0 0 20px}th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
-footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+.figure{margin:20px 0;border:1.5px solid var(--g300);background:var(--paper);border-radius:14px;overflow:hidden}.figure img{display:block;width:100%;height:auto}.figcap{font-size:13.5px;color:var(--g700);padding:12px 16px;border-top:1px solid var(--g200)}footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
 footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}footer a{color:var(--clay)}
 @media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
 .callout{background:var(--g100);border-left:3px solid var(--clay);border-radius:0 6px 6px 0;padding:14px 18px;margin:0 0 20px;font-size:14px;color:var(--g700)}
@@ -81,8 +81,8 @@ footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size
       <tr><td><code>.safetensors</code></td><td>Cannot execute code (safe)</td><td>Faster (memory-mapped)</td><td>Multi-framework</td></tr>
     </table>
     <div class="callout">Modern Hugging Face models default to <strong>.safetensors</strong> — always prefer it.</div>
-  </div>
-</section>
+    </div>
+  </section>
 
 <section id="architectures">
   <div class="sec-head"><span class="idx">02</span><h2>GPU Architectures</h2></div>
@@ -107,8 +107,10 @@ footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size
       <li>Tensor Cores dominate FP16/BF16/FP8 matrix math</li>
     </ul>
     <div class="callout">Modern training is usually <strong>bandwidth-bound</strong> before it is compute-bound. GPU architecture and memory movement dominate real throughput.</div>
-  </div>
-</section>
+
+      <div class="figure"><img src="../raw/03-stanford-cs231n/images/img_423.png" alt="NVIDIA H100 board layout and memory bandwidth numbers."><div class="figcap">NVIDIA H100 board layout and memory bandwidth numbers.</div></div>
+    </div>
+  </section>
 
 <section id="vram">
   <div class="sec-head"><span class="idx">03</span><h2>LLM VRAM Math</h2></div>

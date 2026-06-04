@@ -42,7 +42,7 @@ pre code{background:none;padding:0;font-size:inherit}
 table{border-collapse:collapse;width:100%;margin:0 0 20px}
 th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}
 td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
-footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+.figure{margin:20px 0;border:1.5px solid var(--g300);background:var(--paper);border-radius:14px;overflow:hidden}.figure img{display:block;width:100%;height:auto}.figcap{font-size:13.5px;color:var(--g700);padding:12px 16px;border-top:1px solid var(--g200)}footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
 footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}
 footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}
 @media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
@@ -227,6 +227,8 @@ svg.unet{display:block;width:100%;max-width:680px;margin:0 auto;height:auto}
       </ol>
       <p>Paper: <a href="https://arxiv.org/pdf/1703.06870">Mask R-CNN</a></p>
       <p>This is the clean conceptual bridge from object detection to instance segmentation: keep the detection pipeline, then add a small mask head that predicts a binary mask for each proposed object.</p>
+
+      <div class="figure"><img src="../raw/03-stanford-cs231n/images/img_341.png" alt="Mask R-CNN extends detection with a per-RoI mask prediction head."><div class="figcap">Mask R-CNN extends detection with a per-RoI mask prediction head.</div></div>
     </div>
   </section>
 

@@ -43,7 +43,7 @@ pre code{background:none;padding:0;font-size:inherit}
 table{border-collapse:collapse;width:100%;margin:0 0 20px}
 th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}
 td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
-footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+.figure{margin:20px 0;border:1.5px solid var(--g300);background:var(--paper);border-radius:14px;overflow:hidden}.figure img{display:block;width:100%;height:auto}.figcap{font-size:13.5px;color:var(--g700);padding:12px 16px;border-top:1px solid var(--g200)}footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
 footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}
 @media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
 
@@ -100,8 +100,8 @@ footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size
       <li>Updating every particle in a 100,000-particle system in parallel</li>
       <li>Processing vertex positions for complex geometry in one pass</li>
     </ul>
-  </div>
-</section>
+    </div>
+  </section>
 
 <section id="types">
   <div class="sec-head"><span class="idx">02</span><h2>The Core Shader Types</h2></div>
@@ -175,8 +175,10 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
         </div>
       </div>
     </div>
-  </div>
-</section>
+
+      <div class="figure"><img src="../raw/00-clippings/images/8be73bab53974918980e4fdaddac5adc_MD5.png" alt="Triangles are the simplest surface primitive that the GPU can shade."><div class="figcap">Triangles are the simplest surface primitive that the GPU can shade.</div></div>
+    </div>
+  </section>
 
 <section id="pixels">
   <div class="sec-head"><span class="idx">03</span><h2>How Pixels Are Represented</h2></div>
@@ -184,8 +186,10 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     <p>A pixel is the minimum unit of color on a display — conceptually atomic. Each pixel stores a color value. In a color display, each pixel stores red, green, blue, and alpha channel values.</p>
     <p>A zoomed view of letter rendering shows anti-aliasing: the sharp white/black boundary softens to gray intermediate pixels along diagonal edges, reducing the "staircase" artifact (aliasing) that occurs when continuous curves are sampled on a discrete pixel grid.</p>
     <p>No matter how smooth a scene feels, the final output is still computed on a finite grid of pixels. The fragment shader's job is to compute each of those values independently and in parallel.</p>
-  </div>
-</section>
+
+      <div class="figure"><img src="../raw/00-clippings/images/e989134bce87e8ada17d86af95832be4_MD5.png" alt="A shader ultimately writes colors on a discrete pixel grid, not a continuous surface."><div class="figcap">A shader ultimately writes colors on a discrete pixel grid, not a continuous surface.</div></div>
+    </div>
+  </section>
 
 <section id="languages">
   <div class="sec-head"><span class="idx">04</span><h2>Shader Languages</h2></div>

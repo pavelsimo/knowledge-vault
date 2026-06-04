@@ -25,7 +25,7 @@ a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}a
 pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
 code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}pre code{background:none;padding:0;font-size:inherit}
 table{border-collapse:collapse;width:100%;margin:0 0 20px}th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
-footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
+.figure{margin:20px 0;border:1.5px solid var(--g300);background:var(--paper);border-radius:14px;overflow:hidden}.figure img{display:block;width:100%;height:auto}.figcap{font-size:13.5px;color:var(--g700);padding:12px 16px;border-top:1px solid var(--g200)}footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
 footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}footer a{color:var(--clay)}
 @media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
 .callout{background:var(--g100);border-left:3px solid var(--clay);border-radius:0 6px 6px 0;padding:14px 18px;margin:0 0 20px;font-size:14px;color:var(--g700)}
@@ -126,8 +126,10 @@ footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size
     <p><strong>Example:</strong> "That is sick!" meant "that person is ill" ten years ago; today it means "that is awesome." Same input (x), different correct output (y). <strong>Sudden shock:</strong> "Zoom" shifted from "go fast" to "video meeting" in 2020.</p>
 
     <div class="callout"><strong>Operational distinction:</strong> data drift = inputs changed, task stayed the same. Concept drift = the correct interpretation changed too.</div>
-  </div>
-</section>
+
+      <div class="figure"><img src="../raw/04-machine-learning-engineering-for-production-mlops/images/Pasted%20image%2020260227112907.png" alt="MLOps distinguishes changing inputs from changing input-to-label meaning."><div class="figcap">MLOps distinguishes changing inputs from changing input-to-label meaning.</div></div>
+    </div>
+  </section>
 
 <section id="monitoring">
   <div class="sec-head"><span class="idx">03</span><h2>Model Monitoring in Production</h2></div>
@@ -156,8 +158,10 @@ footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size
     <h3>Error Analysis Prioritization</h3>
     <pre><code>Overall Impact = Gap to HLP × % of data</code></pre>
     <p>Always weight by data frequency before prioritizing. A 4% accuracy gap on a slice that's only 4% of traffic contributes 0.16% impact — far less important than a 2% gap on a 30% slice.</p>
-  </div>
-</section>
+
+      <div class="figure"><img src="../raw/04-machine-learning-engineering-for-production-mlops/images/Pasted%20image%2020260227121101.png" alt="Deployment monitoring is iterative in the same way model development is iterative: traffic, performance, and analysis feed continuous adjustment."><div class="figcap">Deployment monitoring is iterative in the same way model development is iterative: traffic, performance, and analysis feed continuous adjustment.</div></div>
+    </div>
+  </section>
 
 <section id="deployment">
   <div class="sec-head"><span class="idx">04</span><h2>Deployment Strategies</h2></div>
@@ -203,8 +207,10 @@ footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size
       </ul>
       <div class="callout">Key advantage: <strong>zero-downtime rollback</strong> — you never have to "undeploy" anything, just redirect the router. Rollback speed is often the difference between a contained bad release and a production incident.</div>
     </div>
-  </div>
-</section>
+
+      <div class="figure"><img src="../raw/04-machine-learning-engineering-for-production-mlops/images/Pasted%20image%2020260227115016.png" alt="Blue-green deployment keeps old and new production stacks live behind a router."><div class="figcap">Blue-green deployment keeps old and new production stacks live behind a router.</div></div>
+    </div>
+  </section>
 
 <section id="metrics">
   <div class="sec-head"><span class="idx">05</span><h2>Evaluation Metrics</h2></div>
