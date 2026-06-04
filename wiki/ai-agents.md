@@ -1,11 +1,29 @@
-# AI Agents: Sub-Agents and Agent Teams
+# AI Agents and Agentic Systems
 
-Multi-agent systems in Claude let you decompose complex tasks across specialized Claude instances. Two distinct paradigms exist: sub-agents for parallel isolated work, and agent teams for ongoing coordinated collaboration. Choosing the wrong paradigm creates more overhead than the work itself.
+AI agents are LLM systems that use tools, memory, retrieval, and environmental feedback to complete tasks beyond a single model call. The practical design problem is deciding when a fixed workflow is enough, when a single tool-using agent is justified, and when multiple agents or agent teams actually earn their coordination cost.
 
 ## Source
 
+- [[raw/00-clippings/Building Effective AI Agents.md|raw/00-clippings/Building Effective AI Agents.md]]
 - [[raw/00-clippings/Claude Subagents vs. Agent Teams, explained.md|raw/00-clippings/Claude Subagents vs. Agent Teams, explained.md]]
 - [[raw/00-clippings/OpenClaw + CodexClaudeCode Agent Swarm The One-Person Dev Team Full Setup.md|raw/00-clippings/OpenClaw + CodexClaudeCode Agent Swarm The One-Person Dev Team Full Setup.md]]
+
+## Workflows vs Agents
+
+The useful distinction is architectural:
+
+- **Workflows** route LLM calls and tools through predefined code paths.
+- **Agents** let the LLM dynamically choose its process and tool use based on the task and the feedback it receives.
+
+![An augmented LLM combines the base model with retrieval, tools, and memory.](../raw/00-clippings/images/f58aedb9c99227ca6673e35d04112905_MD5.webp)
+
+*The augmented LLM is the base unit: model + retrieval + tools + memory. Workflows and agents compose this unit in different control structures.*
+
+The engineering bias should be conservative. Start with a single LLM call, retrieval, and examples. Add workflows when the task has clear repeatable stages. Add agents when the path cannot be predicted ahead of time and the system can observe ground truth from tools, tests, or external state.
+
+![An autonomous agent loops through planning, tool use, observation, and final response.](../raw/00-clippings/images/b37f65c63f05a63ef73b5cd237e729fd_MD5.webp)
+
+*Autonomy is a control loop, not magic: plan, act through tools, observe the result, revise, and stop when the task is complete or blocked.*
 
 ## The Core Distinction
 
@@ -132,6 +150,10 @@ These five patterns cover most real-world multi-agent needs:
 
 The orchestrator-worker pattern is the architecture that most real production systems use.
 
+![A coding agent is a concrete orchestrator-worker loop: read task, inspect files, edit, run checks, and iterate.](../raw/00-clippings/images/813e40d499cc397878a03e01045c11e2_MD5.webp)
+
+*Coding agents work because the environment can answer back: file reads, diffs, test failures, compiler errors, and review comments all provide ground truth.*
+
 ## When NOT to Use Multi-Agent Systems
 
 This is what most guides skip. Teams have spent months building elaborate multi-agent pipelines only to discover that better prompting on a single agent achieved equivalent results.
@@ -148,6 +170,20 @@ This is what most guides skip. Teams have spent months building elaborate multi-
 - The task is simple enough that one well-prompted agent handles it
 
 **Special warning for coding:** parallel agents writing code make incompatible assumptions. When you merge their work, those implicit decisions conflict in ways that are hard to debug. Sub-agents for coding should **answer questions and explore, not write code simultaneously** with the main agent.
+
+## Tool Interfaces Are the Product
+
+Tool design deserves the same attention as prompt design. A model can only use a tool reliably if the interface makes the intended action obvious.
+
+Good agent-computer interfaces have:
+
+- Clear tool names and parameter names
+- Descriptions that include examples, boundaries, and edge cases
+- Output formats close to text patterns models already handle well
+- Low formatting overhead: avoid formats that require brittle line counts, excessive escaping, or hidden state
+- Guardrails that make wrong calls harder, such as absolute paths for file tools and typed enums for dangerous operations
+
+The practical test is simple: if a junior engineer would need to stop and infer what the tool means, the model probably will too. Tool misuse is often an interface problem before it is a model problem.
 
 ## Common Failure Modes
 
@@ -230,5 +266,7 @@ Each parallel agent needs its own worktree, its own `node_modules`, and runs its
 
 - [[attention-transformers]] — the transformer architecture powering each agent instance
 - [[rag]] — agentic RAG combines retrieval with multi-agent orchestration
+- [[agent-harness]] — the runtime loop that scopes tools, state, and verification
 - [[ai-coding]] — sub-agents for codebase exploration; teams for full feature implementation
+- [[desktop-ai-automation]] — desktop and connector-based automation with agentic assistants
 - [[mlops]] — deploying and monitoring multi-agent production systems

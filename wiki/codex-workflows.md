@@ -93,5 +93,6 @@ This vault itself follows that pattern: `raw/` holds source material, `wiki/` ho
 - [[ai-coding]] - disciplined AI-assisted development practices
 - [[agent-harness]] - infrastructure around model, tools, memory, and verification
 - [[ai-agents]] - subagents and orchestration patterns
+- [[desktop-ai-automation]] - no-code desktop and connector workflows with scoped AI assistants
 - [[tmux]] - terminal surface for long-running local agent work
 - [[docling]] - document processing for agent-friendly Markdown artifacts

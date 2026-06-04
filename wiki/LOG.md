@@ -4,6 +4,11 @@ This file records every change made to the `raw/` directory. It is maintained ex
 
 | Date | Action | Source Path | Type | Summary |
 |------|--------|-------------|------|---------|
+| 2026-06-04 | added | raw/00-clippings/Building Effective AI Agents.md | clipping | Anthropic engineering guidance on simple agentic systems, workflow patterns, autonomous agents, and tool interface design. |
+| 2026-06-04 | added | raw/00-clippings/How to Use Claude Cowork to Automate Your Entire Day (Full Course).md | clipping | Social clipping describing Claude Cowork-style desktop automation for files, connectors, scheduled routines, and dispatch workflows. |
+| 2026-06-04 | added | raw/00-clippings/Introduction to LLM RAG - Retrieval Augmented Generation Explained.md | clipping | Weaviate introduction to RAG architecture, ingestion, inference, advanced retrieval techniques, evaluation, and references. |
+| 2026-06-04 | added | raw/00-clippings/What Is Agentic RAG From LLM RAG to AI Agents.md | clipping | Weaviate explanation of agentic RAG, ReAct-style retrieval agents, tool use, single-agent routing, and multi-agent RAG. |
+| 2026-06-04 | added | raw/00-clippings/images/ | image | Embedded figures for the new AI agents, RAG, agentic RAG, and desktop automation clippings. |
 | 2026-05-09 | added | raw/00-clippings/Robotics' End Game Nvidia's Jim Fan.md | clipping | Notes on Jim Fan's (NVIDIA) vision for the end game of robotics and physical AI. |
 | 2026-05-09 | added | raw/08-llm-from-scratch-with-python-freecodecamp/ | course-material | FreeCodeCamp course implementing a large language model from scratch in Python. |
 | 2026-05-09 | added | raw/07-hailo-setup/ | course-material | Setup documentation and configuration files for the Hailo edge AI accelerator. |

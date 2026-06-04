@@ -37,6 +37,7 @@
 | [[docling]] | Local document conversion and extraction: OCR, tables, content layers, provenance, chunking, and RAG exports |
 | [[ai-coding]] | AI-assisted development: vibe coding, context engineering, Plan→Execute→Verify, security risks |
 | [[codex-workflows]] | Codex workflows: durable threads, steering, queuing, automations, goals, side-panel review, and shared memory |
+| [[desktop-ai-automation]] | Desktop AI automation: scoped folder access, connectors, scheduled workflows, dispatch, and reviewable artifacts |
 | [[llm-training]] | LLM training pipeline: pre-training, supervised fine-tuning (SFT), reward modeling, and RLHF with PPO |
 | [[llm-from-scratch]] | Hands-on LLM implementation basics: PyTorch tensors, tokenization, bigram models, logits, loss, and generation |
 | [[ml-learning-careers]] | Becoming an ML engineer: active learning, AI-assisted study loops, implementation-first practice, demo-driven career strategy |
@@ -44,7 +45,7 @@
 | [[china-development-economics]] | China development model: central-local governance, tax reform, land finance, industrial policy, urbanization, debt, dual circulation |
 | [[quantization]] | Quantization: symmetric/asymmetric, block quantization, perplexity, KL divergence, speed benchmarks |
 | [[quantum-computing]] | Quantum computing primer: qubits, superposition, entanglement, gates, and quantum advantage basics |
-| [[ai-agents]] | Claude sub-agents vs agent teams: orchestration patterns, context-centric design, when to use multi-agent systems |
+| [[ai-agents]] | AI agents and agentic systems: workflows vs agents, orchestration patterns, context-centric design, and tool interfaces |
 | [[agent-harness]] | Agent harness engineering: orchestration loops, tools, memory, state, guardrails, dynamic workflows, and verification |
 | [[ai-infrastructure]] | Infrastructure for agentic AI: CPUs, accelerators, memory, low-latency orchestration, and always-on workloads |
 | [[ai-model-architectures]] | Eight specialized AI model types: LLM, LCM, LAM, MoE, VLM, SLM, MLM, SAM — architectures and selection guide |
