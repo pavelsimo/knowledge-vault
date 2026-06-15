@@ -4,6 +4,13 @@ This file records every change made to the `raw/` directory. It is maintained ex
 
 | Date | Action | Source Path | Type | Summary |
 |------|--------|-------------|------|---------|
+| 2026-06-14 | added | raw/10-local-models/ | other | Local-only AI model stack diagrams covering owned inference, offline execution, model routing, quantization, hardware matching, and local agent loops. |
+| 2026-06-05 | added | raw/00-clippings/The Only Claude Skills Tutorial You Need (Add Evals and Memory).md | video-notes | Tutorial on building reusable Claude skills with explicit trigger descriptions, progressive context, pass/fail evals, memory, and human review. |
+| 2026-06-05 | added | raw/00-clippings/Group Chat The Best Way to Totally Stress Out Your Team.md | clipping | 37signals essay on group-chat failure modes, attention fragmentation, implied consensus, and asynchronous communication defaults. |
+| 2026-06-05 | added | raw/00-clippings/Post by @thdxr on X.md | clipping | Short engineering heuristic about decomposing the apparent problem and building enabling abstractions instead of only implementing the direct request. |
+| 2026-06-05 | added | raw/00-clippings/A guide to goal.md | clipping | Guidance for Codex goal mode covering verifiable criteria, progress measurement, realistic environments, visual goals, tracking, and cleanup. |
+| 2026-06-05 | added | raw/00-clippings/When AI builds itself.md | clipping | Anthropic Institute analysis of AI-accelerated AI development, recursive self-improvement, internal productivity signals, research judgment, and governance options. |
+| 2026-06-05 | added | raw/00-clippings/images/ | image | Embedded figures for the Codex goal mode and Anthropic recursive self-improvement clippings. |
 | 2026-06-04 | updated | raw/00-clippings/local-llm-pdf-datasheet-extraction.md | clipping | Renamed the local LLM PDF datasheet extraction clipping to a shorter Windows-compatible path without changing its content. |
 | 2026-06-04 | updated | raw/00-clippings/docling-hybrid-chunker-provenance.md | clipping | Renamed the Docling HybridChunker provenance clipping to a shorter Windows-compatible path without changing its content. |
 | 2026-06-04 | updated | raw/00-clippings/docling-multiformat-pipeline.md | clipping | Renamed the Docling multi-format pipeline clipping to a shorter Windows-compatible path without changing its content. |

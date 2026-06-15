@@ -69,6 +69,7 @@ Key rules:
 ## Related Topics
 
 - [[hugging-face]] — the platform that hosts models
+- [[local-models]] — local runtime, model choice, and hardware-fit decisions
 - [[nlp]] — text pipelines (generation, translation, summarization)
 - [[audio-processing]] — audio pipelines (ASR, TTS, classification)
 - [[computer-vision]] — vision pipelines (detection, segmentation, depth)

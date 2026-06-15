@@ -61,6 +61,7 @@ For agent swarms, this pairs directly with [[tmux]] and [[ai-agents]]: orchestra
 ## Related Topics
 
 - [[gpu-cuda]] - accelerator memory, CUDA kernels, and model-serving constraints
+- [[local-models]] - local inference, hardware fit, quantization, and model routing
 - [[distributed-training]] - large-scale training infrastructure
 - [[agent-harness]] - orchestration and tool infrastructure around LLMs
 - [[ai-agents]] - multi-agent coordination and local worktree execution

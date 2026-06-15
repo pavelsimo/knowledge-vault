@@ -1,10 +1,11 @@
-An agent harness is the non-model infrastructure that turns a stateless LLM into a tool-using, stateful, verifiable system. It includes the orchestration loop, tools, memory, context management, state, error handling, guardrails, subagents, and verification loops; in practice, the harness often determines whether two systems using the same model behave like a demo or a production agent.
+An agent harness is the non-model infrastructure that turns a stateless LLM into a tool-using, stateful, verifiable system. It includes the orchestration loop, tools, memory, context management, state, error handling, guardrails, subagents, reusable skills, and verification loops; in practice, the harness often determines whether two systems using the same model behave like a demo or a production agent.
 
 ## Sources
 
 - [[raw/00-clippings/The Anatomy of an Agent Harness.md|raw/00-clippings/The Anatomy of an Agent Harness.md]]
 - [[raw/00-clippings/A harness for every task dynamic workflows in Claude Code.md|raw/00-clippings/A harness for every task dynamic workflows in Claude Code.md]]
 - [[raw/00-clippings/OpenClaw + CodexClaudeCode Agent Swarm The One-Person Dev Team Full Setup.md|raw/00-clippings/OpenClaw + CodexClaudeCode Agent Swarm The One-Person Dev Team Full Setup.md]]
+- [[raw/00-clippings/The Only Claude Skills Tutorial You Need (Add Evals and Memory).md|raw/00-clippings/The Only Claude Skills Tutorial You Need (Add Evals and Memory).md]]
 
 ![The harness is the infrastructure around the model: tools, memory, orchestration, state, and safety.](../raw/00-clippings/images/e9e6c80287e3583bc3a1c2e83c585f5d_MD5.jpg)
 
@@ -37,6 +38,7 @@ This is why changing only the harness can change benchmark performance without c
 | Guardrails | Separates what the model wants to do from what the tool system permits |
 | Verification loops | Uses tests, linters, screenshots, judges, or checklists to avoid false completion |
 | Subagent orchestration | Delegates bounded context to isolated agents |
+| Skills | Packages recurring instructions, examples, evals, and memory into reusable task routines |
 | Termination rules | Stops on completion, budget, turn limit, interruption, guardrail, or refusal |
 
 Research such as [ReAct](https://arxiv.org/abs/2210.03629) and [Lost in the Middle](https://arxiv.org/abs/2307.03172) helps explain why tool loops and context placement matter: the system has to interleave reasoning with action while keeping high-signal information visible.
@@ -77,6 +79,20 @@ Dynamic workflows are useful for migrations, deep research, fact checking, sorti
 
 ![Dynamic workflows coordinate subagents and isolated work contexts around a task-specific harness.](../raw/00-clippings/images/71b891addee3e5d84efb4c732264c557_MD5.jpg)
 
+## Skills as Harness Fragments
+
+The Claude Skills tutorial shows a smaller harness pattern: a skill is a reusable folder with concise instructions, trigger description, examples, pass/fail evals, and optional memory. The important move is to treat a skill as an executable routine, not just a prompt snippet.
+
+Good skills use progressive disclosure:
+
+- keep `SKILL.md` short enough for humans to review
+- put bulky examples in separate files
+- make the description explicit so routing works
+- run concrete pass/fail evals in a clean context
+- keep memory concise and non-overlapping with evals
+
+This is why [[ai-skills]] belongs beside tools and workflows. A skill gives the agent a task-specific harness layer that can improve over repeated use.
+
 ## Design Decisions
 
 Every harness makes a few architectural bets:
@@ -96,6 +112,7 @@ The practical default: start with one agent, expose the smallest useful tool set
 
 - [[ai-agents]] - subagents, agent teams, and orchestration patterns
 - [[codex-workflows]] - durable Codex threads, goals, automations, and side-panel workflows
+- [[ai-skills]] - reusable instruction folders with examples, evals, and memory
 - [[ai-coding]] - human-owned development loops around coding agents
 - [[tmux]] - terminal session management for long-running agents
 - [[ai-infrastructure]] - CPU and accelerator infrastructure for always-on agentic systems

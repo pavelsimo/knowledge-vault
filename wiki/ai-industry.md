@@ -1,10 +1,11 @@
 # AI Industry and Organizations
 
-This page covers insights into how leading AI companies are structured, how they operate, and what organizational patterns are emerging in the AI-native era. Primary case study: Moonshot AI (Kimi), a Chinese AI startup that reached a $16B valuation in three years with ~300 employees.
+This page covers insights into how leading AI companies are structured, how they operate, and what organizational patterns are emerging in the AI-native era. Primary case studies: Moonshot AI (Kimi), a Chinese AI startup that reached a $16B valuation in three years with ~300 employees, and Anthropic's internal account of AI increasingly accelerating AI development itself.
 
 ## Source
 
 - [[raw/00-clippings/100 Hours Inside Kimi.md|raw/00-clippings/100 Hours Inside Kimi.md]]
+- [[raw/00-clippings/When AI builds itself.md|raw/00-clippings/When AI builds itself.md]]
 
 ## Moonshot AI (Kimi) — Key Observations
 
@@ -62,6 +63,23 @@ A key selection criterion: can this person adapt to a completely new domain?
 - Product managers run **agent swarms**: strategy agent, translation agent, competitor monitoring agent — compress multi-day multi-person work into hours
 - The model is both the **goal** (what they're building) and the **tool** (how they work)
 
+## Anthropic: AI Building AI
+
+Anthropic's recursive self-improvement clipping describes the frontier-lab version of the same pattern: the model is not only the product, but part of the system that creates the next product.
+
+![Anthropic reports that code contributed per active contributor rose sharply as Claude Code and newer Claude models entered internal workflows.](../raw/00-clippings/images/12ce51db77a5deef846b7aaf49dbd810_MD5.png)
+
+The organizational implication is a moving bottleneck:
+
+| Work layer | Before AI acceleration | After AI acceleration |
+|---|---|---|
+| Implementation | Humans write most code and scripts | AI drafts, edits, debugs, and runs tool loops |
+| Experimentation | Humans queue and inspect each run | AI helps generate, run, and triage more experiments |
+| Review | Human review is one step in the process | Human review becomes a throughput bottleneck |
+| Strategy | Humans choose research directions | Humans increasingly focus on taste, priority, and verification |
+
+This points to [[recursive-self-improvement]]: even if full self-improvement never arrives, AI-native labs become more sensitive to evaluation quality, compute capacity, safety review, and organizational bottleneck management.
+
 ### "Two-Dimensional Foil" Metaphor
 
 The article uses a reference from *The Three-Body Problem*: a weapon that collapses 3D space into 2D, eliminating depth.
@@ -98,6 +116,8 @@ Kimi's engineers developed **MoBA (Mixture of Block Attention)** to enable 128K+
 
 - [[attention-transformers]] — long-context attention research (MoBA); RL as core training paradigm
 - [[distributed-training]] — the infrastructure behind training frontier models
+- [[recursive-self-improvement]] — AI systems accelerating AI development itself
+- [[ai-agents]] — agentic systems as the operational unit of AI-native work
 - [[robot-learning]] — reinforcement learning as "the future" (Kimi co-founder Yang Zhilin's thesis)
 - [[ai-coding]] — AI-native workflows and agent swarms
 - [[mlops]] — productionizing models at scale

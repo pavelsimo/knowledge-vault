@@ -120,6 +120,7 @@ Quantization is **faster**, not just smaller — primarily because there is less
 
 ## Related Topics
 
+- [[local-models]] — local inference scenarios where quantization makes models fit available hardware
 - [[gpu-cuda]] — VRAM math; how quantization format directly determines how much VRAM is needed
 - [[distributed-training]] — quantization used alongside tensor parallelism for very large models
 - [[hugging-face]] — model hub hosts quantized checkpoints in many formats

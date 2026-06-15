@@ -142,4 +142,4 @@ Regardless of timeline, the cryptographic risk is motivating a transition to **p
 
 - [[gpu-cuda]] — classical GPU computing and the hardware limits that motivate quantum research
 - [[probability-statistics]] — quantum mechanics is fundamentally probabilistic; superposition encodes probability amplitudes
-- [[investing]] — major tech companies (IBM, Google, Microsoft, IonQ) and governments are investing heavily in quantum hardware
+- Investment activity — major tech companies (IBM, Google, Microsoft, IonQ) and governments are investing heavily in quantum hardware

@@ -76,8 +76,10 @@ footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offse
     <a href="#s1">Productivity Trap</a>
     <a href="#s2">The Flip</a>
     <a href="#s3">5 Core Practices</a>
-    <a href="#s4">Anti-Patterns</a>
-    <a href="#s5">Agent Modes</a>
+    <a href="#s4">The Thing</a>
+    <a href="#s5">Anti-Patterns</a>
+    <a href="#s6">Agent Modes</a>
+    <a href="#related">Related</a>
   </nav>
 </header>
 
@@ -200,7 +202,20 @@ footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offse
   </section>
 
 <section id="s4">
-  <div class="sec-head"><span class="idx">04</span><h2>Anti-Patterns to Avoid</h2></div>
+  <div class="sec-head"><span class="idx">04</span><h2>The Thing Is Never The Thing</h2></div>
+  <div class="sec-body">
+    <p>The short <code>@thdxr</code> clipping captures a useful senior-engineering habit: the direct task is often a symptom of a more useful abstraction.</p>
+    <ul>
+      <li>Is this one problem actually two separate problems?</li>
+      <li>Is the direct fix weaker than solving the broader class of problems?</li>
+      <li>Is there an enabling tool, fixture, migration, or test harness that makes the requested implementation easier?</li>
+    </ul>
+    <p>This connects to <a href="codex-workflows.html">Codex Workflows</a> and goal mode: long-running agents do better when the target is the real outcome and progress signals reveal whether the current subproblem is still the right one.</p>
+  </div>
+</section>
+
+<section id="s5">
+  <div class="sec-head"><span class="idx">05</span><h2>Anti-Patterns to Avoid</h2></div>
   <div class="sec-body">
     <table>
       <thead><tr><th>Anti-pattern</th><th>What Happens</th><th>Fix</th></tr></thead>
@@ -213,8 +228,8 @@ footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offse
   </div>
 </section>
 
-<section id="s5">
-  <div class="sec-head"><span class="idx">05</span><h2>Agent Modes</h2></div>
+<section id="s6">
+  <div class="sec-head"><span class="idx">06</span><h2>Agent Modes</h2></div>
   <div class="sec-body">
     <p>The trust gradient runs from maximum safety to maximum speed. Match the trust level to the task — start safe, dial up as confidence grows.</p>
     <table>
@@ -231,10 +246,17 @@ footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offse
     </div>
   </section>
 
+<section id="related">
+  <div class="sec-head"><span class="idx">07</span><h2>Related Topics</h2></div>
+  <div class="sec-body">
+    <p><a href="mlops.html">MLOps</a> · <a href="rag.html">RAG</a> · <a href="attention-transformers.html">Attention &amp; Transformers</a> · <a href="codex-workflows.html">Codex Workflows</a> · <a href="ai-skills.html">AI Skills</a> · <a href="team-communication.html">Team Communication</a> · <a href="recursive-self-improvement.html">Recursive Self-Improvement</a></p>
+  </div>
+</section>
+
 <footer>
   <span class="k">Knowledge Vault</span>
-  <span>Related: <a href="mlops.html">MLOps</a> &middot; <a href="rag.html">RAG</a> &middot; <a href="attention-transformers.html">Attention &amp; Transformers</a></span>
-  <span>Updated May 2026</span>
+  <span><a href="index.html">Back to index</a></span>
+  <span>Updated June 2026</span>
 </footer>
 
 </div>

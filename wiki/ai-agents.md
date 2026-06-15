@@ -7,6 +7,7 @@ AI agents are LLM systems that use tools, memory, retrieval, and environmental f
 - [[raw/00-clippings/Building Effective AI Agents.md|raw/00-clippings/Building Effective AI Agents.md]]
 - [[raw/00-clippings/Claude Subagents vs. Agent Teams, explained.md|raw/00-clippings/Claude Subagents vs. Agent Teams, explained.md]]
 - [[raw/00-clippings/OpenClaw + CodexClaudeCode Agent Swarm The One-Person Dev Team Full Setup.md|raw/00-clippings/OpenClaw + CodexClaudeCode Agent Swarm The One-Person Dev Team Full Setup.md]]
+- [[raw/00-clippings/When AI builds itself.md|raw/00-clippings/When AI builds itself.md]]
 
 ## Workflows vs Agents
 
@@ -154,6 +155,18 @@ The orchestrator-worker pattern is the architecture that most real production sy
 
 *Coding agents work because the environment can answer back: file reads, diffs, test failures, compiler errors, and review comments all provide ground truth.*
 
+## Agents as R&D Accelerators
+
+The Anthropic recursive self-improvement clipping frames coding agents as part of a larger AI R&D loop. The same control structure that makes a coding agent useful also makes research acceleration plausible:
+
+1. inspect current state
+2. propose a next experiment or code change
+3. execute through tools
+4. observe logs, metrics, failures, or reviews
+5. revise the plan
+
+As models improve, more of this loop shifts from human execution to AI execution. The remaining hard parts are context selection, evaluation quality, research taste, and governance. That is why [[agent-harness]] matters: better models still need tool boundaries, state, recovery, and verifiers.
+
 ## When NOT to Use Multi-Agent Systems
 
 This is what most guides skip. Teams have spent months building elaborate multi-agent pipelines only to discover that better prompting on a single agent achieved equivalent results.
@@ -268,5 +281,6 @@ Each parallel agent needs its own worktree, its own `node_modules`, and runs its
 - [[rag]] — agentic RAG combines retrieval with multi-agent orchestration
 - [[agent-harness]] — the runtime loop that scopes tools, state, and verification
 - [[ai-coding]] — sub-agents for codebase exploration; teams for full feature implementation
+- [[recursive-self-improvement]] — AI agents as a mechanism for AI-accelerated R&D
 - [[desktop-ai-automation]] — desktop and connector-based automation with agentic assistants
 - [[mlops]] — deploying and monitoring multi-agent production systems

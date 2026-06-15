@@ -70,6 +70,7 @@ Hugging Face organizes models by task type:
 ## Related Topics
 
 - [[transformers-library]] — the Python library for using Hugging Face models
+- [[local-models]] — running selected open models locally with routing and quantization
 - [[nlp]] — text-based tasks and models
 - [[audio-processing]] — audio-based tasks and models
 - [[computer-vision]] — vision-based tasks and models

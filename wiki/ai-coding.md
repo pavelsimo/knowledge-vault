@@ -5,6 +5,7 @@ AI-assisted development is the practice of using LLM-powered coding agents to ac
 ## Source
 
 - [[raw/00-clippings/How to Vibe Code A Developer's Playbook.md|raw/00-clippings/How to Vibe Code A Developer's Playbook.md]]
+- [[raw/00-clippings/Post by @thdxr on X.md|raw/00-clippings/Post by @thdxr on X.md]]
 
 ## The Productivity Trap
 
@@ -91,6 +92,18 @@ Between iterations: **break complex tasks into atomic pieces**. Small, verifiabl
 
 **The 80/20 Wall:** AI handles the first 80% of a project well, then stalls on edge cases and integration. Small tasks keep each interaction in the AI's zone of competence — you hit the 80/20 wall less often when you decompose aggressively.
 
+### The Thing Is Never The Thing
+
+The `@thdxr` clipping captures a useful senior-engineering habit: the direct task is often a symptom of a more useful abstraction.
+
+Good AI-assisted development often means asking one level up:
+
+- Is this one problem actually two separate problems?
+- Is the direct fix weaker than solving the broader class of problems?
+- Is there an enabling tool, fixture, migration, or test harness that makes the requested implementation easier?
+
+This connects to [[codex-workflows]] and goal mode: a long-running agent does better when the target is the real outcome and the progress signals reveal whether the current subproblem is still the right one.
+
 ### 4. Testing Is the Foundation
 
 Without tests, AI output is unverifiable:
@@ -152,3 +165,7 @@ Mistral Vibe differentiates from other CLI agents with: open source (Apache 2.0)
 - [[mlops]] — production deployment and monitoring of AI-built systems
 - [[rag]] — agentic RAG is a common use case for AI coding agents
 - [[attention-transformers]] — the LLMs powering coding agents
+- [[codex-workflows]] — durable Codex threads, goal mode, and verification loops
+- [[ai-skills]] — reusable routines with examples, evals, and memory
+- [[team-communication]] — async defaults and attention protection for deep technical work
+- [[recursive-self-improvement]] — AI-assisted development as part of AI-accelerated R&D

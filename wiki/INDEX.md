@@ -4,6 +4,7 @@
 |-------|-------------|
 | [[hugging-face]] | Hugging Face platform: model hub, tasks, leaderboards, and open-source model ecosystem |
 | [[transformers-library]] | The `transformers` Python library: Pipeline API, model loading, safetensors, tokenizers |
+| [[local-models]] | Local AI models: owned inference, offline execution, model routing, quantization, hardware fit, and local agent loops |
 | [[nlp]] | NLP tasks: text generation, translation, summarization, and tokenization concepts |
 | [[audio-processing]] | Audio AI: sampling rates, ASR, TTS, zero-shot audio classification, stereo vs mono |
 | [[computer-vision]] | Computer vision: image classification challenges, KNN, distance metrics, linear classifiers |
@@ -37,11 +38,14 @@
 | [[docling]] | Local document conversion and extraction: OCR, tables, content layers, provenance, chunking, and RAG exports |
 | [[ai-coding]] | AI-assisted development: vibe coding, context engineering, Plan→Execute→Verify, security risks |
 | [[codex-workflows]] | Codex workflows: durable threads, steering, queuing, automations, goals, side-panel review, and shared memory |
+| [[ai-skills]] | AI skills: reusable instruction folders with descriptions, examples, evals, memory, and human review loops |
 | [[desktop-ai-automation]] | Desktop AI automation: scoped folder access, connectors, scheduled workflows, dispatch, and reviewable artifacts |
+| [[team-communication]] | Team communication: real-time chat limits, asynchronous defaults, durable decisions, and attention protection |
 | [[llm-training]] | LLM training pipeline: pre-training, supervised fine-tuning (SFT), reward modeling, and RLHF with PPO |
 | [[llm-from-scratch]] | Hands-on LLM implementation basics: PyTorch tensors, tokenization, bigram models, logits, loss, and generation |
 | [[ml-learning-careers]] | Becoming an ML engineer: active learning, AI-assisted study loops, implementation-first practice, demo-driven career strategy |
-| [[ai-industry]] | AI-native organizations: Moonshot AI (Kimi), flat hierarchies, agent swarms, generalization hiring |
+| [[ai-industry]] | AI-native organizations: Moonshot AI (Kimi), Anthropic, flat hierarchies, agent swarms, generalization hiring, and AI-building-AI bottlenecks |
+| [[recursive-self-improvement]] | Recursive self-improvement: AI systems accelerating AI development through coding, experiments, research judgment, and verification bottlenecks |
 | [[china-development-economics]] | China development model: central-local governance, tax reform, land finance, industrial policy, urbanization, debt, dual circulation |
 | [[quantization]] | Quantization: symmetric/asymmetric, block quantization, perplexity, KL divergence, speed benchmarks |
 | [[quantum-computing]] | Quantum computing primer: qubits, superposition, entanglement, gates, and quantum advantage basics |
