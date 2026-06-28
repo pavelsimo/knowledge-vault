@@ -357,3 +357,37 @@ GPU:
 
 [[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/10f6bb8e66d09b5be27852d21dcd5787_MD5.jpg|Open: Pasted image 20260628115554.png]]
 ![[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/10f6bb8e66d09b5be27852d21dcd5787_MD5.jpg]]
+
+adding arrays with more than 1024 elements 
+
+[[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/d44f89d3700add2b18bf4af99bab63f4_MD5.jpg
+![[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/d44f89d3700add2b18bf4af99bab63f4_MD5.jpg]]   
+
+
+[[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/afdd2a0f2fd99ed6d02dd58a11915d8f_MD5.jpg|Open: Pasted image 20260628152712.png]]
+![[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/afdd2a0f2fd99ed6d02dd58a11915d8f_MD5.jpg]]
+
+GPU (the whole company)
+│
+├── SM (departments)
+│   ├── Block
+│   │   ├── Warp
+│   │   │   ├── Thread
+│   │   │   ├── Thread
+│   │   │   └── ...
+│   │   └── Warp
+│   └── Block
+└── ...
+
+[[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/fbccf887c9d3ac497a2e1cf993f69544_MD5.jpg|Open: Pasted image 20260628153239.png]]
+![[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/fbccf887c9d3ac497a2e1cf993f69544_MD5.jpg]]
+
+
+## What is the Runtime API?
+
+https://docs.nvidia.com/cuda/cuda-runtime-api/index.html
+
+
+[[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/8bc9d20c21648cb4d2aa86dea63b862a_MD5.jpg|Open: Pasted image 20260628165033.png]]
+![[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/8bc9d20c21648cb4d2aa86dea63b862a_MD5.jpg]]
+

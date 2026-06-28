@@ -18,3 +18,10 @@ set_target_properties(vector_addition_2 PROPERTIES
   CUDA_STANDARD_REQUIRED ON
   CUDA_EXTENSIONS OFF
 )
+
+add_executable(vector_addition_3 vector_addition_3.cu)
+set_target_properties(vector_addition_3 PROPERTIES
+  CUDA_STANDARD 17
+  CUDA_STANDARD_REQUIRED ON
+  CUDA_EXTENSIONS OFF
+)

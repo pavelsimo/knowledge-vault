@@ -1,8 +1,10 @@
 #include <cuda_runtime.h>
 #include <stdio.h>
+#include <cuda.h>
 
-#define MAX_THREADS_PER_BLOCK 1024
-#define SIZE 2048
+#define MAX_BLOCKS 1024*432
+#define MAX_THREADS_PER_BLOCK 1024 
+#define SIZE 1024*432*1024
 
 __global__ void add_vec(int *a, int *b, int *c, int n)
 {
@@ -39,17 +41,29 @@ int main(void)
 	cudaMemcpy(da, ha, sz, cudaMemcpyHostToDevice);
 	cudaMemcpy(db, hb, sz, cudaMemcpyHostToDevice);
 
+	cudaEvent_t start, stop;
+	cudaEventCreate(&start);
+	cudaEventCreate(&stop);
+
 	/* Step 5: Launch kernel */
-	add_vec<<<SIZE / MAX_THREADS_PER_BLOCK, MAX_THREADS_PER_BLOCK>>>(da, db, dc, SIZE);
+	cudaEventRecord(start);
+	add_vec<<<MAX_BLOCKS, MAX_THREADS_PER_BLOCK>>>(da, db, dc, SIZE);
+	cudaEventRecord(stop);
 
 	/* Step 6: Copy result back to host */
 	cudaMemcpy(hc, dc, sz, cudaMemcpyDeviceToHost);
 
+	cudaEventSynchronize(stop);
+	float milliseconds = 0;
+	cudaEventElapsedTime(&milliseconds, start, stop);
+
 	/* Step 7: Print result */
-	printf("The result of vector addition is:\n");
-	for (int i = 0; i < SIZE; i++) {
-		printf("%d + %d = %d\n", ha[i], hb[i], hc[i]);
-	}
+	// printf("The result of vector addition is:\n");
+	// for (int i = 0; i < SIZE; i++) {
+	// 	printf("%d + %d = %d\n", ha[i], hb[i], hc[i]);
+	// }
+
+	printf("Time elapsed: %f ms\n", milliseconds);
 
 	cudaFree(da);
 	cudaFree(db);
