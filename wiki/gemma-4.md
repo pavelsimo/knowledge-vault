@@ -5,7 +5,7 @@ Gemma 4 is Google DeepMind's fourth-generation family of open-weights multimodal
 ## Sources
 
 - [A Visual Guide to Gemma 4](https://newsletter.maartengrootendorst.com/p/a-visual-guide-to-gemma-4) — Maarten Grootendorst (Google DeepMind), 2026-04-03
-- [[raw/00-clippings/A Visual Guide to Gemma 4.md]]
+- [[raw/clippings/A Visual Guide to Gemma 4.md]]
 
 ## Model Variants
 
@@ -26,7 +26,7 @@ All Gemma 4 variants are built around three pillars:
 2. **Dense or MoE feedforward blocks** — capacity vs. compute tradeoff
 3. **ViT-based vision encoder** — multimodal image understanding
 
-![[raw/00-clippings/images/06ea6eebd56b14ccda834e69f3586644_MD5.webp]]
+![[raw/clippings/images/06ea6eebd56b14ccda834e69f3586644_MD5.webp]]
 
 *The three pillars of Gemma 4: interleaved attention layers, either Dense or MoE feedforward blocks, and a vision encoder. Note: FFNNs are not interleaved — a variant uses exclusively Dense or exclusively MoE.*
 
@@ -39,11 +39,11 @@ Gemma 4 alternates **local attention** (sliding window) with **global attention*
 - **Local (sliding window)**: each token only attends to a limited window of prior tokens — 512 for E2B/E4B, 1024 for 26B/31B. Computationally cheap.
 - **Global**: every token attends to the entire context. Expensive but essential for long-range coherence.
 
-![[raw/00-clippings/images/0c98cc8cfd6118c001a3ef3ac4755aae_MD5.webp]]
+![[raw/clippings/images/0c98cc8cfd6118c001a3ef3ac4755aae_MD5.webp]]
 
 *Sliding window attention: at each step only the last N tokens are in view, but hidden states carry information forward from earlier positions.*
 
-![[raw/00-clippings/images/e4982f5300dc9e7471a3d79078b3f4b9_MD5.webp]]
+![[raw/clippings/images/e4982f5300dc9e7471a3d79078b3f4b9_MD5.webp]]
 
 *Example with a sliding window of 4: the visible window moves forward but previous hidden states still carry signal through the stack.*
 
@@ -52,11 +52,11 @@ Gemma 4 alternates **local attention** (sliding window) with **global attention*
 - **All other variants**: 5 local layers → 1 global layer (5:1 ratio)
 - **Critical change from Gemma 3**: the final layer is always a global attention layer in Gemma 4. In Gemma 3, the final layer was sometimes local, which limited long-range recall.
 
-![[raw/00-clippings/images/948d80dca6e036aaad0782668a4c482d_MD5.webp]]
+![[raw/clippings/images/948d80dca6e036aaad0782668a4c482d_MD5.webp]]
 
 *Left: Gemma 3's 4:1 interleaving with a local final layer. Right: Gemma 4's pattern with the final layer always global.*
 
-![[raw/00-clippings/images/0b2d1bcf742682ece5b4d2e84275c748_MD5.webp]]
+![[raw/clippings/images/0b2d1bcf742682ece5b4d2e84275c748_MD5.webp]]
 
 *Side-by-side depth comparison of E2B (4:1) vs. larger variants (5:1), showing layer count and attention pattern differences.*
 
@@ -74,7 +74,7 @@ Query heads share a smaller set of Key/Value heads, reducing KV-cache size:
 - **Global layers**: 8 query heads share 1 KV head (larger grouping because global context is already much larger)
 - To compensate for reduced KV expressiveness, the Key dimensionality is **doubled** in global layers.
 
-![[raw/00-clippings/images/272602c16cc2b336638ad49d3ab94299_MD5.webp]]
+![[raw/clippings/images/272602c16cc2b336638ad49d3ab94299_MD5.webp]]
 
 *GQA in global attention: 8 queries per KV head. Key dimension is doubled to preserve representation quality.*
 
@@ -82,7 +82,7 @@ Query heads share a smaller set of Key/Value heads, reducing KV-cache size:
 
 In the global attention layers, Keys are set equal to Values. This means only one matrix needs to be stored in the KV-cache instead of two — effectively converting a KV-cache into a K-cache for global layers.
 
-![[raw/00-clippings/images/f920fcc873ab307835c4bcc3b444dded_MD5.webp]]
+![[raw/clippings/images/f920fcc873ab307835c4bcc3b444dded_MD5.webp]]
 
 *K=V: the values matrix is discarded; the keys serve double duty as both keys and values in global attention.*
 
@@ -94,11 +94,11 @@ RoPE (Rotary Positional Encodings) encodes position by rotating Q/K pairs at dec
 
 **The solution — p-RoPE**: apply RoPE to only the first `p` fraction of dimension pairs (p = 0.25 in Gemma 4), leaving the remaining 75% of pairs position-free and semantics-preserving.
 
-![[raw/00-clippings/images/8f537ac33aadefa9fb6979f140f0677d_MD5.webp]]
+![[raw/clippings/images/8f537ac33aadefa9fb6979f140f0677d_MD5.webp]]
 
 *Standard RoPE: every pair gets a rotation. Low-frequency pairs (rightmost) receive almost no rotation, making the positional signal meaningless but adding noise.*
 
-![[raw/00-clippings/images/1e812641fea8168e471e0a41508f635e_MD5.webp]]
+![[raw/clippings/images/1e812641fea8168e471e0a41508f635e_MD5.webp]]
 
 *p-RoPE (p=0.25): only the first 25% of pairs receive positional rotations. The remaining 75% are left untouched for clean semantic representation.*
 
@@ -114,7 +114,7 @@ Combined, the global attention layer in Gemma 4 applies:
 4. Keys = Values (K=V)
 5. p-RoPE with p = 0.25
 
-![[raw/00-clippings/images/8565df156f34c5c5479d309af55d211a_MD5.webp]]
+![[raw/clippings/images/8565df156f34c5c5479d309af55d211a_MD5.webp]]
 
 *Complete global attention layer: GQA with doubled key dim, K=V cache reduction, p-RoPE on the first 25% of dimensions.*
 
@@ -124,7 +124,7 @@ Combined, the global attention layer in Gemma 4 applies:
 
 The 31B model is the "vanilla" dense Gemma 4 variant — the cleanest representation of the base architecture without MoE or per-layer embeddings. It has 60 transformer layers (vs. 62 in Gemma 3 27B) but is wider, and uses the 5:1 interleaving pattern.
 
-![[raw/00-clippings/images/83e167269569ad3e00ca4ebf74da4c9b_MD5.webp]]
+![[raw/clippings/images/83e167269569ad3e00ca4ebf74da4c9b_MD5.webp]]
 
 *Gemma 4 31B architecture: 60 layers with 5:1 local/global interleaving and full global attention improvements.*
 
@@ -138,11 +138,11 @@ The 26B A4B model replaces the dense FFNN in each layer with a **Mixture of Expe
 - **8 selected experts** per token — chosen by a learned router
 - **1 shared expert** — always activated; 3× the size of a regular expert; encodes general world knowledge
 
-![[raw/00-clippings/images/567729490ac74280b5ca25082a6658c7_MD5.webp]]
+![[raw/clippings/images/567729490ac74280b5ca25082a6658c7_MD5.webp]]
 
 *MoE routing: for each token, a router assigns probabilities over all experts. The top-k experts are activated and their outputs are combined weighted by probability.*
 
-![[raw/00-clippings/images/462515840837962b8b2d2b381a63a8b4_MD5.webp]]
+![[raw/clippings/images/462515840837962b8b2d2b381a63a8b4_MD5.webp]]
 
 *Shared expert (always on, 3× size) alongside 8 dynamically selected experts from a pool of 128.*
 
@@ -153,7 +153,7 @@ The 26B A4B model replaces the dense FFNN in each layer with a **Mixture of Expe
 
 Although the model occupies VRAM like a 26B model, it runs at approximately the speed of a 4B model.
 
-![[raw/00-clippings/images/cdf73d5b22b0735c03ef67d5e321b76a_MD5.webp]]
+![[raw/clippings/images/cdf73d5b22b0735c03ef67d5e321b76a_MD5.webp]]
 
 *All 26B sparse parameters reside in VRAM; only 4B active parameters participate in each forward pass. The "A" in "26B A4B" refers to active parameters.*
 
@@ -177,11 +177,11 @@ Normally, a token embedding lookup table holds one embedding per vocabulary entr
 | PLE table size | 262,144 × 35 × 256 | 262,144 × N × 256 |
 | PLE storage | Flash memory | Flash memory |
 
-![[raw/00-clippings/images/8c89ead9d30b7f3d2409eb5e39eacc27_MD5.webp]]
+![[raw/clippings/images/8c89ead9d30b7f3d2409eb5e39eacc27_MD5.webp]]
 
 *Standard embedding layer: one embedding per token, loaded into VRAM.*
 
-![[raw/00-clippings/images/58608d6871a9ded97d0eb87673da7d82_MD5.webp]]
+![[raw/clippings/images/58608d6871a9ded97d0eb87673da7d82_MD5.webp]]
 
 *Per-Layer Embeddings: an additional, smaller lookup table per layer is stored in flash. At inference start, all needed embeddings are fetched once and cached.*
 
@@ -194,7 +194,7 @@ At inference start, the model fetches embeddings for all input tokens across all
 3. The result is **projected up** to the base embedding size (1,536 for E2B)
 4. After RMSNorm, this is **added** to the decoder block's output
 
-![[raw/00-clippings/images/d9a52548dcf62ad6217cd9626ada2437_MD5.webp]]
+![[raw/clippings/images/d9a52548dcf62ad6217cd9626ada2437_MD5.webp]]
 
 *PLE injection between decoder blocks: gating → projection → RMSNorm → residual add. The model is "reminded" of token identity at every layer.*
 
@@ -212,7 +212,7 @@ All Gemma 4 variants process images through a **ViT-based vision encoder**.
 
 A Vision Transformer splits images into 16×16-pixel patches, treats them as tokens, and runs a transformer over the sequence. The output is one embedding per patch. See [[attention-transformers]] for the ViT paper.
 
-![[raw/00-clippings/images/c414e76df667e5d9418415cda7dfa29e_MD5.webp]]
+![[raw/clippings/images/c414e76df667e5d9418415cda7dfa29e_MD5.webp]]
 
 *ViT patch tokenization: image → 16×16 patches → transformer → one embedding per patch.*
 
@@ -226,7 +226,7 @@ Gemma 4 replaces 1D RoPE with **2D RoPE**:
 - The other half encodes vertical position (height RoPE)
 - Images are adaptively padded (not distorted) to fit 16×16 patch boundaries
 
-![[raw/00-clippings/images/a162908a2b6bc350a8ccbbba33010b37_MD5.webp]]
+![[raw/clippings/images/a162908a2b6bc350a8ccbbba33010b37_MD5.webp]]
 
 *2D RoPE: half the patch embedding dimensions encode width position, half encode height. This preserves spatial meaning regardless of aspect ratio.*
 
@@ -242,13 +242,13 @@ Gemma 4 supports 5 token budgets controlling how much the image is downscaled:
 | 560 tokens | High |
 | 1120 tokens | Very high |
 
-![[raw/00-clippings/images/4d8f372e2768ec643d0e52ac3e6c94a8_MD5.webp]]
+![[raw/clippings/images/4d8f372e2768ec643d0e52ac3e6c94a8_MD5.webp]]
 
 *Token budget vs. effective resolution: higher budgets preserve finer detail at the cost of more tokens for the LLM to process.*
 
 For a budget of N, the maximum patch count is `9 × N` (because every 3×3 block of neighboring patches is pooled into a single soft token by averaging).
 
-![[raw/00-clippings/images/54437d8bc9844ba65b6fb9af5997427a_MD5.webp]]
+![[raw/clippings/images/54437d8bc9844ba65b6fb9af5997427a_MD5.webp]]
 
 *Spatial pooling: 3×3 blocks of patch embeddings are averaged into single soft tokens, compressing the visual representation to the budget size.*
 
@@ -272,15 +272,15 @@ The small models also accept audio input through a **Conformer-based encoder**:
 3. **Conformer encoding** — a Transformer encoder augmented with a convolutional module processes the soft tokens; outputs contextual embeddings
 4. **Linear projection** — projects Conformer outputs into Gemma 4's embedding dimension
 
-![[raw/00-clippings/images/17aae94eb751430bcd236c35847cb5d3_MD5.webp]]
+![[raw/clippings/images/17aae94eb751430bcd236c35847cb5d3_MD5.webp]]
 
 *Audio preprocessing: raw waveform → mel spectrogram → 2D conv chunks → sequence of "soft tokens" ready for the Conformer.*
 
-![[raw/00-clippings/images/468cb5a2efddd03e1798d12d13d9dec5_MD5.webp]]
+![[raw/clippings/images/468cb5a2efddd03e1798d12d13d9dec5_MD5.webp]]
 
 *Conformer vs. dense Gemma 4 31B architecture: the Conformer is a Transformer encoder (not decoder) augmented with a convolutional module. It produces embeddings, not tokens.*
 
-![[raw/00-clippings/images/974dcc12d97ea391c8325a8f4f9a32fa_MD5.webp]]
+![[raw/clippings/images/974dcc12d97ea391c8325a8f4f9a32fa_MD5.webp]]
 
 *Full audio pipeline: mel spectrogram → Conformer → linear projection → Gemma 4 decoder. Same projection pattern as the vision encoder.*
 

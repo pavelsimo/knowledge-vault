@@ -2,7 +2,7 @@ AI infrastructure is shifting from bursty training systems toward always-on exec
 
 ## Source
 
-- [[raw/00-clippings/Why CPUs matter for agentic AI.md|raw/00-clippings/Why CPUs matter for agentic AI.md]]
+- [[raw/clippings/Why CPUs matter for agentic AI.md|raw/clippings/Why CPUs matter for agentic AI.md]]
 
 ## Training vs Agentic Workloads
 

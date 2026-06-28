@@ -30,6 +30,7 @@ int_to_string = {i: ch for i, ch in enumerate(chars)}
 encode = lambda s: [string_to_int[c] for c in s]
 decode = lambda ids: "".join([int_to_string[i] for i in ids])</code></pre>
   <p>Character tokenization is intentionally simple. It exposes the mechanics that production BPE or SentencePiece tokenizers hide.</p>
+  <p>Karpathy's <code>makemore</code> source is the useful conceptual bridge here: before a transformer, a language model can be understood as "given a context of previous characters, predict the next character." The neural-network version keeps the same loss-and-sampling loop as the count-based bigram model, but replaces explicit tables with trainable parameters that scale to larger contexts.</p>
 </div></section>
 
 <section id="bigram"><div class="sec-head"><span class="idx">03</span><h2>Bigram Model</h2></div><div class="sec-body">
@@ -61,6 +62,7 @@ probs = F.softmax(logits, dim=-1)
 next_token = torch.multinomial(probs, num_samples=1)
 index = torch.cat((index, next_token), dim=1)</code></pre>
   <p>This is autoregressive inference in miniature. Modern decoder-only transformers use the same outer loop with attention blocks, positional encodings, and KV cache.</p>
+  <p>The GPT-from-scratch source expands this loop into a decoder-only transformer: token and positional embeddings feed masked self-attention blocks, the causal mask prevents future-token leakage, and generation repeatedly samples the last-position logits. It also clarifies the gap between a pre-trained document completer and a chat assistant that still needs supervised fine-tuning and preference/alignment stages.</p>
 </div></section>
 
 <section id="related"><div class="sec-head"><span class="idx">06</span><h2>Related Topics</h2></div><div class="sec-body"><p><a href="llm-training.html">LLM Training</a> · <a href="attention-transformers.html">Attention &amp; Transformers</a> · <a href="neural-networks.html">Neural Networks</a> · <a href="optimization.html">Optimization</a> · <a href="nlp.html">NLP</a></p></div></section>

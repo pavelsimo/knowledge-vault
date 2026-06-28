@@ -49,9 +49,10 @@ footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size
 <header class="masthead">
   <div class="eyebrow">Knowledge Vault</div>
   <h1>GPU &amp; <em>CUDA</em></h1>
-  <p class="intro">GPUs are massively parallel processors that power modern deep learning. CUDA is NVIDIA's programming platform for running computations on their GPUs. Understanding GPU architecture is essential for debugging memory issues and choosing the right hardware for LLM inference.</p>
+  <p class="intro">GPUs are massively parallel processors that power modern deep learning, graphics, and simulation. CUDA is NVIDIA's programming platform for running computations on their GPUs. Understanding kernels, warps, memory movement, and compute capabilities is essential for debugging performance and model-loading issues.</p>
   <nav class="toc">
     <a href="#kernels">CUDA Kernels</a>
+    <a href="#hardware">Hardware Model</a>
     <a href="#architectures">GPU Architectures</a>
     <a href="#vram">VRAM Math</a>
     <a href="#parallelism">Parallelism</a>
@@ -70,6 +71,9 @@ footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size
       <li>It calls pre-compiled <strong>CUDA kernels</strong> (binary machine code) for the specific GPU architecture</li>
       <li>These kernels are embedded in the PyTorch binary at build time</li>
     </ol>
+    <div class="callout">Course starter: CUDA Hello World with CMake launches one block with four GPU threads as a minimal C-style CUDA example.</div>
+    <pre><code>hello_from_gpu&lt;&lt;&lt;1, 4&gt;&gt;&gt;();</code></pre>
+    <p>That launch means one grid launch, one thread block, and four CUDA threads. The starter checks the launch with <code>cudaGetLastError()</code>, waits for GPU work with <code>cudaDeviceSynchronize()</code>, and resets the device.</p>
     <h3>Common CUDA Error</h3>
     <div class="error-box">CUDA error: no kernel image is available for execution on the device</div>
     <p><strong>Meaning:</strong> The PyTorch build doesn't include compiled kernels for your GPU's architecture. Fix options: (1) install a PyTorch version that supports your GPU, (2) build from source for your specific architecture, (3) use CPU inference.</p>
@@ -84,10 +88,31 @@ footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size
     </div>
   </section>
 
-<section id="architectures">
-  <div class="sec-head"><span class="idx">02</span><h2>GPU Architectures</h2></div>
+<section id="hardware">
+  <div class="sec-head"><span class="idx">02</span><h2>CUDA Hardware Model</h2></div>
   <div class="sec-body">
-    <p>Each GPU generation has a <strong>compute capability</strong> code (sm_XX) that identifies its supported CUDA features. PyTorch wheels only embed kernels for a subset of these.</p>
+    <p>CUDA programs are split across <strong>host</strong> and <strong>device</strong>. The host is CPU-side code and system memory. The device is GPU-side kernels and GPU memory. PCIe or NVLink moves data between them.</p>
+    <div class="figure"><img src="../raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/377a89600b011de86fa6a82b5f255da7_MD5.jpg" alt="CUDA host and device memory connected over PCIe."><div class="figcap">CUDA programs move data between CPU host memory and GPU device memory over PCIe or faster GPU interconnects.</div></div>
+    <table>
+      <tr><th>CUDA concept</th><th>Hardware role</th></tr>
+      <tr><td>Grid</td><td>One kernel launch's full work set</td></tr>
+      <tr><td>Thread block</td><td>A programmable group of threads assigned to one SM</td></tr>
+      <tr><td>Warp</td><td>32 NVIDIA threads scheduled together</td></tr>
+      <tr><td>SM</td><td>Streaming multiprocessor that runs resident warps</td></tr>
+      <tr><td>GigaThread engine</td><td>Global scheduler that assigns blocks to SMs</td></tr>
+    </table>
+    <div class="figure"><img src="../raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/2ecdc62e3d5326ae2fd95b66701682b2_MD5.jpg" alt="CUDA blocks and warps mapped onto GPU hardware schedulers."><div class="figcap">Thread blocks are assigned to SMs, then executed as warps by hardware schedulers.</div></div>
+    <p>A block is the programmer's logical grouping, but the warp is the hardware execution unit. NVIDIA GPUs execute a warp in SIMT style: one instruction is issued across 32 lanes while each thread keeps its own registers and program state.</p>
+    <h3>Toolchain</h3>
+    <p>The CUDA Toolkit provides <code>nvcc</code>, runtime libraries, headers, debuggers, profilers, and domain libraries such as cuBLAS, cuDNN, cuFFT, and cuRAND. <code>nvcc</code> separates host code from device code, sends host C++ to a normal C++ compiler, sends device code through NVIDIA's CUDA pipeline, and links the executable.</p>
+    <p>PTX is NVIDIA's virtual GPU instruction set. CUDA source can compile to PTX and/or SASS machine code. PTX gives some forward compatibility because a compatible driver can JIT-compile it for the installed GPU, while SASS is already compiled for a specific <code>sm_XX</code> target.</p>
+  </div>
+</section>
+
+<section id="architectures">
+  <div class="sec-head"><span class="idx">03</span><h2>GPU Architectures</h2></div>
+  <div class="sec-body">
+    <p>Each GPU generation has a <strong>compute capability</strong> code (<code>sm_XX</code>) that identifies its supported CUDA features. It is not a direct speed score; it controls supported instructions, memory operations, toolkit compatibility, and compilation targets.</p>
     <table>
       <tr><th>GPU Family</th><th>Architecture</th><th>Compute Capability</th><th>Code</th></tr>
       <tr><td>GTX 900</td><td>Maxwell</td><td>5.2</td><td>sm_52</td></tr>
@@ -97,6 +122,10 @@ footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size
       <tr><td>RTX 40xx</td><td>Ada Lovelace</td><td>8.9</td><td>sm_89</td></tr>
       <tr><td>H100</td><td>Hopper</td><td>9.0+</td><td>sm_90</td></tr>
     </table>
+
+    <h3>What Determines GPU Speed</h3>
+    <p>Two cards with similar silicon can perform differently because of enabled core count, clock speed, memory bandwidth, power limits, cooling, firmware settings, cache hierarchy, and precision-specific throughput. Architecture changes also matter: Tensor Cores, for example, made matrix math far faster than Pascal-era CUDA cores alone.</p>
+    <div class="figure"><img src="../raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/61d91ec276b04b2a2b599e8d9ffc265e_MD5.jpg" alt="Memory bandwidth measures data movement per second."><div class="figcap">Memory bandwidth measures how much data can move per second between GPU compute units and memory.</div></div>
 
     <h3>Modern Training GPU: H100</h3>
     <p>The H100 is the reference training GPU in many large-scale systems:</p>
@@ -108,12 +137,12 @@ footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size
     </ul>
     <div class="callout">Modern training is usually <strong>bandwidth-bound</strong> before it is compute-bound. GPU architecture and memory movement dominate real throughput.</div>
 
-      <div class="figure"><img src="../raw/03-stanford-cs231n/images/img_423.png" alt="NVIDIA H100 board layout and memory bandwidth numbers."><div class="figcap">NVIDIA H100 board layout and memory bandwidth numbers.</div></div>
+      <div class="figure"><img src="../raw/course-material/stanford-cs231n/images/img_423.png" alt="NVIDIA H100 board layout and memory bandwidth numbers."><div class="figcap">NVIDIA H100 board layout and memory bandwidth numbers.</div></div>
     </div>
   </section>
 
 <section id="vram">
-  <div class="sec-head"><span class="idx">03</span><h2>LLM VRAM Math</h2></div>
+  <div class="sec-head"><span class="idx">04</span><h2>LLM VRAM Math</h2></div>
   <div class="sec-body">
     <p>The core formula for estimating how much VRAM a model requires:</p>
     <pre><code>VRAM (GB) ≈ Parameters (billions) × (bits per weight ÷ 8)</code></pre>
@@ -163,7 +192,7 @@ footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size
 </section>
 
 <section id="parallelism">
-  <div class="sec-head"><span class="idx">04</span><h2>Model Parallelism</h2></div>
+  <div class="sec-head"><span class="idx">05</span><h2>Model Parallelism</h2></div>
   <div class="sec-body">
     <p>When a model is too large for a single GPU:</p>
     <table>
@@ -178,7 +207,7 @@ footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size
 </section>
 
 <section id="tier">
-  <div class="sec-head"><span class="idx">05</span><h2>GPU Tier List (2025–2026)</h2></div>
+  <div class="sec-head"><span class="idx">06</span><h2>GPU Tier List (2025–2026)</h2></div>
   <div class="sec-body">
     <p>Rankings by software maturity, VRAM, perf/W &amp; perf/$, multi-GPU scaling, reliability, and availability.</p>
 
@@ -211,7 +240,7 @@ footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size
 </section>
 
 <section id="related">
-  <div class="sec-head"><span class="idx">06</span><h2>Related Topics</h2></div>
+  <div class="sec-head"><span class="idx">07</span><h2>Related Topics</h2></div>
   <div class="sec-body">
     <ul>
       <li><a href="quantization.html">Quantization</a> — how weight precision (FP16, INT8, 4-bit) determines VRAM footprint and speed</li>
@@ -219,6 +248,7 @@ footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size
       <li><a href="transformers-library.html">Transformers Library</a> — loading models and managing memory</li>
       <li><a href="hugging-face.html">Hugging Face</a> — model formats and checkpoint downloads</li>
       <li><a href="attention-transformers.html">Attention & Transformers</a> — attention = matrix multiplies + softmax, all GPU-accelerated</li>
+      <li><a href="shaders.html">Shaders</a> — another GPU programming model focused on graphics pipelines</li>
     </ul>
   </div>
 </section>

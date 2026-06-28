@@ -2,7 +2,7 @@ Declarative Automation Bundles are Databricks' infrastructure-as-code format for
 
 ## Source
 
-- [[raw/00-clippings/What are Declarative Automation Bundles.md|raw/00-clippings/What are Declarative Automation Bundles.md]]
+- [[raw/clippings/What are Declarative Automation Bundles.md|raw/clippings/What are Declarative Automation Bundles.md]]
 
 ## What a Bundle Contains
 

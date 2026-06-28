@@ -4,9 +4,9 @@ Generative models learn the probability distribution of data, enabling them to s
 
 ## Source
 
-- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
-- [[raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 13 Generative Models 1 - YouTube.md|raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 13 Generative Models 1 - YouTube.md]]
-- [[raw/00-clippings/Stanford CS231N Deep Learning for Computer Vision Spring 2025  Lecture 14 Generative Models 2.md|raw/00-clippings/Stanford CS231N Deep Learning for Computer Vision Spring 2025  Lecture 14 Generative Models 2.md]]
+- [[raw/course-material/stanford-cs231n/Stanford CS231N.md|raw/course-material/stanford-cs231n/Stanford CS231N.md]]
+- [[raw/clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 13 Generative Models 1 - YouTube.md|raw/clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 13 Generative Models 1 - YouTube.md]]
+- [[raw/clippings/Stanford CS231N Deep Learning for Computer Vision Spring 2025  Lecture 14 Generative Models 2.md|raw/clippings/Stanford CS231N Deep Learning for Computer Vision Spring 2025  Lecture 14 Generative Models 2.md]]
 
 ## Key Papers
 
@@ -45,7 +45,7 @@ Generative Models
 
 The key split: **explicit** models reason about probabilities directly, **implicit** models just generate samples without assigning likelihoods.
 
-![Taxonomy of explicit and implicit generative models.](../raw/03-stanford-cs231n/images/img_575.png)
+![Taxonomy of explicit and implicit generative models.](../raw/course-material/stanford-cs231n/images/img_575.png)
 
 *The CS231N taxonomy is useful because it separates "can assign likelihood" from "can generate samples." Autoregressive models and VAEs live on the explicit side; GANs and diffusion live on the implicit side.*
 

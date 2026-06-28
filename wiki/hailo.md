@@ -2,6 +2,12 @@
 
 The Hailo-8 is a dedicated AI inference accelerator chip designed for edge deployment, offering high-throughput neural network inference at low power. Setting up a Hailo-based system involves two separate machines: a **client** (ARM/Raspberry Pi running inference via HailoRT) and a **server** (x86_64 machine running the Hailo Dataflow Compiler to compile ONNX models into `.hef` files).
 
+## Source
+
+- [[raw/reference-packs/hailo-setup/Client.md|raw/reference-packs/hailo-setup/Client.md]]
+- [[raw/reference-packs/hailo-setup/Server.md|raw/reference-packs/hailo-setup/Server.md]]
+- [[raw/reference-packs/hailo-setup/Hailo Dataflow Compiler Study Guide.md|raw/reference-packs/hailo-setup/Hailo Dataflow Compiler Study Guide.md]]
+
 ---
 
 ## Architecture Overview

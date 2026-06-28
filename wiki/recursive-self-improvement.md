@@ -2,7 +2,7 @@ Recursive self-improvement is the scenario where AI systems increasingly automat
 
 ## Source
 
-- [[raw/00-clippings/When AI builds itself.md|raw/00-clippings/When AI builds itself.md]]
+- [[raw/clippings/When AI builds itself.md|raw/clippings/When AI builds itself.md]]
 - [Anthropic Institute - When AI builds itself](https://www.anthropic.com/institute/recursive-self-improvement)
 
 ## Core Idea
@@ -21,11 +21,11 @@ The important shift is compounding. If models write more code, run more experime
 
 The Anthropic article combines external benchmark trends with internal production data. The central claim is not that AI already runs the entire research loop, but that more of the loop is being delegated.
 
-![Anthropic chart showing code contributed per person by quarter rising to 8x by Q2 2026.](../raw/00-clippings/images/12ce51db77a5deef846b7aaf49dbd810_MD5.png)
+![Anthropic chart showing code contributed per person by quarter rising to 8x by Q2 2026.](../raw/clippings/images/12ce51db77a5deef846b7aaf49dbd810_MD5.png)
 
 The most direct internal signal is code throughput: Anthropic reports that engineers ship far more code per quarter than before Claude became part of the development loop. This matters because frontier AI research is heavily mediated through code: training runs, evals, infrastructure, data pipelines, and analysis scripts.
 
-![Anthropic chart showing Claude Code session success rates rising across trivial, routine, substantial, and open-ended tasks.](../raw/00-clippings/images/942972ee6f048785793df11abf69a2be_MD5.png)
+![Anthropic chart showing Claude Code session success rates rising across trivial, routine, substantial, and open-ended tasks.](../raw/clippings/images/942972ee6f048785793df11abf69a2be_MD5.png)
 
 The second signal is reliability on progressively harder internal Claude Code sessions. Open-ended work is the relevant category for research acceleration because the path is not pre-scripted; the agent must investigate, adapt, and recover from failed attempts.
 
@@ -46,7 +46,7 @@ This is the [[ai-industry]] version of Amdahl's law: accelerating one part of th
 
 The hardest remaining part is research taste: picking problems that matter, interpreting ambiguous results, and deciding when a path is a dead end.
 
-![Anthropic chart comparing whether Claude's suggested research next step beat the human next step.](../raw/00-clippings/images/b885cb9b2b8803e84a99c881cc1288c3_MD5.png)
+![Anthropic chart comparing whether Claude's suggested research next step beat the human next step.](../raw/clippings/images/b885cb9b2b8803e84a99c881cc1288c3_MD5.png)
 
 Anthropic's internal "where a researcher went wrong" evaluation is a proxy for this taste problem. It asks whether a model can propose a better next step at moments where a human research session had room for improvement. The result is not proof of autonomous research judgment, but it is evidence that models are improving at the judgment calls that sit above raw implementation.
 

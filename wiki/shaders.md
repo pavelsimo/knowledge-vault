@@ -4,7 +4,7 @@ A shader is a type of computer program — a set of instructions — that runs o
 
 ## Source
 
-- [[raw/00-clippings/What is a Shader.md|raw/00-clippings/What is a Shader.md]]
+- [[raw/clippings/What is a Shader.md|raw/clippings/What is a Shader.md]]
 
 ## What a Shader Is
 
@@ -27,7 +27,7 @@ Operates on each **vertex** (point) in a mesh. Handles:
 
 A triangle has exactly 3 vertices — 3 yellow-circle points at the corners of the triangle mesh. Those 3 points are the inputs to the vertex shader. Every polygon in a 3D scene is ultimately decomposed into triangles, because the triangle is the simplest primitive with a surface area (3 connected points define a plane; 2 points only define a line).
 
-![Triangles are the simplest surface primitive that the GPU can shade.](../raw/00-clippings/images/8be73bab53974918980e4fdaddac5adc_MD5.png)
+![Triangles are the simplest surface primitive that the GPU can shade.](../raw/clippings/images/8be73bab53974918980e4fdaddac5adc_MD5.png)
 
 *This is why graphics pipelines are triangle-centric. Once you have three vertices, the GPU can rasterize and shade the enclosed surface.*
 
@@ -54,7 +54,7 @@ When zoomed in, a pixel-art tree sits in the center of a photorealistic blurred 
 
 A zoomed view of letter rendering shows anti-aliasing: the sharp white/black boundary softens to gray intermediate pixels along diagonal edges, reducing the "staircase" artifact (aliasing) that occurs when continuous curves are sampled on a discrete pixel grid.
 
-![A shader ultimately writes colors on a discrete pixel grid, not a continuous surface.](../raw/00-clippings/images/e989134bce87e8ada17d86af95832be4_MD5.png)
+![A shader ultimately writes colors on a discrete pixel grid, not a continuous surface.](../raw/clippings/images/e989134bce87e8ada17d86af95832be4_MD5.png)
 
 *This is the right intuition for fragment shaders: no matter how smooth the scene feels, the final output is still computed on a finite grid of pixels.*
 

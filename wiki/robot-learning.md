@@ -4,10 +4,10 @@ Robot learning covers how machines acquire skills through experience, demonstrat
 
 ## Source
 
-- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
-- [[raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 17 Robot Learning - YouTube.md|raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 17 Robot Learning - YouTube.md]]
-- [[raw/00-clippings/Should Robot Generalists Get Off Their High Horse.md|raw/00-clippings/Should Robot Generalists Get Off Their High Horse.md]]
-- [[raw/00-clippings/The Physical AI Deployment Gap.md|raw/00-clippings/The Physical AI Deployment Gap.md]]
+- [[raw/course-material/stanford-cs231n/Stanford CS231N.md|raw/course-material/stanford-cs231n/Stanford CS231N.md]]
+- [[raw/clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 17 Robot Learning - YouTube.md|raw/clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 17 Robot Learning - YouTube.md]]
+- [[raw/clippings/Should Robot Generalists Get Off Their High Horse.md|raw/clippings/Should Robot Generalists Get Off Their High Horse.md]]
+- [[raw/clippings/The Physical AI Deployment Gap.md|raw/clippings/The Physical AI Deployment Gap.md]]
 
 ## Key Papers
 
@@ -18,11 +18,11 @@ Robot learning covers how machines acquire skills through experience, demonstrat
 - [π₀: A Vision-Language-Action Flow Model for General Robot Control](https://arxiv.org/pdf/2410.24164) - a strong recent reference for flow-based robot foundation models.
 - [GR00T N1: An Open Foundation Model for Generalist Humanoid Robots](https://arxiv.org/pdf/2503.14734) - a representative humanoid foundation-model paper.
 
-![Diffusion Policy reframes robot control as iterative action denoising rather than one-shot regression.](../raw/03-stanford-cs231n/images/2026-01-01-22-12-59.png)
+![Diffusion Policy reframes robot control as iterative action denoising rather than one-shot regression.](../raw/course-material/stanford-cs231n/images/2026-01-01-22-12-59.png)
 
 *This paper figure is useful because it makes the shift in policy learning concrete: explicit regression, implicit energy models, and diffusion policies are different answers to the same multimodal-action problem.*
 
-![Recent robot-foundation-model work is best understood as a paper lineage from RT-1 to RT-2, RT-X, OpenVLA, and Pi-Zero.](../raw/03-stanford-cs231n/images/2026-01-02-12-58-40.png)
+![Recent robot-foundation-model work is best understood as a paper lineage from RT-1 to RT-2, RT-X, OpenVLA, and Pi-Zero.](../raw/course-material/stanford-cs231n/images/2026-01-02-12-58-40.png)
 
 *The timeline matters here. This topic is moving through papers and systems reports at high speed, so the page should foreground the model lineage rather than treating all VLA systems as one blur.*
 
@@ -291,7 +291,7 @@ The robotics data flywheel: once robots can collect data while creating economic
 
 ## Source
 
-- [[raw/00-clippings/The Physical AI Deployment Gap.md|raw/00-clippings/The Physical AI Deployment Gap.md]]
+- [[raw/clippings/The Physical AI Deployment Gap.md|raw/clippings/The Physical AI Deployment Gap.md]]
 
 ## Related Topics
 

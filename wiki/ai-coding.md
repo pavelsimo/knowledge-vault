@@ -4,8 +4,8 @@ AI-assisted development is the practice of using LLM-powered coding agents to ac
 
 ## Source
 
-- [[raw/00-clippings/How to Vibe Code A Developer's Playbook.md|raw/00-clippings/How to Vibe Code A Developer's Playbook.md]]
-- [[raw/00-clippings/Post by @thdxr on X.md|raw/00-clippings/Post by @thdxr on X.md]]
+- [[raw/clippings/How to Vibe Code A Developer's Playbook.md|raw/clippings/How to Vibe Code A Developer's Playbook.md]]
+- [[raw/clippings/Post by @thdxr on X.md|raw/clippings/Post by @thdxr on X.md]]
 
 ## The Productivity Trap
 
@@ -20,7 +20,7 @@ The biggest risk of AI coding tools is not bad code — it is **false confidence
 | **Pure vibe coding** | The AI writes. Nobody checks. Forget the code exists. | Throwaway prototypes, weekend experiments |
 | **AI-assisted development** | The AI drafts. You architect and verify. Spec-driven, test-first, ships to production. | Production code |
 
-![Pure vibe coding optimizes for speed and plausibility; AI-assisted development optimizes for ownership, verification, and shipping.](../raw/00-clippings/images/92f8e77286de71a673b80d13cb93557a_MD5.jpg)
+![Pure vibe coding optimizes for speed and plausibility; AI-assisted development optimizes for ownership, verification, and shipping.](../raw/clippings/images/92f8e77286de71a673b80d13cb93557a_MD5.jpg)
 
 *That contrast is the whole page in one image: the dividing line is not whether AI writes code, but whether a human still owns the engineering standard.*
 
@@ -80,7 +80,7 @@ Context engineering is designing **what information is available to the AI** at 
 
 The cycle runs continuously: Plan (1) → Execute (2) → Verify (3) → back to Plan.
 
-![Breaking work into small plan-execute-verify cycles keeps the agent inside a tractable problem window.](../raw/00-clippings/images/4269e4a012abe9c0d8fab47d32d10b29_MD5.jpg)
+![Breaking work into small plan-execute-verify cycles keeps the agent inside a tractable problem window.](../raw/clippings/images/4269e4a012abe9c0d8fab47d32d10b29_MD5.jpg)
 
 *The practical value of the loop is not ceremony. It is containment: smaller steps make it easier to notice when the model is confidently wrong.*
 

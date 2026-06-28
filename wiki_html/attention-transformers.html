@@ -151,7 +151,7 @@ footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offse
 headᵢ = Attention(Q·Wᵢᵠ, K·Wᵢᴷ, V·Wᵢᵛ)</code></pre>
       <p>Each head learns to attend to different types of relationships. In practice, self-attention is <strong>always</strong> multi-head attention today — just four matrix multiplies: Q, K, V projections + output projection.</p>
 
-      <div class="figure"><img src="../raw/03-stanford-cs231n/images/img_262.png" alt="Attention turns translation into a soft lookup over all encoder states."><div class="figcap">Attention turns translation into a soft lookup over all encoder states.</div></div>
+      <div class="figure"><img src="../raw/course-material/stanford-cs231n/images/img_262.png" alt="Attention turns translation into a soft lookup over all encoder states."><div class="figcap">Attention turns translation into a soft lookup over all encoder states.</div></div>
     </div>
   </section>
 
@@ -159,6 +159,7 @@ headᵢ = Attention(Q·Wᵢᵠ, K·Wᵢᴷ, V·Wᵢᵛ)</code></pre>
     <div class="sec-head"><span class="idx">03</span><h2>Self-Attention Layer</h2></div>
     <div class="sec-body">
       <p>A self-attention layer relates all positions in a single sequence to each other. Each token attends to every other token, capturing global dependencies regardless of distance.</p>
+      <p>The self-attention clipping reinforces the historical contrast: earlier RNN-based attention mostly acted as cross-attention from decoder state to encoder states, while transformers make self-attention the main computation so every token can build a contextual representation in parallel.</p>
 
       <h3>Full Computation (Step by Step)</h3>
       <div class="tabs" data-tabs>

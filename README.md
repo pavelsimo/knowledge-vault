@@ -12,20 +12,14 @@ outputs/      # Generated reports, slides, and analyses
 images/       # Shared image assets
 ```
 
-### raw/ topics
+### raw/ layout
 
 | Directory | Content |
 |-----------|---------|
-| `00-clippings` | Web clippings and reference snippets |
-| `01-open-source-models-hugging-face` | Hugging Face course material |
-| `02-cs109-probability-for-computer-scientists` | Stanford CS109 probability course |
-| `03-stanford-cs231n` | Stanford CS231n computer vision course |
-| `04-machine-learning-engineering-for-production-mlops` | MLOps course material |
-| `05-omniverse` | NVIDIA Omniverse and OpenUSD notes |
-| `06-system-design` | System design references |
-| `07-hailo-setup` | Hailo-8 edge AI accelerator setup notes |
-| `08-llm-from-scratch-with-python-freecodecamp` | LLM from scratch course |
-| `09-tmux` | Tmux reference and cheat sheets |
+| `raw/clippings/` | Web clippings, video notes, social posts, and reference snippets; existing contents stay unchanged internally |
+| `raw/course-material/` | Course and tutorial source capsules such as CS109, CS231N, Hugging Face, MLOps, and LLM-from-scratch |
+| `raw/reference-packs/` | Coherent reference/source packs such as Omniverse, system design, Hailo setup, tmux, and local models |
+| `raw/inbox/` | Temporary landing area for newly added unsorted raw material before it is promoted into a source capsule |
 
 ## Wiki
 

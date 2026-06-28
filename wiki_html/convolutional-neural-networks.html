@@ -90,7 +90,7 @@ svg.cnn-flow{display:block;width:100%;max-width:780px;margin:0 auto;height:auto}
       <p>A convolutional layer uses small <strong>filters</strong> (e.g., 3×3 or 5×5) that slide across the image. Each filter detects one type of local feature (edge, corner, texture). Parameters are <strong>shared</strong> across all positions, producing vastly fewer parameters. The output is a <strong>feature map</strong> — one channel per filter.</p>
       <blockquote style="border-left:3px solid var(--clay);padding:8px 16px;margin:12px 0;color:var(--g700);font-style:italic">"Convolutional" comes from the mathematical convolution operation — folding two functions together.</blockquote>
 
-      <div class="figure"><img src="../raw/03-stanford-cs231n/images/img_110.png" alt="AlexNet is the historical inflection point that turned CNNs into the dominant vision backbone."><div class="figcap">AlexNet is the historical inflection point that turned CNNs into the dominant vision backbone.</div></div>
+      <div class="figure"><img src="../raw/course-material/stanford-cs231n/images/img_110.png" alt="AlexNet is the historical inflection point that turned CNNs into the dominant vision backbone."><div class="figcap">AlexNet is the historical inflection point that turned CNNs into the dominant vision backbone.</div></div>
     </div>
   </section>
 
@@ -253,7 +253,7 @@ Output:  6 × 28 × 28  (one activation map per filter, stacked)</code></pre>
       <h3>Transfer Learning</h3>
       <p>Pretrained CNNs (ResNet, VGG, EfficientNet) trained on ImageNet are reused for new tasks by freezing earlier layers (general features: edges, textures) and fine-tuning later layers on new task-specific data. Dramatically reduces training data and compute needed.</p>
 
-      <div class="figure"><img src="../raw/03-stanford-cs231n/images/img_174.png" alt="ResNet reframes depth as learning residual change on top of an identity path."><div class="figcap">ResNet reframes depth as learning residual change on top of an identity path.</div></div>
+      <div class="figure"><img src="../raw/course-material/stanford-cs231n/images/img_174.png" alt="ResNet reframes depth as learning residual change on top of an identity path."><div class="figcap">ResNet reframes depth as learning residual change on top of an identity path.</div></div>
     </div>
   </section>
 
@@ -278,7 +278,7 @@ Output:  6 × 28 × 28  (one activation map per filter, stacked)</code></pre>
       </table>
       <p>AlexNet (8 layers) in 2012 cut the error rate nearly in half — the event that launched the modern deep learning era. ResNet (152 layers) surpassed human-level performance in 2015.</p>
 
-      <div class="figure"><img src="../raw/03-stanford-cs231n/images/img_163.png" alt="ImageNet winners show the paper-driven jump from AlexNet to VGG, GoogLeNet, and ResNet."><div class="figcap">ImageNet winners show the paper-driven jump from AlexNet to VGG, GoogLeNet, and ResNet.</div></div>
+      <div class="figure"><img src="../raw/course-material/stanford-cs231n/images/img_163.png" alt="ImageNet winners show the paper-driven jump from AlexNet to VGG, GoogLeNet, and ResNet."><div class="figcap">ImageNet winners show the paper-driven jump from AlexNet to VGG, GoogLeNet, and ResNet.</div></div>
     </div>
   </section>
 

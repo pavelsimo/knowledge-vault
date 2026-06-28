@@ -4,14 +4,14 @@ These chapter notes describe China's development model as a specific political-e
 
 ## Source
 
-- [[raw/00-clippings/Chapter 1 Local Government Powers & Responsibilities.md|raw/00-clippings/Chapter 1 Local Government Powers & Responsibilities.md]]
-- [[raw/00-clippings/Chapter 2 Finance, Taxation and Government Action.md|raw/00-clippings/Chapter 2 Finance, Taxation and Government Action.md]]
-- [[raw/00-clippings/Chapter 3 Government Investment, Fundraising and Debt.md|raw/00-clippings/Chapter 3 Government Investment, Fundraising and Debt.md]]
-- [[raw/00-clippings/Chapter 4 Government's Role in Industrialization.md|raw/00-clippings/Chapter 4 Government's Role in Industrialization.md]]
-- [[raw/00-clippings/Chapter 5 Urbanization and Inequality.md|raw/00-clippings/Chapter 5 Urbanization and Inequality.md]]
-- [[raw/00-clippings/Chapter 6 Debt and Risk.md|raw/00-clippings/Chapter 6 Debt and Risk.md]]
-- [[raw/00-clippings/Chapter 7 Domestic and International Imbalance.md|raw/00-clippings/Chapter 7 Domestic and International Imbalance.md]]
-- [[raw/00-clippings/Chapter 8 Government and Economic Development.md|raw/00-clippings/Chapter 8 Government and Economic Development.md]]
+- [[raw/clippings/Chapter 1 Local Government Powers & Responsibilities.md|raw/clippings/Chapter 1 Local Government Powers & Responsibilities.md]]
+- [[raw/clippings/Chapter 2 Finance, Taxation and Government Action.md|raw/clippings/Chapter 2 Finance, Taxation and Government Action.md]]
+- [[raw/clippings/Chapter 3 Government Investment, Fundraising and Debt.md|raw/clippings/Chapter 3 Government Investment, Fundraising and Debt.md]]
+- [[raw/clippings/Chapter 4 Government's Role in Industrialization.md|raw/clippings/Chapter 4 Government's Role in Industrialization.md]]
+- [[raw/clippings/Chapter 5 Urbanization and Inequality.md|raw/clippings/Chapter 5 Urbanization and Inequality.md]]
+- [[raw/clippings/Chapter 6 Debt and Risk.md|raw/clippings/Chapter 6 Debt and Risk.md]]
+- [[raw/clippings/Chapter 7 Domestic and International Imbalance.md|raw/clippings/Chapter 7 Domestic and International Imbalance.md]]
+- [[raw/clippings/Chapter 8 Government and Economic Development.md|raw/clippings/Chapter 8 Government and Economic Development.md]]
 
 ## Core Governance Model
 
@@ -36,7 +36,7 @@ This creates a system with duplicated bureaucracies, overlapping reporting lines
 
 The 1994 tax reform is the turning point for the modern fiscal model.
 
-![China's fiscal architecture creates a vertical imbalance: local governments spend most of the money but control a much smaller share of revenue.](../raw/00-clippings/images/2d1bdfebad30643bc036e358553ab976_MD5.png)
+![China's fiscal architecture creates a vertical imbalance: local governments spend most of the money but control a much smaller share of revenue.](../raw/clippings/images/2d1bdfebad30643bc036e358553ab976_MD5.png)
 
 *This is the structural setup behind the whole chapter set: local implementation capacity stayed huge even after central revenue power increased.*
 
@@ -162,7 +162,7 @@ The proposed solution in the notes is not broad monetary easing. It is structura
 
 The chapters tie domestic imbalance directly to trade conflict.
 
-![China's manufacturing rise solved one development problem while creating new domestic-consumption and trade-balance tensions.](../raw/00-clippings/images/192eefb404766f43d1f4c71cada34594_MD5.png)
+![China's manufacturing rise solved one development problem while creating new domestic-consumption and trade-balance tensions.](../raw/clippings/images/192eefb404766f43d1f4c71cada34594_MD5.png)
 
 *The chart matters because it links two levels at once: internal under-consumption pushes excess capacity outward, and external success feeds geopolitical pressure back inward.*
 

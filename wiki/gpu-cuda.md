@@ -1,14 +1,16 @@
 # GPU and CUDA
 
-GPUs (Graphics Processing Units) are massively parallel processors that power modern deep learning. CUDA is NVIDIA's programming platform for running computations on their GPUs. Understanding GPU architecture and CUDA is essential for debugging model loading issues and optimizing inference performance.
+GPUs (Graphics Processing Units) are massively parallel processors that power modern deep learning, graphics, and simulation. CUDA is NVIDIA's programming platform for running computations on their GPUs, and understanding its host/device model, kernels, warps, memory movement, and compute capabilities is essential for debugging model loading issues and optimizing inference performance.
 
 ## Source
 
-- [[raw/01-open-source-models-hugging-face/Open Source Models with Hugging Face.md|raw/01-open-source-models-hugging-face/Open Source Models with Hugging Face.md]]
-- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
-- [[raw/00-clippings/Spring 2025  Lecture 11 Large Scale Distributed Training - YouTube.md|raw/00-clippings/Spring 2025  Lecture 11 Large Scale Distributed Training - YouTube.md]]
-- [[raw/00-clippings/GPU Memory Math for LLMs (2026 Edition).md|raw/00-clippings/GPU Memory Math for LLMs (2026 Edition).md]]
-- [[raw/00-clippings/Thread by @TheAhmadOsman.md|raw/00-clippings/Thread by @TheAhmadOsman.md]]
+- [[raw/course-material/open-source-models-hugging-face/Open Source Models with Hugging Face.md|raw/course-material/open-source-models-hugging-face/Open Source Models with Hugging Face.md]]
+- [[raw/course-material/stanford-cs231n/Stanford CS231N.md|raw/course-material/stanford-cs231n/Stanford CS231N.md]]
+- [[raw/clippings/Spring 2025  Lecture 11 Large Scale Distributed Training - YouTube.md|raw/clippings/Spring 2025  Lecture 11 Large Scale Distributed Training - YouTube.md]]
+- [[raw/clippings/GPU Memory Math for LLMs (2026 Edition).md|raw/clippings/GPU Memory Math for LLMs (2026 Edition).md]]
+- [[raw/clippings/Thread by @TheAhmadOsman.md|raw/clippings/Thread by @TheAhmadOsman.md]]
+- [[raw/course-material/mastering-gpu-parallel-programming-with-cuda/mastering-gpu-parallel-programming-with-cuda-cleaned-notes.md|raw/course-material/mastering-gpu-parallel-programming-with-cuda/mastering-gpu-parallel-programming-with-cuda-cleaned-notes.md]]
+- [[raw/course-material/mastering-gpu-parallel-programming-with-cuda/src/README.md|raw/course-material/mastering-gpu-parallel-programming-with-cuda/src/README.md]]
 
 ## What is a CUDA Kernel?
 
@@ -19,9 +21,51 @@ When PyTorch runs an operation:
 2. It calls pre-compiled **CUDA kernels** (binary machine code) for the specific GPU architecture
 3. These kernels are embedded in the PyTorch binary at build time
 
+The course starter in `raw/course-material/mastering-gpu-parallel-programming-with-cuda/src/` includes a minimal C-style CUDA Hello World program that launches one block with four GPU threads and builds with CMake.
+
+The core launch line is:
+
+```cuda
+hello_from_gpu<<<1, 4>>>();
+```
+
+That means one grid launch, one thread block, and four CUDA threads. The starter then checks the launch with `cudaGetLastError()`, waits for GPU work with `cudaDeviceSynchronize()`, and resets the device.
+
+## CUDA Programming Mental Model
+
+CUDA programs are split across **host** and **device**:
+
+- **Host** — CPU-side code and system memory.
+- **Device** — GPU-side kernels and GPU memory.
+- **PCIe / NVLink** — the interconnect that moves data between CPU memory and GPU memory, or between GPUs.
+
+![CUDA programs move data between CPU host memory and GPU device memory over PCIe.](../raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/377a89600b011de86fa6a82b5f255da7_MD5.jpg)
+
+The software hierarchy maps onto hardware:
+
+| CUDA concept | Hardware role |
+|--------------|---------------|
+| Grid | One kernel launch's full work set |
+| Thread block | A programmable group of threads assigned to one SM |
+| Warp | 32 NVIDIA threads scheduled together |
+| SM (streaming multiprocessor) | Hardware block that runs resident warps |
+| GigaThread engine | Global scheduler that assigns blocks to SMs |
+
+![CUDA thread blocks are assigned to SMs and then executed as warps by hardware schedulers.](../raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/2ecdc62e3d5326ae2fd95b66701682b2_MD5.jpg)
+
+A block is the programmer's logical grouping, but the warp is the hardware execution unit. NVIDIA GPUs execute a warp in SIMT style: one instruction is issued across 32 lanes, while each thread keeps its own registers and program state. The warp scheduler hides latency by switching to another ready warp when one warp stalls on memory.
+
+## CUDA Toolchain
+
+The CUDA Toolkit provides `nvcc`, runtime libraries, headers, debuggers, profilers, and domain libraries such as cuBLAS, cuDNN, cuFFT, and cuRAND.
+
+`nvcc` is a compiler driver. It separates host code from device code, sends host C++ to a normal C++ compiler, sends device code through NVIDIA's CUDA compilation pipeline, and links the executable.
+
+PTX (Parallel Thread Execution) is NVIDIA's virtual GPU instruction set. CUDA source can compile to PTX and/or SASS machine code. PTX gives some forward compatibility because a compatible driver can JIT-compile PTX for the installed GPU, while SASS is already compiled for a specific `sm_XX` target.
+
 ## GPU Architectures (NVIDIA Compute Capabilities)
 
-Each GPU generation has a **compute capability** code (sm_XX) that identifies its supported features:
+Each GPU generation has a **compute capability** code (`sm_XX`) that identifies its supported CUDA features. It is not a direct speed score; it controls supported instructions, memory operations, toolkit compatibility, and compilation targets such as `compute_89` or `sm_89`.
 
 | GPU Family | Architecture | Compute Capability | Code |
 |------------|-------------|-------------------|------|
@@ -34,6 +78,14 @@ Each GPU generation has a **compute capability** code (sm_XX) that identifies it
 
 **Personal GPU note:** GTX 1060 = Pascal architecture = sm_61 (compute capability 6.1)
 
+## What Determines GPU Speed
+
+Two cards with similar silicon can perform differently because of enabled core count, clock speed, memory bandwidth, power limits, cooling, firmware settings, cache hierarchy, and precision-specific throughput. Architecture changes also matter: Tensor Cores, for example, made matrix math far faster than Pascal-era CUDA cores alone.
+
+Memory bandwidth is especially important. It measures how quickly data can move to and from VRAM, and many deep learning, rendering, video, and simulation workloads are limited by data movement before raw arithmetic throughput.
+
+![Memory bandwidth measures how much data can move per second between GPU compute units and memory.](../raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/61d91ec276b04b2a2b599e8d9ffc265e_MD5.jpg)
+
 ## Modern Training GPU: H100
 
 The H100 is the reference training GPU in many large-scale systems because it combines high-bandwidth memory, large tensor-core throughput, and fast intra-node interconnects.
@@ -43,7 +95,7 @@ The H100 is the reference training GPU in many large-scale systems because it co
 - **132 SMs** enabled after binning
 - Tensor Cores dominate deep learning throughput, especially for FP16/BF16/FP8 matrix math
 
-![NVIDIA H100 board layout and memory bandwidth numbers.](../raw/03-stanford-cs231n/images/img_423.png)
+![NVIDIA H100 board layout and memory bandwidth numbers.](../raw/course-material/stanford-cs231n/images/img_423.png)
 
 *The practical lesson is simple: modern training is usually bandwidth-bound before it is "Python-bound." GPU architecture and memory movement dominate real throughput.*
 
@@ -234,3 +286,4 @@ For 2-GPU consumer builds (Intel/AMD platform with PCIe bifurcation):
 - [[attention-transformers]] — attention = matrix multiplies + softmax, all GPU-accelerated
 - [[distributed-training]] — sharding large models across multiple GPUs
 - [[quantization]] — how weight precision (FP16, INT8, 4-bit) determines VRAM footprint and speed
+- [[shaders]] — another GPU programming model focused on graphics pipelines

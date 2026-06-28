@@ -4,14 +4,14 @@ Hugging Face is the central hub for open-source AI models, datasets, and demos, 
 
 ## Source
 
-- [[raw/01-open-source-models-hugging-face/Open Source Models with Hugging Face.md|raw/01-open-source-models-hugging-face/Open Source Models with Hugging Face.md]]
-- [[raw/01-open-source-models-hugging-face/helpers.py|raw/01-open-source-models-hugging-face/helpers.py]]
+- [[raw/course-material/open-source-models-hugging-face/Open Source Models with Hugging Face.md|raw/course-material/open-source-models-hugging-face/Open Source Models with Hugging Face.md]]
+- [[raw/course-material/open-source-models-hugging-face/helpers.py|raw/course-material/open-source-models-hugging-face/helpers.py]]
 
 ## Repo Helper Utilities
 
 The shared `helpers.py` file is the glue code for the hands-on Hugging Face examples. It does not introduce new modeling ideas; it standardizes visualization so the task scripts can focus on inference.
 
-- [[raw/01-open-source-models-hugging-face/helpers.py|raw/01-open-source-models-hugging-face/helpers.py]] - converts Matplotlib figures to PIL images, overlays one or many segmentation masks on source images, and renders normalized depth maps with optional side-by-side comparisons and color bars.
+- [[raw/course-material/open-source-models-hugging-face/helpers.py|raw/course-material/open-source-models-hugging-face/helpers.py]] - converts Matplotlib figures to PIL images, overlays one or many segmentation masks on source images, and renders normalized depth maps with optional side-by-side comparisons and color bars.
 
 ## Model Hub
 

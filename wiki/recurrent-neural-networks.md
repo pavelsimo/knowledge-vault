@@ -4,8 +4,8 @@ Recurrent Neural Networks (RNNs) are neural networks designed for sequential dat
 
 ## Source
 
-- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
-- [[raw/00-clippings/Spring 2025  Lecture 7 Recurrent Neural Networks - YouTube.md|raw/00-clippings/Spring 2025  Lecture 7 Recurrent Neural Networks - YouTube.md]]
+- [[raw/course-material/stanford-cs231n/Stanford CS231N.md|raw/course-material/stanford-cs231n/Stanford CS231N.md]]
+- [[raw/clippings/Spring 2025  Lecture 7 Recurrent Neural Networks - YouTube.md|raw/clippings/Spring 2025  Lecture 7 Recurrent Neural Networks - YouTube.md]]
 
 ## Key Papers
 
@@ -96,7 +96,7 @@ Input sequence → RNN encoder → final state c → RNN decoder → output sequ
 
 This works on short sequences, but it creates an information bottleneck on long inputs: the model must remember everything important in one fixed-size state.
 
-![Classical seq2seq uses one fixed context vector for the whole output.](../raw/03-stanford-cs231n/images/img_259.png)
+![Classical seq2seq uses one fixed context vector for the whole output.](../raw/course-material/stanford-cs231n/images/img_259.png)
 
 *Pre-attention seq2seq: the encoder summarizes the whole source sentence into one context vector. Attention was introduced to remove this bottleneck.*
 

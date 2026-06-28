@@ -2,9 +2,9 @@ Excalidraw rendering is the workflow of turning Excalidraw scene JSON into local
 
 ## Source
 
-- [[raw/00-clippings/bassimeledathexcalidraw-render-mcp MCP server for headless Excalidraw diagram rendering. Renders locally — no data sent to third-party servers..md|raw/00-clippings/bassimeledathexcalidraw-render-mcp MCP server for headless Excalidraw diagram rendering. Renders locally — no data sent to third-party servers..md]]
+- [[raw/clippings/bassimeledathexcalidraw-render-mcp MCP server for headless Excalidraw diagram rendering. Renders locally — no data sent to third-party servers..md|raw/clippings/bassimeledathexcalidraw-render-mcp MCP server for headless Excalidraw diagram rendering. Renders locally — no data sent to third-party servers..md]]
 
-![The renderer uses headless Chromium to convert Excalidraw elements into SVG or PNG files.](../raw/00-clippings/images/bb7c9504f31ad49fe33f07bfecb314a3_MD5.png)
+![The renderer uses headless Chromium to convert Excalidraw elements into SVG or PNG files.](../raw/clippings/images/bb7c9504f31ad49fe33f07bfecb314a3_MD5.png)
 
 ## How It Works
 

@@ -2,7 +2,7 @@ Local models are AI models that run on hardware you control, shifting the operat
 
 ## Source
 
-- [[raw/10-local-models/Local Models.md|raw/10-local-models/Local Models.md]]
+- [[raw/reference-packs/local-models/Local Models.md|raw/reference-packs/local-models/Local Models.md]]
 
 ## Core Thesis
 
@@ -13,7 +13,7 @@ The source contrasts two ways of using AI:
 | Rented cloud intelligence | Frontier capability, managed serving, no local setup | API cost, outage risk, privacy exposure, vendor dependency |
 | Owned local intelligence | Privacy, offline access, zero per-query marginal cost | Hardware limits, setup burden, smaller model capability |
 
-![Rented cloud intelligence can be cut off, while owned local intelligence keeps running on user-controlled hardware.](../raw/10-local-models/images/0b28fd41bee44823c2a03344c7ff1490_MD5.jpg)
+![Rented cloud intelligence can be cut off, while owned local intelligence keeps running on user-controlled hardware.](../raw/reference-packs/local-models/images/0b28fd41bee44823c2a03344c7ff1490_MD5.jpg)
 
 The practical reason to run local models is not that they beat frontier cloud models on every task. It is that many tasks do not require a frontier model, and the local system gives stronger control over privacy, availability, and cost.
 
@@ -26,7 +26,7 @@ The source's basic loop is:
 3. Send prompts to the local runtime.
 4. Keep data on the machine unless another tool is explicitly called.
 
-![A local model is downloaded once, then runs repeatedly on the user's machine with privacy, zero per-query cost, and offline availability.](../raw/10-local-models/images/2ffe2167e2774119ef55221602126397_MD5.jpg)
+![A local model is downloaded once, then runs repeatedly on the user's machine with privacy, zero per-query cost, and offline availability.](../raw/reference-packs/local-models/images/2ffe2167e2774119ef55221602126397_MD5.jpg)
 
 This makes local inference especially useful for draft generation, classification, summarization, embeddings, structured extraction, code assistant side tasks, and agent loops where most calls are routine.
 
@@ -42,7 +42,7 @@ The source presents a five-layer stack:
 | Quantization | Use Q4 or Q5-style compressed weights when full precision is too large |
 | Agent connection | Connect the local runtime to an agent harness such as Hermes or another local tool loop |
 
-![The local model stack starts with runtime and hardware fit before model choice, quantization, and agent integration.](../raw/10-local-models/images/50b4efdc59544af560be9e2573a02b21_MD5.jpg)
+![The local model stack starts with runtime and hardware fit before model choice, quantization, and agent integration.](../raw/reference-packs/local-models/images/50b4efdc59544af560be9e2573a02b21_MD5.jpg)
 
 This connects directly to [[ai-infrastructure]]: the limiting resource is often not just accelerator speed, but the total local system - RAM, VRAM, disk, CPU, thermals, and tool orchestration.
 
@@ -59,7 +59,7 @@ The source uses model parameter count as a rough hardware-sizing guide:
 
 Quantization is the key compression tool. The source compares it to turning a huge uncompressed photo into a high-quality JPEG: some precision is lost, but the result often becomes practical to run locally.
 
-![Quantization compresses a large raw model into a smaller local model that fits user hardware.](../raw/10-local-models/images/dbf5665703c6280901f6d3fa7af58933_MD5.jpg)
+![Quantization compresses a large raw model into a smaller local model that fits user hardware.](../raw/reference-packs/local-models/images/dbf5665703c6280901f6d3fa7af58933_MD5.jpg)
 
 For deeper mechanics, see [[quantization]].
 
@@ -73,7 +73,7 @@ The strongest operational point is model routing:
 | Mid-model route | Routine coding, longer summarization, medium reasoning |
 | Cloud hard route | Frontier reasoning, high-stakes synthesis, difficult debugging, tasks needing latest tools |
 
-![Model routing sends cheap and private work to local models while reserving frontier calls for hard tasks.](../raw/10-local-models/images/3d903e222a08c8a123e88bead285d4e7_MD5.jpg)
+![Model routing sends cheap and private work to local models while reserving frontier calls for hard tasks.](../raw/reference-packs/local-models/images/3d903e222a08c8a123e88bead285d4e7_MD5.jpg)
 
 This is the same architectural instinct as [[agent-harness]]: the system should choose the smallest capable tool or model, observe results, and escalate only when needed.
 
@@ -81,7 +81,7 @@ This is the same architectural instinct as [[agent-harness]]: the system should 
 
 The local-agent setup in the source connects a user device to a local agent harness, then to local models such as Qwen or Gemma.
 
-![A local agent loop routes a task from the user to a desktop agent harness and then to a local model.](../raw/10-local-models/images/c6121c9ceab11ef40de74dd3f8eadf1a_MD5.jpg)
+![A local agent loop routes a task from the user to a desktop agent harness and then to a local model.](../raw/reference-packs/local-models/images/c6121c9ceab11ef40de74dd3f8eadf1a_MD5.jpg)
 
 The value is not just private chat. It is local, repeatable execution: an agent can read files, call tools, use a local model for cheap substeps, and reserve cloud calls for cases where capability matters more than privacy or cost.
 

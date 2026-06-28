@@ -4,9 +4,9 @@ OpenUSD (Universal Scene Description) is the scene description and composition s
 
 ## Source
 
-- [[raw/05-omniverse/Omniverse.md|raw/05-omniverse/Omniverse.md]]
-- [[raw/05-omniverse/01-create-usd-file.py|raw/05-omniverse/01-create-usd-file.py]]
-- [[raw/05-omniverse/20-modifying-attributes.py|raw/05-omniverse/20-modifying-attributes.py]]
+- [[raw/reference-packs/omniverse/Omniverse.md|raw/reference-packs/omniverse/Omniverse.md]]
+- [[raw/reference-packs/omniverse/01-create-usd-file.py|raw/reference-packs/omniverse/01-create-usd-file.py]]
+- [[raw/reference-packs/omniverse/20-modifying-attributes.py|raw/reference-packs/omniverse/20-modifying-attributes.py]]
 - [Introduction to USD](https://openusd.org/release/intro.html)
 - [OpenUSD API](https://openusd.org/release/api/index.html)
 
@@ -14,42 +14,42 @@ OpenUSD (Universal Scene Description) is the scene description and composition s
 
 The OpenUSD raw material is a staged tutorial: it starts with a single cube, then grows toward hierarchy, schemas, properties, and custom metadata.
 
-- [[raw/05-omniverse/01-create-usd-file.py|raw/05-omniverse/01-create-usd-file.py]] - creates a new `.usda` stage and defines the first `Cube` prim.
-- [[raw/05-omniverse/02-defining-cube-stage.py|raw/05-omniverse/02-defining-cube-stage.py]] - reopens the stage and inspects the authored cube definition.
-- [[raw/05-omniverse/03-creating-hierarchy.py|raw/05-omniverse/03-creating-hierarchy.py]] - builds a `Scope -> Xform -> Cube` hierarchy to show scenegraph structure.
-- [[raw/05-omniverse/04-lighting-stage.py|raw/05-omniverse/04-lighting-stage.py]] - adds `DistantLight` and `SphereLight` prims plus authored transforms and intensities.
-- [[raw/05-omniverse/05-adding-attributes-prim.py|raw/05-omniverse/05-adding-attributes-prim.py]] - inspects cube schema attributes and authors display color.
-- [[raw/05-omniverse/06-getting-value-current-attribute.py|raw/05-omniverse/06-getting-value-current-attribute.py]] - reads the cube size, doubles it, and adds a translated secondary cube.
-- [[raw/05-omniverse/07-traversing-stage.py|raw/05-omniverse/07-traversing-stage.py]] - demonstrates depth-first stage traversal across the composed scene.
-- [[raw/05-omniverse/08-does-the-prim-exist.py|raw/05-omniverse/08-does-the-prim-exist.py]] - checks for child prim existence under a known path.
-- [[raw/05-omniverse/09-defining-prim-without-schema.py|raw/05-omniverse/09-defining-prim-without-schema.py]] - uses generic `DefinePrim` to author namespace objects without a typed schema.
-- [[raw/05-omniverse/10-getting-validating-and-setting-prims-path.py|raw/05-omniverse/10-getting-validating-and-setting-prims-path.py]] - retrieves prims by path and contrasts valid versus invalid lookups.
-- [[raw/05-omniverse/11-setting-default-prim.py|raw/05-omniverse/11-setting-default-prim.py]] - marks `/hello` as the stage default prim for downstream referencing.
-- [[raw/05-omniverse/12-usdgeom-and-xform.py|raw/05-omniverse/12-usdgeom-and-xform.py]] - introduces `UsdGeom.Xform` as the typed transform container for a scene root.
-- [[raw/05-omniverse/13-scope-and-cube.py|raw/05-omniverse/13-scope-and-cube.py]] - adds `Scope` and `Cube` children under the world transform to separate grouping from geometry.
-- [[raw/05-omniverse/14-usdshade-and-material.py|raw/05-omniverse/14-usdshade-and-material.py]] - defines a `Material` prim to illustrate `UsdShade` containers.
-- [[raw/05-omniverse/15-usdlux-and-distantlight.py|raw/05-omniverse/15-usdlux-and-distantlight.py]] - adds an environment scope and a typed `DistantLight` schema.
-- [[raw/05-omniverse/16-retrieving-properties-prim.py|raw/05-omniverse/16-retrieving-properties-prim.py]] - lists property names on a cube to separate prim structure from property payload.
-- [[raw/05-omniverse/17-getting-values-for-attributes.py|raw/05-omniverse/17-getting-values-for-attributes.py]] - reads fallback values for cube size, display color, and extent.
-- [[raw/05-omniverse/18-authoring-attributes.py|raw/05-omniverse/18-authoring-attributes.py]] - authors explicit size, extent, and display-color opinions on the cube.
-- [[raw/05-omniverse/19-create-additional-attributes.py|raw/05-omniverse/19-create-additional-attributes.py]] - creates custom metadata attributes such as weight, size, type, and hazard flags.
-- [[raw/05-omniverse/20-modifying-attributes.py|raw/05-omniverse/20-modifying-attributes.py]] - sets and reads custom attribute values, completing the custom-metadata flow.
+- [[raw/reference-packs/omniverse/01-create-usd-file.py|raw/reference-packs/omniverse/01-create-usd-file.py]] - creates a new `.usda` stage and defines the first `Cube` prim.
+- [[raw/reference-packs/omniverse/02-defining-cube-stage.py|raw/reference-packs/omniverse/02-defining-cube-stage.py]] - reopens the stage and inspects the authored cube definition.
+- [[raw/reference-packs/omniverse/03-creating-hierarchy.py|raw/reference-packs/omniverse/03-creating-hierarchy.py]] - builds a `Scope -> Xform -> Cube` hierarchy to show scenegraph structure.
+- [[raw/reference-packs/omniverse/04-lighting-stage.py|raw/reference-packs/omniverse/04-lighting-stage.py]] - adds `DistantLight` and `SphereLight` prims plus authored transforms and intensities.
+- [[raw/reference-packs/omniverse/05-adding-attributes-prim.py|raw/reference-packs/omniverse/05-adding-attributes-prim.py]] - inspects cube schema attributes and authors display color.
+- [[raw/reference-packs/omniverse/06-getting-value-current-attribute.py|raw/reference-packs/omniverse/06-getting-value-current-attribute.py]] - reads the cube size, doubles it, and adds a translated secondary cube.
+- [[raw/reference-packs/omniverse/07-traversing-stage.py|raw/reference-packs/omniverse/07-traversing-stage.py]] - demonstrates depth-first stage traversal across the composed scene.
+- [[raw/reference-packs/omniverse/08-does-the-prim-exist.py|raw/reference-packs/omniverse/08-does-the-prim-exist.py]] - checks for child prim existence under a known path.
+- [[raw/reference-packs/omniverse/09-defining-prim-without-schema.py|raw/reference-packs/omniverse/09-defining-prim-without-schema.py]] - uses generic `DefinePrim` to author namespace objects without a typed schema.
+- [[raw/reference-packs/omniverse/10-getting-validating-and-setting-prims-path.py|raw/reference-packs/omniverse/10-getting-validating-and-setting-prims-path.py]] - retrieves prims by path and contrasts valid versus invalid lookups.
+- [[raw/reference-packs/omniverse/11-setting-default-prim.py|raw/reference-packs/omniverse/11-setting-default-prim.py]] - marks `/hello` as the stage default prim for downstream referencing.
+- [[raw/reference-packs/omniverse/12-usdgeom-and-xform.py|raw/reference-packs/omniverse/12-usdgeom-and-xform.py]] - introduces `UsdGeom.Xform` as the typed transform container for a scene root.
+- [[raw/reference-packs/omniverse/13-scope-and-cube.py|raw/reference-packs/omniverse/13-scope-and-cube.py]] - adds `Scope` and `Cube` children under the world transform to separate grouping from geometry.
+- [[raw/reference-packs/omniverse/14-usdshade-and-material.py|raw/reference-packs/omniverse/14-usdshade-and-material.py]] - defines a `Material` prim to illustrate `UsdShade` containers.
+- [[raw/reference-packs/omniverse/15-usdlux-and-distantlight.py|raw/reference-packs/omniverse/15-usdlux-and-distantlight.py]] - adds an environment scope and a typed `DistantLight` schema.
+- [[raw/reference-packs/omniverse/16-retrieving-properties-prim.py|raw/reference-packs/omniverse/16-retrieving-properties-prim.py]] - lists property names on a cube to separate prim structure from property payload.
+- [[raw/reference-packs/omniverse/17-getting-values-for-attributes.py|raw/reference-packs/omniverse/17-getting-values-for-attributes.py]] - reads fallback values for cube size, display color, and extent.
+- [[raw/reference-packs/omniverse/18-authoring-attributes.py|raw/reference-packs/omniverse/18-authoring-attributes.py]] - authors explicit size, extent, and display-color opinions on the cube.
+- [[raw/reference-packs/omniverse/19-create-additional-attributes.py|raw/reference-packs/omniverse/19-create-additional-attributes.py]] - creates custom metadata attributes such as weight, size, type, and hazard flags.
+- [[raw/reference-packs/omniverse/20-modifying-attributes.py|raw/reference-packs/omniverse/20-modifying-attributes.py]] - sets and reads custom attribute values, completing the custom-metadata flow.
 
 ## Asset Inventory
 
 The authored and referenced assets show how the tutorial scripts materialize into concrete USD layers.
 
-- [[raw/05-omniverse/assets/01-first_stage.usda|raw/05-omniverse/assets/01-first_stage.usda]] - minimal stage containing only a single authored `Cube` prim.
-- [[raw/05-omniverse/assets/01-first_stage_flattened-inter.usda|raw/05-omniverse/assets/01-first_stage_flattened-inter.usda]] - intermediate flattened view of the first stage prior to schema expansion.
-- [[raw/05-omniverse/assets/01-first_stage_flattened.usda|raw/05-omniverse/assets/01-first_stage_flattened.usda]] - fully flattened mesh form of the initial cube, exposing generated points, normals, and topology.
-- [[raw/05-omniverse/assets/03-second-stage.usda|raw/05-omniverse/assets/03-second-stage.usda]] - hierarchy plus authored cube size/color and two lights.
-- [[raw/05-omniverse/assets/03-second-stage_flattened-inter.usda|raw/05-omniverse/assets/03-second-stage_flattened-inter.usda]] - partially flattened representation of the hierarchy with light opinions preserved.
-- [[raw/05-omniverse/assets/03-second-stage_flattened.usda|raw/05-omniverse/assets/03-second-stage_flattened.usda]] - flattened mesh and transform version of the second stage.
-- [[raw/05-omniverse/assets/04-prims.usda|raw/05-omniverse/assets/04-prims.usda]] - generic namespace example with `hello/world` and a default prim.
-- [[raw/05-omniverse/assets/05-many_prims.usda|raw/05-omniverse/assets/05-many_prims.usda]] - typed world scene collecting geometry, material, and lighting scopes under one root.
-- [[raw/05-omniverse/assets/06-attributes.usda|raw/05-omniverse/assets/06-attributes.usda]] - attribute-focused stage with authored cube extent, display color, size, and transform.
-- [[raw/05-omniverse/assets/07-custom_attributes.usda|raw/05-omniverse/assets/07-custom_attributes.usda]] - referenced asset wrapper with user-defined custom attributes for workflow metadata.
-- [[raw/05-omniverse/assets/08-cubebox_a02_distilled.usd|raw/05-omniverse/assets/08-cubebox_a02_distilled.usd]] - large binary USD asset referenced by the custom-attribute example to attach metadata to a real mesh payload.
+- [[raw/reference-packs/omniverse/assets/01-first_stage.usda|raw/reference-packs/omniverse/assets/01-first_stage.usda]] - minimal stage containing only a single authored `Cube` prim.
+- [[raw/reference-packs/omniverse/assets/01-first_stage_flattened-inter.usda|raw/reference-packs/omniverse/assets/01-first_stage_flattened-inter.usda]] - intermediate flattened view of the first stage prior to schema expansion.
+- [[raw/reference-packs/omniverse/assets/01-first_stage_flattened.usda|raw/reference-packs/omniverse/assets/01-first_stage_flattened.usda]] - fully flattened mesh form of the initial cube, exposing generated points, normals, and topology.
+- [[raw/reference-packs/omniverse/assets/03-second-stage.usda|raw/reference-packs/omniverse/assets/03-second-stage.usda]] - hierarchy plus authored cube size/color and two lights.
+- [[raw/reference-packs/omniverse/assets/03-second-stage_flattened-inter.usda|raw/reference-packs/omniverse/assets/03-second-stage_flattened-inter.usda]] - partially flattened representation of the hierarchy with light opinions preserved.
+- [[raw/reference-packs/omniverse/assets/03-second-stage_flattened.usda|raw/reference-packs/omniverse/assets/03-second-stage_flattened.usda]] - flattened mesh and transform version of the second stage.
+- [[raw/reference-packs/omniverse/assets/04-prims.usda|raw/reference-packs/omniverse/assets/04-prims.usda]] - generic namespace example with `hello/world` and a default prim.
+- [[raw/reference-packs/omniverse/assets/05-many_prims.usda|raw/reference-packs/omniverse/assets/05-many_prims.usda]] - typed world scene collecting geometry, material, and lighting scopes under one root.
+- [[raw/reference-packs/omniverse/assets/06-attributes.usda|raw/reference-packs/omniverse/assets/06-attributes.usda]] - attribute-focused stage with authored cube extent, display color, size, and transform.
+- [[raw/reference-packs/omniverse/assets/07-custom_attributes.usda|raw/reference-packs/omniverse/assets/07-custom_attributes.usda]] - referenced asset wrapper with user-defined custom attributes for workflow metadata.
+- [[raw/reference-packs/omniverse/assets/08-cubebox_a02_distilled.usd|raw/reference-packs/omniverse/assets/08-cubebox_a02_distilled.usd]] - large binary USD asset referenced by the custom-attribute example to attach metadata to a real mesh payload.
 
 ## Core Mental Model
 
@@ -67,7 +67,7 @@ for prim in stage.Traverse():
     print(prim)
 ```
 
-![A USD stage is the composed runtime view built from one or more contributing layers.](../raw/05-omniverse/images/01-stage.png)
+![A USD stage is the composed runtime view built from one or more contributing layers.](../raw/reference-packs/omniverse/images/01-stage.png)
 
 *That distinction matters because most real USD workflows are about composition, not isolated files.*
 
@@ -100,7 +100,7 @@ That lets multiple teams contribute to one asset or environment without destruct
 
 The practical advantage of OpenUSD is ecosystem reach: it acts as shared 3D infrastructure across DCC tools, CAD/BIM pipelines, renderers, and simulation platforms.
 
-![OpenUSD sits at the center of a wide ecosystem of content, simulation, and design tools.](../raw/05-omniverse/images/02-openusd-ecosystem.png)
+![OpenUSD sits at the center of a wide ecosystem of content, simulation, and design tools.](../raw/reference-packs/omniverse/images/02-openusd-ecosystem.png)
 
 *When many tools can exchange structured scene data instead of flattened exports, collaboration gets cheaper and less lossy.*
 

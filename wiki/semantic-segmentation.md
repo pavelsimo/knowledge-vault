@@ -4,10 +4,10 @@ Semantic segmentation labels every pixel in an image with a class category (e.g.
 
 ## Source
 
-- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
-- [[raw/00-clippings/Spring 2025  Lecture 9 Object Detection, Image Segmentation, Visualizing - YouTube.md|raw/00-clippings/Spring 2025  Lecture 9 Object Detection, Image Segmentation, Visualizing - YouTube.md]]
-- [[raw/01-open-source-models-hugging-face/09_segmentation_mask.py|raw/01-open-source-models-hugging-face/09_segmentation_mask.py]]
-- [[raw/01-open-source-models-hugging-face/09_segmentation_mask_single_point.py|raw/01-open-source-models-hugging-face/09_segmentation_mask_single_point.py]]
+- [[raw/course-material/stanford-cs231n/Stanford CS231N.md|raw/course-material/stanford-cs231n/Stanford CS231N.md]]
+- [[raw/clippings/Spring 2025  Lecture 9 Object Detection, Image Segmentation, Visualizing - YouTube.md|raw/clippings/Spring 2025  Lecture 9 Object Detection, Image Segmentation, Visualizing - YouTube.md]]
+- [[raw/course-material/open-source-models-hugging-face/09_segmentation_mask.py|raw/course-material/open-source-models-hugging-face/09_segmentation_mask.py]]
+- [[raw/course-material/open-source-models-hugging-face/09_segmentation_mask_single_point.py|raw/course-material/open-source-models-hugging-face/09_segmentation_mask_single_point.py]]
 
 ## Key Papers
 
@@ -19,8 +19,8 @@ Semantic segmentation labels every pixel in an image with a class category (e.g.
 
 The Hugging Face examples ground the theory in Segment Anything style prompting. Instead of predicting a semantic label map for every class, the model can generate masks from sparse prompts.
 
-- [[raw/01-open-source-models-hugging-face/09_segmentation_mask.py|raw/01-open-source-models-hugging-face/09_segmentation_mask.py]] - runs `Zigeng/SlimSAM-uniform-77` on the sample image and visualizes the model's mask proposals over the full image.
-- [[raw/01-open-source-models-hugging-face/09_segmentation_mask_single_point.py|raw/01-open-source-models-hugging-face/09_segmentation_mask_single_point.py]] - adds a single input point prompt targeting the toddler's torso, then renders the three candidate masks returned for that prompt.
+- [[raw/course-material/open-source-models-hugging-face/09_segmentation_mask.py|raw/course-material/open-source-models-hugging-face/09_segmentation_mask.py]] - runs `Zigeng/SlimSAM-uniform-77` on the sample image and visualizes the model's mask proposals over the full image.
+- [[raw/course-material/open-source-models-hugging-face/09_segmentation_mask_single_point.py|raw/course-material/open-source-models-hugging-face/09_segmentation_mask_single_point.py]] - adds a single input point prompt targeting the toddler's torso, then renders the three candidate masks returned for that prompt.
 
 ## Why CNNs Need Modification for Dense Prediction
 
@@ -93,7 +93,7 @@ Mask R-CNN extends Faster R-CNN by adding a third head that predicts a 28×28 bi
 
 Paper: [Mask R-CNN](https://arxiv.org/pdf/1703.06870)
 
-![Mask R-CNN extends detection with a per-RoI mask prediction head.](../raw/03-stanford-cs231n/images/img_341.png)
+![Mask R-CNN extends detection with a per-RoI mask prediction head.](../raw/course-material/stanford-cs231n/images/img_341.png)
 
 *This is the clean conceptual bridge from object detection to instance segmentation: keep the detection pipeline, then add a small mask head that predicts a binary mask for each proposed object.*
 

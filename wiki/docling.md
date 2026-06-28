@@ -2,13 +2,13 @@ Docling is a local document-conversion and extraction toolkit for turning PDFs, 
 
 ## Sources
 
-- [[raw/00-clippings/docling-multiformat-pipeline.md|raw/00-clippings/docling-multiformat-pipeline.md]]
-- [[raw/00-clippings/How do you use HybridChunker in Docling, including saving and reloading the converted document.md|raw/00-clippings/How do you use HybridChunker in Docling, including saving and reloading the converted document.md]]
-- [[raw/00-clippings/docling-hybrid-chunker-provenance.md|raw/00-clippings/docling-hybrid-chunker-provenance.md]]
-- [[raw/00-clippings/Content Layers.md|raw/00-clippings/Content Layers.md]]
-- [[raw/00-clippings/How can you make Docling readunderstand images embedded in a DOCX file, and what is the correct code to use the VlmPipeline for this purpose.md|raw/00-clippings/How can you make Docling readunderstand images embedded in a DOCX file, and what is the correct code to use the VlmPipeline for this purpose.md]]
-- [[raw/00-clippings/What is the best practice for processing a mixed PDF (digital + scanned pages) containing sensitive financial data in Docling, given no GPU and limited cost.md|raw/00-clippings/What is the best practice for processing a mixed PDF (digital + scanned pages) containing sensitive financial data in Docling, given no GPU and limited cost.md]]
-- [[raw/00-clippings/local-llm-pdf-datasheet-extraction.md|raw/00-clippings/local-llm-pdf-datasheet-extraction.md]]
+- [[raw/clippings/docling-multiformat-pipeline.md|raw/clippings/docling-multiformat-pipeline.md]]
+- [[raw/clippings/How do you use HybridChunker in Docling, including saving and reloading the converted document.md|raw/clippings/How do you use HybridChunker in Docling, including saving and reloading the converted document.md]]
+- [[raw/clippings/docling-hybrid-chunker-provenance.md|raw/clippings/docling-hybrid-chunker-provenance.md]]
+- [[raw/clippings/Content Layers.md|raw/clippings/Content Layers.md]]
+- [[raw/clippings/How can you make Docling readunderstand images embedded in a DOCX file, and what is the correct code to use the VlmPipeline for this purpose.md|raw/clippings/How can you make Docling readunderstand images embedded in a DOCX file, and what is the correct code to use the VlmPipeline for this purpose.md]]
+- [[raw/clippings/What is the best practice for processing a mixed PDF (digital + scanned pages) containing sensitive financial data in Docling, given no GPU and limited cost.md|raw/clippings/What is the best practice for processing a mixed PDF (digital + scanned pages) containing sensitive financial data in Docling, given no GPU and limited cost.md]]
+- [[raw/clippings/local-llm-pdf-datasheet-extraction.md|raw/clippings/local-llm-pdf-datasheet-extraction.md]]
 
 ## Pipeline Shape
 

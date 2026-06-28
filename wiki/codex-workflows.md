@@ -2,10 +2,10 @@ Codex workflows extend AI coding beyond single-turn repository edits into durabl
 
 ## Source
 
-- [[raw/00-clippings/Getting the most out of Codex.md|raw/00-clippings/Getting the most out of Codex.md]]
-- [[raw/00-clippings/A guide to goal.md|raw/00-clippings/A guide to goal.md]]
+- [[raw/clippings/Getting the most out of Codex.md|raw/clippings/Getting the most out of Codex.md]]
+- [[raw/clippings/A guide to goal.md|raw/clippings/A guide to goal.md]]
 
-![Codex workflows combine threads, tools, artifacts, review surfaces, and memory.](../raw/00-clippings/images/0b6f105c609bc9e2fa5461bd122b1005_MD5.jpg)
+![Codex workflows combine threads, tools, artifacts, review surfaces, and memory.](../raw/clippings/images/0b6f105c609bc9e2fa5461bd122b1005_MD5.jpg)
 
 ## Durable Threads
 
@@ -53,7 +53,7 @@ Automations run work on a schedule. A scheduled automation starts from a workspa
 
 Goals add a finish line. A strong goal has a verifier:
 
-![Goal mode is framed as a long-running work loop with visible progress.](../raw/00-clippings/images/243adeb59da5e2339768a25ed9a872e0_MD5.jpg)
+![Goal mode is framed as a long-running work loop with visible progress.](../raw/clippings/images/243adeb59da5e2339768a25ed9a872e0_MD5.jpg)
 
 | Goal type | Useful verifier |
 |---|---|
@@ -75,7 +75,7 @@ The goal-mode guide sharpens this into a practical checklist:
 - **Progress tracking:** ask for commits, reports, dashboards, or status updates at meaningful milestones.
 - **Cleanup and review:** after the goal is reached, inspect failed attempts, remove dead code, and run review before treating the result as finished.
 
-![A visual-diff tool lets an agent compare generated output against reference frames instead of judging by eye.](../raw/00-clippings/images/6511d18bf30882429cfce31c606a6144_MD5.jpg)
+![A visual-diff tool lets an agent compare generated output against reference frames instead of judging by eye.](../raw/clippings/images/6511d18bf30882429cfce31c606a6144_MD5.jpg)
 
 ## Side Panel and Artifacts
 
@@ -90,7 +90,7 @@ The side panel keeps artifacts beside the thread that produced them. It works fo
 
 This matters because the review loop stays inside the same context. The artifact is not thrown over a wall; it remains inspectable, annotatable, and repairable.
 
-![The side panel turns artifacts into review surfaces that stay connected to the working thread.](../raw/00-clippings/images/a8f72b4099cea041add990ee31f61142_MD5.jpg)
+![The side panel turns artifacts into review surfaces that stay connected to the working thread.](../raw/clippings/images/a8f72b4099cea041add990ee31f61142_MD5.jpg)
 
 ## Shared Memory
 

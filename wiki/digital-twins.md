@@ -4,7 +4,7 @@ Digital twins are live virtual representations of physical products, facilities,
 
 ## Source
 
-- [[raw/05-omniverse/Omniverse.md|raw/05-omniverse/Omniverse.md]]
+- [[raw/reference-packs/omniverse/Omniverse.md|raw/reference-packs/omniverse/Omniverse.md]]
 - [NVIDIA Digital Twin Glossary](https://www.nvidia.com/en-us/glossary/digital-twin/)
 - [Generative AI-Powered Virtual Factory Solutions With OpenUSD](https://youtu.be/cqggH5skWH8?t=3115)
 
@@ -15,7 +15,7 @@ A digital twin is more than a 3D model:
 - it can ingest real-time or historical data from sensors and enterprise systems
 - it supports simulation, analysis, and operational decision-making
 
-![Digital twins connect physical systems, simulation, and operational data in one loop.](../raw/05-omniverse/images/05-what-is-a-digital-twin.png)
+![Digital twins connect physical systems, simulation, and operational data in one loop.](../raw/reference-packs/omniverse/images/05-what-is-a-digital-twin.png)
 
 *The important shift is from static visualization to a living model that can answer "what happens if we change this?"*
 
@@ -34,7 +34,7 @@ Factories are a canonical example because they combine layout, equipment, roboti
 2. compose them into a shared USD scene with adjustment layers and payloads
 3. use the twin for planning, review, simulation, and ongoing operational monitoring
 
-![A virtual factory twin lets different tools and teams converge on one operational model.](../raw/05-omniverse/images/03-virtual-factory-integration.png)
+![A virtual factory twin lets different tools and teams converge on one operational model.](../raw/reference-packs/omniverse/images/03-virtual-factory-integration.png)
 
 *This is the business case for digital twins: one environment supports design review, process simulation, and production operations instead of separate disconnected tools.*
 

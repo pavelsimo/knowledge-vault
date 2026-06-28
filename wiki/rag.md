@@ -4,15 +4,15 @@ RAG augments LLM generation by retrieving relevant external context at inference
 
 ## Source
 
-- [[raw/00-clippings/Thread by @akshay_pachaar.md|raw/00-clippings/Thread by @akshay_pachaar.md]]
-- [[raw/00-clippings/Introduction to LLM RAG - Retrieval Augmented Generation Explained.md|raw/00-clippings/Introduction to LLM RAG - Retrieval Augmented Generation Explained.md]]
-- [[raw/00-clippings/What Is Agentic RAG From LLM RAG to AI Agents.md|raw/00-clippings/What Is Agentic RAG From LLM RAG to AI Agents.md]]
+- [[raw/clippings/Thread by @akshay_pachaar.md|raw/clippings/Thread by @akshay_pachaar.md]]
+- [[raw/clippings/Introduction to LLM RAG - Retrieval Augmented Generation Explained.md|raw/clippings/Introduction to LLM RAG - Retrieval Augmented Generation Explained.md]]
+- [[raw/clippings/What Is Agentic RAG From LLM RAG to AI Agents.md|raw/clippings/What Is Agentic RAG From LLM RAG to AI Agents.md]]
 
 ## Core Pipeline
 
 RAG combines three parts: an external knowledge source, a prompt template, and a generative model. The model keeps its parametric knowledge, but the answer is conditioned on non-parametric context retrieved from files, databases, web pages, scientific literature, or personal/work data.
 
-![RAG inserts retrieved external knowledge into the prompt before generation.](../raw/00-clippings/images/e83dac9a1b53f65fbcd1c93ecee3054a_MD5.png)
+![RAG inserts retrieved external knowledge into the prompt before generation.](../raw/clippings/images/e83dac9a1b53f65fbcd1c93ecee3054a_MD5.png)
 
 The original research formulation is [Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks](https://arxiv.org/abs/2005.11401). The practical goal is to reduce hallucinations, cite supporting sources, and answer questions whose facts are absent from the model's training data.
 
@@ -23,9 +23,9 @@ RAG has two operating stages:
 1. **Ingestion** prepares the knowledge base: parse files, clean text, chunk documents, create embeddings, store vectors and metadata, and keep source provenance.
 2. **Inference** answers a query: embed the query, retrieve relevant chunks, place them into a prompt template, generate an answer, and optionally cite or validate sources.
 
-![Ingestion turns raw documents into embeddings stored for retrieval.](../raw/00-clippings/images/65286482e371a2547193d6cc7c4c0ddf_MD5.png)
+![Ingestion turns raw documents into embeddings stored for retrieval.](../raw/clippings/images/65286482e371a2547193d6cc7c4c0ddf_MD5.png)
 
-![Inference retrieves context, augments the prompt, and generates the final response.](../raw/00-clippings/images/51652fa1ddb789a86bf62a867a9b5a1e_MD5.png)
+![Inference retrieves context, augments the prompt, and generates the final response.](../raw/clippings/images/51652fa1ddb789a86bf62a867a9b5a1e_MD5.png)
 
 Retrieval quality depends heavily on document processing choices. Chunk size, overlap, metadata, source filtering, deduplication, and hybrid search often matter more than swapping the final LLM.
 
@@ -40,11 +40,11 @@ Advanced RAG techniques improve the weak points of naive vector similarity:
 - **Query rewriting** — expand vague user queries into retrieval-friendly forms.
 - **Fine-tuning** — adapt embedding or generator models when domain language is specialized and examples exist.
 
-![Advanced RAG adds filtering, hybrid search, re-ranking, and model adaptation around the basic pipeline.](../raw/00-clippings/images/68e09fa6be5963c41860ad3813eaff80_MD5.png)
+![Advanced RAG adds filtering, hybrid search, re-ranking, and model adaptation around the basic pipeline.](../raw/clippings/images/68e09fa6be5963c41860ad3813eaff80_MD5.png)
 
 ## 8 RAG Architectures
 
-![Overview of eight common RAG architectures from naive retrieval to agentic orchestration.](../raw/00-clippings/images/43db844df62357ba91915b8dd13f94fb_MD5.jpg)
+![Overview of eight common RAG architectures from naive retrieval to agentic orchestration.](../raw/clippings/images/43db844df62357ba91915b8dd13f94fb_MD5.jpg)
 
 *This diagram is useful as a map of the design space. Most real systems are variations on these retrieval, routing, verification, and orchestration patterns rather than entirely new categories.*
 
@@ -131,11 +131,11 @@ Uses AI agents with planning, reasoning, and memory to orchestrate retrieval fro
 
 Vanilla RAG is usually one-shot: retrieve once, place the result in the prompt, generate. Agentic RAG adds a controller that can plan, route, call tools, evaluate retrieved context, and retry.
 
-![A naive RAG pipeline retrieves context once and passes it to the generator.](../raw/00-clippings/images/3485bde9b2be2429ef93c8f96cbc4e7a_MD5.png)
+![A naive RAG pipeline retrieves context once and passes it to the generator.](../raw/clippings/images/3485bde9b2be2429ef93c8f96cbc4e7a_MD5.png)
 
 Agentic systems add the components from [[ai-agents]]: LLM, memory, planning, and tools.
 
-![Agentic RAG uses an agent with memory, planning, and tool access around retrieval.](../raw/00-clippings/images/6f4fe05ecae836cc1b94f6ce6aa79dbf_MD5.png)
+![Agentic RAG uses an agent with memory, planning, and tool access around retrieval.](../raw/clippings/images/6f4fe05ecae836cc1b94f6ce6aa79dbf_MD5.png)
 
 The ReAct pattern is a common control loop: thought, action, observation, repeat. The relevant paper is [ReAct: Synergizing Reasoning and Acting in Language Models](https://arxiv.org/abs/2210.03629).
 
@@ -154,7 +154,7 @@ The ReAct pattern is a common control loop: thought, action, observation, repeat
 
 In the simplest agentic RAG setup, one agent chooses between multiple retrievers or tools.
 
-![Single-agent RAG routes the query to the right knowledge source or tool.](../raw/00-clippings/images/2c8d2b8dfde210f5208d95cf926e3812_MD5.png)
+![Single-agent RAG routes the query to the right knowledge source or tool.](../raw/clippings/images/2c8d2b8dfde210f5208d95cf926e3812_MD5.png)
 
 This is useful when answers may come from different sources: a vector index, web search, a calculator, a database, Slack, email, or a product API.
 
@@ -162,7 +162,7 @@ This is useful when answers may come from different sources: a vector index, web
 
 In a multi-agent setup, one coordinator delegates retrieval to specialized agents.
 
-![Multi-agent RAG uses specialized retrieval agents coordinated by a master agent.](../raw/00-clippings/images/a42c7dc008bea7da4db26e7196ccce8a_MD5.png)
+![Multi-agent RAG uses specialized retrieval agents coordinated by a master agent.](../raw/clippings/images/a42c7dc008bea7da4db26e7196ccce8a_MD5.png)
 
 This helps when different sources require different prompts, permissions, tools, or validation logic. It also increases coordination overhead, so it should be reserved for workflows where source specialization materially improves answer quality.
 
@@ -170,7 +170,7 @@ This helps when different sources require different prompts, permissions, tools,
 
 RAG needs both component-level and end-to-end evaluation.
 
-![RAG evaluation checks retriever quality, generator faithfulness, and end-to-end answer quality.](../raw/00-clippings/images/b57fd33701900f9cc54de9b15a87464e_MD5.png)
+![RAG evaluation checks retriever quality, generator faithfulness, and end-to-end answer quality.](../raw/clippings/images/b57fd33701900f9cc54de9b15a87464e_MD5.png)
 
 Component-level checks:
 

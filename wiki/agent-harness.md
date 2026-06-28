@@ -2,12 +2,12 @@ An agent harness is the non-model infrastructure that turns a stateless LLM into
 
 ## Sources
 
-- [[raw/00-clippings/The Anatomy of an Agent Harness.md|raw/00-clippings/The Anatomy of an Agent Harness.md]]
-- [[raw/00-clippings/A harness for every task dynamic workflows in Claude Code.md|raw/00-clippings/A harness for every task dynamic workflows in Claude Code.md]]
-- [[raw/00-clippings/OpenClaw + CodexClaudeCode Agent Swarm The One-Person Dev Team Full Setup.md|raw/00-clippings/OpenClaw + CodexClaudeCode Agent Swarm The One-Person Dev Team Full Setup.md]]
-- [[raw/00-clippings/The Only Claude Skills Tutorial You Need (Add Evals and Memory).md|raw/00-clippings/The Only Claude Skills Tutorial You Need (Add Evals and Memory).md]]
+- [[raw/clippings/The Anatomy of an Agent Harness.md|raw/clippings/The Anatomy of an Agent Harness.md]]
+- [[raw/clippings/A harness for every task dynamic workflows in Claude Code.md|raw/clippings/A harness for every task dynamic workflows in Claude Code.md]]
+- [[raw/clippings/OpenClaw + CodexClaudeCode Agent Swarm The One-Person Dev Team Full Setup.md|raw/clippings/OpenClaw + CodexClaudeCode Agent Swarm The One-Person Dev Team Full Setup.md]]
+- [[raw/clippings/The Only Claude Skills Tutorial You Need (Add Evals and Memory).md|raw/clippings/The Only Claude Skills Tutorial You Need (Add Evals and Memory).md]]
 
-![The harness is the infrastructure around the model: tools, memory, orchestration, state, and safety.](../raw/00-clippings/images/e9e6c80287e3583bc3a1c2e83c585f5d_MD5.jpg)
+![The harness is the infrastructure around the model: tools, memory, orchestration, state, and safety.](../raw/clippings/images/e9e6c80287e3583bc3a1c2e83c585f5d_MD5.jpg)
 
 ## Harness vs Model
 
@@ -77,7 +77,7 @@ Common workflow patterns:
 
 Dynamic workflows are useful for migrations, deep research, fact checking, sorting large queues, memory/rule mining, incident triage, evals, and model routing. They are not free: they can spend more tokens and should have explicit budgets and stop conditions.
 
-![Dynamic workflows coordinate subagents and isolated work contexts around a task-specific harness.](../raw/00-clippings/images/71b891addee3e5d84efb4c732264c557_MD5.jpg)
+![Dynamic workflows coordinate subagents and isolated work contexts around a task-specific harness.](../raw/clippings/images/71b891addee3e5d84efb4c732264c557_MD5.jpg)
 
 ## Skills as Harness Fragments
 

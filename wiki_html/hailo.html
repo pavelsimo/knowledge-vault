@@ -77,6 +77,7 @@ footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offse
     <h1>Hailo <em>AI Accelerator</em></h1>
     <p class="intro">The Hailo-8 is a dedicated AI inference accelerator chip for edge deployment, offering high-throughput neural network inference at low power. Setup spans two machines: a client (ARM/Raspberry Pi running inference via HailoRT) and a server (x86_64 running the Dataflow Compiler to compile ONNX models into <code>.hef</code> files).</p>
     <nav class="toc">
+      <a href="#sources">Sources</a>
       <a href="#architecture">Architecture</a>
       <a href="#setup">Setup Walkthrough</a>
       <a href="#concepts">Key Concepts</a>
@@ -84,8 +85,19 @@ footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offse
     </nav>
   </header>
 
+  <section id="sources">
+    <div class="sec-head"><span class="idx">01</span><h2>Source Trace</h2></div>
+    <div class="sec-body">
+      <ul>
+        <li><a href="../raw/reference-packs/hailo-setup/Client.md">Client setup notes</a> — HailoRT, ARM64 runtime packages, and PCIe driver setup</li>
+        <li><a href="../raw/reference-packs/hailo-setup/Server.md">Server setup notes</a> — x86_64 compiler host setup and model compilation commands</li>
+        <li><a href="../raw/reference-packs/hailo-setup/Hailo%20Dataflow%20Compiler%20Study%20Guide.md">Dataflow Compiler study guide</a> — DFC, Model Zoo, calibration, PTQ, and <code>.hef</code> concepts</li>
+      </ul>
+    </div>
+  </section>
+
   <section id="architecture">
-    <div class="sec-head"><span class="idx">01</span><h2>Architecture Overview</h2></div>
+    <div class="sec-head"><span class="idx">02</span><h2>Architecture Overview</h2></div>
     <div class="sec-body">
       <table>
         <thead><tr><th>Component</th><th>Role</th><th>Host</th></tr></thead>
@@ -148,7 +160,7 @@ footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offse
   </section>
 
   <section id="setup">
-    <div class="sec-head"><span class="idx">02</span><h2>Setup Walkthrough</h2></div>
+    <div class="sec-head"><span class="idx">03</span><h2>Setup Walkthrough</h2></div>
     <div class="sec-body">
       <div class="tabs" data-tabs>
         <div class="tabbar">
@@ -216,7 +228,7 @@ done</pre>
   </section>
 
   <section id="concepts">
-    <div class="sec-head"><span class="idx">03</span><h2>Key Concepts</h2></div>
+    <div class="sec-head"><span class="idx">04</span><h2>Key Concepts</h2></div>
     <div class="sec-body">
       <table>
         <thead><tr><th>Concept</th><th>Explanation</th></tr></thead>
@@ -232,7 +244,7 @@ done</pre>
   </section>
 
   <section id="related">
-    <div class="sec-head"><span class="idx">04</span><h2>Related Topics</h2></div>
+    <div class="sec-head"><span class="idx">05</span><h2>Related Topics</h2></div>
     <div class="sec-body">
       <ul>
         <li><a href="physical-ai.html">Physical AI</a> — Hailo-8 is commonly used in edge robotics and Physical AI deployment pipelines</li>

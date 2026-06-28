@@ -4,10 +4,10 @@ AI agents are LLM systems that use tools, memory, retrieval, and environmental f
 
 ## Source
 
-- [[raw/00-clippings/Building Effective AI Agents.md|raw/00-clippings/Building Effective AI Agents.md]]
-- [[raw/00-clippings/Claude Subagents vs. Agent Teams, explained.md|raw/00-clippings/Claude Subagents vs. Agent Teams, explained.md]]
-- [[raw/00-clippings/OpenClaw + CodexClaudeCode Agent Swarm The One-Person Dev Team Full Setup.md|raw/00-clippings/OpenClaw + CodexClaudeCode Agent Swarm The One-Person Dev Team Full Setup.md]]
-- [[raw/00-clippings/When AI builds itself.md|raw/00-clippings/When AI builds itself.md]]
+- [[raw/clippings/Building Effective AI Agents.md|raw/clippings/Building Effective AI Agents.md]]
+- [[raw/clippings/Claude Subagents vs. Agent Teams, explained.md|raw/clippings/Claude Subagents vs. Agent Teams, explained.md]]
+- [[raw/clippings/OpenClaw + CodexClaudeCode Agent Swarm The One-Person Dev Team Full Setup.md|raw/clippings/OpenClaw + CodexClaudeCode Agent Swarm The One-Person Dev Team Full Setup.md]]
+- [[raw/clippings/When AI builds itself.md|raw/clippings/When AI builds itself.md]]
 
 ## Workflows vs Agents
 
@@ -16,13 +16,13 @@ The useful distinction is architectural:
 - **Workflows** route LLM calls and tools through predefined code paths.
 - **Agents** let the LLM dynamically choose its process and tool use based on the task and the feedback it receives.
 
-![An augmented LLM combines the base model with retrieval, tools, and memory.](../raw/00-clippings/images/f58aedb9c99227ca6673e35d04112905_MD5.webp)
+![An augmented LLM combines the base model with retrieval, tools, and memory.](../raw/clippings/images/f58aedb9c99227ca6673e35d04112905_MD5.webp)
 
 *The augmented LLM is the base unit: model + retrieval + tools + memory. Workflows and agents compose this unit in different control structures.*
 
 The engineering bias should be conservative. Start with a single LLM call, retrieval, and examples. Add workflows when the task has clear repeatable stages. Add agents when the path cannot be predicted ahead of time and the system can observe ground truth from tools, tests, or external state.
 
-![An autonomous agent loops through planning, tool use, observation, and final response.](../raw/00-clippings/images/b37f65c63f05a63ef73b5cd237e729fd_MD5.webp)
+![An autonomous agent loops through planning, tool use, observation, and final response.](../raw/clippings/images/b37f65c63f05a63ef73b5cd237e729fd_MD5.webp)
 
 *Autonomy is a control loop, not magic: plan, act through tools, observe the result, revise, and stop when the task is complete or blocked.*
 
@@ -30,7 +30,7 @@ The engineering bias should be conservative. Start with a single LLM call, retri
 
 The right question is never "should I use multiple agents?" but "what kind of coordination does this task actually need?"
 
-![Sub-agents isolate work and report back to one parent, while agent teams coordinate through shared state and peer communication.](../raw/00-clippings/images/57c3fe6d8afadc9f176cf149189b69c3_MD5.jpg)
+![Sub-agents isolate work and report back to one parent, while agent teams coordinate through shared state and peer communication.](../raw/clippings/images/57c3fe6d8afadc9f176cf149189b69c3_MD5.jpg)
 
 *This diagram captures the architectural split better than any slogan: one pattern is about isolated delegation, the other is about persistent coordination.*
 
@@ -151,7 +151,7 @@ These five patterns cover most real-world multi-agent needs:
 
 The orchestrator-worker pattern is the architecture that most real production systems use.
 
-![A coding agent is a concrete orchestrator-worker loop: read task, inspect files, edit, run checks, and iterate.](../raw/00-clippings/images/813e40d499cc397878a03e01045c11e2_MD5.webp)
+![A coding agent is a concrete orchestrator-worker loop: read task, inspect files, edit, run checks, and iterate.](../raw/clippings/images/813e40d499cc397878a03e01045c11e2_MD5.webp)
 
 *Coding agents work because the environment can answer back: file reads, diffs, test failures, compiler errors, and review comments all provide ground truth.*
 
@@ -225,7 +225,7 @@ Start with a single agent. Push it until you find where it breaks. That failure 
 
 Context windows are zero-sum. You have to choose what goes in. Fill it with business context and you have no room for the codebase. Fill it with code and the agent knows nothing about why it matters. This constraint drives the two-tier production architecture.
 
-![A separate orchestration layer can hold business context while downstream coding agents stay focused on implementation.](../raw/00-clippings/images/d5caaae2e9e4cbedb33ff36e4a68cb83_MD5.jpg)
+![A separate orchestration layer can hold business context while downstream coding agents stay focused on implementation.](../raw/clippings/images/d5caaae2e9e4cbedb33ff36e4a68cb83_MD5.jpg)
 
 *This is the production version of the same idea: split systems by context ownership, not by org chart.*
 
@@ -273,7 +273,7 @@ Each parallel agent needs its own worktree, its own `node_modules`, and runs its
 
 ## Source
 
-- [[raw/00-clippings/OpenClaw + CodexClaudeCode Agent Swarm The One-Person Dev Team Full Setup.md|raw/00-clippings/OpenClaw + CodexClaudeCode Agent Swarm The One-Person Dev Team Full Setup.md]]
+- [[raw/clippings/OpenClaw + CodexClaudeCode Agent Swarm The One-Person Dev Team Full Setup.md|raw/clippings/OpenClaw + CodexClaudeCode Agent Swarm The One-Person Dev Team Full Setup.md]]
 
 ## Related Topics
 

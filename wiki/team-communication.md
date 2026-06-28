@@ -2,7 +2,7 @@ Team communication works best when real-time chat is reserved for narrow, time-s
 
 ## Source
 
-- [[raw/00-clippings/Group Chat The Best Way to Totally Stress Out Your Team.md|raw/00-clippings/Group Chat The Best Way to Totally Stress Out Your Team.md]]
+- [[raw/clippings/Group Chat The Best Way to Totally Stress Out Your Team.md|raw/clippings/Group Chat The Best Way to Totally Stress Out Your Team.md]]
 
 ## Chat Is Useful, But Narrow
 

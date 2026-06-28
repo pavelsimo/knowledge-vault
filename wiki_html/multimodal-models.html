@@ -84,7 +84,9 @@ footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offse
     <a href="#tasks">Tasks &amp; Models</a>
     <a href="#contrastive">Contrastive Learning</a>
     <a href="#grounding">Grounding</a>
+    <a href="#fine-tuning">Small VLM Fine-Tuning</a>
     <a href="#hallucination">Hallucination</a>
+    <a href="#related">Related</a>
   </nav>
 </header>
 
@@ -145,7 +147,7 @@ footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offse
       </div>
     </div>
 
-      <div class="figure"><img src="../raw/01-open-source-models-hugging-face/images/img_300.png" alt="A multimodal model combines different input streams, such as image and text, inside one shared processing pipeline."><div class="figcap">A multimodal model combines different input streams, such as image and text, inside one shared processing pipeline.</div></div>
+      <div class="figure"><img src="../raw/course-material/open-source-models-hugging-face/images/img_300.png" alt="A multimodal model combines different input streams, such as image and text, inside one shared processing pipeline."><div class="figcap">A multimodal model combines different input streams, such as image and text, inside one shared processing pipeline.</div></div>
     </div>
   </section>
 
@@ -218,7 +220,7 @@ footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offse
     </ul>
     <p><a href="https://arxiv.org/pdf/2211.06687">CLAP: Learning Audio Concepts from Natural Language Supervision</a></p>
 
-      <div class="figure"><img src="../raw/01-open-source-models-hugging-face/images/img_301.png" alt="Image-text retrieval turns both the image and the query into comparable representations in a shared space."><div class="figcap">Image-text retrieval turns both the image and the query into comparable representations in a shared space.</div></div>
+      <div class="figure"><img src="../raw/course-material/open-source-models-hugging-face/images/img_301.png" alt="Image-text retrieval turns both the image and the query into comparable representations in a shared space."><div class="figcap">Image-text retrieval turns both the image and the query into comparable representations in a shared space.</div></div>
     </div>
   </section>
 
@@ -260,8 +262,19 @@ footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offse
 </section>
 
 <!-- ── SECTION 7 ── -->
+<section id="fine-tuning">
+  <div class="sec-head"><span class="idx">07</span><h2>Fine-tuning small vision-language models</h2></div>
+  <div class="sec-body">
+    <p>The DGX Spark VLM fine-tuning source shows the modern small-model workflow: start with a compact VLM such as SmolVLM2-500M, format a dataset as image-plus-text conversations, freeze or partially freeze the vision encoder when appropriate, fine-tune with Hugging Face <code>transformers</code>, <code>datasets</code>, and TRL's supervised fine-tuning tools, then publish both the model and a Gradio demo to the Hub.</p>
+    <div class="figure"><img src="../raw/course-material/end-to-end-vision-language-model-fine-tuning/images/027c574f30a89f4cf6934033716e3926_MD5.jpg" alt="Typical VLM fine-tuning architecture with image encoder, multimodal projector, and text decoder."><div class="figcap">A typical VLM keeps an image encoder, multimodal projector, and text decoder; fine-tuning can selectively update the projector and decoder while leaving the image encoder frozen.</div></div>
+    <p>The practical use case is structured extraction from images. Instead of asking a frontier API to parse every food photo or invoice, a small local VLM can learn a narrow JSON schema, keep data private, run offline or in batch, and improve substantially on the target distribution with a modest custom dataset.</p>
+    <div class="figure"><img src="../raw/course-material/end-to-end-vision-language-model-fine-tuning/images/bfdf12c7b3eb1c40abfeaf6f175556c4_MD5.jpg" alt="Token mindset for VLM fine-tuning: images and instructions become input tokens, and structured task data becomes output tokens."><div class="figcap">The fine-tuning framing treats images and instructions as input tokens and structured task results as output tokens.</div></div>
+  </div>
+</section>
+
+<!-- ── SECTION 8 ── -->
 <section id="hallucination">
-  <div class="sec-head"><span class="idx">07</span><h2>Failure mode: hallucination</h2></div>
+  <div class="sec-head"><span class="idx">08</span><h2>Failure mode: hallucination</h2></div>
   <div class="sec-body">
     <p>Multimodal models inherit the same core problem as language models: they can generate plausible
     statements not fully supported by the image.</p>
@@ -274,20 +287,28 @@ footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offse
     <p>Grounding, pointing, verification models, and specialist sub-models reduce this, but do not
     eliminate it.</p>
 
-    <h3>Related Topics</h3>
+  </div>
+</section>
+
+<!-- ── SECTION 9 ── -->
+<section id="related">
+  <div class="sec-head"><span class="idx">09</span><h2>Related Topics</h2></div>
+  <div class="sec-body">
     <ul>
-      <li><a href="computer-vision.html">computer-vision</a> — vision-only models and tasks</li>
-      <li><a href="audio-processing.html">audio-processing</a> — audio-only models and tasks (ASR, TTS, CLAP)</li>
-      <li><a href="sentence-embeddings.html">sentence-embeddings</a> — embedding spaces and similarity search</li>
-      <li><a href="attention-transformers.html">attention-transformers</a> — architectural foundation for most multimodal models</li>
-      <li><a href="ai-model-architectures.html">ai-model-architectures</a> — VLM pipeline overview</li>
+      <li><a href="computer-vision.html">Computer Vision</a> — vision-only models and tasks</li>
+      <li><a href="audio-processing.html">Audio Processing</a> — audio-only models and tasks (ASR, TTS, CLAP)</li>
+      <li><a href="sentence-embeddings.html">Sentence Embeddings</a> — embedding spaces and similarity search</li>
+      <li><a href="attention-transformers.html">Attention &amp; Transformers</a> — architectural foundation for most multimodal models</li>
+      <li><a href="ai-model-architectures.html">AI Model Architectures</a> — VLM pipeline overview</li>
+      <li><a href="llm-training.html">LLM Training</a> — supervised fine-tuning and adaptation workflows</li>
+      <li><a href="local-models.html">Local Models</a> — local ownership and offline inference tradeoffs for small models</li>
     </ul>
   </div>
 </section>
 
 <footer>
   <span class="k">Knowledge Vault</span>
-  <span>AI · Multimodal Models</span>
+  <a href="index.html">← All topics</a>
 </footer>
 
 </div>

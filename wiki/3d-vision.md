@@ -4,8 +4,8 @@
 
 ## Source
 
-- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
-- [[raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 15 3D Vision - YouTube.md|raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 15 3D Vision - YouTube.md]]
+- [[raw/course-material/stanford-cs231n/Stanford CS231N.md|raw/course-material/stanford-cs231n/Stanford CS231N.md]]
+- [[raw/clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 15 3D Vision - YouTube.md|raw/clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 15 3D Vision - YouTube.md]]
 
 ## Key Papers
 
@@ -25,7 +25,7 @@ Any 3D shape representation must address five concerns:
 
 ## Shape Representations
 
-![3D geometry can be represented in many explicit and implicit ways.](../raw/03-stanford-cs231n/images/img_689.png)
+![3D geometry can be represented in many explicit and implicit ways.](../raw/course-material/stanford-cs231n/images/img_689.png)
 
 *A central 3D-vision problem is choosing the representation itself. Point clouds, meshes, voxels, parametric surfaces, occupancy fields, and SDFs all make different tradeoffs for storage, rendering, editing, and learning.*
 

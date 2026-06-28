@@ -4,8 +4,8 @@ Self-supervised learning trains neural networks on unlabeled data by auto-genera
 
 ## Source
 
-- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
-- [[raw/00-clippings/Spring 2025  Lecture 12 Self-Supervised Learning - YouTube.md|raw/00-clippings/Spring 2025  Lecture 12 Self-Supervised Learning - YouTube.md]]
+- [[raw/course-material/stanford-cs231n/Stanford CS231N.md|raw/course-material/stanford-cs231n/Stanford CS231N.md]]
+- [[raw/clippings/Spring 2025  Lecture 12 Self-Supervised Learning - YouTube.md|raw/clippings/Spring 2025  Lecture 12 Self-Supervised Learning - YouTube.md]]
 
 ## Key Papers
 
@@ -126,7 +126,7 @@ SimCLR = Simple Contrastive Learning of Visual Representations. The main algorit
 
 Key: use ALL non-positive samples in the batch as X negatives — as X grows the contrastive task gets harder and representations get richer.
 
-![SimCLR learns by matching two augmented views of the same image.](../raw/03-stanford-cs231n/images/img_523.png)
+![SimCLR learns by matching two augmented views of the same image.](../raw/course-material/stanford-cs231n/images/img_523.png)
 
 *Two random augmentations of the same image form a positive pair. The encoder and projection head are trained to pull that pair together while pushing away other images in the batch.*
 

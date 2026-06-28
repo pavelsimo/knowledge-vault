@@ -4,8 +4,8 @@ As models grow beyond billions of parameters, training on a single GPU becomes i
 
 ## Source
 
-- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
-- [[raw/00-clippings/Spring 2025  Lecture 11 Large Scale Distributed Training - YouTube.md|raw/00-clippings/Spring 2025  Lecture 11 Large Scale Distributed Training - YouTube.md]]
+- [[raw/course-material/stanford-cs231n/Stanford CS231N.md|raw/course-material/stanford-cs231n/Stanford CS231N.md]]
+- [[raw/clippings/Spring 2025  Lecture 11 Large Scale Distributed Training - YouTube.md|raw/clippings/Spring 2025  Lecture 11 Large Scale Distributed Training - YouTube.md]]
 
 ## Key Papers
 
@@ -62,7 +62,7 @@ The Llama 3 cluster is organized as: GPU → Server (8 GPUs) → Rack (2 servers
 
 Communication becomes the bottleneck at scale — collective operations (all-reduce) dominate training time at pod scale.
 
-![Bandwidth collapses as training moves from one GPU to whole-cluster communication.](../raw/03-stanford-cs231n/images/img_430.png)
+![Bandwidth collapses as training moves from one GPU to whole-cluster communication.](../raw/course-material/stanford-cs231n/images/img_430.png)
 
 *The training stack is a bandwidth hierarchy, not one uniform computer. Most large-scale parallelism strategies are really attempts to keep communication on the fastest links for as long as possible.*
 

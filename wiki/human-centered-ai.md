@@ -4,7 +4,7 @@ Human-centered AI asks not only whether a model can perceive, predict, or act, b
 
 ## Source
 
-- [[raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 18 Human-Centered AI - YouTube.md|raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 18 Human-Centered AI - YouTube.md]]
+- [[raw/clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 18 Human-Centered AI - YouTube.md|raw/clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 18 Human-Centered AI - YouTube.md]]
 
 ## Three Framing Questions
 

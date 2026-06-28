@@ -4,9 +4,9 @@ Convolutional Neural Networks (CNNs) are the dominant architecture for visual pr
 
 ## Source
 
-- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
-- [[raw/00-clippings/Spring 2025  Lecture 5 Image Classification with CNNs - YouTube.md|raw/00-clippings/Spring 2025  Lecture 5 Image Classification with CNNs - YouTube.md]]
-- [[raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 6 CNN Architectures - YouTube.md|raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 6 CNN Architectures - YouTube.md]]
+- [[raw/course-material/stanford-cs231n/Stanford CS231N.md|raw/course-material/stanford-cs231n/Stanford CS231N.md]]
+- [[raw/clippings/Spring 2025  Lecture 5 Image Classification with CNNs - YouTube.md|raw/clippings/Spring 2025  Lecture 5 Image Classification with CNNs - YouTube.md]]
+- [[raw/clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 6 CNN Architectures - YouTube.md|raw/clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 6 CNN Architectures - YouTube.md]]
 
 ## Key Papers
 
@@ -15,7 +15,7 @@ Convolutional Neural Networks (CNNs) are the dominant architecture for visual pr
 - [Deep Residual Learning for Image Recognition (ResNet)](https://arxiv.org/pdf/1512.03385) - the decisive paper on skip connections for very deep CNNs.
 - [Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification](https://arxiv.org/pdf/1502.01852) - the Kaiming-initialization paper referenced later in this page.
 
-![AlexNet is the historical inflection point that turned CNNs into the dominant vision backbone.](../raw/03-stanford-cs231n/images/img_110.png)
+![AlexNet is the historical inflection point that turned CNNs into the dominant vision backbone.](../raw/course-material/stanford-cs231n/images/img_110.png)
 
 *This architecture slide is worth keeping near the top because it anchors several later themes on the page: convolution stacks, pooling, fully connected heads, and the ImageNet-era design language that VGG and ResNet evolved from.*
 
@@ -136,7 +136,7 @@ The ImageNet Large Scale Visual Recognition Challenge drove the deep learning re
 
 AlexNet (8 layers) in 2012 cut the error rate nearly in half compared to 2011 — the event that launched the modern deep learning era. ResNet (152 layers) surpassed human-level performance on this benchmark in 2015.
 
-![ImageNet winners show the paper-driven jump from AlexNet to VGG, GoogLeNet, and ResNet.](../raw/03-stanford-cs231n/images/img_163.png)
+![ImageNet winners show the paper-driven jump from AlexNet to VGG, GoogLeNet, and ResNet.](../raw/course-material/stanford-cs231n/images/img_163.png)
 
 *The pattern is the important part: benchmark progress was not smooth optimization, it came from architecture papers that changed how the field designed networks.*
 
@@ -223,7 +223,7 @@ Deep networks suffer from degradation — more layers → worse training perform
 output = F(x) + x
 ```
 
-![ResNet reframes depth as learning residual change on top of an identity path.](../raw/03-stanford-cs231n/images/img_174.png)
+![ResNet reframes depth as learning residual change on top of an identity path.](../raw/course-material/stanford-cs231n/images/img_174.png)
 
 *This figure captures the core ResNet paper insight more directly than a paragraph: the deeper model should only need to learn the residual difference from identity, not relearn the whole mapping from scratch.*
 

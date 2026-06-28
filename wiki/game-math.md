@@ -4,8 +4,9 @@ Game math is the layer between raw code and spatial intuition. The most useful p
 
 ## Source
 
-- [[raw/00-clippings/Thread by @iced_coffee_dev.md|raw/00-clippings/Thread by @iced_coffee_dev.md]]
-- [[raw/00-clippings/Thread by @iced_coffee_dev 1.md|raw/00-clippings/Thread by @iced_coffee_dev 1.md]]
+- [[raw/clippings/Thread by @iced_coffee_dev.md|raw/clippings/Thread by @iced_coffee_dev.md]]
+- [[raw/clippings/Thread by @iced_coffee_dev 1.md|raw/clippings/Thread by @iced_coffee_dev 1.md]]
+- [[raw/clippings/Thread by @iced_coffee_dev 2.md|raw/clippings/Thread by @iced_coffee_dev 2.md]]
 
 ## Unit Circle Mental Model
 
@@ -21,7 +22,7 @@ Because the circle radius is 1:
 
 That makes trig much less mystical. On the unit circle, sine and cosine are not abstract ratios anymore; they are just coordinates.
 
-![On the unit circle, sine and cosine are literally the point coordinates.](../raw/00-clippings/images/5967ded393532831c4fd2a9367c46069_MD5.jpg)
+![On the unit circle, sine and cosine are literally the point coordinates.](../raw/clippings/images/5967ded393532831c4fd2a9367c46069_MD5.jpg)
 
 *This is the most useful trig picture in game dev. Once `cos(θ)` and `sin(θ)` become x/y coordinates, direction vectors stop feeling like memorized formulas.*
 
@@ -69,7 +70,7 @@ dot(a, b̂) = |a| cos(θ)
 
 So the dot product is not "just another formula." It is a fast way to ask: how much of vector `a` points along vector `b`?
 
-![For unit vectors, the dot product is just the cosine of the angle between them.](../raw/00-clippings/images/b5a9fa231fa8c99df8948428cf42883c_MD5.jpg)
+![For unit vectors, the dot product is just the cosine of the angle between them.](../raw/clippings/images/b5a9fa231fa8c99df8948428cf42883c_MD5.jpg)
 
 *That identity is why the dot product shows up everywhere in gameplay code: facing checks, FOV tests, projections, steering, and lighting all reduce to measuring alignment.*
 

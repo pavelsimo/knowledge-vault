@@ -2,10 +2,12 @@ LLM from Scratch is the hands-on path from PyTorch tensor mechanics to a tiny ch
 
 ## Sources
 
-- [[raw/08-llm-from-scratch-with-python-freecodecamp/LLM from Scratch.md|raw/08-llm-from-scratch-with-python-freecodecamp/LLM from Scratch.md]]
-- [[raw/08-llm-from-scratch-with-python-freecodecamp/bigram.py|raw/08-llm-from-scratch-with-python-freecodecamp/bigram.py]]
-- [[raw/08-llm-from-scratch-with-python-freecodecamp/torch-examples.py|raw/08-llm-from-scratch-with-python-freecodecamp/torch-examples.py]]
-- [[raw/08-llm-from-scratch-with-python-freecodecamp/requirements.txt|raw/08-llm-from-scratch-with-python-freecodecamp/requirements.txt]]
+- [[raw/course-material/llm-from-scratch-with-python-freecodecamp/LLM from Scratch.md|raw/course-material/llm-from-scratch-with-python-freecodecamp/LLM from Scratch.md]]
+- [[raw/course-material/llm-from-scratch-with-python-freecodecamp/bigram.py|raw/course-material/llm-from-scratch-with-python-freecodecamp/bigram.py]]
+- [[raw/course-material/llm-from-scratch-with-python-freecodecamp/torch-examples.py|raw/course-material/llm-from-scratch-with-python-freecodecamp/torch-examples.py]]
+- [[raw/course-material/llm-from-scratch-with-python-freecodecamp/requirements.txt|raw/course-material/llm-from-scratch-with-python-freecodecamp/requirements.txt]]
+- [[raw/clippings/The spelled-out intro to language modeling building makemore.md|raw/clippings/The spelled-out intro to language modeling building makemore.md]]
+- [[raw/clippings/Let's build GPT from scratch, in code, spelled out..md|raw/clippings/Let's build GPT from scratch, in code, spelled out..md]]
 
 ## PyTorch Building Blocks
 
@@ -36,6 +38,8 @@ decode = lambda ids: "".join([int_to_string[i] for i in ids])
 ```
 
 This is intentionally simple. Production LLMs use BPE, SentencePiece, or tokenizer variants described in [[nlp]], but character tokenization makes the mechanics visible.
+
+Karpathy's `makemore` source is the useful conceptual bridge here: before a transformer, a language model can be understood as "given a context of previous characters, predict the next character." The neural-network version keeps the same loss-and-sampling loop as the count-based bigram model, but replaces explicit tables with trainable parameters that scale to larger contexts.
 
 ## Bigram Model
 
@@ -110,6 +114,8 @@ index = torch.cat((index, next_token), dim=1)
 ```
 
 This is autoregressive inference in miniature. A modern decoder-only transformer does the same high-level loop, but with deep attention blocks, positional encodings, KV cache, larger vocabularies, and learned representations described in [[attention-transformers]].
+
+The GPT-from-scratch source expands this same loop into a decoder-only transformer: token and positional embeddings feed masked self-attention blocks, the causal mask prevents future-token leakage, and generation repeatedly samples the last-position logits. It also clarifies the difference between a pre-trained document completer and a chat assistant that still needs supervised fine-tuning and preference/alignment stages.
 
 ## Related Topics
 

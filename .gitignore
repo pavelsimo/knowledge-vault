@@ -1,1 +1,34 @@
 .pages-artifact/
+
+# C / C++ / CUDA
+*.o
+*.a
+*.so
+*.out
+*.exe
+*.d
+*.obj
+*.elf
+*.bin
+*.map
+*.dSYM/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.venv/
+venv/
+env/
+.env
+*.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/

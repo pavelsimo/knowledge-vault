@@ -4,10 +4,11 @@ The attention mechanism was invented to overcome the bottleneck in RNN-based seq
 
 ## Source
 
-- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
-- [[raw/00-clippings/Spring 2025  Lecture 8 Attention and Transformers - YouTube.md|raw/00-clippings/Spring 2025  Lecture 8 Attention and Transformers - YouTube.md]]
-- [[raw/00-clippings/Math behind Attention - Q, K, and V.md|raw/00-clippings/Math behind Attention - Q, K, and V.md]]
-- [[raw/00-clippings/KV Caching in LLMs, Clearly Explained.md|raw/00-clippings/KV Caching in LLMs, Clearly Explained.md]]
+- [[raw/course-material/stanford-cs231n/Stanford CS231N.md|raw/course-material/stanford-cs231n/Stanford CS231N.md]]
+- [[raw/clippings/Spring 2025  Lecture 8 Attention and Transformers - YouTube.md|raw/clippings/Spring 2025  Lecture 8 Attention and Transformers - YouTube.md]]
+- [[raw/clippings/Math behind Attention - Q, K, and V.md|raw/clippings/Math behind Attention - Q, K, and V.md]]
+- [[raw/clippings/KV Caching in LLMs, Clearly Explained.md|raw/clippings/KV Caching in LLMs, Clearly Explained.md]]
+- [[raw/clippings/The Detailed Explanation of Self-Attention in Simple Words.md|raw/clippings/The Detailed Explanation of Self-Attention in Simple Words.md]]
 
 ## Key Papers
 
@@ -44,7 +45,7 @@ Decoder: s₀ from c → predict y₁ "vediamo" → s₁ → y₂ "il" → s₂ 
 
 **Analogy with attention:** read a paragraph, then look back at any specific word whenever you need it while translating.
 
-![Attention turns translation into a soft lookup over all encoder states.](../raw/03-stanford-cs231n/images/img_262.png)
+![Attention turns translation into a soft lookup over all encoder states.](../raw/course-material/stanford-cs231n/images/img_262.png)
 
 *At each decoding step, attention scores every encoder state, normalizes those scores with softmax, and builds a fresh context vector. It is a differentiable memory lookup, not a single fixed summary.*
 
@@ -82,6 +83,8 @@ Attention(Q, K, V) = softmax(QKᵀ / √d) · V
 A **self-attention layer** relates all positions in a single sequence to each other:
 - Each token attends to every other token
 - Captures global dependencies regardless of distance (unlike RNNs and CNNs)
+
+The self-attention clipping reinforces the historical contrast: earlier RNN-based attention mostly acted as cross-attention from decoder state to encoder states, while transformers make self-attention the main computation so every token can build a contextual representation in parallel.
 
 **Self-Attention Layer — Full Computation:**
 

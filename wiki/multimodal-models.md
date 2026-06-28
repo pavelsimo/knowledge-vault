@@ -4,10 +4,11 @@ Multimodal models are AI systems that accept and relate more than one type of da
 
 ## Source
 
-- [[raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 16 Vision and Language - YouTube.md|raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 16 Vision and Language - YouTube.md]]
-- [[raw/01-open-source-models-hugging-face/11-image-retrieval.py|raw/01-open-source-models-hugging-face/11-image-retrieval.py]]
-- [[raw/01-open-source-models-hugging-face/12-image-captioning.py|raw/01-open-source-models-hugging-face/12-image-captioning.py]]
-- [[raw/01-open-source-models-hugging-face/05_zero_shot_audio_classification.py|raw/01-open-source-models-hugging-face/05_zero_shot_audio_classification.py]]
+- [[raw/clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 16 Vision and Language - YouTube.md|raw/clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 16 Vision and Language - YouTube.md]]
+- [[raw/course-material/end-to-end-vision-language-model-fine-tuning/Fine-tuning VLM.md|raw/course-material/end-to-end-vision-language-model-fine-tuning/Fine-tuning VLM.md]]
+- [[raw/course-material/open-source-models-hugging-face/11-image-retrieval.py|raw/course-material/open-source-models-hugging-face/11-image-retrieval.py]]
+- [[raw/course-material/open-source-models-hugging-face/12-image-captioning.py|raw/course-material/open-source-models-hugging-face/12-image-captioning.py]]
+- [[raw/course-material/open-source-models-hugging-face/05_zero_shot_audio_classification.py|raw/course-material/open-source-models-hugging-face/05_zero_shot_audio_classification.py]]
 
 ## Key Papers
 
@@ -22,7 +23,7 @@ A model is **multimodal** when it takes more than one type of input — for exam
 - Audio clip + text labels → classification score (CLAP)
 - Image → text description (captioning)
 
-![A multimodal model combines different input streams, such as image and text, inside one shared processing pipeline.](../raw/01-open-source-models-hugging-face/images/img_300.png)
+![A multimodal model combines different input streams, such as image and text, inside one shared processing pipeline.](../raw/course-material/open-source-models-hugging-face/images/img_300.png)
 
 *The important shift is architectural: modalities are no longer handled as separate silos if the model can reason across them jointly.*
 
@@ -64,7 +65,7 @@ This makes **zero-shot classification** possible: embed candidate text labels li
 
 ## Key Models
 
-![Image-text retrieval turns both the image and the query into comparable representations in a shared space.](../raw/01-open-source-models-hugging-face/images/img_301.png)
+![Image-text retrieval turns both the image and the query into comparable representations in a shared space.](../raw/course-material/open-source-models-hugging-face/images/img_301.png)
 
 *That shared-space idea is what makes retrieval, matching, and zero-shot transfer feel like one family of tasks instead of separate pipelines.*
 
@@ -96,6 +97,16 @@ From there, richer representations emerged:
 - **Grounded generation** — force the model to point to evidence in the image while generating text
 
 These structured forms help because raw captions often hide *why* the model said something.
+
+## Fine-Tuning Small Vision-Language Models
+
+The DGX Spark VLM fine-tuning source shows the modern small-model workflow: start with a compact VLM such as SmolVLM2-500M, format a dataset as image-plus-text conversations, freeze or partially freeze the vision encoder when appropriate, fine-tune with Hugging Face `transformers`, `datasets`, and TRL's supervised fine-tuning tools, then publish both the model and a Gradio demo to the Hub.
+
+![A typical VLM keeps an image encoder, multimodal projector, and text decoder; fine-tuning can selectively update the projector and decoder while leaving the image encoder frozen.](../raw/course-material/end-to-end-vision-language-model-fine-tuning/images/027c574f30a89f4cf6934033716e3926_MD5.jpg)
+
+The practical use case is structured extraction from images. Instead of asking a frontier API to parse every food photo or invoice, a small local VLM can learn a narrow JSON schema, keep data private, run offline or in batch, and improve substantially on the target distribution with a modest custom dataset.
+
+![The VLM fine-tuning framing treats images and instructions as input tokens and structured task outputs as output tokens.](../raw/course-material/end-to-end-vision-language-model-fine-tuning/images/bfdf12c7b3eb1c40abfeaf6f175556c4_MD5.jpg)
 
 ## Chaining Models
 
@@ -138,3 +149,5 @@ At inference time, you can compare any image/audio against any text description 
 - [[human-centered-ai]] — hallucination, grounding, bias, and human impact in multimodal systems
 - [[hugging-face]] — hosting and discovering multimodal models
 - [[attention-transformers]] — the architectural foundation for most multimodal models
+- [[llm-training]] — supervised fine-tuning and adaptation workflows
+- [[local-models]] — local ownership and offline inference tradeoffs for small models

@@ -8,7 +8,7 @@
 | [[nlp]] | NLP tasks: text generation, translation, summarization, and tokenization concepts |
 | [[audio-processing]] | Audio AI: sampling rates, ASR, TTS, zero-shot audio classification, stereo vs mono |
 | [[computer-vision]] | Computer vision: image classification challenges, KNN, distance metrics, linear classifiers |
-| [[multimodal-models]] | Multimodal AI: BLIP, CLAP, image-text retrieval, image captioning, visual Q&A |
+| [[multimodal-models]] | Multimodal AI: BLIP, CLAP, VLM fine-tuning, image-text retrieval, image captioning, visual Q&A |
 | [[human-centered-ai]] | Human-centered AI: perception limits, bias, privacy, augmentation, and designing AI around human values |
 | [[sentence-embeddings]] | Sentence embeddings: all-MiniLM-L6-v2, semantic search, vector spaces |
 | [[probability-statistics]] | Stanford CS109: probability theory, Bayes' theorem, random variables, covariance |
@@ -33,7 +33,7 @@
 | [[robot-learning]] | RL, imitation learning, diffusion policy, robotic foundation models (RT-2, π₀, GR00T) |
 | [[distributed-training]] | Data/tensor/pipeline/context parallelism, FSDP/ZeRO, MFU, activation checkpointing |
 | [[mlops]] | MLOps: data drift, concept drift, model monitoring, deployment strategies, evaluation metrics |
-| [[gpu-cuda]] | GPU and CUDA: compute capabilities, CUDA kernels, GPU memory, LLM VRAM math, quantization formats |
+| [[gpu-cuda]] | GPU and CUDA: host/device memory, kernels, warps, compute capabilities, VRAM math, and GPU selection |
 | [[rag]] | RAG architectures: Naive, Multimodal, HyDE, Corrective, Graph, Hybrid, Adaptive, Agentic |
 | [[docling]] | Local document conversion and extraction: OCR, tables, content layers, provenance, chunking, and RAG exports |
 | [[ai-coding]] | AI-assisted development: vibe coding, context engineering, Plan→Execute→Verify, security risks |

@@ -2,8 +2,8 @@ Tmux is a terminal multiplexer that keeps shell sessions alive, splits a termina
 
 ## Sources
 
-- [[raw/09-tmux/Tmux.md|raw/09-tmux/Tmux.md]]
-- [[raw/00-clippings/Tmux Cheat Sheet & Quick Reference  Session, window, pane and more.md|raw/00-clippings/Tmux Cheat Sheet & Quick Reference  Session, window, pane and more.md]]
+- [[raw/reference-packs/tmux/Tmux.md|raw/reference-packs/tmux/Tmux.md]]
+- [[raw/clippings/Tmux Cheat Sheet & Quick Reference  Session, window, pane and more.md|raw/clippings/Tmux Cheat Sheet & Quick Reference  Session, window, pane and more.md]]
 
 ## Session Commands
 

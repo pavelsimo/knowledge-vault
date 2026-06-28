@@ -4,14 +4,14 @@ Computer vision is the field of teaching machines to interpret and understand im
 
 ## Source
 
-- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
-- [[raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 1 Introduction - YouTube.md|raw/00-clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 1 Introduction - YouTube.md]]
-- [[raw/00-clippings/Spring 2025  Lecture 2 Image Classification with Linear Classifiers - YouTube.md|raw/00-clippings/Spring 2025  Lecture 2 Image Classification with Linear Classifiers - YouTube.md]]
-- [[raw/01-open-source-models-hugging-face/08_object_detection.py|raw/01-open-source-models-hugging-face/08_object_detection.py]]
-- [[raw/01-open-source-models-hugging-face/09_segmentation_mask.py|raw/01-open-source-models-hugging-face/09_segmentation_mask.py]]
-- [[raw/01-open-source-models-hugging-face/10-depth-estimation.py|raw/01-open-source-models-hugging-face/10-depth-estimation.py]]
-- [[raw/01-open-source-models-hugging-face/11-image-retrieval.py|raw/01-open-source-models-hugging-face/11-image-retrieval.py]]
-- [[raw/01-open-source-models-hugging-face/12-image-captioning.py|raw/01-open-source-models-hugging-face/12-image-captioning.py]]
+- [[raw/course-material/stanford-cs231n/Stanford CS231N.md|raw/course-material/stanford-cs231n/Stanford CS231N.md]]
+- [[raw/clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 1 Introduction - YouTube.md|raw/clippings/(824) Stanford CS231N Deep Learning for Computer Vision  Spring 2025  Lecture 1 Introduction - YouTube.md]]
+- [[raw/clippings/Spring 2025  Lecture 2 Image Classification with Linear Classifiers - YouTube.md|raw/clippings/Spring 2025  Lecture 2 Image Classification with Linear Classifiers - YouTube.md]]
+- [[raw/course-material/open-source-models-hugging-face/08_object_detection.py|raw/course-material/open-source-models-hugging-face/08_object_detection.py]]
+- [[raw/course-material/open-source-models-hugging-face/09_segmentation_mask.py|raw/course-material/open-source-models-hugging-face/09_segmentation_mask.py]]
+- [[raw/course-material/open-source-models-hugging-face/10-depth-estimation.py|raw/course-material/open-source-models-hugging-face/10-depth-estimation.py]]
+- [[raw/course-material/open-source-models-hugging-face/11-image-retrieval.py|raw/course-material/open-source-models-hugging-face/11-image-retrieval.py]]
+- [[raw/course-material/open-source-models-hugging-face/12-image-captioning.py|raw/course-material/open-source-models-hugging-face/12-image-captioning.py]]
 
 ## Key Papers
 
@@ -87,7 +87,7 @@ A linear classifier makes predictions using: `f(x; W) = Wx + b`
 
 **Hard cases for linear classifiers:** non-linear decision boundaries, circular data, multimodal class distributions — solved by stacking layers into neural networks.
 
-![Flattening an image into class templates destroys spatial layout.](../raw/03-stanford-cs231n/images/img_108.png)
+![Flattening an image into class templates destroys spatial layout.](../raw/course-material/stanford-cs231n/images/img_108.png)
 
 *CS231N linear-classifier slide: flattening a `32×32×3` image into `3072` numbers throws away adjacency and translation structure. That is the core reason CNNs outperform raw linear templates on images.*
 

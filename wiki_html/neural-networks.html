@@ -187,6 +187,7 @@ Elastic net: R(W) = Σₖ Σₗ βW²ₖ,ₗ + |Wₖ,ₗ|</code></pre>
     <div class="sec-head"><span class="idx">04</span><h2>Computing Gradients</h2></div>
     <div class="sec-body">
       <p>Training requires computing the gradient of the loss with respect to all weights. There are two approaches — only one is practical.</p>
+      <p>The <code>micrograd</code> source is the most compact mental model: a neural network is a mathematical expression built from scalar operations; the forward pass computes predictions and loss; the backward pass applies the chain rule through the expression graph; gradient descent nudges parameters opposite the gradient; and production tensor libraries keep the same math while vectorizing it for speed.</p>
 
       <h3>The Forward and Backward Pass</h3>
 

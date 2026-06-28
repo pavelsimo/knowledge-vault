@@ -5,6 +5,11 @@ A personal knowledge base about Pavel personal interests.
 
 ## How It's Organized
 - raw/ contains unprocessed source material. Never modify these files.
+  - raw/clippings/ contains web clippings, video notes, social posts, and reference snippets; preserve its internal layout unless explicitly asked.
+  - raw/course-material/ contains course and tutorial source capsules.
+  - raw/reference-packs/ contains coherent reference/source packs.
+  - raw/inbox/ is the landing area for newly added unsorted raw material before it is promoted into a source capsule.
+  - Generated runtime artifacts such as `__pycache__/` and `.pyc` files do not belong in raw/.
 - wiki/ contains the organized wiki. AI maintains this entirely.
 - wiki_html/ contains the HTML-rendered version of the wiki. AI maintains this entirely; never edit manually.
 - outputs/ contains generated reports, answers, and analyses.

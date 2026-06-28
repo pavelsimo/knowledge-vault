@@ -2,7 +2,7 @@ AI skills are reusable folders of instructions, examples, evals, and optional me
 
 ## Source
 
-- [[raw/00-clippings/The Only Claude Skills Tutorial You Need (Add Evals and Memory).md|raw/00-clippings/The Only Claude Skills Tutorial You Need (Add Evals and Memory).md]]
+- [[raw/clippings/The Only Claude Skills Tutorial You Need (Add Evals and Memory).md|raw/clippings/The Only Claude Skills Tutorial You Need (Add Evals and Memory).md]]
 
 ## What a Skill Contains
 

@@ -95,6 +95,7 @@ pipe(long_article_text)</code></pre>
       <li>Tokenizers cannot be shared safely across unrelated model families</li>
       <li>Tokenizers run on the <strong>CPU</strong></li>
     </ul>
+    <p>The GPT tokenizer source makes the practical point sharper: tokenizers are trained artifacts with their own data, algorithms, vocabularies, and failure modes. Byte Pair Encoding can make English and code compact, but it can also make arithmetic, spelling, non-English text, indentation-heavy code, and special-token handling surprisingly brittle.</p>
     <h3>Why Tokenizers Are Model-Specific</h3>
     <table>
       <tr><th>What works</th><th>What doesn't</th></tr>

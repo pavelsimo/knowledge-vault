@@ -2,9 +2,9 @@ Display resolutions describe the pixel dimensions of common screens and rendered
 
 ## Source
 
-- [[raw/00-clippings/Monitor Resolutions.md|raw/00-clippings/Monitor Resolutions.md]]
+- [[raw/clippings/Monitor Resolutions.md|raw/clippings/Monitor Resolutions.md]]
 
-![Common monitor-resolution reference image from the raw clipping.](../raw/00-clippings/images/a4632ca97b1e715ce30c54dd04a3be90_MD5.jpg)
+![Common monitor-resolution reference image from the raw clipping.](../raw/clippings/images/a4632ca97b1e715ce30c54dd04a3be90_MD5.jpg)
 
 ## Common Resolutions
 

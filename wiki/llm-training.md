@@ -4,6 +4,10 @@ Building a production-quality large language model involves four sequential stag
 
 ## Sources
 
+- [[raw/clippings/LLMs from Scratch – Practical Engineering from Base Model to PPO RLHF.md|raw/clippings/LLMs from Scratch – Practical Engineering from Base Model to PPO RLHF.md]]
+- [[raw/clippings/Developing an LLM Building, Training, Finetuning.md|raw/clippings/Developing an LLM Building, Training, Finetuning.md]]
+- [[raw/clippings/Create a Large Language Model from Scratch with Python – Tutorial.md|raw/clippings/Create a Large Language Model from Scratch with Python – Tutorial.md]]
+- [[raw/clippings/Let's reproduce GPT-2 (124M).md|raw/clippings/Let's reproduce GPT-2 (124M).md]]
 - [LLMs from Scratch – Practical Engineering from Base Model to PPO RLHF](https://www.youtube.com/watch?v=p3sij8QzONQ) — freeCodeCamp.org (2025)
 - [Developing an LLM: Building, Training, Finetuning](https://www.youtube.com/watch?v=kPGTx4wcm_w) — Sebastian Raschka (2024)
 - [Create a Large Language Model from Scratch with Python](https://www.youtube.com/watch?v=UU1WVnMk4E8) — freeCodeCamp.org (2023)
@@ -83,6 +87,8 @@ LLMs use a **decoder-only** (causal) transformer:
 - **Gradient accumulation** — simulate large batch sizes when memory is tight by accumulating gradients over N micro-batches before stepping.
 - **Checkpointing** — save model state periodically; allows resuming after interruption and evaluating intermediate checkpoints.
 - **MoE layers** — replace dense FFNs with many smaller expert FFNs; a learned router selects top-k experts per token. Total params >> active params. See [[ai-model-architectures]] for the MoE architecture.
+
+Karpathy's GPT-2 reproduction source adds the practical systems layer underneath this list: start from a known checkpoint, implement the GPT-2 module in PyTorch, verify logits and generation, then make training fast with TF32/BF16, `torch.compile`, FlashAttention, fused AdamW, gradient accumulation, DDP, validation loss, and benchmark evaluation. It is the bridge between "the LLM pipeline" as a concept and the engineering work required to make pre-training runs reproducible.
 
 ---
 

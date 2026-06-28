@@ -4,9 +4,10 @@ Neural networks are computational models composed of stacked layers of simple op
 
 ## Source
 
-- [[raw/03-stanford-cs231n/Stanford CS231N.md|raw/03-stanford-cs231n/Stanford CS231N.md]]
-- [[raw/00-clippings/Spring 2025  Lecture 3 Regularization and Optimization - YouTube.md|raw/00-clippings/Spring 2025  Lecture 3 Regularization and Optimization - YouTube.md]]
-- [[raw/00-clippings/Spring 2025  Lecture 4 Neural Networks and Backpropagation - YouTube.md|raw/00-clippings/Spring 2025  Lecture 4 Neural Networks and Backpropagation - YouTube.md]]
+- [[raw/course-material/stanford-cs231n/Stanford CS231N.md|raw/course-material/stanford-cs231n/Stanford CS231N.md]]
+- [[raw/clippings/Spring 2025  Lecture 3 Regularization and Optimization - YouTube.md|raw/clippings/Spring 2025  Lecture 3 Regularization and Optimization - YouTube.md]]
+- [[raw/clippings/Spring 2025  Lecture 4 Neural Networks and Backpropagation - YouTube.md|raw/clippings/Spring 2025  Lecture 4 Neural Networks and Backpropagation - YouTube.md]]
+- [[raw/clippings/The spelled-out intro to neural networks and backpropagation building micrograd.md|raw/clippings/The spelled-out intro to neural networks and backpropagation building micrograd.md]]
 
 ## From Linear to Non-Linear
 
@@ -101,6 +102,8 @@ loss_total = data_loss + λ · regularization_penalty
 ## Computing Gradients
 
 Training requires computing the gradient of the loss with respect to all weights.
+
+The `micrograd` source is the most compact mental model: a neural network is a mathematical expression built from scalar operations; the forward pass computes predictions and loss; the backward pass applies the chain rule through the expression graph; gradient descent nudges parameters opposite the gradient; and production tensor libraries keep the same math while vectorizing it for speed.
 
 ### Numerical Gradient (Never Use for Training)
 

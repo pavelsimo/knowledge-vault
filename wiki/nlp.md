@@ -4,9 +4,10 @@ NLP covers tasks that involve understanding, generating, and transforming human 
 
 ## Source
 
-- [[raw/01-open-source-models-hugging-face/01_text_generation.py|raw/01-open-source-models-hugging-face/01_text_generation.py]]
-- [[raw/01-open-source-models-hugging-face/02_translation.py|raw/01-open-source-models-hugging-face/02_translation.py]]
-- [[raw/01-open-source-models-hugging-face/03_sumarization.py|raw/01-open-source-models-hugging-face/03_sumarization.py]]
+- [[raw/course-material/open-source-models-hugging-face/01_text_generation.py|raw/course-material/open-source-models-hugging-face/01_text_generation.py]]
+- [[raw/course-material/open-source-models-hugging-face/02_translation.py|raw/course-material/open-source-models-hugging-face/02_translation.py]]
+- [[raw/course-material/open-source-models-hugging-face/03_sumarization.py|raw/course-material/open-source-models-hugging-face/03_sumarization.py]]
+- [[raw/clippings/Let's build the GPT Tokenizer.md|raw/clippings/Let's build the GPT Tokenizer.md]]
 
 ## Text Generation
 
@@ -45,6 +46,8 @@ Tokenization is the process of converting raw text into token IDs for the model:
 - Each model family has its own vocabulary and tokenization scheme
 - Tokenizers cannot be shared safely across unrelated model families
 - Tokenizers run on the **CPU**
+
+The GPT tokenizer source makes the practical point sharper: tokenizers are trained artifacts with their own data, algorithms, vocabularies, and failure modes. Byte Pair Encoding can make English and code compact, but it can also make arithmetic, spelling, non-English text, indentation-heavy code, and special-token handling surprisingly brittle.
 
 ### Why Tokenizers Are Model-Specific
 

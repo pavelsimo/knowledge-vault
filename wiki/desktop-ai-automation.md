@@ -4,9 +4,9 @@ Desktop AI automation turns an LLM assistant into a scoped local worker that can
 
 ## Source
 
-- [[raw/00-clippings/How to Use Claude Cowork to Automate Your Entire Day (Full Course).md|raw/00-clippings/How to Use Claude Cowork to Automate Your Entire Day (Full Course).md]]
+- [[raw/clippings/How to Use Claude Cowork to Automate Your Entire Day (Full Course).md|raw/clippings/How to Use Claude Cowork to Automate Your Entire Day (Full Course).md]]
 
-![The source presents Claude Cowork as a desktop automation surface for files, connectors, and scheduled work.](../raw/00-clippings/images/aa3d642e8f6419a0c4578737249b0ccd_MD5.jpg)
+![The source presents Claude Cowork as a desktop automation surface for files, connectors, and scheduled work.](../raw/clippings/images/aa3d642e8f6419a0c4578737249b0ccd_MD5.jpg)
 
 ## Core Capability
 

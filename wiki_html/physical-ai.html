@@ -75,6 +75,7 @@ footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offse
     <nav class="toc">
       <a href="#why-hard">Why It Is Hard</a>
       <a href="#sim-first">Simulation-First Stack</a>
+      <a href="#world-models">World Models</a>
       <a href="#foundation-model">Foundation-Model View</a>
       <a href="#cosmos">Cosmos Workflow</a>
       <a href="#related">Related Topics</a>
@@ -142,12 +143,28 @@ footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offse
 
       <p><em>This is the core shift: spend more GPU time so you can spend less robot time.</em></p>
 
-      <div class="figure"><img src="../raw/05-omniverse/images/06-world-models.png" alt="World models turn physical-AI development into a pipeline of simulation, prediction, and synthetic experience."><div class="figcap">World models turn physical-AI development into a pipeline of simulation, prediction, and synthetic experience.</div></div>
+      <div class="figure"><img src="../raw/reference-packs/omniverse/images/06-world-models.png" alt="World models turn physical-AI development into a pipeline of simulation, prediction, and synthetic experience."><div class="figcap">World models turn physical-AI development into a pipeline of simulation, prediction, and synthetic experience.</div></div>
+    </div>
+  </section>
+
+  <section id="world-models">
+    <div class="sec-head"><span class="idx">03</span><h2>World Model Taxonomy</h2></div>
+    <div class="sec-body">
+      <p>The world-model clipping sharpens the definition: a world model is a problem statement, not a single architecture. Given observations, prior state, action proposals, and latent uncertainty, it predicts future state. Some systems render pixels; others predict abstract latent states; some are better understood as persistent 3D world representations rather than forward-predictive models.</p>
+      <table>
+        <thead><tr><th>Approach</th><th>Representation</th><th>Main strength</th><th>Main caution</th></tr></thead>
+        <tbody>
+          <tr><td>Generative world models</td><td>pixels or video frames</td><td>rich future visual rollouts</td><td>can spend too much capacity rendering unpredictable detail</td></tr>
+          <tr><td>Latent dynamics / JEPA-style models</td><td>compressed state or embeddings</td><td>planning and control in abstract space</td><td>representation quality determines whether planning transfers</td></tr>
+          <tr><td>3D neural world representations</td><td>NeRFs, Gaussian splats, meshes</td><td>persistent geometry for simulation and editing</td><td>static representations are not automatically predictive</td></tr>
+        </tbody>
+      </table>
+      <p>For robotics, the useful test is not whether a model produces a beautiful future video. It is whether it helps evaluate policies, plan actions, red-team unsafe scenarios, synthesize data, or reduce real-hardware trial cost.</p>
     </div>
   </section>
 
   <section id="foundation-model">
-    <div class="sec-head"><span class="idx">03</span><h2>Foundation-Model View</h2></div>
+    <div class="sec-head"><span class="idx">04</span><h2>Foundation-Model View</h2></div>
     <div class="sec-body">
       <p>A physical-AI foundation model maps sensor and language inputs into action outputs. The architecture is "LLM-like" in shape, but the output is not text — it is control.</p>
       <table>
@@ -160,12 +177,12 @@ footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offse
       </table>
       <p>The power of treating robot control as a token prediction problem is that it opens the door to pre-training on internet-scale data and then fine-tuning on robot-specific experience — the same scaling playbook that worked for language and vision.</p>
 
-      <div class="figure"><img src="../raw/05-omniverse/images/09-physical-ai-foundation-model.png" alt="A physical-AI model links perception and language inputs to robot actions."><div class="figcap">A physical-AI model links perception and language inputs to robot actions.</div></div>
+      <div class="figure"><img src="../raw/reference-packs/omniverse/images/09-physical-ai-foundation-model.png" alt="A physical-AI model links perception and language inputs to robot actions."><div class="figcap">A physical-AI model links perception and language inputs to robot actions.</div></div>
     </div>
   </section>
 
   <section id="cosmos">
-    <div class="sec-head"><span class="idx">04</span><h2>Cosmos Workflow</h2></div>
+    <div class="sec-head"><span class="idx">05</span><h2>Cosmos Workflow</h2></div>
     <div class="sec-body">
       <p>NVIDIA Cosmos is a world-foundation-model platform with three recurring functions that cover the full simulation pipeline:</p>
       <table>
@@ -178,12 +195,12 @@ footer a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offse
       </table>
       <p>Predict-style models matter because they turn limited real experience into diverse training curricula. The model learns from thousands of variations it has never physically encountered.</p>
 
-      <div class="figure"><img src="../raw/05-omniverse/images/07-cosmos-predict.png" alt="Cosmos Predict generates new visual worlds from prompts, images, or video constraints."><div class="figcap">Cosmos Predict generates new visual worlds from prompts, images, or video constraints.</div></div>
+      <div class="figure"><img src="../raw/reference-packs/omniverse/images/07-cosmos-predict.png" alt="Cosmos Predict generates new visual worlds from prompts, images, or video constraints."><div class="figcap">Cosmos Predict generates new visual worlds from prompts, images, or video constraints.</div></div>
     </div>
   </section>
 
   <section id="related">
-    <div class="sec-head"><span class="idx">05</span><h2>Related Topics</h2></div>
+    <div class="sec-head"><span class="idx">06</span><h2>Related Topics</h2></div>
     <div class="sec-body">
       <ul>
         <li><a href="robot-learning.html">Robot Learning</a> — policy learning and foundation-model robotics sit directly on this stack</li>

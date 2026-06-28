@@ -4,11 +4,11 @@ Interview-style algorithm problems look infinite until you recognize that most o
 
 ## Source
 
-- [[raw/00-clippings/Python Powerful Ultimate Binary Search Template. Solved many problems - Discuss.md|raw/00-clippings/Python Powerful Ultimate Binary Search Template. Solved many problems - Discuss.md]]
-- [[raw/00-clippings/Solved all two pointers problems in 100 days. - Discuss.md|raw/00-clippings/Solved all two pointers problems in 100 days. - Discuss.md]]
-- [[raw/00-clippings/Graph For Beginners Problems  Pattern  Sample Solutions - Discuss.md|raw/00-clippings/Graph For Beginners Problems  Pattern  Sample Solutions - Discuss.md]]
-- [[raw/00-clippings/Dynamic Programming Patterns - Discuss.md|raw/00-clippings/Dynamic Programming Patterns - Discuss.md]]
-- [[raw/00-clippings/All Types of Patterns for Bits Manipulations and How to use it - Discuss.md|raw/00-clippings/All Types of Patterns for Bits Manipulations and How to use it - Discuss.md]]
+- [[raw/clippings/Python Powerful Ultimate Binary Search Template. Solved many problems - Discuss.md|raw/clippings/Python Powerful Ultimate Binary Search Template. Solved many problems - Discuss.md]]
+- [[raw/clippings/Solved all two pointers problems in 100 days. - Discuss.md|raw/clippings/Solved all two pointers problems in 100 days. - Discuss.md]]
+- [[raw/clippings/Graph For Beginners Problems  Pattern  Sample Solutions - Discuss.md|raw/clippings/Graph For Beginners Problems  Pattern  Sample Solutions - Discuss.md]]
+- [[raw/clippings/Dynamic Programming Patterns - Discuss.md|raw/clippings/Dynamic Programming Patterns - Discuss.md]]
+- [[raw/clippings/All Types of Patterns for Bits Manipulations and How to use it - Discuss.md|raw/clippings/All Types of Patterns for Bits Manipulations and How to use it - Discuss.md]]
 
 ## The Unifying Idea
 
@@ -58,7 +58,7 @@ This is why "binary search on the answer" appears in problems like shipping capa
 
 The two-pointer notes organize a large topic into a few reusable movement patterns.
 
-![The simplest two-pointer family starts from opposite ends and shrinks the search space from both sides.](../raw/00-clippings/images/bdc48f21ed66c89229d9fb6aca4d4760_MD5.jpg)
+![The simplest two-pointer family starts from opposite ends and shrinks the search space from both sides.](../raw/clippings/images/bdc48f21ed66c89229d9fb6aca4d4760_MD5.jpg)
 
 *This is why two pointers feel magical at first: one invariant lets you discard large parts of the state space in linear time.*
 
@@ -143,7 +143,7 @@ If the prompt asks whether nodes can be split into two groups with no conflicts 
 
 The DP notes emphasize that DP gets easier when you stop treating every problem as unique.
 
-![Dynamic programming becomes easier once you recognize a small set of recurring recurrence families.](../raw/00-clippings/images/ddafd937799b0ec6d0e89c08c38850eb_MD5.png)
+![Dynamic programming becomes easier once you recognize a small set of recurring recurrence families.](../raw/clippings/images/ddafd937799b0ec6d0e89c08c38850eb_MD5.png)
 
 *The useful abstraction is not "memorize this problem." It is "recognize which state-transition template this problem instantiates."*
 
