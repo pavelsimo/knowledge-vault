@@ -33,9 +33,9 @@
 | [[robot-learning]] | RL, imitation learning, diffusion policy, robotic foundation models (RT-2, π₀, GR00T) |
 | [[distributed-training]] | Data/tensor/pipeline/context parallelism, FSDP/ZeRO, MFU, activation checkpointing |
 | [[mlops]] | MLOps: data drift, concept drift, model monitoring, deployment strategies, evaluation metrics |
-| [[gpu-cuda]] | GPU and CUDA: host/device memory, kernels, warps, compute capabilities, VRAM math, and GPU selection |
+| [[gpu-cuda]] | GPU and CUDA: execution hierarchy, warp scheduling, occupancy, arithmetic intensity, memory access, course code, and VRAM math |
 | [[rag]] | RAG architectures: Naive, Multimodal, HyDE, Corrective, Graph, Hybrid, Adaptive, Agentic |
-| [[docling]] | Local document conversion and extraction: OCR, tables, content layers, provenance, chunking, and RAG exports |
+| [[docling]] | Evidence-preserving document pipelines: mixed-PDF OCR, tables, VLM routing, provenance, chunking, and local RAG |
 | [[ai-coding]] | AI-assisted development: vibe coding, context engineering, Plan→Execute→Verify, security risks |
 | [[codex-workflows]] | Codex workflows: durable threads, steering, queuing, automations, goals, side-panel review, and shared memory |
 | [[ai-skills]] | AI skills: reusable instruction folders with descriptions, examples, evals, memory, and human review loops |
@@ -47,13 +47,13 @@
 | [[ai-industry]] | AI-native organizations: Moonshot AI (Kimi), Anthropic, flat hierarchies, agent swarms, generalization hiring, and AI-building-AI bottlenecks |
 | [[recursive-self-improvement]] | Recursive self-improvement: AI systems accelerating AI development through coding, experiments, research judgment, and verification bottlenecks |
 | [[china-development-economics]] | China development model: central-local governance, tax reform, land finance, industrial policy, urbanization, debt, dual circulation |
-| [[quantization]] | Quantization: symmetric/asymmetric, block quantization, perplexity, KL divergence, speed benchmarks |
+| [[quantization]] | Quantization formats, block scaling, memory estimation, quality trade-offs, GPTQ, AWQ, SmoothQuant, and QLoRA |
 | [[quantum-computing]] | Quantum computing primer: qubits, superposition, entanglement, gates, and quantum advantage basics |
 | [[ai-agents]] | AI agents and agentic systems: workflows vs agents, orchestration patterns, context-centric design, and tool interfaces |
 | [[agent-harness]] | Agent harness engineering: orchestration loops, tools, memory, state, guardrails, dynamic workflows, and verification |
-| [[ai-infrastructure]] | Infrastructure for agentic AI: CPUs, accelerators, memory, low-latency orchestration, and always-on workloads |
+| [[ai-infrastructure]] | AI infrastructure across compute, networking, storage, orchestration, serving, observability, and agent workloads |
 | [[ai-model-architectures]] | Eight specialized AI model types: LLM, LCM, LAM, MoE, VLM, SLM, MLM, SAM — architectures and selection guide |
-| [[system-design]] | System design fundamentals: OSI model, CDN, caching, sharding, CAP theorem, microservices, case studies (Uber, Netflix, WhatsApp) |
+| [[system-design]] | Request paths, capacity planning, networking, databases, distributed patterns, reliability, and design case studies |
 | [[databricks-bundles]] | Databricks Declarative Automation Bundles: source-controlled jobs, pipelines, tests, model resources, and CI/CD deployment |
 | [[excalidraw-rendering]] | Local Excalidraw rendering with MCP: headless Chromium, PNG/SVG export, privacy tradeoffs, and diagram automation |
 | [[shaders]] | GPU shader programming: vertex/pixel shaders, GLSL/HLSL, GPU parallelism, VFX techniques, GPGPU |

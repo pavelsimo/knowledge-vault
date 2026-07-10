@@ -59,6 +59,21 @@ The system-design folder includes a local Excalidraw library that mirrors the wr
 
 ---
 
+## Request Path and Capacity Planning
+
+A production request usually crosses several independently constrained stages: edge/CDN, gateway, load balancer, stateless service, cache, database, and asynchronous workers. Capacity planning starts by attaching a budget to each stage rather than treating the service as one box.
+
+| Signal | Planning use |
+|---|---|
+| Requests per second | Establish steady-state and peak arrival rate |
+| Concurrency | Estimate in-flight work with `concurrency ≈ throughput × latency` |
+| Payload size | Size ingress, egress, cache, and storage bandwidth |
+| Read/write ratio | Select cache, replication, and storage patterns |
+| p95/p99 latency | Reserve tail-latency budget for each hop |
+| Failure rate | Size retries carefully and prevent retry amplification |
+
+Interactive diagrams should expose this path stage-by-stage: selecting a component explains its role, scaling lever, failure mode, and the metric that reveals saturation. The diagram is a reasoning aid, not a claim that every system needs every component.
+
 ## Chapter I: Networking Fundamentals
 
 ### IP Addressing

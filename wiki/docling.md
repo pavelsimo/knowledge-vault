@@ -31,6 +31,19 @@ PDF or document source -> Docling conversion -> JSON/Markdown -> HybridChunker -
 
 For privacy-sensitive work, keep `enable_remote_services` disabled. The local stack can run OCR, layout analysis, table extraction, chunking, and export without sending documents to external services.
 
+## Processing Decision Flow
+
+Choose the cheapest pipeline that preserves the evidence needed downstream:
+
+1. **Does the document expose native text?** Use native extraction and enable OCR only for bitmap regions or scanned pages.
+2. **Are tables important?** Enable table structure and verify cells, headers, and page provenance before chunking.
+3. **Is the PDF mixed digital/scanned?** Keep per-page OCR enabled; Docling combines native text and OCR spatially instead of requiring two manual passes.
+4. **Do pictures carry meaning?** Generate picture images or convert image-heavy DOCX to PDF before using a VLM pipeline.
+5. **Is the content sensitive or CPU-only?** Disable remote services, prefer local OCR, avoid page-image generation unless needed, and persist lossless JSON locally.
+6. **Will results feed RAG?** Chunk after conversion and propagate page numbers, bounding boxes, and document-item metadata into the retrieval record.
+
+The default failure policy should preserve the original document, the structured JSON, and conversion diagnostics. A partial Markdown export is useful for inspection but should not silently replace the lossless result.
+
 ## Mixed PDFs and OCR
 
 Docling can handle PDFs that mix digital text and scanned pages. It performs per-page bitmap coverage analysis:

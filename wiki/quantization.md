@@ -6,6 +6,13 @@ Quantization is lossy compression for neural network weights — it maps values 
 
 - [[raw/clippings/Quantization from the ground up.md|raw/clippings/Quantization from the ground up.md]]
 
+## Research Trail
+
+- [GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers](https://arxiv.org/abs/2210.17323)
+- [AWQ: Activation-aware Weight Quantization for LLM Compression and Acceleration](https://arxiv.org/abs/2306.00978)
+- [SmoothQuant: Accurate and Efficient Post-Training Quantization for Large Language Models](https://arxiv.org/abs/2211.10438)
+- [QLoRA: Efficient Finetuning of Quantized LLMs](https://arxiv.org/abs/2305.14314)
+
 ## Why Models Are So Large
 
 LLM parameters (weights) are the dominant memory cost. An 80B model in bfloat16 is ~160 GB. Parameters are mostly small values close to 0 — a distribution that aligns well with where floating-point formats have the most precision.
@@ -75,6 +82,22 @@ You can't quantize an entire model in one pass — **outlier parameters** (rare 
 
 Trade-off: larger blocks → less overhead, more error. Smaller blocks → more accuracy, more metadata.
 
+## Memory Estimation
+
+The weight-only baseline is:
+
+```text
+weight memory (GB) ≈ parameters (billions) × bits per weight ÷ 8
+```
+
+This is a floor, not a complete runtime budget. Quantization metadata, temporary buffers, KV cache, activations, and runtime allocation overhead add memory. A practical estimator should therefore show the raw weight footprint separately from adjustable overhead rather than promise that a model will fit from parameter count alone.
+
+| Model | BF16 / FP16 | INT8 | INT4 |
+|---|---:|---:|---:|
+| 7B | 14 GB | 7 GB | 3.5 GB |
+| 13B | 26 GB | 13 GB | 6.5 GB |
+| 70B | 140 GB | 70 GB | 35 GB |
+
 ## Quality Impact (Qwen 3.5 9B Benchmarks)
 
 ### Perplexity (lower = better)
@@ -117,6 +140,8 @@ Quantization is **faster**, not just smaller — primarily because there is less
 - **AWQ (Activation-aware Weight Quantization):** accounts for activation magnitudes when scaling weights
 - **GPTQ:** uses second-order information (Hessian) to minimize quantization error per layer
 - **GGUF:** a container format + quantization strategy optimized for llama.cpp-style runtimes; memory numbers are runtime-specific
+- **SmoothQuant:** moves activation outlier difficulty into weights so both weights and activations can use INT8 more effectively
+- **QLoRA:** keeps a frozen 4-bit base model while training low-rank adapters, reducing fine-tuning memory rather than merely serving memory
 
 ## Related Topics
 

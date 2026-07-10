@@ -4,6 +4,13 @@ This file records every change made to the `raw/` directory. It is maintained ex
 
 | Date | Action | Source Path | Type | Summary |
 |------|--------|-------------|------|---------|
+| 2026-07-06 | added | raw/clippings/Warp Scheduling (GPU Thread Scheduling).md | clipping | Added an illustrated explanation of streaming multiprocessors, warp schedulers, execution lanes, and thread-level scheduling. |
+| 2026-07-06 | added | raw/clippings/Getting Started with CUDA and Parallel Programming  NVIDIA GTC 2025 Session.md | video-notes | Added NVIDIA GTC course notes introducing CUDA and parallel programming. |
+| 2026-07-06 | added | raw/clippings/How CUDA Programming Works  GTC 2022.md | video-notes | Added NVIDIA GTC notes on execution hierarchy, occupancy, memory access, concurrency, and SM resource use. |
+| 2026-07-06 | added | raw/clippings/How GPU Computing Works  GTC 2021.md | video-notes | Added NVIDIA GTC notes on throughput, oversubscription, arithmetic intensity, scaling, and matrix multiplication. |
+| 2026-06-28 | added | raw/clippings/Making Deep Learning go Brrrr From First Principles.md | clipping | Added an illustrated first-principles guide to compute, memory bandwidth, arithmetic intensity, fusion, and launch overhead. |
+| 2026-06-28 | added | raw/clippings/images/ | image | Added figures referenced by the GPU performance and warp scheduling clippings. |
+| 2026-06-28 | removed | raw/course-material/mastering-gpu-parallel-programming-with-cuda/src/build/ | code | Removed ignored CMake and CUDA build artifacts from the CUDA course capsule while preserving the source examples. |
 | 2026-06-27 | added | raw/course-material/end-to-end-vision-language-model-fine-tuning/ | course-material | Added a DGX Spark vision-language model fine-tuning source capsule with architecture, ownership, batch inference, and token-mindset figures. |
 | 2026-06-27 | added | raw/course-material/mastering-gpu-parallel-programming-with-cuda/ | course-material | Added CUDA parallel programming notes, GPU architecture figures, memory-bandwidth references, and a CMake Hello World CUDA starter. |
 | 2026-06-23 | updated | raw/reference-packs/local-models/Local Models.md | other | Corrected embedded image references after moving the local models source capsule. |

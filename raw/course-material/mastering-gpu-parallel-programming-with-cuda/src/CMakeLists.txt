@@ -13,3 +13,4 @@ if(NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
 endif()
 
 add_subdirectory(section_03)
+add_subdirectory(section_04)

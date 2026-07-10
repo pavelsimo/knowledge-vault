@@ -4,6 +4,8 @@ Source: `raw/course-material/mastering-gpu-parallel-programming-with-cuda/Master
 
 Code: https://github.com/hamdysoltan/CUDA_Course
 
+CUDA Programming: https://docs.nvidia.com/cuda/cuda-programming-guide/index.html#simt-architecture
+
 These are concise study notes rewritten from the raw image-heavy capture. The raw file is preserved as source material.
 
 ## CPU vs. GPU
@@ -237,6 +239,18 @@ CUDA includes specialized libraries so common GPU workloads do not need to be wr
 
 ![[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/3aa3c0efbae06afa64c1405d8da92b2a_MD5.jpg]]
 
+## Why CUDA is the way it is?
+
+[[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/6f877f30692e7427858cf9540ece9f43_MD5.jpg|Open: Pasted image 20260706151540.png]]
+![[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/6f877f30692e7427858cf9540ece9f43_MD5.jpg]]
+
+## Is FLOPS the limiting factor for CUDA programs? 
+
+not really, is usually memory bandwidth 
+
+[[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/1d302c037a57a37bed79011c08d4d680_MD5.jpg|Open: Pasted image 20260706152619.png]]
+![[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/1d302c037a57a37bed79011c08d4d680_MD5.jpg]]
+
 ## Host and Device
 
 In CUDA, host means CPU-side code and memory. Device means GPU-side code and memory. CUDA programs usually allocate device memory, copy data from host to device, launch kernels on the device, then copy results back to the host.
@@ -390,4 +404,185 @@ https://docs.nvidia.com/cuda/cuda-runtime-api/index.html
 
 [[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/8bc9d20c21648cb4d2aa86dea63b862a_MD5.jpg|Open: Pasted image 20260628165033.png]]
 ![[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/8bc9d20c21648cb4d2aa86dea63b862a_MD5.jpg]]
+
+### Important Runtime information
+
+| Field                                           | Meaning                                                                                                                                                                                                                                                                                                                                                                                       |
+| ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Device 0: NVIDIA GeForce RTX 5090**           | CUDA numbers visible GPUs starting at 0. “Device 0” is the first CUDA-visible GPU in the system. It does not necessarily mean the first physical PCIe slot.                                                                                                                                                                                                                                   |
+| **Compute capability: 12.0**                    | The CUDA architecture version supported by the GPU. It determines which CUDA features, instructions, tensor-core behavior, memory features, and compiler targets are available. For compiling CUDA code, this corresponds conceptually to targeting something like `sm_120`.                                                                                                                  |
+| **Total global memory: 31.36 GB**               | The amount of GPU VRAM available for CUDA allocations. “Global memory” is the large off-chip memory used for tensors, arrays, model weights, activations, textures, etc. It is much larger than shared memory but also much slower.                                                                                                                                                           |
+| **Shared memory per block: 49152 bytes**        | The maximum shared memory available to one CUDA thread block, here **49,152 bytes**, or **48 KiB**. Shared memory is fast on-chip memory shared by threads in the same block. It is often used for tiling matrix multiplication, stencil operations, reductions, histograms, and avoiding repeated global-memory reads.                                                                       |
+| **Registers per block: 65536**                  | The maximum number of registers one thread block can use, here **65,536 32-bit registers**. Registers are the fastest per-thread storage. If each thread uses many registers, fewer threads or blocks may fit on an SM, reducing occupancy. For example, a block with 1,024 threads can use at most 64 registers per thread before hitting this block-level limit.                            |
+| **Warp size: 32**                               | CUDA threads execute in groups called **warps**. One warp contains **32 threads**. This is why CUDA block sizes are commonly multiples of 32, such as 128, 256, 512, or 1024 threads. Branch divergence matters at the warp level: if threads in the same warp take different branches, execution may serialize.                                                                              |
+| **Max threads per block: 1024**                 | A single CUDA block may contain at most **1,024 threads** total. For example, `dim3 block(1024)`, `dim3 block(32, 32)`, and `dim3 block(16, 16, 4)` are valid shapes because their products are at most 1,024.                                                                                                                                                                                |
+| **Max threads per dimension: (1024, 1024, 64)** | These are the maximum sizes for the `x`, `y`, and `z` dimensions of a single block. So `blockDim.x <= 1024`, `blockDim.y <= 1024`, and `blockDim.z <= 64`. The product still cannot exceed **1024 threads per block**. For example, `(1024, 1, 1)` is valid, `(32, 32, 1)` is valid, but `(1024, 1024, 1)` is not, because that would be over one million threads in one block.               |
+| **Max grid size: (2147483647, 65535, 65535)**   | These are the maximum numbers of blocks in the `x`, `y`, and `z` dimensions of a kernel launch grid. The `x` dimension can be extremely large: **2,147,483,647 blocks**. The `y` and `z` dimensions are limited to **65,535 blocks** each. This controls how many blocks you can launch, not how many threads are in each block.                                                              |
+| **Memory clock rate: 14.00 GHz**                | The clock rate associated with the GPU memory. This is used, together with the memory bus width and transfer mode, to estimate peak memory bandwidth. Real applications usually achieve less than the peak because of access patterns, cache behavior, instruction overhead, and memory-controller efficiency.                                                                                |
+| **Memory bus width: 512 bits**                  | The width of the memory interface between the GPU and its VRAM. A **512-bit** bus means the GPU can move 512 bits, or **64 bytes**, per memory transfer cycle across the full memory interface. Wider bus = more potential bandwidth, assuming high enough memory clock.                                                                                                                      |
+| **Peak memory bandwidth: 1792.13 GB/s**         | The theoretical maximum rate at which the GPU can move data to/from VRAM. Roughly: `14 GHz × 512 bits / 8 × 2 ≈ 1792 GB/s`. The `/8` converts bits to bytes, and the extra factor accounts for double-data-rate-style transfers. This is a theoretical ceiling; actual bandwidth depends heavily on coalescing, access patterns, cache hits, and workload.                                    |
+| **L2 cache size: 100663296 bytes (96.00 MB)**   | The size of the GPU’s L2 cache. `100,663,296 bytes` is **96 MiB**. L2 cache sits between the SMs and global memory. It helps when data is reused, when memory accesses are spatially or temporally local, or when multiple SMs access overlapping data. A large L2 can significantly improve performance for bandwidth-sensitive workloads.                                                   |
+| **Multiprocessors (SM count): 170**             | The GPU has **170 Streaming Multiprocessors**, or SMs. SMs are the main execution units of an NVIDIA GPU. CUDA blocks are scheduled onto SMs, and each SM runs warps. More SMs generally mean more parallel compute capacity, though actual performance also depends on clocks, instruction mix, memory bandwidth, occupancy, and tensor-core usage.                                          |
+| **Concurrent kernels: yes**                     | The GPU can run multiple CUDA kernels at the same time, usually when they are launched in different CUDA streams and when resources allow. This does not guarantee that every pair of kernels will overlap; large kernels that consume all SMs, registers, shared memory, or memory bandwidth may still effectively run alone.                                                                |
+| **ECC enabled: no**                             | Error-Correcting Code memory is not enabled. ECC can detect and correct some memory errors, which is useful in servers, scientific computing, finance, and long-running jobs. Consumer GeForce cards typically do not expose ECC in the same way as data-center GPUs. With ECC off, you get full available memory capacity and no ECC overhead, but less protection against memory bit flips. |
+
+[[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/59be87cde7998d630ce1b89346af29f5_MD5.jpg|Open: Pasted image 20260628212931.png]]
+![[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/59be87cde7998d630ce1b89346af29f5_MD5.jpg]]
+
+## What is nvidia-smi?
+
+SMI stands for system management interface
+
+- Performance monitoring
+- Settings management 
+- Device information querying 
+
+
+[[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/3a6d32b7d2c8d9fb503a83023f7bb4e7_MD5.jpg|Open: Pasted image 20260628213358.png]]
+![[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/3a6d32b7d2c8d9fb503a83023f7bb4e7_MD5.jpg]]
+[[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/0ee62e9068c9c8bf32bf54e433f3964c_MD5.jpg|Open: Pasted image 20260628214929.png]]
+![[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/0ee62e9068c9c8bf32bf54e433f3964c_MD5.jpg]]
+
+```
+
+# monitoring gpu every 5 seconds
+> nvidia-smi -l 5
+
+# display specific information
+> nvidia-smi --query-gpu=gpu_name,driver_version,temperature.gpu --format=csv
+name, driver_version, temperature.gpu
+NVIDIA GeForce RTX 5090, 595.71.05, 43
+
+```
+
+[[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/a25e8dae5b75caf3c312f517c350eefd_MD5.jpg|Open: Pasted image 20260628215839.png]]
+![[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/a25e8dae5b75caf3c312f517c350eefd_MD5.jpg]]
+
+you can either view the current clocks or change the a clock frequency for the GPU:
+
+| Field        | Meaning                                                                                                                                                                                                                                                                                            |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Graphics** | Current graphics/shader clock. This is the main GPU core-style clock exposed for graphics/shader work. NVIDIA labels it as the graphics “shader” clock. ([NVIDIA Docs](https://docs.nvidia.com/deploy/nvidia-smi/index.html "docs.nvidia.com"))                                                    |
+| **SM**       | Current Streaming Multiprocessor clock. This is the clock for the SMs, where CUDA cores, Tensor Cores, and much of compute execution live. NVIDIA defines this as the SM / Streaming Multiprocessor clock. ([NVIDIA Docs](https://docs.nvidia.com/deploy/nvidia-smi/index.html "docs.nvidia.com")) |
+| **Memory**   | Current VRAM memory clock. Yours is only **405 MHz**, which usually means the memory is in a low-power/idle clock state.                                                                                                                                                                           |
+| **Video**    | Current video engine clock, used by the hardware encoder/decoder blocks, commonly NVENC/NVDEC. NVIDIA describes this as the video encoder + decoder clock. ([NVIDIA Docs](https://docs.nvidia.com/deploy/nvidia-smi/index.html "docs.nvidia.com"))                                                 |
+## What is Occupancy?
+
+Is a measure of the utilization of the resources in a GPU.
+
+[[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/a1697d7d3a1e02bc272aefa09d1b8234_MD5.jpg|Open: Pasted image 20260628222247.png]]
+
+![[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/a1697d7d3a1e02bc272aefa09d1b8234_MD5.jpg]]
+
+[[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/96a0bd5b106d2b378bb8755045d615e6_MD5.jpg|Open: Pasted image 20260628222400.png]]
+![[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/96a0bd5b106d2b378bb8755045d615e6_MD5.jpg]]
+
+### Why the max threads per SM is 1536 and max warps is 48? is not suppose to be 1024?
+
+This is a very common point of confusion when looking at CUDA specifications: mixing up the limits of a **Thread Block** with the limits of a **Streaming Multiprocessor (SM)**.
+
+Here is the breakdown of why those numbers are what they are, and where that 1024 limit actually applies.
+### 1. The "1024" Limit is for Blocks, not SMs
+
+You are entirely correct that the number **1024** is a hard limit in modern NVIDIA architectures, but it is the maximum number of threads allowed in a single **Thread Block**, not a single SM.
+
+- **Thread Block Limit:** A single block cannot contain more than 1024 threads.
+- **SM Limit:** An SM is the actual physical hardware unit on the GPU. A single SM is designed to execute _multiple_ thread blocks concurrently.
+
+So, if an SM has a maximum capacity of 1536 threads, it cannot run them all as one giant block. Instead, it might run:
+
+- One block of 1024 threads + one block of 512 threads.
+- Three blocks of 512 threads.
+- Six blocks of 256 threads.
+
+As long as the total number of threads across all active blocks on that specific SM does not exceed 1536, the workload is valid.
+
+### 2. The Math Behind 1536 and 48
+
+In CUDA architecture, threads are grouped into **Warps** for execution.
+- **1 Warp = 32 Threads** (This is a universal constant in modern NVIDIA GPUs).
+    
+The two numbers you provided are directly tied to each other by this rule:
+- 48 maximum warps per SM × 32 threads per warp = **1536 maximum threads per SM**.
+### Why 1536 specifically?
+
+The maximum number of threads an SM can handle is dictated by the specific microarchitecture of the GPU.
+
+The **1536 threads / 48 warps per SM** limit is the exact hardware specification for both the **Ampere** architecture (which includes cards like the RTX 3090) and the **Ada Lovelace** architecture (which includes the RTX 4000 and RTX 5000 workstation series).
+
+If you were looking at an older Turing architecture card (like an RTX 2080), you _would_ actually see a limit of 1024 threads (32 warps) per SM. Conversely, if you look at the newer Hopper architecture designed for heavy data center workloads, the SMs are beefed up to handle 2048 threads (64 warps) per SM.
+
+When you are writing or tuning CUDA kernels for architectures like Ampere or Ada, knowing that the SM ceiling is 1536 is critical for maximizing occupancy. If you launch blocks of exactly 1024 threads, you will "strand" 512 threads of capacity on the SM, because there isn't enough room to fit a second 1024-thread block.
+
+[[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/9886bf035abfe8eca23d77814655fde6_MD5.jpg|Open: Pasted image 20260628233604.png]]
+![[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/9886bf035abfe8eca23d77814655fde6_MD5.jpg]]
+
+## What is the cli tool ncu?
+
+NVIDIA Nsight Compute CLI (ncu) provides a non-interactive way to profile applications from the command line. It can print the results directly on the command line or store them in a report file. It can also be used to simply launch the target application (see [General](https://docs.nvidia.com/nsight-compute/NsightComputeCli/index.html#command-line-options-general) for details) and later attach with NVIDIA Nsight Compute or another ncu instance.
+
+https://docs.nvidia.com/nsight-compute/NsightComputeCli/index.html
+
+## How to profile with ncu?
+
+```
+ncu ./build/section_03/vector_addition_3
+```
+
+## What is theoretical occupancy?
+
+
+[[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/6128ee3ad0350ff21bedbb5052b81104_MD5.jpg|Open: Pasted image 20260705235003.png]]
+![[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/6128ee3ad0350ff21bedbb5052b81104_MD5.jpg]]
+
+## What is achieved occupancy?
+
+[[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/3b904be31622b50f1151562c680dd6cb_MD5.jpg|Open: Pasted image 20260705235200.png]]
+![[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/3b904be31622b50f1151562c680dd6cb_MD5.jpg]]
+
+
+[[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/3e00d0536adadb740fdbfcf40f8a0aa2_MD5.jpg|Open: Pasted image 20260706000625.png]]
+![[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/3e00d0536adadb740fdbfcf40f8a0aa2_MD5.jpg]]
+
+[[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/63163f19a0ba2f7401fe7de6e9306015_MD5.jpg|Open: Pasted image 20260706234239.png]]
+![[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/63163f19a0ba2f7401fe7de6e9306015_MD5.jpg]]
+
+[[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/79357b66f761878a280be2eb43f79fa5_MD5.jpg|Open: Pasted image 20260708235937.png]]
+![[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/79357b66f761878a280be2eb43f79fa5_MD5.jpg]]
+
+### SASS (Streaming Assembler)
+
+SASS is the low-level assembly language (the Instruction Set Architecture or ISA) specific to NVIDIA GPUs.
+
+- **The "Machine Code":** While PTX (Parallel Thread Execution) acts as an intermediate, hardware-agnostic representation that looks somewhat like C++, SASS is the actual hardware-dependent assembly that the GPU's scheduler and execution units process.
+    
+- **Architecture Dependent:** Because SASS maps directly to the physical hardware (such as the register files and functional units shown on the right side of **image_643dbd.jpg**), it changes with every GPU architecture generation (e.g., Ampere, Hopper, Blackwell).
+    
+- **Execution:** It is what the Warp Scheduler actually feeds into the execution pipelines.
+
+
+### NVBit (NVIDIA Binary Instrumentation Tool)
+
+NVBit is a dynamic binary instrumentation framework specifically designed for NVIDIA GPUs.
+
+- **Instruction Injection:** It allows you to inject custom code into the SASS stream _at runtime_. Rather than modifying the source code or the PTX, NVBit lets you intercept the execution of a kernel to trace instructions, profile memory access, or perform fine-grained performance analysis.
+    
+- **The "Hook":** In the context of the workflow often depicted in academic or technical GPU presentations, NVBit acts as the bridge between your analysis tools and the physical instruction execution. It is what makes it possible to inspect the "Occupancy and hiding latency" mentioned at the top of **image_643dbd.jpg** by monitoring how individual threads and warps behave in real-time.
+
+### Why use Partitions?
+
+Instead of having one massive, complex scheduler trying to manage hundreds of warps and route them to dozens of execution units across the entire SM, partitioning divides the labor.
+
+By giving each partition its own scheduler, register file, and set of math cores, the GPU can concurrently schedule and execute multiple instructions per clock cycle across the SM with much lower latency and hardware complexity.
+
+[[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/bd2add3c064d90bcaad66160314df473_MD5.jpg|Open: Pasted image 20260708235312.png]]
+![[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/bd2add3c064d90bcaad66160314df473_MD5.jpg]]
+
+[[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/4050da75a669a68a26118976893890ca_MD5.jpg|Open: Pasted image 20260706151301.png]]
+![[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/4050da75a669a68a26118976893890ca_MD5.jpg]]
+
+## Important points regarding occupancy
+
+[[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/64d0708649222bf417e3ae13db7a4bba_MD5.jpg|Open: Pasted image 20260708233845.png]]
+![[raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/64d0708649222bf417e3ae13db7a4bba_MD5.jpg]]
 

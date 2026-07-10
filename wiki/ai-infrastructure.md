@@ -16,6 +16,39 @@ Traditional AI infrastructure discussions center on accelerators because trainin
 
 The raw source frames the agent as closer to a manager than a calculator: it breaks goals into steps, calls tools, processes files, coordinates state, and loops until a task is done.
 
+## Infrastructure Map
+
+An AI system is a pipeline, not a GPU in isolation:
+
+| Layer | Responsibilities | Typical pressure |
+|---|---|---|
+| Compute | Training, prefill, decode, embedding, reranking | FLOPS, memory capacity, utilization |
+| Network | Collective communication, model/data transfer, tool APIs | Bandwidth, tail latency, congestion |
+| Storage | Datasets, checkpoints, artifacts, vector indexes | Throughput, small-file metadata, durability |
+| Orchestration | Scheduling, queues, retries, placement, autoscaling | Startup time, fragmentation, failure recovery |
+| Serving | Batching, KV-cache management, routing, admission control | Tokens/sec, time-to-first-token, queue delay |
+| Observability | Traces, metrics, logs, evaluation, cost attribution | Cardinality, correlation, retention |
+
+The layers are coupled. Faster accelerators can sit idle when storage cannot stream checkpoints, networking stalls distributed collectives, schedulers cannot place memory-heavy jobs, or serving queues mix incompatible latency objectives.
+
+### Training Data Flow
+
+```text
+object storage -> data workers -> accelerator cluster -> checkpoint storage
+                         |              |
+                    CPU decode      high-speed fabric
+```
+
+### Online Inference Data Flow
+
+```text
+request -> gateway -> scheduler/batcher -> model server -> response
+                |            |                |
+          auth/rate limit  queue policy     KV cache
+```
+
+Track latency as a budget across these stages. For generative serving, time-to-first-token reflects queueing plus prefill, while inter-token latency reflects decode and scheduling behavior.
+
 ## Why CPUs Matter
 
 CPUs are native to many parts of an agent loop:
@@ -57,6 +90,18 @@ In local agent workflows, the first bottleneck may not be model price. It may be
 - Local vector stores, OCR, and document conversion add background load.
 
 For agent swarms, this pairs directly with [[tmux]] and [[ai-agents]]: orchestration is constrained by the host machine's CPU, RAM, disk, and thermal behavior.
+
+## Reliability and Observability
+
+Infrastructure metrics need to connect user-visible outcomes to the resource layer:
+
+- **Service:** request rate, errors, queue time, time-to-first-token, inter-token latency, tokens per second.
+- **Accelerator:** utilization, memory use, memory bandwidth, thermal throttling, allocation failures.
+- **Host:** CPU saturation, RAM pressure, disk throughput, process count, file descriptors.
+- **Data plane:** network throughput, retransmits, collective stalls, object-store latency.
+- **Quality:** task success, groundedness, tool-call errors, retry loops, and human escalation.
+
+Use traces to join model calls, retrieval, tools, and verification into one request path. Aggregate dashboards show load; traces explain why one task was slow or failed.
 
 ## Related Topics
 

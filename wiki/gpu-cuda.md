@@ -1,6 +1,6 @@
 # GPU and CUDA
 
-GPUs (Graphics Processing Units) are massively parallel processors that power modern deep learning, graphics, and simulation. CUDA is NVIDIA's programming platform for running computations on their GPUs, and understanding its host/device model, kernels, warps, memory movement, and compute capabilities is essential for debugging model loading issues and optimizing inference performance.
+GPUs (Graphics Processing Units) are massively parallel processors that power modern deep learning, graphics, and simulation. CUDA is NVIDIA's programming platform for running computations on their GPUs, and understanding its host/device model, kernels, warps, memory movement, compute capabilities, and starter C/CUDA code patterns is essential for debugging model loading issues and optimizing inference performance.
 
 ## Source
 
@@ -11,6 +11,16 @@ GPUs (Graphics Processing Units) are massively parallel processors that power mo
 - [[raw/clippings/Thread by @TheAhmadOsman.md|raw/clippings/Thread by @TheAhmadOsman.md]]
 - [[raw/course-material/mastering-gpu-parallel-programming-with-cuda/mastering-gpu-parallel-programming-with-cuda-cleaned-notes.md|raw/course-material/mastering-gpu-parallel-programming-with-cuda/mastering-gpu-parallel-programming-with-cuda-cleaned-notes.md]]
 - [[raw/course-material/mastering-gpu-parallel-programming-with-cuda/src/README.md|raw/course-material/mastering-gpu-parallel-programming-with-cuda/src/README.md]]
+- [[raw/course-material/mastering-gpu-parallel-programming-with-cuda/src/CMakeLists.txt|raw/course-material/mastering-gpu-parallel-programming-with-cuda/src/CMakeLists.txt]]
+- [[raw/course-material/mastering-gpu-parallel-programming-with-cuda/src/section_03/hello_cuda.cu|raw/course-material/mastering-gpu-parallel-programming-with-cuda/src/section_03/hello_cuda.cu]]
+- [[raw/course-material/mastering-gpu-parallel-programming-with-cuda/src/section_03/vector_addition.cu|raw/course-material/mastering-gpu-parallel-programming-with-cuda/src/section_03/vector_addition.cu]]
+- [[raw/course-material/mastering-gpu-parallel-programming-with-cuda/src/section_03/vector_addition_2.cu|raw/course-material/mastering-gpu-parallel-programming-with-cuda/src/section_03/vector_addition_2.cu]]
+- [[raw/course-material/mastering-gpu-parallel-programming-with-cuda/src/section_03/vector_addition_3.cu|raw/course-material/mastering-gpu-parallel-programming-with-cuda/src/section_03/vector_addition_3.cu]]
+- [[raw/clippings/Getting Started with CUDA and Parallel Programming  NVIDIA GTC 2025 Session.md|raw/clippings/Getting Started with CUDA and Parallel Programming  NVIDIA GTC 2025 Session.md]]
+- [[raw/clippings/How CUDA Programming Works  GTC 2022.md|raw/clippings/How CUDA Programming Works  GTC 2022.md]]
+- [[raw/clippings/How GPU Computing Works  GTC 2021.md|raw/clippings/How GPU Computing Works  GTC 2021.md]]
+- [[raw/clippings/Making Deep Learning go Brrrr From First Principles.md|raw/clippings/Making Deep Learning go Brrrr From First Principles.md]]
+- [[raw/clippings/Warp Scheduling (GPU Thread Scheduling).md|raw/clippings/Warp Scheduling (GPU Thread Scheduling).md]]
 
 ## What is a CUDA Kernel?
 
@@ -21,15 +31,15 @@ When PyTorch runs an operation:
 2. It calls pre-compiled **CUDA kernels** (binary machine code) for the specific GPU architecture
 3. These kernels are embedded in the PyTorch binary at build time
 
-The course starter in `raw/course-material/mastering-gpu-parallel-programming-with-cuda/src/` includes a minimal C-style CUDA Hello World program that launches one block with four GPU threads and builds with CMake.
+The course starter in `raw/course-material/mastering-gpu-parallel-programming-with-cuda/src/` includes C-style CUDA programs that launch kernels, inspect block/thread/warp IDs, allocate device memory, copy data across the host/device boundary, time GPU work, and build with CMake.
 
-The core launch line is:
+The current Hello CUDA launch line is:
 
 ```cuda
-hello_from_gpu<<<1, 4>>>();
+hello_from_gpu<<<2, 64>>>();
 ```
 
-That means one grid launch, one thread block, and four CUDA threads. The starter then checks the launch with `cudaGetLastError()`, waits for GPU work with `cudaDeviceSynchronize()`, and resets the device.
+That means one grid launch, two thread blocks, and 64 CUDA threads per block. Since NVIDIA warps contain 32 threads, the example creates two warps per block and four warps total. The kernel prints `blockIdx.x`, `threadIdx.x`, and a local `warpId = threadIdx.x / warpSize`, then waits for GPU work with `cudaDeviceSynchronize()`.
 
 ## CUDA Programming Mental Model
 
@@ -54,6 +64,48 @@ The software hierarchy maps onto hardware:
 ![CUDA thread blocks are assigned to SMs and then executed as warps by hardware schedulers.](../raw/course-material/mastering-gpu-parallel-programming-with-cuda/images/2ecdc62e3d5326ae2fd95b66701682b2_MD5.jpg)
 
 A block is the programmer's logical grouping, but the warp is the hardware execution unit. NVIDIA GPUs execute a warp in SIMT style: one instruction is issued across 32 lanes, while each thread keeps its own registers and program state. The warp scheduler hides latency by switching to another ready warp when one warp stalls on memory.
+
+### Warp Scheduling, Occupancy, and Latency Hiding
+
+An SM can keep multiple blocks resident, split their threads into 32-thread warps, and select a ready warp each cycle. This **oversubscription** is deliberate: while one warp waits for a memory dependency, another can issue useful work. It hides latency but does not make an individual memory access faster.
+
+**Occupancy** is the ratio of active warps to the hardware maximum. Registers, shared memory, and threads per block all limit how many blocks can reside on an SM. High occupancy creates more scheduling choices, but maximum occupancy is not automatically maximum performance: register spilling, extra synchronization, or insufficient work per thread can still dominate.
+
+![A streaming multiprocessor contains warp schedulers, execution units, registers, cache, and shared memory.](../raw/clippings/images/eedb464925d77de93bb83dd70822bd25_MD5.png)
+
+### Arithmetic Intensity and Memory Access
+
+Arithmetic intensity is operations performed per byte moved. Low-intensity kernels are typically bandwidth-bound; high-intensity kernels have a better chance of becoming compute-bound. Tiling and data reuse raise intensity by doing more work with values already in registers, shared memory, or cache.
+
+CUDA memory performance also depends on access shape. Adjacent lanes should access adjacent addresses so the hardware can coalesce requests into fewer memory transactions. Strided or scattered access wastes bandwidth even when the kernel has enough parallel threads.
+
+![The roofline view separates bandwidth-bound work from compute-bound work using arithmetic intensity.](../raw/clippings/images/924b4ba3f6b4c382cee7d56c0241d98a_MD5.jpg)
+
+## Course Code Patterns
+
+The CUDA course source in `src/section_03/` moves from launch topology to memory movement and chunked processing:
+
+| File | Demonstrates | Core pattern |
+|------|--------------|--------------|
+| `hello_cuda.cu` | Kernel declaration, launch configuration, block/thread IDs, warp IDs | `__global__` function launched with `<<<2, 64>>>`; each thread prints its block, thread, and warp identity |
+| `vector_addition.cu` | Basic host/device memory flow | `malloc` host arrays, `cudaMalloc` device arrays, `cudaMemcpy` host-to-device, launch `add_vec<<<1, SIZE>>>`, copy device-to-host |
+| `vector_addition_2.cu` | Global thread indexing and timing | `int i = blockIdx.x * blockDim.x + threadIdx.x;` plus `cudaEventRecord` and `cudaEventElapsedTime` |
+| `vector_addition_3.cu` | Chunked processing for larger inputs | Keep device allocations at one chunk, loop over offsets, copy each chunk to the GPU, launch, then copy the result chunk back |
+| `CMakeLists.txt` | Reproducible CUDA builds | Enable the CUDA language, default `CMAKE_CUDA_ARCHITECTURES` to `native`, and compile one executable per `.cu` example |
+
+The most important indexing upgrade is moving from a single-block teaching kernel:
+
+```cuda
+int i = threadIdx.x;
+```
+
+to a grid-wide index:
+
+```cuda
+int i = blockIdx.x * blockDim.x + threadIdx.x;
+```
+
+The teaching examples choose launch sizes that match the array size. In production CUDA kernels, add a bounds check such as `if (i < n)` before reading or writing arrays, because real workloads often use rounded-up grid sizes.
 
 ## CUDA Toolchain
 

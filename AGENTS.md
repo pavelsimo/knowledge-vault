@@ -9,7 +9,8 @@ A personal knowledge base about Pavel personal interests.
   - raw/course-material/ contains course and tutorial source capsules.
   - raw/reference-packs/ contains coherent reference/source packs.
   - raw/inbox/ is the landing area for newly added unsorted raw material before it is promoted into a source capsule.
-  - Generated runtime artifacts such as `__pycache__/` and `.pyc` files do not belong in raw/.
+  - Code files in raw/ are source material too. When checking raw/, inspect readable source code, notebooks, scripts, configs, build files, and small example projects alongside Markdown and media sources.
+  - Generated runtime/build artifacts such as `__pycache__/`, `.pyc` files, build directories, compiler intermediates, dependency folders, and cache outputs do not belong in raw/.
 - wiki/ contains the organized wiki. AI maintains this entirely.
 - wiki_html/ contains the HTML-rendered version of the wiki. AI maintains this entirely; never edit manually.
 - outputs/ contains generated reports, answers, and analyses.
@@ -20,6 +21,7 @@ A personal knowledge base about Pavel personal interests.
 - Link related topics to each other using [[topic-name]] format
 - Maintain an INDEX.md in wiki/ that lists every topic with a one-line description
 - When new raw sources are added, update the relevant wiki articles
+- When checking raw/ for wiki coverage or source-backed claims, include code sources and extract the concepts, APIs, algorithms, architecture patterns, commands, and examples they demonstrate.
 - Give a lot of importance to research papers when the topic has a meaningful paper trail
 - References to papers must be clickable markdown links
 - When a paper is referenced, try your best to include a suitable supporting image or figure
