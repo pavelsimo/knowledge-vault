@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>System Design — Knowledge Vault</title>
-<style>
+<script id="theme-init">(function(){var k='knowledge-vault-theme',s=null;try{s=localStorage.getItem(k)}catch(e){}var m=matchMedia('(prefers-color-scheme: dark)');document.documentElement.dataset.theme=s==='light'||s==='dark'?s:(m.matches?'dark':'light')})();</script><style>
 :root {
   --ivory:#FAF9F5; --paper:#FFFFFF; --slate:#141413;
   --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D;
@@ -40,7 +40,7 @@ a:hover{text-decoration-color:var(--clay)}
 pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
 code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}
 pre code{background:none;padding:0;font-size:inherit}
-table{border-collapse:collapse;width:100%;margin:0 0 20px}
+table{border-collapse:collapse;width:100%;max-width:100%;display:block;overflow-x:auto;margin:0 0 20px}
 th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}
 td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
 footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
@@ -58,9 +58,18 @@ footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size
 .fc-arrow{stroke:var(--g500);stroke-width:1.5;fill:none;marker-end:url(#arr)}
 .callout{display:flex;gap:12px;border:1.5px solid var(--oat);background:rgba(227,218,204,0.35);border-radius:10px;padding:14px 16px;margin:18px 0;font-size:14px}
 .callout .ico{color:var(--clay);font-weight:600;flex-shrink:0}
+.request-path{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:20px 0}.path-node{border:1.5px solid var(--g300);border-radius:10px;background:var(--paper);padding:14px 8px;font-family:var(--mono);font-size:11px;color:var(--g700);cursor:pointer}.path-node[aria-pressed=true]{border-color:var(--clay);background:var(--g100);color:var(--slate)}.path-detail{border-left:4px solid var(--clay);background:var(--paper);padding:14px 16px;border-radius:0 6px 6px 0}.table-wrap{overflow-x:auto}@media(max-width:760px){.request-path{grid-template-columns:repeat(3,1fr)}}
+
+/* Standard self-contained wiki theme control. */
+html{color-scheme:light}html[data-theme="dark"]{color-scheme:dark}
+:root[data-theme="dark"]{--ivory:#171714;--paper:#22221E;--slate:#F4F0E6;--clay:#E58A68;--clay-d:#F0A080;--oat:#5A463B;--olive:#9CAF7E;--g100:#292923;--g200:#36362F;--g300:#4A4940;--g500:#A5A198;--g700:#D2CEC4}
+.theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;width:42px;height:42px;display:grid;place-items:center;padding:0;border:1.5px solid var(--g300);border-radius:9999px;background:var(--paper);color:var(--g700);cursor:pointer;box-shadow:0 4px 16px rgba(20,20,19,.12);transition:color 120ms ease,border-color 120ms ease,background-color 120ms ease,transform 150ms ease}
+.theme-toggle:hover{color:var(--clay);border-color:var(--clay);transform:translateY(-1px)}.theme-toggle:focus-visible{outline:3px solid var(--clay);outline-offset:3px}.theme-toggle svg{width:20px;height:20px;display:block}.theme-toggle .moon{display:none}:root[data-theme="dark"] .theme-toggle .sun{display:none}:root[data-theme="dark"] .theme-toggle .moon{display:block}
+@media(max-width:640px){.theme-toggle{top:10px;right:10px;width:40px;height:40px}}
+@media(prefers-reduced-motion:reduce){.theme-toggle{transition:none}.theme-toggle:hover{transform:none}}
 </style>
 </head>
-<body>
+<body><button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false" title="Switch to dark mode"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g class="sun"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></g><path class="moon" d="M20.2 15.1A8.5 8.5 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg></button>
 <div class="wrap">
 <a class="back-link" href="index.html">← Back to index</a>
 <header class="masthead">
@@ -70,6 +79,7 @@ footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size
     System design is the process of defining the architecture, interfaces, and data for a system that satisfies specific requirements. Good decisions made early are hard to reverse — poor ones compound as systems grow. This page covers networking, databases, distributed patterns, and classic interview case studies.
   </p>
   <nav class="toc">
+    <a href="#request-path">Request Path</a>
     <a href="#networking">Networking</a>
     <a href="#databases">Databases</a>
     <a href="#distributed">Distributed Architecture</a>
@@ -78,8 +88,10 @@ footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size
   </nav>
 </header>
 
+<section id="request-path"><div class="sec-head"><span class="idx">01</span><h2>Request Path &amp; Capacity Planning</h2></div><div class="sec-body"><p>A production request crosses independently constrained stages. Select a stage to inspect its scaling lever, common failure, and saturation signal.</p><div class="request-path" role="group" aria-label="Typical service request path"><button class="path-node" data-stage="edge" aria-pressed="true">Edge / CDN</button><button class="path-node" data-stage="gateway" aria-pressed="false">Gateway</button><button class="path-node" data-stage="service" aria-pressed="false">Service</button><button class="path-node" data-stage="cache" aria-pressed="false">Cache</button><button class="path-node" data-stage="database" aria-pressed="false">Database</button><button class="path-node" data-stage="queue" aria-pressed="false">Queue / Worker</button></div><div class="path-detail" id="path-detail" aria-live="polite"><strong>Edge / CDN:</strong> cache static or reusable content near users. Watch hit ratio, origin fetch latency, and egress.</div><noscript><p class="callout">Typical path: edge/CDN → gateway → stateless service → cache/database → queue and workers.</p></noscript><div class="table-wrap"><table><thead><tr><th>Signal</th><th>Planning use</th></tr></thead><tbody><tr><td>Requests/sec</td><td>Steady-state and peak arrival rate</td></tr><tr><td>Concurrency</td><td>Throughput × latency estimates in-flight work</td></tr><tr><td>Payload size</td><td>Ingress, egress, cache, and storage bandwidth</td></tr><tr><td>p95 / p99</td><td>Tail-latency budget for each hop</td></tr><tr><td>Failure rate</td><td>Retry capacity and amplification risk</td></tr></tbody></table></div></div></section>
+
 <section id="networking">
-  <div class="sec-head"><span class="idx">01</span><h2>Chapter I: Networking Fundamentals</h2></div>
+  <div class="sec-head"><span class="idx">02</span><h2>Chapter I: Networking Fundamentals</h2></div>
   <div class="sec-body">
     <h3>IP Addressing</h3>
     <table>
@@ -175,7 +187,7 @@ footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size
 </section>
 
 <section id="databases">
-  <div class="sec-head"><span class="idx">02</span><h2>Chapter II: Databases</h2></div>
+  <div class="sec-head"><span class="idx">03</span><h2>Chapter II: Databases</h2></div>
   <div class="sec-body">
     <h3>SQL vs NoSQL</h3>
     <table>
@@ -212,7 +224,7 @@ Else (normal operation):
 </section>
 
 <section id="distributed">
-  <div class="sec-head"><span class="idx">03</span><h2>Chapter III: Distributed Architecture</h2></div>
+  <div class="sec-head"><span class="idx">04</span><h2>Chapter III: Distributed Architecture</h2></div>
   <div class="sec-body">
     <h3>N-Tier Architecture</h3>
     <pre>Clients (browser, mobile)
@@ -253,7 +265,7 @@ Else (normal operation):
 </section>
 
 <section id="patterns">
-  <div class="sec-head"><span class="idx">04</span><h2>Chapter IV: Advanced Patterns</h2></div>
+  <div class="sec-head"><span class="idx">05</span><h2>Chapter IV: Advanced Patterns</h2></div>
   <div class="sec-body">
     <h3>Circuit Breaker</h3>
     <p>Prevents cascading failures when a downstream service is unavailable:</p>
@@ -295,7 +307,7 @@ Else (normal operation):
 </section>
 
 <section id="cases">
-  <div class="sec-head"><span class="idx">05</span><h2>Chapter V: Interview Case Studies</h2></div>
+  <div class="sec-head"><span class="idx">06</span><h2>Chapter V: Interview Case Studies</h2></div>
   <div class="sec-body">
     <h3>URL Shortener</h3>
     <ul>
@@ -343,5 +355,6 @@ Else (normal operation):
   <span>System Design &mdash; 2026</span>
 </footer>
 </div>
-</body>
+<script>const stages={edge:'<strong>Edge / CDN:</strong> cache static or reusable content near users. Watch hit ratio, origin fetch latency, and egress.',gateway:'<strong>Gateway:</strong> terminate auth, enforce limits, and route requests. Watch rejected traffic, connection count, and gateway p99.',service:'<strong>Service:</strong> keep compute stateless where practical and scale horizontally. Watch CPU, saturation, errors, and dependency latency.',cache:'<strong>Cache:</strong> absorb repeated reads and protect storage. Watch hit ratio, eviction, hot keys, and stale data.',database:'<strong>Database:</strong> own durable state and consistency. Watch query latency, locks, replication lag, IOPS, and connection pools.',queue:'<strong>Queue / Worker:</strong> decouple slow or bursty work. Watch queue age, depth, retry rate, and poison messages.'};document.querySelectorAll('[data-stage]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-stage]').forEach(x=>x.setAttribute('aria-pressed',x===b));document.querySelector('#path-detail').innerHTML=stages[b.dataset.stage]}));</script>
+<script id="theme-controller">(function(){var k='knowledge-vault-theme',r=document.documentElement,b=document.querySelector('.theme-toggle'),m=matchMedia('(prefers-color-scheme: dark)');if(!b)return;function stored(){try{var v=localStorage.getItem(k);return v==='light'||v==='dark'?v:null}catch(e){return null}}function apply(t){r.dataset.theme=t;var dark=t==='dark',label='Switch to '+(dark?'light':'dark')+' mode';b.setAttribute('aria-pressed',String(dark));b.setAttribute('aria-label',label);b.title=label}function system(){if(!stored())apply(m.matches?'dark':'light')}b.addEventListener('click',function(){var next=r.dataset.theme==='dark'?'light':'dark';try{localStorage.setItem(k,next)}catch(e){}apply(next)});m.addEventListener?m.addEventListener('change',system):m.addListener(system);addEventListener('storage',function(e){if(e.key===k)apply(stored()||(m.matches?'dark':'light'))});apply(r.dataset.theme==='dark'?'dark':'light')})();</script></body>
 </html>

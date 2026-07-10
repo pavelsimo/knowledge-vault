@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "pages:prepare": "node scripts/prepare-pages-artifact.js",
+    "theme:sync": "node scripts/sync-wiki-theme.js",
+    "theme:check": "node scripts/validate-wiki-theme.js",
     "slides": "node scripts/wiki-to-slides.js",
     "slides:all": "node scripts/wiki-to-slides.js --all",
     "slides:clean": "rm -rf outputs/slides"

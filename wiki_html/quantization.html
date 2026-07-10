@@ -1,167 +1,19 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Quantization — Knowledge Vault</title>
-<style>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Quantization — Knowledge Vault</title>
+<script id="theme-init">(function(){var k='knowledge-vault-theme',s=null;try{s=localStorage.getItem(k)}catch(e){}var m=matchMedia('(prefers-color-scheme: dark)');document.documentElement.dataset.theme=s==='light'||s==='dark'?s:(m.matches?'dark':'light')})();</script><style>
 :root{--ivory:#FAF9F5;--paper:#FFFFFF;--slate:#141413;--clay:#D97757;--clay-d:#B85C3E;--oat:#E3DACC;--olive:#788C5D;--g100:#F0EEE6;--g200:#E6E3DA;--g300:#D1CFC5;--g500:#87867F;--g700:#3D3D3A;--serif:ui-serif,Georgia,"Times New Roman",Times,serif;--sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;--mono:ui-monospace,"SF Mono",Menlo,Monaco,Consolas,monospace}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
-.wrap{max-width:1120px;margin:0 auto;padding:0 32px 140px}
-.back-link{display:inline-flex;align-items:center;gap:6px;margin-top:24px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;background:var(--paper);font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g700);text-decoration:none;transition:border-color 120ms,color 120ms}.back-link:hover{border-color:var(--slate);color:var(--slate)}header.masthead{padding:80px 0 56px;border-bottom:1.5px solid var(--g300);margin-bottom:12px}
-.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:18px;display:flex;align-items:center;gap:12px}.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
-h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,5.4vw,62px);line-height:1.06;letter-spacing:-.018em;margin:0 0 8px;max-width:17ch}h1 em{font-style:italic;color:var(--clay)}
-.intro{font-size:16.5px;color:var(--g700);margin:22px 0 0;max-width:620px}
-nav.toc{display:flex;flex-wrap:wrap;gap:8px;padding:26px 0 0}
-nav.toc a{font-size:12.5px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper);transition:border-color 120ms,color 120ms}nav.toc a:hover{border-color:var(--slate);color:var(--slate)}
-section{margin-top:72px;scroll-margin-top:28px}
-.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:10px}
-.sec-head .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;width:34px;flex-shrink:0}
-.sec-head h2{font-family:var(--serif);font-weight:500;font-size:27px;margin:0;letter-spacing:-.012em}
-.sec-body{margin-left:50px;color:var(--g700);line-height:1.7;font-size:15px}
-.sec-body h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--slate);margin:28px 0 8px}
-.sec-body p{margin:0 0 16px}.sec-body ul{margin:0 0 16px;padding-left:20px}.sec-body li{margin-bottom:6px}
-a{color:var(--clay);text-decoration-color:var(--oat);text-underline-offset:3px}a:hover{text-decoration-color:var(--clay)}
-pre{background:var(--g100);border:1px solid var(--g200);border-radius:6px;padding:12px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;margin:0 0 16px}
-code{font-family:var(--mono);font-size:.88em;background:var(--g100);padding:2px 6px;border-radius:4px}pre code{background:none;padding:0;font-size:inherit}
-table{border-collapse:collapse;width:100%;margin:0 0 20px}th{background:var(--g100);font-family:var(--mono);font-size:12px;text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--g300)}td{padding:8px 12px;border-bottom:1px solid var(--g200);font-size:14px}
-footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--g500)}
-footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px}footer a{color:var(--clay)}
-@media(max-width:640px){.sec-body{margin-left:0}.wrap{padding:0 16px 80px}}
-/* speed bars */
-.bench{background:var(--paper);border:1.5px solid var(--g300);border-radius:10px;padding:20px;margin:0 0 20px}
-.bench-title{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--g500);margin-bottom:16px}
-.bench-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
-.bench-label{font-family:var(--mono);font-size:12px;color:var(--g700);width:140px;flex-shrink:0}
-.bench-bar-wrap{flex:1;background:var(--g100);border-radius:4px;height:20px;overflow:hidden}
-.bench-bar{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px;font-family:var(--mono);font-size:11px;color:var(--paper);transition:width 600ms ease}
-.bench-val{font-family:var(--mono);font-size:12px;color:var(--g500);width:60px;text-align:right}
-.callout{background:var(--g100);border-left:3px solid var(--clay);border-radius:0 6px 6px 0;padding:14px 18px;margin:0 0 20px;font-size:14px;color:var(--g700)}
-</style>
-</head>
-<body>
-<div class="wrap">
-<a class="back-link" href="index.html">← Back to index</a>
-<header class="masthead">
-  <div class="eyebrow">Knowledge Vault</div>
-  <h1>Model <em>Quantization</em></h1>
-  <p class="intro">Quantization is lossy compression for neural network weights — it maps values from a high-precision floating-point range into a smaller range of integers. A well-quantized model can be 4× smaller and 2× faster while retaining 90%+ of the original quality. This is the primary technique behind running LLMs on consumer hardware.</p>
-  <nav class="toc">
-    <a href="#formats">Float Formats</a>
-    <a href="#methods">Methods</a>
-    <a href="#blocks">Block Quantization</a>
-    <a href="#benchmarks">Benchmarks</a>
-    <a href="#advanced">Advanced Methods</a>
-    <a href="#related">Related Topics</a>
-  </nav>
-</header>
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55}.wrap{max-width:1120px;margin:auto;padding:0 32px 140px}.back{display:inline-flex;margin-top:24px;padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;background:var(--paper);font:12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--g700);text-decoration:none}.back:hover,.toc a:hover,.precision button:hover,.precision button[aria-pressed=true]{border-color:var(--slate);color:var(--slate)}header{padding:80px 0 56px;border-bottom:1.5px solid var(--g300)}.eyebrow{font:12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--g500);display:flex;gap:12px;align-items:center}.eyebrow:before{content:"";width:24px;height:1.5px;background:var(--clay)}h1{font:500 clamp(38px,5.4vw,62px)/1.06 var(--serif);letter-spacing:-.018em;margin:18px 0 0}h1 em{color:var(--clay)}.intro{max-width:720px;color:var(--g700);margin:22px 0 0}.toc{display:flex;flex-wrap:wrap;gap:8px;padding-top:26px}.toc a{padding:7px 14px;border:1.5px solid var(--g300);border-radius:999px;background:var(--paper);font-size:12.5px;color:var(--g700);text-decoration:none}section{margin-top:72px;scroll-margin-top:28px}.head{display:flex;gap:16px;align-items:baseline}.idx{width:34px;flex:none;font:600 13px var(--mono);color:var(--clay)}h2{font:500 27px/1.3 var(--serif);margin:0}.body{margin:12px 0 0 50px;color:var(--g700)}h3{font:500 19px var(--serif);color:var(--slate)}a{color:var(--clay);text-underline-offset:3px}table{width:100%;border-collapse:collapse;margin:18px 0}.table-wrap{overflow-x:auto}th{background:var(--g100);font:12px var(--mono);text-align:left}th,td{padding:9px 12px;border-bottom:1px solid var(--g200)}code,output{font-family:var(--mono)}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px}.card,.calculator,.research{background:var(--paper);border:1.5px solid var(--g300);border-radius:14px;padding:20px}.card b{font:500 19px var(--serif);display:block}.card .bits{font:600 27px var(--mono);color:var(--clay)}.calculator{display:grid;grid-template-columns:1fr 1fr;gap:20px}.field label{display:block;font:12px var(--mono);margin-bottom:7px}.field input{width:100%;accent-color:var(--clay)}.precision{display:flex;flex-wrap:wrap;gap:8px}.precision button{border:1.5px solid var(--g300);border-radius:999px;background:var(--paper);padding:7px 14px;font:12px var(--mono);cursor:pointer}.result{grid-column:1/-1;background:var(--g100);border-radius:10px;padding:16px}.result output{font-size:27px;color:var(--clay-d)}.note{border-left:4px solid var(--clay);padding:12px 16px;background:var(--paper)}.research li{margin:8px 0}footer{margin-top:100px;border-top:1.5px solid var(--g300);padding-top:36px;color:var(--g500);font-size:13px}.noscript{font:12px var(--mono);color:var(--g500)}@media(max-width:640px){.wrap{padding:0 16px 80px}.body{margin-left:0}.calculator{grid-template-columns:1fr}.table-wrap{margin-right:-16px}.result{grid-column:auto}}
 
-<section id="formats">
-  <div class="sec-head"><span class="idx">01</span><h2>Floating-Point Formats</h2></div>
-  <div class="sec-body">
-    <table>
-      <tr><th>Format</th><th>Bits</th><th>Exponent</th><th>Significand</th><th>Precision</th></tr>
-      <tr><td>float32</td><td>32</td><td>8</td><td>23</td><td>~7 sig figs</td></tr>
-      <tr><td>float16</td><td>16</td><td>5</td><td>10</td><td>~3 sig figs</td></tr>
-      <tr><td><strong>bfloat16</strong></td><td>16</td><td>8</td><td>7</td><td>~2 sig figs</td></tr>
-      <tr><td>float8</td><td>8</td><td>varies</td><td>varies</td><td>~1 sig fig</td></tr>
-      <tr><td>float4</td><td>4</td><td>varies</td><td>varies</td><td>very low</td></tr>
-    </table>
-    <div class="callout"><strong>bfloat16</strong> is the standard for LLM training: its wide exponent range prevents overflow, and 2 significant figures is sufficient for learning.</div>
-  </div>
-</section>
-
-<section id="methods">
-  <div class="sec-head"><span class="idx">02</span><h2>Quantization Methods</h2></div>
-  <div class="sec-body">
-    <h3>Symmetric Quantization</h3>
-    <p>Center the data around 0. Scale factor = <code>max(|values|) / qmax</code>.</p>
-    <pre><code>function quantize({ values, bits }) {
-    const vmax = Math.max(...values.map(Math.abs));
-    const qmax = 2 ** (bits - 1) - 1;
-    const scale = vmax / qmax;
-    return { values: values.map(v => Math.round(v / scale)), scale };
-}</code></pre>
-    <p><strong>Downside:</strong> wastes space when data is skewed (e.g., range -0.89 to +0.16 → symmetric range goes -0.89 to +0.89).</p>
-
-    <h3>Asymmetric Quantization</h3>
-    <p>Shift the quantization range to match the actual data distribution. Stores a <code>zero</code> offset alongside the scale.</p>
-    <pre><code>function quantize({ values, bits }) {
-    const vmax = Math.max(...values), vmin = Math.min(...values);
-    const qmax = 2**(bits-1)-1, qmin = -(2**(bits-1));
-    const scale = (vmax - vmin) / (qmax - qmin);
-    const zero = qmin - Math.round(vmin / scale);
-    return { values: values.map(x => Math.round(x/scale + zero)), scale, zero };
-}</code></pre>
-    <p>Asymmetric reduces average error ~50% vs symmetric at the same bit width.</p>
-  </div>
-</section>
-
-<section id="blocks">
-  <div class="sec-head"><span class="idx">03</span><h2>Block Quantization</h2></div>
-  <div class="sec-body">
-    <p>You can't quantize an entire model in one pass — <strong>outlier parameters</strong> will skew the scale and crush all other values into a tiny range.</p>
-    <p><strong>Solution:</strong> quantize in <strong>blocks</strong> of 32–256 parameters at a time. Each block gets its own scale. This contains outlier impact at the cost of storing extra metadata per block.</p>
-    <p>Trade-off: larger blocks → less overhead, more error. Smaller blocks → more accuracy, more metadata.</p>
-  </div>
-</section>
-
-<section id="benchmarks">
-  <div class="sec-head"><span class="idx">04</span><h2>Quality & Speed Benchmarks</h2></div>
-  <div class="sec-body">
-    <h3>Tokens/sec — M1 Max (higher is better)</h3>
-    <div class="bench">
-      <div class="bench-title">Inference speed on M1 Max</div>
-      <div class="bench-row"><span class="bench-label">bfloat16</span><div class="bench-bar-wrap"><div class="bench-bar" style="width:42%;background:var(--g500)">19.45</div></div><span class="bench-val">19.45</span></div>
-      <div class="bench-row"><span class="bench-label">8-bit sym</span><div class="bench-bar-wrap"><div class="bench-bar" style="width:70%;background:var(--olive)">32.36</div></div><span class="bench-val">32.36</span></div>
-      <div class="bench-row"><span class="bench-label">4-bit asym</span><div class="bench-bar-wrap"><div class="bench-bar" style="width:93%;background:var(--clay)">43.32</div></div><span class="bench-val">43.32</span></div>
-      <div class="bench-row"><span class="bench-label">4-bit sym</span><div class="bench-bar-wrap"><div class="bench-bar" style="width:100%;background:var(--clay-d)">46.05</div></div><span class="bench-val">46.05</span></div>
-      <div class="bench-row"><span class="bench-label">2-bit asym</span><div class="bench-bar-wrap"><div class="bench-bar" style="width:87%;background:var(--g300)">40.25</div></div><span class="bench-val">40.25 ⚠</span></div>
-    </div>
-    <div class="callout"><strong>Takeaway:</strong> 8-bit is nearly lossless. 4-bit has noticeable but acceptable degradation (~90% quality). 2-bit collapses — the model gets stuck in repetition loops and produces no output.</div>
-
-    <h3>Perplexity (Qwen 3.5 9B — lower is better)</h3>
-    <table>
-      <tr><th>Format</th><th>Perplexity</th><th>Delta</th></tr>
-      <tr><td>bfloat16</td><td>8.186</td><td>baseline</td></tr>
-      <tr><td>8-bit symmetric</td><td>8.193</td><td>+0.1%</td></tr>
-      <tr><td>4-bit asymmetric</td><td>8.563</td><td>+4.6%</td></tr>
-      <tr><td>4-bit symmetric</td><td>8.71</td><td>+6.4%</td></tr>
-      <tr><td>2-bit asymmetric</td><td>66.1</td><td>+707.5% ⚠</td></tr>
-    </table>
-  </div>
-</section>
-
-<section id="advanced">
-  <div class="sec-head"><span class="idx">05</span><h2>Advanced Methods</h2></div>
-  <div class="sec-body">
-    <ul>
-      <li><strong>PTQ (Post-training quantization):</strong> quantize after training (all methods above)</li>
-      <li><strong>QAT (Quantization-aware training):</strong> introduce quantization during pre-training so the model learns parameters that quantize well</li>
-      <li><strong>AWQ:</strong> Activation-aware Weight Quantization — accounts for activation magnitudes when scaling weights</li>
-      <li><strong>GPTQ:</strong> uses second-order information (Hessian) to minimize quantization error per layer</li>
-      <li><strong>GGUF:</strong> a container format + quantization strategy optimized for llama.cpp-style runtimes; memory numbers are runtime-specific</li>
-    </ul>
-  </div>
-</section>
-
-<section id="related">
-  <div class="sec-head"><span class="idx">06</span><h2>Related Topics</h2></div>
-  <div class="sec-body">
-    <ul>
-      <li><a href="local-models.html">Local Models</a> — local inference scenarios where quantization makes models fit available hardware</li>
-      <li><a href="gpu-cuda.html">GPU & CUDA</a> — VRAM math; how quantization format directly determines how much VRAM is needed</li>
-      <li><a href="distributed-training.html">Distributed Training</a> — quantization used alongside tensor parallelism for very large models</li>
-      <li><a href="hugging-face.html">Hugging Face</a> — model hub hosts quantized checkpoints in many formats</li>
-      <li><a href="transformers-library.html">Transformers Library</a> — loading quantized models via bitsandbytes, AutoGPTQ</li>
-    </ul>
-  </div>
-</section>
-
-<footer>
-  <span class="k">Knowledge Vault</span>
-  <a href="index.html">← All topics</a>
-</footer>
-</div>
-</body>
-</html>
+/* Standard self-contained wiki theme control. */
+html{color-scheme:light}html[data-theme="dark"]{color-scheme:dark}
+:root[data-theme="dark"]{--ivory:#171714;--paper:#22221E;--slate:#F4F0E6;--clay:#E58A68;--clay-d:#F0A080;--oat:#5A463B;--olive:#9CAF7E;--g100:#292923;--g200:#36362F;--g300:#4A4940;--g500:#A5A198;--g700:#D2CEC4}
+.theme-toggle{position:fixed;top:16px;right:16px;z-index:1000;width:42px;height:42px;display:grid;place-items:center;padding:0;border:1.5px solid var(--g300);border-radius:9999px;background:var(--paper);color:var(--g700);cursor:pointer;box-shadow:0 4px 16px rgba(20,20,19,.12);transition:color 120ms ease,border-color 120ms ease,background-color 120ms ease,transform 150ms ease}
+.theme-toggle:hover{color:var(--clay);border-color:var(--clay);transform:translateY(-1px)}.theme-toggle:focus-visible{outline:3px solid var(--clay);outline-offset:3px}.theme-toggle svg{width:20px;height:20px;display:block}.theme-toggle .moon{display:none}:root[data-theme="dark"] .theme-toggle .sun{display:none}:root[data-theme="dark"] .theme-toggle .moon{display:block}
+@media(max-width:640px){.theme-toggle{top:10px;right:10px;width:40px;height:40px}}
+@media(prefers-reduced-motion:reduce){.theme-toggle{transition:none}.theme-toggle:hover{transform:none}}
+</style></head><body><button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false" title="Switch to dark mode"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g class="sun"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></g><path class="moon" d="M20.2 15.1A8.5 8.5 0 0 1 8.9 3.8 8.5 8.5 0 1 0 20.2 15.1Z"/></svg></button><main class="wrap"><a class="back" href="index.html">← Back to index</a><header><div class="eyebrow">Model compression</div><h1>Quantization, <em>measured</em></h1><p class="intro">Quantization maps high-precision weights into smaller numeric formats. The gain is lower memory traffic and footprint; the cost is approximation error, metadata, and runtime-specific trade-offs.</p><nav class="toc" aria-label="Page sections"><a href="#formats">Formats</a><a href="#estimator">Estimator</a><a href="#methods">Methods</a><a href="#evidence">Research</a><a href="#related">Related</a></nav></header>
+<section id="formats"><div class="head"><span class="idx">01</span><h2>Precision at a Glance</h2></div><div class="body"><div class="cards"><div class="card"><span class="bits">16-bit</span><b>BF16 / FP16</b><p>2 bytes per weight; common baseline for training and serving.</p></div><div class="card"><span class="bits">8-bit</span><b>INT8</b><p>1 byte per weight; often near-baseline quality with compatible kernels.</p></div><div class="card"><span class="bits">4-bit</span><b>INT4</b><p>0.5 byte per weight before scales and metadata; common for local inference.</p></div></div><div class="table-wrap"><table><thead><tr><th>Model</th><th>16-bit</th><th>8-bit</th><th>4-bit</th></tr></thead><tbody><tr><td>7B</td><td>14 GB</td><td>7 GB</td><td>3.5 GB</td></tr><tr><td>13B</td><td>26 GB</td><td>13 GB</td><td>6.5 GB</td></tr><tr><td>70B</td><td>140 GB</td><td>70 GB</td><td>35 GB</td></tr></tbody></table></div><p class="note">These are weight-only baselines. KV cache, activations, temporary buffers, scale metadata, and allocator overhead still need memory.</p></div></section>
+<section id="estimator"><div class="head"><span class="idx">02</span><h2>Interactive Memory Estimator</h2></div><div class="body"><div class="calculator"><div class="field"><label for="params">Parameters: <span id="param-label">7</span>B</label><input id="params" type="range" min="1" max="100" value="7"></div><div class="field"><label>Weight precision</label><div class="precision" role="group" aria-label="Weight precision"><button type="button" data-bits="16" aria-pressed="false">16-bit</button><button type="button" data-bits="8" aria-pressed="false">8-bit</button><button type="button" data-bits="4" aria-pressed="true">4-bit</button></div></div><div class="field"><label for="overhead">Estimated runtime overhead: <span id="overhead-label">20</span>%</label><input id="overhead" type="range" min="0" max="100" value="20"></div><div class="result" aria-live="polite"><div>Weights: <output id="weights">3.50 GB</output></div><div>Estimated total: <output id="total">4.20 GB</output></div></div></div><noscript><p class="noscript">Formula: parameters in billions × bits ÷ 8, then add runtime overhead.</p></noscript></div></section>
+<section id="methods"><div class="head"><span class="idx">03</span><h2>Methods and Failure Modes</h2></div><div class="body"><div class="table-wrap"><table><thead><tr><th>Method</th><th>Idea</th><th>Watch for</th></tr></thead><tbody><tr><td>Block quantization</td><td>Give small groups separate scales</td><td>Metadata versus outlier containment</td></tr><tr><td>GPTQ</td><td>Use second-order information during PTQ</td><td>Calibration data and backend support</td></tr><tr><td>AWQ</td><td>Protect weights important to large activations</td><td>Kernel and checkpoint compatibility</td></tr><tr><td>SmoothQuant</td><td>Move activation difficulty into weights</td><td>Weight/activation scaling balance</td></tr><tr><td>QLoRA</td><td>Train adapters over a frozen 4-bit base</td><td>Fine-tuning method, not a universal serving format</td></tr></tbody></table></div><p>Below 4 bits, error can rise sharply. Quality must be evaluated on the intended tasks; file size alone is not a sufficient acceptance criterion.</p></div></section>
+<section id="evidence"><div class="head"><span class="idx">04</span><h2>Research Trail</h2></div><div class="body"><ul class="research"><li><a href="https://arxiv.org/abs/2210.17323">GPTQ</a> — accurate post-training quantization for generative transformers.</li><li><a href="https://arxiv.org/abs/2306.00978">AWQ</a> — activation-aware weight quantization.</li><li><a href="https://arxiv.org/abs/2211.10438">SmoothQuant</a> — weight-and-activation INT8 quantization.</li><li><a href="https://arxiv.org/abs/2305.14314">QLoRA</a> — adapter fine-tuning over a quantized base model.</li></ul></div></section>
+<section id="related"><div class="head"><span class="idx">05</span><h2>Related Topics</h2></div><div class="body"><p><a href="local-models.html">Local Models</a> · <a href="gpu-cuda.html">GPU &amp; CUDA</a> · <a href="distributed-training.html">Distributed Training</a> · <a href="transformers-library.html">Transformers Library</a></p></div></section><footer><em>Knowledge Vault</em> · <a href="index.html">Back to index</a></footer></main>
+<script>const params=document.querySelector('#params'),overhead=document.querySelector('#overhead'),buttons=[...document.querySelectorAll('[data-bits]')];let bits=4;function update(){const p=+params.value,o=+overhead.value,w=p*bits/8;document.querySelector('#param-label').textContent=p;document.querySelector('#overhead-label').textContent=o;document.querySelector('#weights').textContent=w.toFixed(2)+' GB';document.querySelector('#total').textContent=(w*(1+o/100)).toFixed(2)+' GB'}params.addEventListener('input',update);overhead.addEventListener('input',update);buttons.forEach(b=>b.addEventListener('click',()=>{bits=+b.dataset.bits;buttons.forEach(x=>x.setAttribute('aria-pressed',x===b));update()}));update();</script><script id="theme-controller">(function(){var k='knowledge-vault-theme',r=document.documentElement,b=document.querySelector('.theme-toggle'),m=matchMedia('(prefers-color-scheme: dark)');if(!b)return;function stored(){try{var v=localStorage.getItem(k);return v==='light'||v==='dark'?v:null}catch(e){return null}}function apply(t){r.dataset.theme=t;var dark=t==='dark',label='Switch to '+(dark?'light':'dark')+' mode';b.setAttribute('aria-pressed',String(dark));b.setAttribute('aria-label',label);b.title=label}function system(){if(!stored())apply(m.matches?'dark':'light')}b.addEventListener('click',function(){var next=r.dataset.theme==='dark'?'light':'dark';try{localStorage.setItem(k,next)}catch(e){}apply(next)});m.addEventListener?m.addEventListener('change',system):m.addListener(system);addEventListener('storage',function(e){if(e.key===k)apply(stored()||(m.matches?'dark':'light'))});apply(r.dataset.theme==='dark'?'dark':'light')})();</script></body></html>

@@ -13,6 +13,19 @@ colors:
   g300: "#D1CFC5"
   g500: "#87867F"
   g700: "#3D3D3A"
+darkColors:
+  ivory: "#171714"
+  paper: "#22221E"
+  slate: "#F4F0E6"
+  clay: "#E58A68"
+  clay-d: "#F0A080"
+  oat: "#5A463B"
+  olive: "#9CAF7E"
+  g100: "#292923"
+  g200: "#36362F"
+  g300: "#4A4940"
+  g500: "#A5A198"
+  g700: "#D2CEC4"
 typography:
   heading-xl:
     fontFamily: 'ui-serif, Georgia, "Times New Roman", Times, serif'
@@ -142,6 +155,12 @@ The gray ramp handles structure without drawing attention:
 - `g700` (#3D3D3A) — secondary body text, descriptions
 
 `oat` (#E3DACC) and `olive` (#788C5D) are warm accents reserved for SVG illustrations and secondary visual highlights inside card thumbs.
+
+### Dark theme
+
+Dark mode remaps the same semantic tokens rather than introducing component-specific colors: `ivory` #171714, `paper` #22221E, `slate` #F4F0E6, `clay` #E58A68, `clay-d` #F0A080, `oat` #5A463B, `olive` #9CAF7E, `g100` #292923, `g200` #36362F, `g300` #4A4940, `g500` #A5A198, and `g700` #D2CEC4. Light mode remains the canonical default palette.
+
+Every top-level wiki HTML page must include the standard self-contained theme control. An early head script sets `document.documentElement.dataset.theme` before the page renders, using the stored `knowledge-vault-theme` preference when present and `prefers-color-scheme` otherwise. The fixed top-right button must use the `.theme-toggle` class, inline sun/moon SVG geometry, a current action label, keyboard focus styling, and `aria-pressed`. Store only `light` or `dark`, react to system-theme changes when no override exists, set the native `color-scheme`, and honor `prefers-reduced-motion`. No external theme assets are allowed.
 
 ## Typography
 
